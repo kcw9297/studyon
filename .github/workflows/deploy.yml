@@ -139,9 +139,9 @@ jobs:
             -Xmx512m \
             -Dspring.profiles.active=prod \
             -DPROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}" \
-            -DCLOUDFRONT_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}" \
-            -DCLOUDFRONT_KEY_PAIR_ID="${{ secrets.CLOUDFRONT_KEY_PAIR_ID }}" \
-            -DCLOUDFRONT_PRIVATE_KEY="${{ secrets.CLOUDFRONT_PRIVATE_KEY }}" \
+            -DPROD_CLOUDFRONT_DOMAIN="${{ secrets.PROD_CLOUDFRONT_DOMAIN }}" \
+            -DPROD_CLOUDFRONT_KEY_PAIR_ID="${{ secrets.PROD_CLOUDFRONT_KEY_PAIR_ID }}" \
+            -DPROD_CLOUDFRONT_PRIVATE_KEY="${{ secrets.PROD_CLOUDFRONT_PRIVATE_KEY }}" \
             -DPROD_DATABASE_PASSWORD="${{ secrets.PROD_DATABASE_PASSWORD }}" \
             -DPROD_DATABASE_URL="${{ secrets.PROD_DATABASE_URL }}" \
             -DPROD_DATABASE_USERNAME="${{ secrets.PROD_DATABASE_USERNAME }}" \
