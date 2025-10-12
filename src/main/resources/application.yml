@@ -1,0 +1,10 @@
+spring:
+  profiles: # 활성 프로필 (local, prod)
+    active: local # prod
+
+  config: # 사용 설정 파일
+    import:
+      - classpath:setting/application-db.yml
+      - classpath:setting/application-env.yml
+      - classpath:setting/application-web.yml
+      - classpath:setting/application-mail.yml

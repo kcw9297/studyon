@@ -1,0 +1,69 @@
+# ===============================
+# common
+# ===============================
+
+spring:
+
+  # 공용 DBCP 설정
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-test-query: SELECT 1
+      validation-timeout: 1000
+      auto-commit: false
+
+  # 공용 JPA 설정
+  jpa:
+    open-in-view: false
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        default_batch_fetch_size: 1000
+        connection:
+          provider_disables_autocommit: true
+
+
+# ===============================
+# profile - local
+# ===============================
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: ${LOCAL_DATABASE_URL}
+    username: ${LOCAL_DATABASE_USERNAME}
+    password: ${LOCAL_DATABASE_PASSWORD}
+
+  jpa:
+    show-sql: true
+
+    hibernate:
+      ddl-auto: update #update
+
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+# ===============================
+# profile - prod
+# ===============================
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: dbc:mariadb://mariadb-studyon.cj8ge6aeqe2c.ap-northeast-2.rds.amazonaws.com:3306/test?useSSL=false&serverTimezone=Asia/Seoul #${PROD_DATABASE_URL}
+    username: root #${PROD_DATABASE_USERNAME}
+    password: root123! #${PROD_DATABASE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update #none
