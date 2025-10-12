@@ -75,19 +75,19 @@ jobs:
           command_timeout: 10m
           debug: true
           script: |
-            set -eo pipefail
-  
             echo "=== 1. Stop existing application ==="
-            APP_PID=$(pgrep -f 'java -jar' || true)
-            if [ -n "$APP_PID" ]; then
-            echo "Stopping existing app (PID: $APP_PID)"
-            for pid in $APP_PID; do
-            echo "Killing PID: $pid"
-            kill -9 $pid 2>/dev/null || true
-            done
-            sleep 2
-            else
-            echo "No running app found"
-            fi
-      
+            pkill -9 -f 'java.*app-APP-STUDYON' || true
+            sleep 3
+            
             echo "=== 2. Move to app directory ==="
+            cd ~/app
+            
+            echo "=== 3. List files ==="
+            ls -lh
+            
+            echo "=== 4. Find WAR ==="
+            WAR_FILE=$(ls *.war 2>/dev/null | grep -v plain | head -n 1)
+            echo "Found: $WAR_FILE"
+            
+            echo "=== 5. Start application ==="
+            mkdir -p logs
