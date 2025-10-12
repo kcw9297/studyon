@@ -11,10 +11,11 @@ on:
       - main
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
-    # 단계별 배포 과정 수행
+    # 빌드 및 EC2 인스턴스에 빌드된 파일 복사
     steps:
 
       # step 1. 코드 체크아웃
@@ -55,6 +56,13 @@ jobs:
           target: "/home/${{ secrets.EC2_USERNAME }}/app" # "/app" 경로에 WAR 파일 복사
           strip_components: 2
 
+  #
+  deploy:
+    runs-on: ubuntu-latest
+
+    # 배포 단계
+    steps:
+
       # 7. EC2 애플리케이션 배포
       - name: Deploy and Run on EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -63,43 +71,66 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 기존 동작 중인 프로세스 종료
-            echo "Stopping existing application..."
+            set -e  # 에러 발생 시 즉시 중단
+            
+            echo "=== 1. Stop existing application ==="
             pkill -f 'java -jar' || true
             sleep 3
             
-            # WAR 파일로 이동
-            cd /home/${{ secrets.EC2_USERNAME }}/app
+            echo "=== 2. Move to app directory ==="
+            cd /home/ubuntu/app || { echo "Directory not found!"; exit 1; }
+            pwd
             
-            # 로그 디렉토리 생성
+            echo "=== 3. Check WAR file ==="
+            ls -lh *.war || { echo "WAR file not found!"; exit 1; }
+            WAR_FILE=$(ls *.war)
+            echo "Found: $WAR_FILE"
+            
+            echo "=== 4. Check Java ==="
+            java -version
+            
+            echo "=== 5. Create logs directory ==="
             mkdir -p logs
             
-            # 환경변수 로드 및 애플리케이션 실행
-            echo "Starting application..."
+            echo "=== 6. Check network connectivity ==="
+            # 데이터베이스 연결 테스트 (MySQL 예시)
+            nc -zv $(echo "${{ secrets.PROD_DATABASE_URL }}" | sed 's|jdbc:mysql://||' | cut -d: -f1) 3306 || echo "Cannot connect to database"
+            
+            # Redis 연결 테스트
+            nc -zv ${{ secrets.PROD_REDIS_HOST }} ${{ secrets.PROD_REDIS_PORT }} || echo "Cannot connect to Redis"
+            
+            echo "=== 7. Start application ==="
             nohup java -jar \
-            -DACTIVE_PROFILE=prod \
-            -DPROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}" \
-            -DCLOUDFRONT_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}" \
-            -DCLOUDFRONT_KEY_PAIR_ID="${{ secrets.CLOUDFRONT_KEY_PAIR_ID }}" \
-            -DCLOUDFRONT_PRIVATE_KEY="${{ secrets.CLOUDFRONT_PRIVATE_KEY }}" \
-            -DPROD_DATABASE_PASSWORD="${{ secrets.PROD_DATABASE_PASSWORD }}" \
-            -DPROD_DATABASE_URL="${{ secrets.PROD_DATABASE_URL }}" \
-            -DPROD_DATABASE_USERNAME="${{ secrets.PROD_DATABASE_USERNAME }}" \
-            -DPROD_FILE_DOMAIN="${{ secrets.PROD_FILE_DOMAIN }}" \
-            -DPROD_REDIS_HOST="${{ secrets.PROD_REDIS_HOST }}" \
-            -DPROD_REDIS_PORT="${{ secrets.PROD_REDIS_PORT }}" \
-            -DPROD_SMTP_MAIL_APP_PASSWORD="${{ secrets.PROD_SMTP_MAIL_APP_PASSWORD }}" \
-            -DPROD_SMTP_MAIL_USERNAME="${{ secrets.PROD_SMTP_MAIL_USERNAME }}" \
-            *.war > logs/app.log 2>&1 &
+              -Dspring.profiles.active=prod \
+              -DPROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}" \
+              -DCLOUDFRONT_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}" \
+              -DCLOUDFRONT_KEY_PAIR_ID="${{ secrets.CLOUDFRONT_KEY_PAIR_ID }}" \
+              -DCLOUDFRONT_PRIVATE_KEY="${{ secrets.CLOUDFRONT_PRIVATE_KEY }}" \
+              -DPROD_DATABASE_PASSWORD="${{ secrets.PROD_DATABASE_PASSWORD }}" \
+              -DPROD_DATABASE_URL="${{ secrets.PROD_DATABASE_URL }}" \
+              -DPROD_DATABASE_USERNAME="${{ secrets.PROD_DATABASE_USERNAME }}" \
+              -DPROD_FILE_DOMAIN="${{ secrets.PROD_FILE_DOMAIN }}" \
+              -DPROD_REDIS_HOST="${{ secrets.PROD_REDIS_HOST }}" \
+              -DPROD_REDIS_PORT="${{ secrets.PROD_REDIS_PORT }}" \
+              -DPROD_SMTP_MAIL_APP_PASSWORD="${{ secrets.PROD_SMTP_MAIL_APP_PASSWORD }}" \
+              -DPROD_SMTP_MAIL_USERNAME="${{ secrets.PROD_SMTP_MAIL_USERNAME }}" \
+              "$WAR_FILE" > logs/app.log 2>&1 &
             
-            echo "Application started!"
-            sleep 5
+            APP_PID=$!
+            echo "Application started with PID: $APP_PID"
             
-            # 프로세스 확인
-            if pgrep -f 'java -jar' > /dev/null; then
-              echo "Application run successfully!"
-            else
-              echo "Application failed to start"
+            echo "=== 8. Wait and check ==="
+            sleep 15
+            
+            if ps -p $APP_PID > /dev/null 2>&1; then
+              echo "✅ Process is still running (PID: $APP_PID)"
+              echo ""
+              echo "=== Application Logs (last 50 lines) ==="
               tail -n 50 logs/app.log
+            else
+              echo "❌ Process died!"
+              echo ""
+              echo "=== Full Application Log ==="
+              cat logs/app.log
               exit 1
             fi
