@@ -1,0 +1,57 @@
+# ===============================
+# common
+# ===============================
+
+spring:
+
+  # 애플리케이션 이름
+  application:
+    name: app
+
+
+# ===============================
+# profile - local
+# ===============================
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+local:
+  file:
+    dir: ${LOCAL_FILE_DIR}
+    handler: ${LOCAL_FILE_HANDLER}
+    domain: ${LOCAL_FILE_DOMAIN}
+
+
+
+# ===============================
+# profile - prod
+# ===============================
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+# server port
+server:
+  port: 8080
+
+prod:
+  file:
+    domain: https://cdn.studyon.o-r.kr
+
+  aws:
+    signed-cookie:
+      expire-min: 5
+
+    domain:
+      cloudfront: cdn.studyon.o-r.kr
+
+    secret:
+      cloudfront: secret-cloudfront-studyon
+
+    bucket:
+      name: s3-studyon
