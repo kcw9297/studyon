@@ -37,11 +37,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
-      # 5. 빌드된 WAR 파일명 확인
+      # 5. 빌드된 WAR 파일명 확인 (plain 제외)
       - name: Get WAR filename
         id: war
         run: |
-          WAR_FILE=$(ls build/libs/*.war | grep -v plain)
+          WAR_FILE=$(ls build/libs/*.war | grep -v plain | head -n 1)
           echo "war_file=$WAR_FILE" >> $GITHUB_OUTPUT
           echo "Found WAR: $WAR_FILE"
 
@@ -52,7 +52,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/*.war" # war file
+          source: "build/libs/*[!plain].war"  # plain이 아닌 war만
           target: "/home/${{ secrets.EC2_USERNAME }}/app" # "/app" 경로에 WAR 파일 복사
           strip_components: 2
 
@@ -93,7 +93,7 @@ jobs:
             mkdir -p logs
             
             echo "=== 6. Check network connectivity ==="
-            # 데이터베이스 연결 테스트 (MySQL 예시)
+            # 데이터베이스 연결 테스트 (MariaDB)
             nc -zv $(echo "${{ secrets.PROD_DATABASE_URL }}" | sed 's|jdbc:mysql://||' | cut -d: -f1) 3306 || echo "Cannot connect to database"
             
             # Redis 연결 테스트
@@ -123,12 +123,12 @@ jobs:
             sleep 15
             
             if ps -p $APP_PID > /dev/null 2>&1; then
-              echo "✅ Process is still running (PID: $APP_PID)"
+              echo "Process is still running (PID: $APP_PID)"
               echo ""
               echo "=== Application Logs (last 50 lines) ==="
               tail -n 50 logs/app.log
             else
-              echo "❌ Process died!"
+              echo "Process failed!"
               echo ""
               echo "=== Full Application Log ==="
               cat logs/app.log
