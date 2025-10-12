@@ -74,31 +74,23 @@ jobs:
             # 로그 디렉토리 생성
             mkdir -p logs
             
-            # 환경변수 파일 생성 (기존 파일 덮어쓰기)
-            echo "Creating environment file..."
-            cat > .env << EOF
-            export ACTIVE_PROFILE=prod
-            export PROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}"
-            export CLOUDFRONT_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}"
-            export CLOUDFRONT_KEY_PAIR_ID="${{ secrets.CLOUDFRONT_KEY_PAIR_ID }}"
-            export CLOUDFRONT_PRIVATE_KEY="${{ secrets.CLOUDFRONT_PRIVATE_KEY }}"
-            export PROD_DATABASE_PASSWORD="${{ secrets.PROD_DATABASE_PASSWORD }}"
-            export PROD_DATABASE_URL="${{ secrets.PROD_DATABASE_URL }}"
-            export PROD_DATABASE_USERNAME="${{ secrets.PROD_DATABASE_USERNAME }}"
-            export PROD_FILE_DOMAIN="${{ secrets.PROD_FILE_DOMAIN }}"
-            export PROD_REDIS_HOST="${{ secrets.PROD_REDIS_HOST }}"
-            export PROD_REDIS_PORT="${{ secrets.PROD_REDIS_PORT }}"
-            export PROD_SMTP_MAIL_APP_PASSWORD="${{ secrets.PROD_SMTP_MAIL_APP_PASSWORD }}"
-            export PROD_SMTP_MAIL_USERNAME="${{ secrets.PROD_SMTP_MAIL_USERNAME }}"
-            EOF
-            
-            # 환경변수 파일 권한 설정 (보안)
-            chmod 600 .env
-            
-            
             # 환경변수 로드 및 애플리케이션 실행
             echo "Starting application..."
-            source .env && nohup java -jar *.war > logs/app.log 2>&1 &
+            nohup java -jar \
+            -DACTIVE_PROFILE=prod \
+            -DPROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}" \
+            -DCLOUDFRONT_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}" \
+            -DCLOUDFRONT_KEY_PAIR_ID="${{ secrets.CLOUDFRONT_KEY_PAIR_ID }}" \
+            -DCLOUDFRONT_PRIVATE_KEY="${{ secrets.CLOUDFRONT_PRIVATE_KEY }}" \
+            -DPROD_DATABASE_PASSWORD="${{ secrets.PROD_DATABASE_PASSWORD }}" \
+            -DPROD_DATABASE_URL="${{ secrets.PROD_DATABASE_URL }}" \
+            -DPROD_DATABASE_USERNAME="${{ secrets.PROD_DATABASE_USERNAME }}" \
+            -DPROD_FILE_DOMAIN="${{ secrets.PROD_FILE_DOMAIN }}" \
+            -DPROD_REDIS_HOST="${{ secrets.PROD_REDIS_HOST }}" \
+            -DPROD_REDIS_PORT="${{ secrets.PROD_REDIS_PORT }}" \
+            -DPROD_SMTP_MAIL_APP_PASSWORD="${{ secrets.PROD_SMTP_MAIL_APP_PASSWORD }}" \
+            -DPROD_SMTP_MAIL_USERNAME="${{ secrets.PROD_SMTP_MAIL_USERNAME }}" \
+            *.war > logs/app.log 2>&1 &
             
             echo "Application started!"
             sleep 5
