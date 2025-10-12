@@ -76,8 +76,7 @@ jobs:
           debug: true
           script: |
             echo "=== 1. Stop existing application ==="
-            pkill -9 -f 'java.*app-APP-STUDYON' || true
-            sleep 3
+            echo "Skipping kill for test"
             
             echo "=== 2. Move to app directory ==="
             cd ~/app
@@ -89,5 +88,7 @@ jobs:
             WAR_FILE=$(ls *.war 2>/dev/null | grep -v plain | head -n 1)
             echo "Found: $WAR_FILE"
             
-            echo "=== 5. Start application ==="
+            echo "=== 5. Create logs directory ==="
             mkdir -p logs
+            
+            echo "=== Test completed ==="
