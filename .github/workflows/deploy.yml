@@ -76,7 +76,7 @@ jobs:
             
             # 환경변수 파일 생성 (기존 파일 덮어쓰기)
             echo "Creating environment file..."
-            cat > .env << 'EOF'
+            cat > .env << EOF
             export ACTIVE_PROFILE=prod
             export PROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}"
             export CLOUDFRONT_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}"
