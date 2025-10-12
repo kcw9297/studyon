@@ -86,9 +86,9 @@ spring:
 
   data:
     redis:
-      host: master.cache-studyon.k7syup.apn2.cache.amazonaws.com #${PROD_REDIS_HOST}
-      port: 6379
-      password:
+      host: ${PROD_REDIS_HOST}
+      port: ${PROD_REDIS_PORT}
+      password: ${PROD_REDIS_PASSWORD}
       timeout: 10000
       ssl:
         enabled: true  # ssl 암호화 연결 여부 (AWS ElastiCache 에선 true, 로컬에선 false)
