@@ -35,23 +35,18 @@ spring:
     activate:
       on-profile: prod
 
-# server port
-server:
-  port: 8080
-
 prod:
   file:
-    domain: https://cdn.studyon.o-r.kr
+    domain: ${PROD_FILE_DOMAIN}
 
   aws:
     signed-cookie:
       expire-min: 5
 
-    domain:
-      cloudfront: cdn.studyon.o-r.kr
-
-    secret:
-      cloudfront: secret-cloudfront-studyon
+    cloudfront:
+      domain: ${PROD_CLOUDFRONT_DOMAIN}
+      key-pair-id: ${PROD_CLOUDFRONT_KEY_PAIR_ID}
+      private-key: ${PROD_CLOUDFRONT_PRIVATE_KEY}
 
     bucket:
-      name: s3-studyon
+      name: ${PROD_BUCKET_NAME}

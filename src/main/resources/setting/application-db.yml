@@ -60,9 +60,9 @@ spring:
       on-profile: prod
 
   datasource:
-    url: dbc:mariadb://mariadb-studyon.cj8ge6aeqe2c.ap-northeast-2.rds.amazonaws.com:3306/test?useSSL=false&serverTimezone=Asia/Seoul #${PROD_DATABASE_URL}
-    username: root #${PROD_DATABASE_USERNAME}
-    password: root123! #${PROD_DATABASE_PASSWORD}
+    url: ${PROD_DATABASE_URL}
+    username: ${PROD_DATABASE_USERNAME}
+    password: ${PROD_DATABASE_PASSWORD}
 
   jpa:
     hibernate:

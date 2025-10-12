@@ -17,7 +17,6 @@ import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Map;
 
 @Slf4j
 @Profile(AppProfile.PROD)
@@ -25,36 +24,31 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
 
-    private final AWSSecretProvider secretProvider;
-
     private static final String COOKIE_HEADER =
             "%s=%s; Path=/; Domain=studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
 
     @Value("${prod.aws.signed-cookie.expire-min}")
     private Integer expireMin;
 
-    @Value("${prod.aws.domain.cloudfront}")
+    @Value("${prod.aws.cloudfront.domain}")
     private String cloudFrontDomain;
 
-    @Value("${prod.aws.secret.cloudfront}")
-    private String cloudFrontSecretName;
+    @Value("${prod.aws.cloudfront.key-pair-id}")
+    private String cloudFrontKeyPairId;
 
-    private String keyPairId; // CloudFront Public Key pair ID
-    private PrivateKey privateKey; // CloudFront Private Key
+    @Value("${prod.aws.cloudfront.private-key}")
+    private String cloudFrontPrivateKey;
+
+    private PrivateKey privateKey; // CloudFront Private Key (decoded)
 
 
     // 초기화 메소드
     @PostConstruct
     public void init() {
 
-        log.warn("AWSManagerImpl init");
-
         try {
-            Map<String, String> secrets = secretProvider.getSecret(cloudFrontSecretName);
-            keyPairId = secrets.get("cloudfront_key_pair_id");
-
             // 헤더 및 공백 제거
-            String privateKeyPEM = cleanSecretKeyPEM(secrets.get("cloudfront_private_key"));
+            String privateKeyPEM = cleanSecretKeyPEM(cloudFrontPrivateKey);
 
             privateKey = KeyFactory.getInstance("RSA")
                     .generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyPEM)));
@@ -105,10 +99,10 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
                 cloudFrontDomain,
                 privateKey,
                 "*", // 허용 범위 경로
-                keyPairId,      // Public Key ID
-                expires,        // 만료 시점
-                null,           // activeFrom
-                "0.0.0.0/0"     // 허용 IP 범위
+                cloudFrontKeyPairId, // Public Key ID
+                expires, // 만료 시점
+                null, // activeFrom
+                "0.0.0.0/0" // 허용 IP 범위
         );
     }
 
