@@ -1,9 +1,9 @@
 name: GitHub Actions CI Workflow
 run-name: Build & Deploy
 
-concurrency:
-  group: master
-  cancel-in-progress: true
+#concurrency:
+#  group: master
+#  cancel-in-progress: true
 
 on:
   push:
@@ -72,37 +72,49 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          timeout: 30s
+          command_timeout: 5m
           script: |
-            set -e  # 에러 발생 시 즉시 중단
-            
             echo "=== 1. Stop existing application ==="
             pkill -f 'java -jar' || true
             sleep 3
             
             echo "=== 2. Move to app directory ==="
-            cd /home/ubuntu/app || { echo "Directory not found!"; exit 1; }
+            cd ~/app
             pwd
             
-            echo "=== 3. Check WAR file ==="
-            ls -lh *.war || { echo "WAR file not found!"; exit 1; }
-            WAR_FILE=$(ls *.war 2>/dev/null | head -n 1)
+            echo "=== 3. List files ==="
+            ls -lh
+            
+            echo "=== 4. Find WAR file ==="
+            WAR_FILE=$(ls *.war 2>/dev/null | grep -v plain | head -n 1)
+            
+            if [ -z "$WAR_FILE" ]; then
+              echo "❌ No WAR file found!"
+              exit 1
+            fi
+            
             echo "Found: $WAR_FILE"
             
-            echo "=== 4. Check Java ==="
+            echo "=== 5. Check Java ==="
             java -version
             
-            echo "=== 5. Create logs directory ==="
+            echo "=== 6. Create logs directory ==="
             mkdir -p logs
             
-            echo "=== 6. Check network connectivity ==="
-            # 데이터베이스 연결 테스트 (MariaDB)
-            nc -zv $(echo "${{ secrets.PROD_DATABASE_URL }}" | sed 's|jdbc:mysql://||' | cut -d: -f1) 3306 || echo "Cannot connect to database"
+            echo "=== 7. Start application (foreground for 5 seconds to see immediate errors) ==="
+            timeout 5 java -jar \
+              -Dspring.profiles.active=prod \
+              -DPROD_DATABASE_URL="${{ secrets.PROD_DATABASE_URL }}" \
+              -DPROD_DATABASE_USERNAME="${{ secrets.PROD_DATABASE_USERNAME }}" \
+              -DPROD_DATABASE_PASSWORD="${{ secrets.PROD_DATABASE_PASSWORD }}" \
+              -DPROD_REDIS_HOST="${{ secrets.PROD_REDIS_HOST }}" \
+              -DPROD_REDIS_PORT="${{ secrets.PROD_REDIS_PORT }}" \
+              "$WAR_FILE" 2>&1 | tee logs/startup.log || true
             
-            # Redis 연결 테스트
-            nc -zv ${{ secrets.PROD_REDIS_HOST }} ${{ secrets.PROD_REDIS_PORT }} || echo "Cannot connect to Redis"
-            
-            echo "=== 7. Start application ==="
+            echo "=== 8. Start application (background) ==="
             nohup java -jar \
+              -Xmx512m \
               -Dspring.profiles.active=prod \
               -DPROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}" \
               -DCLOUDFRONT_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}" \
@@ -121,18 +133,22 @@ jobs:
             APP_PID=$!
             echo "Application started with PID: $APP_PID"
             
-            echo "=== 8. Wait and check ==="
-            sleep 15
+            echo "=== 9. Wait 20 seconds ==="
+            sleep 20
             
+            echo "=== 10. Check process ==="
             if ps -p $APP_PID > /dev/null 2>&1; then
-              echo "Process is still running (PID: $APP_PID)"
+              echo "✅ Application is running (PID: $APP_PID)"
               echo ""
-              echo "=== Application Logs (last 50 lines) ==="
-              tail -n 50 logs/app.log
+              echo "=== Application Logs ==="
+              tail -n 100 logs/app.log
             else
-              echo "Process failed!"
+              echo "❌ Application failed to start"
               echo ""
-              echo "=== Full Application Log ==="
+              echo "=== Startup Log ==="
+              cat logs/startup.log
+              echo ""
+              echo "=== Application Log ==="
               cat logs/app.log
               exit 1
             fi
