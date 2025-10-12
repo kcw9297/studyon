@@ -5,6 +5,19 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
+group = 'studyon'
+version = 'APP-STUDYON-0.0.1'
+description = 'Spring Boot Project 2'
+
+// 최상단에 추가
+jar {
+    enabled = false
+}
+
+war {
+    enabled = false
+}
+
 bootJar {
     enabled = false
 }
@@ -12,10 +25,6 @@ bootJar {
 bootWar {
     enabled = true
 }
-
-group = 'studyon'
-version = 'APP-STUDYON-0.0.1'
-description = 'Spring Boot Project2'
 
 java {
 	toolchain {
