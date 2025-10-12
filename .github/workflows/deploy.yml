@@ -71,74 +71,9 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          timeout: 30s
-          command_timeout: 5m
+          timeout: 90s
+          command_timeout: 10m
           debug: true
           script: |
-            echo "=== 1. Stop existing application ==="
-            pkill -f 'java -jar' || true
-            sleep 3
-            
-            echo "=== 2. Move to app directory ==="
-            cd ~/app
-            pwd
-            
-            echo "=== 3. List files ==="
-            ls -lh
-            
-            echo "=== 4. Find WAR file ==="
-            WAR_FILE=$(ls *.war 2>/dev/null | grep -v plain | head -n 1)
-            
-            if [ -z "$WAR_FILE" ]; then
-              echo "No WAR file found!"
-              exit 1
-            fi
-            
-            echo "Found: $WAR_FILE"
-            
-            echo "=== 5. Check Java ==="
-            java -version
-            
-            echo "=== 6. Create logs directory ==="
-            mkdir -p logs
-            
-            echo "=== 7. Start application (background) ==="
-            nohup java -jar \
-              -Xmx512m \
-              -Dspring.profiles.active=prod \
-              -DPROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}" \
-              -DCLOUDFRONT_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}" \
-              -DCLOUDFRONT_KEY_PAIR_ID="${{ secrets.CLOUDFRONT_KEY_PAIR_ID }}" \
-              -DCLOUDFRONT_PRIVATE_KEY="${{ secrets.CLOUDFRONT_PRIVATE_KEY }}" \
-              -DPROD_DATABASE_PASSWORD="${{ secrets.PROD_DATABASE_PASSWORD }}" \
-              -DPROD_DATABASE_URL="${{ secrets.PROD_DATABASE_URL }}" \
-              -DPROD_DATABASE_USERNAME="${{ secrets.PROD_DATABASE_USERNAME }}" \
-              -DPROD_FILE_DOMAIN="${{ secrets.PROD_FILE_DOMAIN }}" \
-              -DPROD_REDIS_HOST="${{ secrets.PROD_REDIS_HOST }}" \
-              -DPROD_REDIS_PORT="${{ secrets.PROD_REDIS_PORT }}" \
-              -DPROD_SMTP_MAIL_APP_PASSWORD="${{ secrets.PROD_SMTP_MAIL_APP_PASSWORD }}" \
-              -DPROD_SMTP_MAIL_USERNAME="${{ secrets.PROD_SMTP_MAIL_USERNAME }}" \
-              "$WAR_FILE" > logs/app.log 2>&1 &
-            
-            APP_PID=$!
-            echo "Application started with PID: $APP_PID"
-            
-            echo "=== 9. Wait 20 seconds ==="
-            sleep 20
-            
-            echo "=== 10. Check process ==="
-            if ps -p $APP_PID > /dev/null 2>&1; then
-              echo "Application is running (PID: $APP_PID)"
-              echo ""
-              echo "=== Application Logs ==="
-              tail -n 100 logs/app.log
-            else
-              echo "Application failed to start"
-              echo ""
-              echo "=== Startup Log ==="
-              cat logs/startup.log
-              echo ""
-              echo "=== Application Log ==="
-              cat logs/app.log
-              exit 1
-            fi
+            echo "Connected successfully!"
+            cd ~/app && ls -lh
