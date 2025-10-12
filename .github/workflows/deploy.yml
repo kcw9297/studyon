@@ -59,6 +59,7 @@ jobs:
   #
   deploy:
     runs-on: ubuntu-latest
+    needs: build # build 과정을 마친 후에 수행 
 
     # 배포 단계
     steps:
