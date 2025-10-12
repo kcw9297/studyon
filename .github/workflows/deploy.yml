@@ -76,16 +76,18 @@ jobs:
           debug: true
           script: |
             set -eo pipefail
-
+  
             echo "=== 1. Stop existing application ==="
-            pkill -f 'java -jar' || true
-            sleep 3
+            set +e
+            pkill -f 'java -jar'
+            sleep 2
+            set -e
       
             echo "=== 2. Move to app directory ==="
             cd ~/app || { echo "Directory not found!"; exit 1; }
       
             echo "=== 3. Find WAR file ==="
-            WAR_FILE=$(ls *.war 2>/dev/null | grep -v plain | head -n 1)
+            WAR_FILE=$(ls -t *.war 2>/dev/null | grep -v plain | head -n 1)
             if [ -z "$WAR_FILE" ]; then
             echo "No WAR file found!"
             exit 1
@@ -93,6 +95,7 @@ jobs:
             echo "Found: $WAR_FILE"
       
             echo "=== 4. Start application (background) ==="
+            mkdir -p logs
             nohup java -jar \
              -Xmx512m \
              -Dspring.profiles.active=prod \
@@ -115,10 +118,10 @@ jobs:
 
             sleep 15
             if ps -p $APP_PID > /dev/null 2>&1; then
-              echo "✅ App is running (PID: $APP_PID)"
+              echo "App is running (PID: $APP_PID)"
               tail -n 50 logs/app.log || true
             else
-              echo "❌ App failed to start"
+              echo "App failed to start"
               cat logs/app.log || true
               exit 1
             fi
