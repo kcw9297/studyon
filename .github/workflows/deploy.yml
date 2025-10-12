@@ -15,46 +15,46 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # 빌드 및 EC2 인스턴스에 빌드된 파일 복사
-    steps:
-
-      # step 1. 코드 체크아웃
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # serp 2. JDK 17 설정
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      # 3. Gradle 실행 권한 부여
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      # 4. Gradle Build (테스트 생략)
-      - name: Build with Gradle
-        run: ./gradlew clean build -x test
-
-      # 5. plain.war 삭제 (실행 불가능한 파일)
-      - name: Remove plain.war
-        run: rm -f build/libs/*-plain.war
-
-      # 6. 빌드된 WAR 파일 확인
-      - name: List WAR files
-        run: ls -lh build/libs/*.war
-
-      # 7. EC2로 WAR 파일 전송
-      - name: Copy WAR to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/*.war"
-          target: "/home/${{ secrets.EC2_USERNAME }}/app"
-          strip_components: 2
+#    # 빌드 및 EC2 인스턴스에 빌드된 파일 복사
+#    steps:
+#
+#      # step 1. 코드 체크아웃
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      # serp 2. JDK 17 설정
+#      - name: Set up JDK 17
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '17'
+#          distribution: 'temurin'
+#
+#      # 3. Gradle 실행 권한 부여
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
+#
+#      # 4. Gradle Build (테스트 생략)
+#      - name: Build with Gradle
+#        run: ./gradlew clean build -x test
+#
+#      # 5. plain.war 삭제 (실행 불가능한 파일)
+#      - name: Remove plain.war
+#        run: rm -f build/libs/*-plain.war
+#
+#      # 6. 빌드된 WAR 파일 확인
+#      - name: List WAR files
+#        run: ls -lh build/libs/*.war
+#
+#      # 7. EC2로 WAR 파일 전송
+#      - name: Copy WAR to EC2
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: ${{ secrets.EC2_HOST }}
+#          username: ${{ secrets.EC2_USERNAME }}
+#          key: ${{ secrets.EC2_SSH_KEY }}
+#          source: "build/libs/*.war"
+#          target: "/home/${{ secrets.EC2_USERNAME }}/app"
+#          strip_components: 2
 
 
   # 배포 작업
@@ -76,7 +76,44 @@ jobs:
           debug: true
           script: |
             echo "=== 1. Stop existing application ==="
-            echo "Skipping kill for test"
+      
+            PID_FILE=~/app/app.pid
+            
+            if [ -f "$PID_FILE" ]; then
+            OLD_PID=$(cat "$PID_FILE")
+            echo "Found PID file with PID: $OLD_PID"
+            
+            if ps -p "$OLD_PID" > /dev/null 2>&1; then
+            echo "Stopping process $OLD_PID..."
+            kill -15 "$OLD_PID" || true
+            sleep 3
+            
+            # 여전히 살아있으면 강제 종료
+            if ps -p "$OLD_PID" > /dev/null 2>&1; then
+            echo "Force killing process $OLD_PID..."
+            kill -9 "$OLD_PID" || true
+            fi
+            
+            echo "Process stopped"
+            else
+            echo "Process $OLD_PID is not running"
+            fi
+            
+            rm -f "$PID_FILE"
+            else
+            echo "No PID file found, checking for running processes..."
+            
+            # WAR 파일명으로 정확하게 찾기
+            RUNNING_PID=$(pgrep -f 'java.*app-APP-STUDYON.*\.war$' || true)
+            
+            if [ -n "$RUNNING_PID" ]; then
+            echo "Found running process: $RUNNING_PID"
+            kill -9 $RUNNING_PID || true
+            sleep 2
+            else
+            echo "No running application found"
+            fi
+            fi
             
             echo "=== 2. Move to app directory ==="
             cd ~/app
@@ -86,9 +123,13 @@ jobs:
             
             echo "=== 4. Find WAR ==="
             WAR_FILE=$(ls *.war 2>/dev/null | grep -v plain | head -n 1)
+            
+            if [ -z "$WAR_FILE" ]; then
+            echo "❌ No WAR file found!"
+            exit 1
+            fi
+            
             echo "Found: $WAR_FILE"
             
             echo "=== 5. Create logs directory ==="
             mkdir -p logs
-            
-            echo "=== Test completed ==="
