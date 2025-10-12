@@ -81,7 +81,10 @@ jobs:
             APP_PID=$(pgrep -f 'java -jar' || true)
             if [ -n "$APP_PID" ]; then
             echo "Stopping existing app (PID: $APP_PID)"
-            kill $APP_PID || true
+            for pid in $APP_PID; do
+            echo "Killing PID: $pid"
+            kill -9 $pid 2>/dev/null || true
+            done
             sleep 2
             else
             echo "No running app found"
