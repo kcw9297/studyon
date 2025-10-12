@@ -1,6 +1,6 @@
 spring:
   profiles: # 활성 프로필 (local, prod)
-    active: local # prod
+    active: ${ACTIVE_PROFILE}
 
   config: # 사용 설정 파일
     import:
