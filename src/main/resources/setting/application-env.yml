@@ -41,7 +41,7 @@ prod:
 
   aws:
     signed-cookie:
-      expire-min: 5
+      expire-min: 1
 
     cloudfront:
       domain: ${PROD_CLOUDFRONT_DOMAIN}
