@@ -22,6 +22,7 @@ import org.springframework.session.FlushMode;
 import org.springframework.session.SaveMode;
 import org.springframework.session.config.SessionRepositoryCustomizer;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
+import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisIndexedHttpSession;
 import studyon.app.common.infra.event.redis.RedisEventListener;
 
@@ -125,6 +126,12 @@ public class RedisConfig implements SessionRepositoryCustomizer<RedisIndexedSess
         container.addMessageListener(messageListenerAdapter(), new PatternTopic(KEY_EVENT_EXPIRED));
         container.addMessageListener(messageListenerAdapter(), new PatternTopic(KEY_EVENT_DEL));
         return container;
+    }
+
+
+    @Bean // CONFIG 비활성화
+    public static ConfigureRedisAction configureRedisAction() {
+        return ConfigureRedisAction.NO_OP;
     }
 
 
