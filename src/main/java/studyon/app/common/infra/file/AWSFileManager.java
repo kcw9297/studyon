@@ -23,7 +23,7 @@ public class AWSFileManager implements FileManager {
 
     private final S3Client s3;
 
-    @Value("${prod.aws.bucket.name}")
+    @Value("${prod.aws.s3.bucket-name}")
     private String bucketName;
 
 
