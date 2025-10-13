@@ -93,7 +93,7 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
                 SignerUtils.Protocol.https,
                 cloudFrontDomain,
                 privateKey,
-                "*", // 허용 범위 경로
+                "/*", // 허용 범위 경로
                 cloudFrontKeyPairId, // Public Key ID
                 expires, // 만료 시점
                 null, // activeFrom
