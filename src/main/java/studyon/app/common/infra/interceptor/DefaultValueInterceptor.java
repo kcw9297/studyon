@@ -26,15 +26,16 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class DefaultValueInterceptor implements HandlerInterceptor {
-    
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String ipAddress = getClientIp(request);
 
         request.setAttribute("ipAddress", ipAddress);
         request.setAttribute("loginMemberEmail", ""); // 실제로 redis 내 회원 정보를 삽입해야 함
         return true;
     }
+
 
     // 사용자의 실제 IP 추출
     private String getClientIp(HttpServletRequest request) {
