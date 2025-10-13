@@ -43,7 +43,6 @@ public class MailConfig {
     @Value("${spring.mail.properties.mail.smtp.ssl.enable}")
     private String sslEnable;
 
-
     @Bean // JavaMailSender 빈 등록
     public JavaMailSender javaMailService() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
