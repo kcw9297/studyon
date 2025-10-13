@@ -8,10 +8,10 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
+    username: ${SMTP_MAIL_USERNAME}
+    password: ${SMTP_MAIL_APP_PASSWORD}
     properties:
       mail:
-        username: ${SMTP_MAIL_USERNAME}
-        password: ${SMTP_MAIL_APP_PASSWORD}
         transport.protocol: smtp
         smtp.auth: true # 아이디, 비밀번호 기반 로그인 인증
         smtp.starttls.enable: true # 암호화 활성화
