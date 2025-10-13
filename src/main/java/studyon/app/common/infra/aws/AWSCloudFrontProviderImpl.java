@@ -25,7 +25,7 @@ import java.util.Date;
 public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
 
     private static final String COOKIE_HEADER =
-            "%s=%s; Path=/; Domain=studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
+            "%s=%s; Path=/; Domain=.studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
 
     @Value("${prod.aws.signed-cookie.expire-min}")
     private Integer expireMin;
@@ -89,12 +89,7 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
             정상 출력 예시 : {"Statement": [{"Resource":"your_domain/*","Condition":{"DateLessThan":{"AWS:EpochTime":1759858862},"IpAddress":{"AWS:SourceIp":"0.0.0.0/0"}}}]}
          */
 
-        /*
-        String policy = new String(Base64.getUrlDecoder().decode(cookies.getPolicy().getValue()));
-        System.out.println("Decoded Policy:\n" + policy);
-        */
-
-        return CloudFrontCookieSigner.getCookiesForCustomPolicy(
+        CloudFrontCookieSigner.CookiesForCustomPolicy cookies = CloudFrontCookieSigner.getCookiesForCustomPolicy(
                 SignerUtils.Protocol.https,
                 cloudFrontDomain,
                 privateKey,
@@ -104,6 +99,10 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
                 null, // activeFrom
                 "0.0.0.0/0" // 허용 IP 범위
         );
+
+        String policy = new String(Base64.getUrlDecoder().decode(cookies.getPolicy().getValue()));
+        log.info("Decoded Policy: {}", policy);
+        return cookies;
     }
 
     // 쿠키 헤더 삽입
