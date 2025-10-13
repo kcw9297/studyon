@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
@@ -26,6 +26,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 import studyon.app.common.infra.event.redis.RedisEventListener;
 
 import java.time.Duration;
+import java.util.Objects;
 
 /**
  *
@@ -53,11 +54,15 @@ public class RedisConfig implements SessionRepositoryCustomizer<RedisIndexedSess
     @Value("${spring.data.redis.password}")
     private String password;
 
+    @Value("${spring.data.redis.ssl.enabled}")
+    private boolean ssl;
+
     @Value("${spring.session.timeout}")
     private Duration timeout;
 
     @Value("${spring.session.redis.namespace}")
     private String namespace;
+
 
 
     @Override // RedisIndexedSessionRepository customize
@@ -90,8 +95,20 @@ public class RedisConfig implements SessionRepositoryCustomizer<RedisIndexedSess
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(host);
         config.setPort(port);
-        config.setPassword(RedisPassword.of(password));
-        return new LettuceConnectionFactory(config);
+        if (Objects.nonNull(password) && !password.isBlank()) config.setPassword(password);
+
+        // SSL 설정 추가
+        if (ssl) {
+            LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+                    .useSsl()  // ssl 활성화
+                    .build();
+
+            return new LettuceConnectionFactory(config, clientConfig);
+
+        } else {
+            return new LettuceConnectionFactory(config);
+        }
+
     }
 
 
