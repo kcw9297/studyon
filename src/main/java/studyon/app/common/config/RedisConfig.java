@@ -63,8 +63,6 @@ public class RedisConfig implements SessionRepositoryCustomizer<RedisIndexedSess
     @Value("${spring.session.redis.namespace}")
     private String namespace;
 
-
-
     @Override // RedisIndexedSessionRepository customize
     public void customize(RedisIndexedSessionRepository sessionRepository) {
         sessionRepository.setDefaultMaxInactiveInterval(timeout);
