@@ -1,4 +1,4 @@
-package studyon.app.base.controller.rest;
+package studyon.app.base.controller.login;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
