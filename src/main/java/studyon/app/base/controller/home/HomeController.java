@@ -1,4 +1,4 @@
-package studyon.app.base.controller.view;
+package studyon.app.base.controller.home;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

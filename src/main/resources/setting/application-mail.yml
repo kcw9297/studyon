@@ -10,6 +10,8 @@ spring:
     port: 587
     properties:
       mail:
+        username: ${SMTP_MAIL_USERNAME}
+        password: ${SMTP_MAIL_APP_PASSWORD}
         transport.protocol: smtp
         smtp.auth: true # 아이디, 비밀번호 기반 로그인 인증
         smtp.starttls.enable: true # 암호화 활성화
@@ -27,8 +29,6 @@ spring:
       on-profile: local
 
   mail:
-    username: ${LOCAL_SMTP_MAIL_USERNAME}
-    password: ${LOCAL_SMTP_MAIL_APP_PASSWORD}
     properties:
       mail.debug: false # 디버깅 로그를 볼거면 true
 
@@ -43,7 +43,5 @@ spring:
       on-profile: prod
 
   mail:
-    username: ${PROD_SMTP_MAIL_USERNAME}
-    password: ${PROD_SMTP_MAIL_APP_PASSWORD}
     properties:
       mail.debug: false
