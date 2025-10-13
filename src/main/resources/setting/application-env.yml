@@ -40,13 +40,11 @@ prod:
     domain: ${PROD_FILE_DOMAIN}
 
   aws:
-    signed-cookie:
-      expire-min: 1
-
     cloudfront:
       domain: ${PROD_CLOUDFRONT_DOMAIN}
       key-pair-id: ${PROD_CLOUDFRONT_KEY_PAIR_ID}
       private-key: ${PROD_CLOUDFRONT_PRIVATE_KEY}
-
-    bucket:
-      name: ${PROD_BUCKET_NAME}
+      signed-cookie:
+        expire-min: 1
+    s3:
+      bucket-name: ${PROD_S3_BUCKET_NAME}

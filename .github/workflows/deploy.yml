@@ -136,18 +136,18 @@ jobs:
             nohup java -jar \
             -Xmx512m \
             -Dspring.profiles.active=prod \
-            -DPROD_DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
-            -DPROD_DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-            -DPROD_DATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}" \
-            -DPROD_REDIS_HOST="${{ secrets.REDIS_HOST }}" \
-            -DPROD_REDIS_PORT="${{ secrets.REDIS_PORT }}" \
-            -DPROD_SMTP_MAIL_APP_PASSWORD="${{ secrets.SMTP_MAIL_APP_PASSWORD }}" \
-            -DPROD_SMTP_MAIL_USERNAME="${{ secrets.SMTP_MAIL_USERNAME }}" \
-            -DPROD_BUCKET_NAME="${{ secrets.PROD_BUCKET_NAME }}" \
+            -DDATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
+            -DDATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            -DDATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}" \
+            -DREDIS_HOST="${{ secrets.REDIS_HOST }}" \
+            -DREDIS_PORT="${{ secrets.REDIS_PORT }}" \
+            -DSMTP_MAIL_APP_PASSWORD="${{ secrets.SMTP_MAIL_APP_PASSWORD }}" \
+            -DSMTP_MAIL_USERNAME="${{ secrets.SMTP_MAIL_USERNAME }}" \
+            -DPROD_S3_BUCKET_NAME="${{ secrets.PROD_S3_BUCKET_NAME }}" \
+            -DPROD_FILE_DOMAIN="${{ secrets.PROD_FILE_DOMAIN }}" \
             -DPROD_CLOUDFRONT_DOMAIN="${{ secrets.PROD_CLOUDFRONT_DOMAIN }}" \
             -DPROD_CLOUDFRONT_KEY_PAIR_ID="${{ secrets.PROD_CLOUDFRONT_KEY_PAIR_ID }}" \
             -DPROD_CLOUDFRONT_PRIVATE_KEY="${{ secrets.PROD_CLOUDFRONT_PRIVATE_KEY }}" \
-            -DPROD_FILE_DOMAIN="${{ secrets.PROD_FILE_DOMAIN }}" \
             "$WAR_FILE" > logs/app.log 2>&1 &
             
             # PID 저장 (다음 배포를 위해)
