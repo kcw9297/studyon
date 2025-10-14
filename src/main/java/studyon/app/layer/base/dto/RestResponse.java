@@ -19,6 +19,11 @@ public class RestResponse {
     private Integer code;
     private Object data;
 
+    //
+
+
+
+
     private RestResponse(Boolean success, String message, String redirect, Integer code, Object data) {
         this.success = success;
         this.message = message;

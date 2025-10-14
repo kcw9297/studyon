@@ -27,7 +27,7 @@ import java.io.IOException;
  * @author kcw97
  */
 @Slf4j
-@MapperScan(basePackages = "studyon.app.domain.*.mapper")
+@MapperScan(basePackages = "studyon.app.layer.domain.*.mapper")
 @Configuration
 @EnableJpaAuditing
 @RequiredArgsConstructor
@@ -58,9 +58,6 @@ public class DatabaseConfig {
 
     private void registerAliases(org.apache.ibatis.session.Configuration configuration) {
         TypeAliasRegistry registry = configuration.getTypeAliasRegistry();
-
-        // 기본 도메인 패키지의 모든 클래스 등록
-        registry.registerAliases("studyon.app.domain");
 
         // 각 도메인의 DTO 패키지에서 Info 내부클래스 등록
         registry.registerAlias("memberInfo", MemberDTO.Read.class);
