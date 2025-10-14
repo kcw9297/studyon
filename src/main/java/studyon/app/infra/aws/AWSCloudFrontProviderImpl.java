@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.AppProfile;
-import studyon.app.common.exception.common.ManagerException;
+import studyon.app.common.exception.ManagerException;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;

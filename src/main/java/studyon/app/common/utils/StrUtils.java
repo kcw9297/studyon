@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.util.UriUtils;
-import studyon.app.common.exception.common.UtilsException;
+import studyon.app.common.exception.UtilsException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -55,11 +55,21 @@ public final class StrUtils {
     public static String createRandomNumString(int length) {
 
         // [1] 숫자 format, 랜덤 수 범위 계산
-        String numberFormat = "%0" + length + "d";
+        String format = "%0" + length + "d";
         int randomRange = (int) Math.pow(10, length); // 10^length
 
         // [2] 랜덤 수 생성 및 반환
-        return numberFormat.formatted(random.nextInt(randomRange));
+        return format.formatted(random.nextInt(randomRange));
+    }
+
+    public static String createRandomNumString(int length, String prefix) {
+
+        // [1] 숫자 format, 랜덤 수 범위 계산
+        String format = "%s%0" + length + "d";
+        int randomRange = (int) Math.pow(10, length); // 10^length
+
+        // [2] 랜덤 수 생성 및 반환
+        return format.formatted(prefix, random.nextInt(randomRange));
     }
 
 
@@ -79,15 +89,6 @@ public final class StrUtils {
 
         // [3] 22자 길이의 UUID로 인코딩 후 반환
         return urlEncoder.withoutPadding().encodeToString(bytes);
-    }
-
-
-    public static String createRandomEmail(String domain) {
-        return "%s@%s.com".formatted(StrUtils.createShortUUID(), domain);
-    }
-
-    public static String createRandomId(String prefix) {
-        return "%s-%s".formatted(prefix, StrUtils.createShortUUID());
     }
 
 }

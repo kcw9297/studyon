@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.AppProfile;
 import studyon.app.common.enums.Entity;
-import studyon.app.common.exception.common.ManagerException;
+import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.file.FileDTO;
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import studyon.app.common.constant.ViewConst;
-import studyon.app.common.exception.common.UtilsException;
+import studyon.app.common.exception.UtilsException;
 import studyon.app.layer.base.dto.Rest;
 
 import java.io.IOException;

@@ -16,8 +16,7 @@ import java.util.Map;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OAuth2Attributes {
 
-    private String id;      // 랜덤 생성 아이디 (엔티티 생성을 위해 존재)
-    private String email;   // 랜덤 생성 이메일 (")
+    private String nickname; // 임의 생성
     private String socialId;
     private Provider provider;
     private String nameAttributeKey;
@@ -25,31 +24,41 @@ public class OAuth2Attributes {
 
     /* 소셜 유형 별 매핑 메소드 */
 
+    /**
+     * 구글 소셜회원 전용 DTO 생성
+     * @param attributes 로그인 응답 데이터 Map
+     * @param nameAttributeKey OAuth2UserRequest userNameAttributeName
+     * @return 구글 회원정보 DTO
+     */
     public static OAuth2Attributes ofGoogle(Map<String, Object> attributes, String nameAttributeKey) {
-        return OAuth2Attributes.builder()
-                .id(StrUtils.createRandomId(Provider.GOOGLE.getValue()))
-                .email(StrUtils.createRandomEmail(Provider.GOOGLE.getValue()))
+        return createBuilder(attributes, nameAttributeKey, Provider.GOOGLE)
                 .socialId((String) attributes.get("sub")) // 구글의 소셜회원번호 : "sub"
-                .provider(Provider.GOOGLE)
-                .attributes(attributes)
-                .nameAttributeKey(nameAttributeKey)
                 .build();
     }
 
-
+    /**
+     * 네이버 소셜회원 전용 DTO 생성
+     * @param attributes 로그인 응답 데이터 Map
+     * @param nameAttributeKey OAuth2UserRequest userNameAttributeName
+     * @return 구글 회원정보 DTO
+     */
     private static OAuth2Attributes ofNaver(Map<String, Object> attributes, String nameAttributeKey) {
 
-        // 네이버는 JSON 응답 내, "response" key에 회원정보 존재
+        // 네이버는 JSON 응답 내, "response" key 내 회원정보 존재
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
-        return OAuth2Attributes.builder()
-                .id(StrUtils.createRandomId(Provider.NAVER.getValue()))
-                .email(StrUtils.createRandomEmail(Provider.NAVER.getValue()))
-                .socialId((String) attributes.get("id")) // 네이버의 소셜회원번호 : "id"
-                .provider(Provider.NAVER)
-                .attributes(attributes)
-                .nameAttributeKey(nameAttributeKey)
+        return createBuilder(attributes, nameAttributeKey, Provider.NAVER)
+                .socialId((String) response.get("id")) // 네이버의 소셜회원번호 : "id"
                 .build();
+    }
+
+    // 공통 정보 삽입
+    private static OAuth2AttributesBuilder createBuilder(Map<String, Object> attributes, String nameAttributeKey, Provider provider) {
+        return OAuth2Attributes.builder()
+                .nickname(StrUtils.createRandomNumString(8, provider.name()))
+                .provider(provider)
+                .attributes(attributes)
+                .nameAttributeKey(nameAttributeKey);
     }
 
 }

@@ -1,4 +1,4 @@
-package studyon.app.common.exception.security;
+package studyon.app.infra.security.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

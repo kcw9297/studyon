@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import studyon.app.common.constant.ViewConst;
-import studyon.app.common.exception.security.IncorrectEmailPasswordException;
+import studyon.app.infra.security.exception.IncorrectEmailPasswordException;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.HttpUtils;

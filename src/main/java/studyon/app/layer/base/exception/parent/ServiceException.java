@@ -1,4 +1,4 @@
-package studyon.app.common.exception.domain.parent;
+package studyon.app.layer.base.exception.parent;
 
 public class ServiceException extends RuntimeException {
 
