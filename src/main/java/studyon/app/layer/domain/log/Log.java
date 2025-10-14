@@ -8,6 +8,11 @@ import studyon.app.common.enums.Action;
 
 import java.time.LocalDateTime;
 
+/**
+ * 로그 엔티티 클래스
+ * @version 1.0
+ * @author kcw97
+ */
 
 @jakarta.persistence.Entity
 @Getter

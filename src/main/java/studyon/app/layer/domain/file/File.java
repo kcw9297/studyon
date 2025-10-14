@@ -6,6 +6,11 @@ import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Entity;
 
+/**
+ * 파일 엔티티 클래스
+ * @version 1.0
+ * @author kcw97
+ */
 
 @jakarta.persistence.Entity
 @Getter

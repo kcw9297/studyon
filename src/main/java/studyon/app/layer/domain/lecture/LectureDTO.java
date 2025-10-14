@@ -8,7 +8,7 @@ import studyon.app.common.enums.Difficulty;
 import studyon.app.infra.aop.LogInfo;
 
 /**
- * DTO 클래스
+ * 강의 기본 정보를 담은 DTO
  * @version 1.0
  * @author khj00
  */

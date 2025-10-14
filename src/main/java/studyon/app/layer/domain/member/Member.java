@@ -10,6 +10,13 @@ import studyon.app.common.enums.SocialProvider;
 
 import java.time.LocalDateTime;
 
+/**
+ * 멤버 엔티티 클래스
+ * @version 1.0
+ * @author kcw97
+ */
+
+
 @Entity
 @Getter
 @ToString(callSuper = true)

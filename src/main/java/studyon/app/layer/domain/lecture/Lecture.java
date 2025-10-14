@@ -5,9 +5,11 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Difficulty;
+import studyon.app.layer.domain.category.Category;
+import studyon.app.layer.domain.teacher.Teacher;
 
 /**
- * ENTITY (= Table) 유형
+ * 강의 엔티티 클래스
  * @version 1.0
  * @author khj00
  */
@@ -23,16 +25,10 @@ public class Lecture extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lectureId;
 
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private Teacher teacher;
-
-     */
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
@@ -57,10 +53,17 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private Long likeCount;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id", nullable = false)
+    private Teacher teacher;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
     @Builder
     public Lecture(String title, String description, Double price,
-                   Difficulty difficulty) {
-        //his.teacher = teacher;
+                   Difficulty difficulty, Teacher teacher, Category category) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -70,5 +73,20 @@ public class Lecture extends BaseEntity {
         this.totalStudents = 0L;
         this.averageRate = 0.00;
         this.likeCount = 0L;
+
+        this.teacher = teacher;
+        this.category = category;
+    }
+
+    /*
+        JPA 변경 감지를 이용한 갱신 로직 (setter) - 강의 수정 페이지 연동 갱신
+     */
+
+    public void update(String title, String description, Double price, Difficulty difficulty, Category category) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.difficulty = difficulty;
+        this.category = category;
     }
 }
