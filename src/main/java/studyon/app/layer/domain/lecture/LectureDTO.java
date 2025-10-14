@@ -17,12 +17,10 @@ import studyon.app.infra.aop.LogInfo;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class LectureDTO {
     @Data
-    @SuperBuilder
-    @ToString(callSuper = true)
-    @EqualsAndHashCode(callSuper = true)
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Read extends LogInfo {
+    public static class Read {
         private Long lectureId;
 
         private String title;
@@ -38,7 +36,6 @@ public class LectureDTO {
 
     @Data
     @Builder
-    @ToString
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Write {
@@ -51,7 +48,6 @@ public class LectureDTO {
 
     @Data
     @Builder
-    @ToString
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Edit {
