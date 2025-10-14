@@ -34,7 +34,7 @@ public class DTOMapper {
                 .nickname(dto.getNickname())
                 .password(dto.getPassword())
                 .providerId(dto.getProviderId())
-                .socialProvider(dto.getSocialProvider())
+                .socialProvider(dto.getProvider())
                 .build();
     }
 
@@ -69,7 +69,7 @@ public class DTOMapper {
                 .nickname(entity.getNickname())
                 .lastLoginAt(entity.getLastLoginAt())
                 .cdate(entity.getCdate())
-                .socialProvider(entity.getSocialProvider())
+                .provider(entity.getProvider())
                 .build();
     }
 

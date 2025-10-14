@@ -1,4 +1,6 @@
-package studyon.app.infra.mail;
+package studyon.app.infra.mail.manager;
+
+import studyon.app.infra.mail.dto.MailVerifyRequest;
 
 import java.time.Duration;
 

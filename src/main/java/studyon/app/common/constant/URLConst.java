@@ -3,12 +3,17 @@ package studyon.app.common.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * URL 상수
+ * @version 1.0
+ * @author kcw97
+ */
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class URLConst {
 
-    public static final String UTF_8 = "UTF-8";
-    public static final String APPLICATION_JSON = "application/json";
-
+    // URL 주소
     public static final String URL_API = "/api";
+
 
 }

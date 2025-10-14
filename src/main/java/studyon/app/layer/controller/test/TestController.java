@@ -5,10 +5,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import studyon.app.infra.mail.MailVerifyRequest;
+import studyon.app.infra.mail.dto.MailVerifyRequest;
 import studyon.app.layer.domain.member.MemberProfile;
-import studyon.app.infra.cache.CacheManager;
-import studyon.app.infra.mail.MailManager;
+import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.infra.mail.manager.MailManager;
 import studyon.app.layer.base.utils.HttpUtils;
 
 import java.time.Duration;

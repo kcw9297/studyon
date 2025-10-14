@@ -80,4 +80,14 @@ public final class StrUtils {
         // [3] 22자 길이의 UUID로 인코딩 후 반환
         return urlEncoder.withoutPadding().encodeToString(bytes);
     }
+
+
+    public static String createRandomEmail(String domain) {
+        return "%s@%s.com".formatted(StrUtils.createShortUUID(), domain);
+    }
+
+    public static String createRandomId(String prefix) {
+        return "%s-%s".formatted(prefix, StrUtils.createShortUUID());
+    }
+
 }

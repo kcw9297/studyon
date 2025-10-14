@@ -1,4 +1,4 @@
-package studyon.app.infra.cache;
+package studyon.app.infra.cache.manager;
 
 
 /**

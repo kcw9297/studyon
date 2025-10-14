@@ -1,5 +1,6 @@
 package studyon.app.layer.base.utils;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -7,14 +8,30 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import studyon.app.common.constant.URLConst;
-import studyon.app.layer.base.dto.RestResponse;
+import studyon.app.common.constant.ViewConst;
 import studyon.app.common.exception.common.UtilsException;
+import studyon.app.layer.base.dto.Rest;
 
 import java.io.IOException;
+import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpUtils {
+
+    /**
+     * cookie 삭제
+     * @param response HttpServletResponse
+     * @param cookieName 쿠키명
+     */
+    public static void deleteCookie(HttpServletResponse response, String cookieName) {
+
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
 
     /**
      * 세션 조회 (신규 생성 x)
@@ -89,36 +106,42 @@ public class HttpUtils {
 
     // JSON write
     private static void writeJson(HttpServletResponse response, int status, String message) throws IOException {
-        response.setContentType(URLConst.APPLICATION_JSON);
-        response.setCharacterEncoding(URLConst.UTF_8);
+        response.setContentType(ViewConst.APPLICATION_JSON);
+        response.setCharacterEncoding(ViewConst.UTF_8);
         response.setStatus(status);
         response.getWriter().write(message);
     }
 
-
-
-
-    public static ResponseEntity<?> ok(String message, Object data) {
-        return new ResponseEntity<>(RestResponse.ok(message, data), HttpStatus.OK);
+    public static ResponseEntity<?> ok(Rest.Message message, Object data) {
+        return new ResponseEntity<>(Rest.Response.ok(message, data), HttpStatus.OK);
     }
 
-    public static ResponseEntity<?> ok(String message, String redirect) {
-        return new ResponseEntity<>(RestResponse.ok(message, redirect), HttpStatus.OK);
+    public static ResponseEntity<?> ok(Rest.Message message, String redirect) {
+        return new ResponseEntity<>(Rest.Response.ok(message, redirect), HttpStatus.OK);
     }
 
-    public static ResponseEntity<?> fail400(String message) {
-        return new ResponseEntity<>(RestResponse.fail(message, 1), HttpStatus.BAD_REQUEST);
+    public static ResponseEntity<?> fail400(Rest.Message message) {
+        return new ResponseEntity<>(Rest.Response.fail(1, message), HttpStatus.BAD_REQUEST);
     }
 
-    public static ResponseEntity<?> fail400(String message, String redirect) {
-        return new ResponseEntity<>(RestResponse.fail(message, redirect, 1), HttpStatus.BAD_REQUEST);
+    public static ResponseEntity<?> fail400(Rest.Message message, String redirect) {
+        return new ResponseEntity<>(Rest.Response.fail(1, message, redirect), HttpStatus.BAD_REQUEST);
     }
 
-    public static ResponseEntity<?> fail500(String message) {
-        return new ResponseEntity<>(RestResponse.fail(message, -1), HttpStatus.INTERNAL_SERVER_ERROR);
+    public static ResponseEntity<?> fail400(Map<String, String> fieldErrors) {
+        return new ResponseEntity<>(Rest.Response.fail(fieldErrors), HttpStatus.BAD_REQUEST);
     }
 
-    public static ResponseEntity<?> fail500(String message, String redirect) {
-        return new ResponseEntity<>(RestResponse.fail(message, redirect, -1), HttpStatus.INTERNAL_SERVER_ERROR);
+    public static ResponseEntity<?> fail400(String errorField, String errorMessage) {
+        return new ResponseEntity<>(Rest.Response.fail(Map.of(errorField, errorMessage)), HttpStatus.BAD_REQUEST);
     }
+
+    public static ResponseEntity<?> fail500(Rest.Message message) {
+        return new ResponseEntity<>(Rest.Response.fail(-1, message), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public static ResponseEntity<?> fail500(Rest.Message message, String redirect) {
+        return new ResponseEntity<>(Rest.Response.fail(-1, message, redirect), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

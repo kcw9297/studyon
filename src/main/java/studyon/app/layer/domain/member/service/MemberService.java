@@ -2,7 +2,7 @@ package studyon.app.layer.domain.member.service;
 
 
 import studyon.app.layer.base.dto.Page;
-import studyon.app.common.enums.SocialProvider;
+import studyon.app.common.enums.Provider;
 import studyon.app.layer.domain.member.MemberDTO;
 
 public interface MemberService {
@@ -13,7 +13,7 @@ public interface MemberService {
 
     MemberDTO.Read login(String email, String password);
 
-    MemberDTO.Read socialLogin(String providerId, SocialProvider socialProvider);
+    MemberDTO.Read socialLogin(String providerId, Provider provider);
 
     void editPassword(Long memberId, String password);
 
