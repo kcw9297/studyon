@@ -1,4 +1,8 @@
 spring:
+
+  application: # 애플리케이션 이름
+    name: app
+
   profiles: # 활성 프로필 (local, prod)
     active: ${ACTIVE_PROFILE}
 

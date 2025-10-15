@@ -27,14 +27,11 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(length = 20, unique = true)
-    private String loginId; // 일반회원 로그인 아이디
+    @Column(length = 100)
+    private String email; // 이메일 (일반회원은 로그인 용도 사용)
 
     @Column(nullable = false)
     private String password; // 일반회원 로그인 비밀번호
-
-    @Column(length = 100)
-    private String email; // 일반회원 비밀번호 찾기용 이메일
 
     @Column(length = 100, unique = true, nullable = false)
     private String nickname; // 고유 닉네임
@@ -60,13 +57,10 @@ public class Member extends BaseEntity {
     private Provider provider; // 소셜 로그인 provider (GOOGLE, NAVER, KAKAO, ...)
 
     @Builder
-    public Member(String loginId, String password, String email, String nickname, LocalDateTime lastLoginAt, LocalDateTime withdrawAt, String providerId, Provider provider) {
-        this.loginId = loginId;
-        this.password = password;
+    public Member(String email, String password, String nickname, String providerId, Provider provider) {
         this.email = email;
+        this.password = password;
         this.nickname = nickname;
-        this.lastLoginAt = lastLoginAt;
-        this.withdrawAt = withdrawAt;
         this.providerId = providerId;
         this.provider = provider;
         setDefault();
@@ -75,6 +69,7 @@ public class Member extends BaseEntity {
     /* default 값 세팅 */
 
     private void setDefault() {
+        this.lastLoginAt = LocalDateTime.now();
         this.isActive = true;
         this.role = Role.ROLE_STUDENT;
     }
@@ -103,6 +98,11 @@ public class Member extends BaseEntity {
     }
 
     public void login() {
+        this.lastLoginAt = LocalDateTime.now();
+    }
+
+    public void loginSocial(String email) {
+        this.email = email;
         this.lastLoginAt = LocalDateTime.now();
     }
 }

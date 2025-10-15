@@ -27,16 +27,16 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
     private static final String COOKIE_HEADER =
             "%s=%s; Path=/; Domain=.studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
 
-    @Value("${prod.aws.cloudfront.signed-cookie.expire-min}")
+    @Value("${aws.cloudfront.signed-cookie.expire-min}")
     private Integer expireMin;
 
-    @Value("${prod.aws.cloudfront.domain}")
+    @Value("${aws.cloudfront.domain}")
     private String cloudFrontDomain;
 
-    @Value("${prod.aws.cloudfront.key-pair-id}")
+    @Value("${aws.cloudfront.key-pair-id}")
     private String cloudFrontKeyPairId;
 
-    @Value("${prod.aws.cloudfront.private-key}")
+    @Value("${aws.cloudfront.private-key}")
     private String cloudFrontPrivateKey;
 
     private PrivateKey privateKey; // CloudFront Private Key (decoded)

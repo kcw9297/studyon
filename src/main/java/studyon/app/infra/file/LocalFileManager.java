@@ -20,7 +20,7 @@ import java.util.Objects;
 @Component
 public class LocalFileManager implements FileManager {
 
-    @Value("${local.file.dir}") // properties(yml) 파일 내 프로퍼티 값을 직접 사용 (빈 주입 시기에 같이 삽입)
+    @Value("${file.dir}") // properties(yml) 파일 내 프로퍼티 값을 직접 사용 (빈 주입 시기에 같이 삽입)
     private String fileDir;
 
 

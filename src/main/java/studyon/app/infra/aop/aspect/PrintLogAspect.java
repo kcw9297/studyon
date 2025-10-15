@@ -34,7 +34,7 @@ public class PrintLogAspect {
          domain 내 클래스 범위 한정
      */
 
-    @Around("studyon.app.infra.aop.Pointcuts.basePackSvcAnnoExReadMeth()")
+    @Around("studyon.app.infra.aop.Pointcuts.layerPackSvcAnnoExReadMeth()")
     public Object printSuccessLog(ProceedingJoinPoint joinPoint) throws Throwable {
 
         // [1] 로직 시작 시점 기록

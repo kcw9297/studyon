@@ -57,8 +57,12 @@ public class Pointcuts {
     @Pointcut("execution(* studyon.app..*(..))")
     public void basePack() {}
 
-    // studyon.app.domain 내 패키지 (기본 패키지 주소)
+    // studyon.layer.app 내 패키지 (기본 패키지 주소)
     @Pointcut("execution(* studyon.app.layer..*(..))")
+    public void layerPack() {}
+
+    // studyon.app.layer.domain 내 패키지 (기본 패키지 주소)
+    @Pointcut("execution(* studyon.app.layer.domain..*(..))")
     public void domainPack() {}
 
     /*
@@ -69,9 +73,13 @@ public class Pointcuts {
     @Pointcut("execution(* *..Admin*.*(..))")
     public void adminCls() {}
 
-    // "~Coupon" 가 앞에 오는 클래스
+    // "Coupon~" 가 앞에 오는 클래스
     @Pointcut("execution(* *..Coupon*.*(..))")
     public void couponCls() {}
+
+    // "File~" 가 앞에 오는 클래스
+    @Pointcut("execution(* *..File*.*(..))")
+    public void fileCls() {}
 
     /*
      * Pointcut - 메소드 이름
@@ -117,22 +125,26 @@ public class Pointcuts {
     @Pointcut("execution(* *..issue*(..))")
     public void issueMeth() {}
 
+    // "upload" 으로 시작하는 메소드
+    @Pointcut("execution(* *..upload*(..))")
+    public void uploadMeth() {}
+
 
     /*
      * Pointcut - 조합 (위의 포인트 컷을 조합)
      */
 
-    // 기본 패키지 내 @Service 적용 클래스
-    @Pointcut("basePack() && svcAnno()")
-    public void basePackSvcAnno() {}
+    // layer 패키지 내 @Service 적용 클래스
+    @Pointcut("layerPack() && svcAnno()")
+    public void layerPackSvcAnno() {}
 
-    // 기본 패키지 내 @Controller, @RestController 적용 클래스
-    @Pointcut("basePack() && (ctlAnno() || restCtlAnno())")
-    public void basePackAllCtlAnno() {}
+    // layer 패키지 내 @Controller, @RestController 적용 클래스
+    @Pointcut("layerPack() && (ctlAnno() || restCtlAnno())")
+    public void layerPackAllCtlAnno() {}
 
-    // 기본 패키지 내 @Service 적용 클래스애, "read" 로 시작하는 메소드 제외
-    @Pointcut("basePack() && svcAnno() && !readMeth()")
-    public void basePackSvcAnnoExReadMeth() {}
+    // layer 패키지 내 @Service 적용 클래스애, "read" 로 시작하는 메소드 제외
+    @Pointcut("layerPack() && svcAnno()") // && !readMeth()
+    public void layerPackSvcAnnoExReadMeth() {}
 
     // domain 패키지 내 "write" 메소드
     @Pointcut("domainPack() && svcAnno() && writeMeth()")
@@ -169,5 +181,9 @@ public class Pointcuts {
     // domain 패키지 내 "issue" 메소드
     @Pointcut("domainPack() && svcAnno() && couponCls() && issueMeth()")
     public void domainPackSvcAnnoCouponClsIssueMeth() {}
+
+    // domain 패키지 내 "upload" 메소드
+    @Pointcut("domainPack() && svcAnno() && uploadMeth()")
+    public void domainPackSvcAnnoUploadMeth() {}
 
 }

@@ -80,7 +80,8 @@ public class WriteServiceLogAspect {
                             "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoWithdrawMeth() || " +
                             "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoPayMeth() || " +
                             "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoRefundMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoCouponClsIssueMeth()",
+                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoCouponClsIssueMeth()" +
+                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoUploadMeth()",
             throwing = "e"
     )
     public void afterFail(JoinPoint joinPoint, Exception e) {

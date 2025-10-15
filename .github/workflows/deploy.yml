@@ -61,6 +61,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build # build 과정을 마친 후에 수행
+    environment:
+      name: production # GitHub 배포 환경 인식
 
     steps:
 
@@ -145,11 +147,11 @@ jobs:
             -DREDIS_PORT="${{ secrets.REDIS_PORT }}" \
             -DSMTP_MAIL_APP_PASSWORD="${{ secrets.SMTP_MAIL_APP_PASSWORD }}" \
             -DSMTP_MAIL_USERNAME="${{ secrets.SMTP_MAIL_USERNAME }}" \
-            -DPROD_S3_BUCKET_NAME="${{ secrets.PROD_S3_BUCKET_NAME }}" \
-            -DPROD_FILE_DOMAIN="${{ secrets.PROD_FILE_DOMAIN }}" \
-            -DPROD_CLOUDFRONT_DOMAIN="${{ secrets.PROD_CLOUDFRONT_DOMAIN }}" \
-            -DPROD_CLOUDFRONT_KEY_PAIR_ID="${{ secrets.PROD_CLOUDFRONT_KEY_PAIR_ID }}" \
-            -DPROD_CLOUDFRONT_PRIVATE_KEY="${{ secrets.PROD_CLOUDFRONT_PRIVATE_KEY }}" \
+            -DFILE_DOMAIN="${{ secrets.FILE_DOMAIN }}" \
+            -DAWS_S3_BUCKET_NAME="${{ secrets.AWS_S3_BUCKET_NAME }}" \
+            -DAWS_CLOUDFRONT_DOMAIN="${{ secrets.AWS_CLOUDFRONT_DOMAIN }}" \
+            -DAWS_CLOUDFRONT_KEY_PAIR_ID="${{ secrets.AWS_CLOUDFRONT_KEY_PAIR_ID }}" \
+            -DAWS_CLOUDFRONT_PRIVATE_KEY="${{ secrets.AWS_CLOUDFRONT_PRIVATE_KEY }}" \
             "$WAR_FILE" > logs/app.log 2>&1 &
             
             # PID 저장 (다음 배포를 위해)
