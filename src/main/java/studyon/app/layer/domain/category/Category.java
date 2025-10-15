@@ -14,9 +14,9 @@ import studyon.app.layer.domain.lecture.Lecture;
 
 @Entity
 @Getter
+@DynamicUpdate
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category extends BaseEntity {
     @Id

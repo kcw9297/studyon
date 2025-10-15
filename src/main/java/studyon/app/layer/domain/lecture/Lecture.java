@@ -16,9 +16,9 @@ import studyon.app.layer.domain.teacher.Teacher;
 
 @Entity
 @Getter
+@DynamicUpdate
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Lecture extends BaseEntity {
     @Id
@@ -52,6 +52,9 @@ public class Lecture extends BaseEntity {
 
     @Column(nullable = false)
     private Long likeCount;
+
+    private Boolean onSales;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)

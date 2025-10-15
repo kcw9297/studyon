@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@DynamicUpdate
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PaymentRefund extends BaseEntity {
     @Id
