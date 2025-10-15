@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Role;
 import studyon.app.common.enums.Provider;
@@ -46,23 +47,25 @@ public class Member extends BaseEntity {
     private Boolean isActive; // 활성 계정 여부
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Role role; // 회원 역할 (Spring Security Role 대응)
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false, updatable = false)
+    private Provider provider; // 소셜 로그인 provider (GOOGLE, NAVER, KAKAO, ...)
 
     @Column(updatable = false)
     private String providerId;  // 소셜 로그인 번호
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(updatable = false)
-    private Provider provider; // 소셜 로그인 provider (GOOGLE, NAVER, KAKAO, ...)
 
     @Builder
-    public Member(String email, String password, String nickname, String providerId, Provider provider) {
+    private Member(String email, String password, String nickname, Role role, Provider provider, String providerId) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.providerId = providerId;
+        this.role = role;
         this.provider = provider;
+        this.providerId = providerId;
         setDefault();
     }
 
@@ -71,7 +74,48 @@ public class Member extends BaseEntity {
     private void setDefault() {
         this.lastLoginAt = LocalDateTime.now();
         this.isActive = true;
-        this.role = Role.ROLE_STUDENT;
+    }
+
+    /* 객체 구현체 제공 정적 메소드 */
+
+    /**
+     * 일반 학생 회원가입에 필요한 회원 엔티티 생성
+     * @param email 가입 이메일
+     * @param password 가입 비밀번호
+     * @param nickname 가입 닉네임
+     * @return 일반 회원 엔티티 객체
+     */
+    public static Member joinNormalStudent(String email, String password, String nickname) {
+        return new Member(email, password, nickname, Role.ROLE_STUDENT, Provider.NORMAL, null);
+    }
+
+    /**
+     * 소셜 학생 회원가입에 필요한 회원 엔티티 생성
+     * @param email 가입 이메일
+     * @param provider 소셜 제공자 (NORMAL 제외한 값)
+     * @param providerId 소셜회원번호
+     * @return 소셜 회원 엔티티 객체
+     */
+    public static Member joinSocialStudent(String email, String nickname, Provider provider, String providerId) {
+
+        return Member.builder()
+                .email(email)
+                .nickname(nickname)
+                .role(Role.ROLE_STUDENT)
+                .provider(provider)
+                .providerId(providerId)
+                .build();
+    }
+
+    /**
+     * 선생님 계정 생성
+     * @param email 선생님 이메일
+     * @param password 선생님 비밀번호
+     * @param nickname 선생님 닉네임
+     * @return 선생님 회원 엔티티 객체
+     */
+    public static Member createTeacherAccount(String email, String password, String nickname) {
+        return new Member(email, password, nickname, Role.ROLE_TEACHER, Provider.NORMAL, null);
     }
 
 

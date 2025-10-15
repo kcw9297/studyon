@@ -59,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
 
         // [1] entity 조회
         Member entity = memberRepository
-                .findByEmail(email)
+                .findByEmailAndProviderIsNull(email, )
                 .orElseThrow(() -> new LoginException("아이디와 비밀번호가 일치하지 않습니다"));
 
         // [2] 검증

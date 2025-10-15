@@ -3,6 +3,10 @@
 # ===============================
 
 # 일반 상수
+
+app:
+  domain: ${APP_DOMAIN:}
+
 file:
   domain: ${FILE_DOMAIN:}
   dir: ${FILE_DIR:}

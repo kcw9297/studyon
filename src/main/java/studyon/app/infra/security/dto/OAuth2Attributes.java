@@ -16,7 +16,7 @@ import java.util.Map;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OAuth2Attributes {
 
-    private String nickname; // 임의 생성
+    private String nickname; // 임의 값 생성
     private String socialId;
     private Provider provider;
     private String nameAttributeKey;

@@ -21,7 +21,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     // 기본 사용자 정보
     private Long memberId;
-    private String loginId;
+    private String email;
     private String password;
     private String nickname;
     private Boolean isActive;
@@ -35,10 +35,10 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     /* --------- 정적 생성 메소드 --------- */
 
-    public static CustomUserDetails createNormal(Long memberId, String loginId, String password, String nickname, Boolean isActive,
+    public static CustomUserDetails createNormal(Long memberId, String email, String password, String nickname, Boolean isActive,
                                                  Collection<? extends GrantedAuthority> authorities) {
         return new CustomUserDetails(
-                memberId, loginId, password, nickname, isActive, authorities, null, null, null
+                memberId, email, password, nickname, isActive, authorities, null, null, null
         );
     }
 
@@ -54,20 +54,12 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return loginId;
+        return email;
     }
 
     @Override
     public String getPassword() {
         return password;    // 인증에만 사용한 이후, setter 를 통해 값을 null 으로 변경
-    }
-
-    /**
-     * 소셜 로그인 검증 후, 검증 객체 내 로그인 아이디/비밀번호 정보 제거
-     */
-    public void clearLoginInfo() {
-        this.loginId = null;
-        this.password = null;
     }
 
     @Override
