@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 @Table(
         uniqueConstraints = { // 복합 UK (소셜회원번호, 소셜유형) 정보는 고유 값
-                @UniqueConstraint(columnNames = {"provider_id", "social_provider"})
+                @UniqueConstraint(columnNames = {"provider_id", "provider"})
         }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

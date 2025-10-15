@@ -34,7 +34,7 @@ public class DTOMapper {
                 .nickname(dto.getNickname())
                 .password(dto.getPassword())
                 .providerId(dto.getProviderId())
-                .socialProvider(dto.getProvider())
+                .provider(dto.getProvider())
                 .build();
     }
 
