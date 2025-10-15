@@ -7,9 +7,12 @@ import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Difficulty;
 import studyon.app.layer.domain.category.Category;
+import studyon.app.layer.domain.lecture_category.LectureCategory;
 import studyon.app.layer.domain.teacher.Teacher;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 강의 엔티티 클래스
@@ -20,7 +23,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @DynamicUpdate
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"lectureCategories"})
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Lecture extends BaseEntity {
@@ -67,13 +70,12 @@ public class Lecture extends BaseEntity {
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LectureCategory> lectureCategories = new ArrayList<>();
 
     @Builder
     public Lecture(String title, String description, Double price,
-                   Difficulty difficulty, Teacher teacher, Category category) {
+                   Difficulty difficulty, Teacher teacher) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -86,7 +88,6 @@ public class Lecture extends BaseEntity {
         this.onSale = false;
 
         this.teacher = teacher;
-        this.category = category;
     }
 
     /*
@@ -94,12 +95,17 @@ public class Lecture extends BaseEntity {
      */
 
     public void update(String title, String description, Double price,
-                       Boolean onSale, Difficulty difficulty, Category category) {
+                       Boolean onSale, Difficulty difficulty) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.onSale = onSale;
         this.difficulty = difficulty;
-        this.category = category;
+    }
+
+    // 연관 관계 메소드
+    public void addLectureCategory(LectureCategory lectureCategory) {
+        this.lectureCategories.add(lectureCategory);
+        lectureCategory.setLecture(this);
     }
 }

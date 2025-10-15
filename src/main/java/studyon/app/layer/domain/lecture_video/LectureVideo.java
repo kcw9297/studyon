@@ -46,7 +46,6 @@ public class LectureVideo extends BaseEntity {
     private LectureIndex lectureIndex;
 
 
-
     @Builder
     public LectureVideo(String title, Integer seq, Integer duration, String videoUrl, LectureIndex lectureIndex) {
         this.title = title;

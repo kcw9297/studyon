@@ -5,6 +5,10 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture_category.LectureCategory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 강의 카테고리 엔티티 클래스
@@ -15,7 +19,7 @@ import studyon.app.layer.domain.lecture.Lecture;
 @Entity
 @Getter
 @DynamicUpdate
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"lectureCategories"})
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category extends BaseEntity {
@@ -30,15 +34,14 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id", nullable = false)
-    private Lecture lecture;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LectureCategory> lectureCategories = new ArrayList<>();
 
 
-    public Category(String name, Category parent, Lecture lecture) {
+    @Builder
+    public Category(String name, Category parent) {
         this.name = name;
         this.parent = parent;
-        this.lecture = lecture;
     }
     
     /*
@@ -48,4 +51,11 @@ public class Category extends BaseEntity {
     public void updateName(String name) {
         this.name = name;
     }
+
+    // 연관 관계 메소드
+    public void addLectureCategory(LectureCategory lectureCategory) {
+        this.lectureCategories.add(lectureCategory);
+        lectureCategory.setCategory(this);
+    }
+
 }
