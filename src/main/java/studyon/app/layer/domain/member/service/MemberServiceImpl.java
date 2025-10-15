@@ -87,7 +87,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDTO.Read socialLogin(String providerId, Provider provider) {
         return memberRepository
-                .findByProviderIdAndSocialProvider(providerId, provider)
+                .findByProviderIdAndProvider(providerId, provider)
                 .map(DTOMapper::toReadDTO)
                 .orElse(null);
     }
