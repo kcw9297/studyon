@@ -2,11 +2,14 @@ package studyon.app.layer.domain.lecture;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Difficulty;
 import studyon.app.layer.domain.category.Category;
 import studyon.app.layer.domain.teacher.Teacher;
+
+import java.time.LocalDateTime;
 
 /**
  * 강의 엔티티 클래스
@@ -53,8 +56,12 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private Long likeCount;
 
-    private Boolean onSales;
+    @Column(nullable = false)
+    private Boolean onSale;
 
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime publishDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
@@ -76,6 +83,7 @@ public class Lecture extends BaseEntity {
         this.totalStudents = 0L;
         this.averageRate = 0.00;
         this.likeCount = 0L;
+        this.onSale = false;
 
         this.teacher = teacher;
         this.category = category;
@@ -85,10 +93,12 @@ public class Lecture extends BaseEntity {
         JPA 변경 감지를 이용한 갱신 로직 (setter) - 강의 수정 페이지 연동 갱신
      */
 
-    public void update(String title, String description, Double price, Difficulty difficulty, Category category) {
+    public void update(String title, String description, Double price,
+                       Boolean onSale, Difficulty difficulty, Category category) {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.onSale = onSale;
         this.difficulty = difficulty;
         this.category = category;
     }

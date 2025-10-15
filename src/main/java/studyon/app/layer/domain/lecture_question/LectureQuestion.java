@@ -28,11 +28,21 @@ public class LectureQuestion extends BaseEntity {
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Long viewCount;
 
-    @Column(nullable = false)
-    private boolean isSolved;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean isSolved;
 
     @Builder
-    public LectureQuestion(String title, String content, boolean isSolved) {
+    public LectureQuestion(String title, String content, Boolean isSolved) {
+        this.title = title;
+        this.content = content;
+        this.isSolved = isSolved;
+    }
+
+    /*
+        강의 질문 수정 관련 로직
+     */
+
+    public void updateQuestion(String title, String content, Boolean isSolved) {
         this.title = title;
         this.content = content;
         this.isSolved = isSolved;

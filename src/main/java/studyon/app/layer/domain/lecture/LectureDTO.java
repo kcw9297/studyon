@@ -7,6 +7,8 @@ import lombok.experimental.SuperBuilder;
 import studyon.app.common.enums.Difficulty;
 import studyon.app.infra.aop.LogInfo;
 
+import java.time.LocalDateTime;
+
 /**
  * 강의 기본 정보를 담은 DTO
  * @version 1.0
@@ -32,6 +34,8 @@ public class LectureDTO {
         private Long totalStudents;
         private Double averageRate;
         private Long likeCount;
+        private Boolean onSale;
+        private LocalDateTime publishDate;
     }
 
     @Data
@@ -44,6 +48,7 @@ public class LectureDTO {
         private String description;
         private Double price;
         private Difficulty difficulty;
+        private Boolean onSale;
     }
 
     @Data
@@ -57,5 +62,6 @@ public class LectureDTO {
         private String description;
         private Double price;
         private Difficulty difficulty;
+        private Boolean onSale;
     }
 }
