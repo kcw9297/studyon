@@ -1,7 +1,7 @@
-package studyon.app.infra.cache;
+package studyon.app.infra.cache.manager;
 
 import studyon.app.layer.domain.member.MemberProfile;
-import studyon.app.infra.mail.MailVerifyRequest;
+import studyon.app.infra.mail.dto.MailVerifyRequest;
 
 import java.util.List;
 

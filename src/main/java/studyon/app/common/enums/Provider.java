@@ -16,19 +16,19 @@ import java.util.List;
  * @author kcw97
  */
 @Getter
-public enum SocialProvider {
+public enum Provider {
 
     GOOGLE("구글"),
     KAKAO("카카오"),
     NAVER("네이버");
 
-    private final String name;
+    private final String value;
 
-    SocialProvider(String name) {
-        this.name = name;
+    Provider(String value) {
+        this.value = value;
     }
 
-    public static List<SocialProvider> get() {
-        return Arrays.asList(SocialProvider.values());
+    public static List<Provider> get() {
+        return Arrays.asList(Provider.values());
     }
 }

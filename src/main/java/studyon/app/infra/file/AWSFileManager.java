@@ -11,10 +11,15 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import studyon.app.common.constant.AppProfile;
 import studyon.app.common.enums.Entity;
-import studyon.app.common.exception.common.ManagerException;
+import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.file.FileDTO;
 
+/**
+ * AWS S3 스토리지 조작 메소드 처리 클래스
+ * @version 1.0
+ * @author kcw97
+ */
 
 @Profile(AppProfile.PROD)
 @Component

@@ -1,9 +1,7 @@
-package studyon.app.common.exception.domain;
+package studyon.app.layer.base.exception;
 
 import lombok.Getter;
-import studyon.app.common.exception.domain.parent.ServiceException;
-
-import java.util.Map;
+import studyon.app.layer.base.exception.parent.ServiceException;
 
 @Getter
 public class BusinessException extends ServiceException {

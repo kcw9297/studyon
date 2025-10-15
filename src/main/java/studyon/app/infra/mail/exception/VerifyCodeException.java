@@ -1,4 +1,4 @@
-package studyon.app.common.exception.common;
+package studyon.app.infra.mail.exception;
 
 public class VerifyCodeException extends RuntimeException {
 

@@ -1,11 +1,12 @@
-package studyon.app.infra.cache;
+package studyon.app.infra.cache.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-import studyon.app.infra.mail.MailVerifyRequest;
+import studyon.app.infra.cache.CacheUtils;
+import studyon.app.infra.mail.dto.MailVerifyRequest;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.common.enums.Cache;
 import studyon.app.common.utils.StrUtils;

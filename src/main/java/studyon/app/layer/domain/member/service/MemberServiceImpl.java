@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.layer.base.dto.Page;
-import studyon.app.common.enums.SocialProvider;
-import studyon.app.common.exception.domain.LoginException;
-import studyon.app.common.exception.domain.NotFoundException;
+import studyon.app.common.enums.Provider;
+import studyon.app.layer.base.exception.LoginException;
+import studyon.app.layer.base.exception.NotFoundException;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.MemberDTO;
@@ -85,9 +85,9 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public MemberDTO.Read socialLogin(String providerId, SocialProvider socialProvider) {
+    public MemberDTO.Read socialLogin(String providerId, Provider provider) {
         return memberRepository
-                .findByProviderIdAndSocialProvider(providerId, socialProvider)
+                .findByProviderIdAndProvider(providerId, provider)
                 .map(DTOMapper::toReadDTO)
                 .orElse(null);
     }

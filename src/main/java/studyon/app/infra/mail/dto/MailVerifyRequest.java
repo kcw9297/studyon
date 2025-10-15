@@ -1,4 +1,4 @@
-package studyon.app.infra.mail;
+package studyon.app.infra.mail.dto;
 
 
 import lombok.AccessLevel;
