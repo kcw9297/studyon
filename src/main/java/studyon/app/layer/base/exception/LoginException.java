@@ -1,6 +1,6 @@
-package studyon.app.common.exception.domain;
+package studyon.app.layer.base.exception;
 
-import studyon.app.common.exception.domain.parent.ServiceException;
+import studyon.app.layer.base.exception.parent.ServiceException;
 
 public class LoginException extends ServiceException {
 

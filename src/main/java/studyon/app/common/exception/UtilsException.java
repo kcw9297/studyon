@@ -1,4 +1,4 @@
-package studyon.app.common.exception.common;
+package studyon.app.common.exception;
 
 /*
  * [수정 이력]

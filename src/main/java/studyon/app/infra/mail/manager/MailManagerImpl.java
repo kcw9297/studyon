@@ -1,4 +1,4 @@
-package studyon.app.infra.mail;
+package studyon.app.infra.mail.manager;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import studyon.app.common.exception.common.VerifyCodeException;
-import studyon.app.common.exception.common.VerifyException;
-import studyon.app.infra.cache.CacheManager;
+import studyon.app.infra.mail.exception.VerifyCodeException;
+import studyon.app.infra.mail.exception.VerifyException;
+import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.common.utils.StrUtils;
+import studyon.app.infra.mail.MailUtils;
+import studyon.app.infra.mail.dto.MailVerifyRequest;
 
 import java.time.Duration;
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import studyon.app.infra.aop.LogInfo;
-import studyon.app.common.enums.SocialProvider;
+import studyon.app.common.enums.Provider;
 
 import java.time.LocalDateTime;
 
@@ -47,7 +47,7 @@ public class MemberDTO {
 
         private Boolean isActive;
 
-        private SocialProvider socialProvider;
+        private Provider provider;
     }
 
 
@@ -63,7 +63,7 @@ public class MemberDTO {
         private String nickname;
         private String password;
         private String providerId;
-        private SocialProvider socialProvider;
+        private Provider provider;
     }
 
 }
