@@ -15,6 +15,7 @@ import java.util.Objects;
  * @author kcw97
  */
 
+@Builder
 @Getter
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails, OAuth2User {
@@ -28,27 +29,8 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     private Collection<? extends GrantedAuthority> authorities;
 
     // 소셜 사용자 추가 정보
-    private String socialId;
-    private String nameAttributeKey;
+    private String providerId;
     private Map<String, Object> attributes;
-
-
-    /* --------- 정적 생성 메소드 --------- */
-
-    public static CustomUserDetails createNormal(Long memberId, String email, String password, String nickname, Boolean isActive,
-                                                 Collection<? extends GrantedAuthority> authorities) {
-        return new CustomUserDetails(
-                memberId, email, password, nickname, isActive, authorities, null, null, null
-        );
-    }
-
-    public static CustomUserDetails createSocial(Long memberId, String password, String nickname, Boolean isActive,
-                                                 Collection<? extends GrantedAuthority> authorities,
-                                                 String socialId, String nameAttributeKey, Map<String, Object> attributes) {
-        return new CustomUserDetails(
-                memberId, null, password, nickname, isActive, authorities, socialId, nameAttributeKey, attributes
-        );
-    }
 
     /* --------- UserDetails 구현 --------- */
 
@@ -59,7 +41,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getPassword() {
-        return password;    // 인증에만 사용한 이후, setter 를 통해 값을 null 으로 변경
+        return password;
     }
 
     @Override
@@ -91,9 +73,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getName() {
-        if (Objects.isNull(attributes)) return String.valueOf(memberId);
-        Object keyValue = attributes.get(nameAttributeKey);
-        return Objects.isNull(keyValue) ? String.valueOf(memberId) : keyValue.toString();
+        return providerId;
     }
 
     @Override

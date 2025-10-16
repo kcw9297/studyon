@@ -140,6 +140,7 @@ jobs:
             nohup java -jar \
             -Xmx512m \
             -Dspring.profiles.active=prod \
+            -DFILE_DOMAIN="${{ secrets.FILE_DOMAIN }}" \
             -DDATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
             -DDATABASE_URL="${{ secrets.DATABASE_URL }}" \
             -DDATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}" \
@@ -147,7 +148,6 @@ jobs:
             -DREDIS_PORT="${{ secrets.REDIS_PORT }}" \
             -DSMTP_MAIL_APP_PASSWORD="${{ secrets.SMTP_MAIL_APP_PASSWORD }}" \
             -DSMTP_MAIL_USERNAME="${{ secrets.SMTP_MAIL_USERNAME }}" \
-            -DFILE_DOMAIN="${{ secrets.FILE_DOMAIN }}" \
             -DAWS_S3_BUCKET_NAME="${{ secrets.AWS_S3_BUCKET_NAME }}" \
             -DAWS_CLOUDFRONT_DOMAIN="${{ secrets.AWS_CLOUDFRONT_DOMAIN }}" \
             -DAWS_CLOUDFRONT_KEY_PAIR_ID="${{ secrets.AWS_CLOUDFRONT_KEY_PAIR_ID }}" \

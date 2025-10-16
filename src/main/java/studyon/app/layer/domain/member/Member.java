@@ -31,7 +31,6 @@ public class Member extends BaseEntity {
     @Column(length = 100)
     private String email; // 이메일 (일반회원은 로그인 용도 사용)
 
-    @Column(nullable = false)
     private String password; // 일반회원 로그인 비밀번호
 
     @Column(length = 100, unique = true, nullable = false)
@@ -86,7 +85,14 @@ public class Member extends BaseEntity {
      * @return 일반 회원 엔티티 객체
      */
     public static Member joinNormalStudent(String email, String password, String nickname) {
-        return new Member(email, password, nickname, Role.ROLE_STUDENT, Provider.NORMAL, null);
+
+        return Member.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .role(Role.ROLE_STUDENT)
+                .provider(Provider.NORMAL)
+                .build();
     }
 
     /**
@@ -145,8 +151,9 @@ public class Member extends BaseEntity {
         this.lastLoginAt = LocalDateTime.now();
     }
 
-    public void loginSocial(String email) {
+    public Member loginSocial(String email) {
         this.email = email;
         this.lastLoginAt = LocalDateTime.now();
+        return this;
     }
 }
