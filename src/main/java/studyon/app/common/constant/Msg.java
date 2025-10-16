@@ -15,15 +15,9 @@ public class Msg {
 
     // Rest Message
     public static final Rest.Message REST_OAUTH2_AUTHENTICATION_ERROR =
-            Rest.Message.builder()
-                    .title("로그인 실패")
-                    .content("소셜로그인 정보를 얻어오지 못했습니다.\n잠시 후에 다시 사도해 주세요")
-                    .build();
+            Rest.Message.of("로그인 실패", "소셜로그인 정보를 얻어오지 못했습니다.\n잠시 후에 다시 사도해 주세요");
 
     public static final Rest.Message REST_SERVER_ERROR =
-            Rest.Message.builder()
-                    .title("오류")
-                    .content("서버 오류가 발생했습니다.\n잠시 후에 다시 사도해 주세요")
-                    .build();
+            Rest.Message.of("오류", "서버 오류가 발생했습니다.\\n잠시 후에 다시 사도해 주세요");
 
 }

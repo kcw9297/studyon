@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,13 +16,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import studyon.app.common.constant.AppProfile;
+import studyon.app.common.constant.Env;
 import studyon.app.common.constant.Param;
 import studyon.app.common.constant.URL;
 import studyon.app.common.enums.Role;
 import studyon.app.infra.security.handler.*;
+import studyon.app.infra.security.provider.CustomDaoAuthenticationProvider;
 import studyon.app.infra.security.service.CustomNormalUserService;
 import studyon.app.infra.security.service.CustomSocialUserService;
+import studyon.app.layer.domain.member.repository.MemberRepository;
 
 import java.util.Objects;
 
@@ -39,8 +43,11 @@ public class SecurityConfig {
     private final CustomNormalLoginFailedHandler customNormalLoginFailedHandler;
 
     // Custom UserService
-    private final CustomNormalUserService customNormalUserService;
+    //private final CustomNormalUserService customNormalUserService;
     private final CustomSocialUserService customSocialUserService;
+
+    // repository
+    private final MemberRepository memberRepository;
 
     // OAuth2 Social Login URL
     private static final String URL_OAUTH2_AUTHORIZATION = "/oauth2/authorization"; // OAuth2 Authorization URL
@@ -94,6 +101,9 @@ public class SecurityConfig {
                 // 익명 사용자 비활성화 (비로그인 회원은 "인증" 상태로 처리하지 않음)
                 .anonymous(AbstractHttpConfigurer::disable)
 
+                // custom dao provider
+                .authenticationProvider(authenticationProvider())
+
                 // 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PERMIT_ALL).permitAll() // 모두 허용
@@ -113,10 +123,13 @@ public class SecurityConfig {
                         .permitAll() // 로그인 페이지는 모두 허용
                 )
 
+                /*
                 // 일반로그인 회원정보를 조회할 userDetailsService 설정
                 .rememberMe(rememberMe -> rememberMe
                         .userDetailsService(customNormalUserService)
                 )
+
+                 */
 
                 // 소셜 로그인 설정
                 .oauth2Login(oauth2 -> oauth2
@@ -158,7 +171,7 @@ public class SecurityConfig {
 
 
         // [2] 배포 환경 설정
-        if (Objects.equals(activeProfile, AppProfile.PROD)) config.redirectToHttps(Customizer.withDefaults()); // HTTPS 강제
+        if (Objects.equals(activeProfile, Env.PROFILE_PROD)) config.redirectToHttps(Customizer.withDefaults()); // HTTPS 강제
 
         // [3] 공통/프로필별 설정 반영 후 반환
         return config.build();
@@ -169,5 +182,9 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean // 일반회원 로그인 처리 AuthenticationProvider 수동 등록 (CustomNormalUserService 수동 생성)
+    public AuthenticationProvider authenticationProvider() {
+        return new CustomDaoAuthenticationProvider(passwordEncoder(), new CustomNormalUserService(memberRepository));
+    }
 
 }

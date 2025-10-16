@@ -9,8 +9,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import studyon.app.common.constant.AppProfile;
-import studyon.app.common.utils.AppUtils;
+import studyon.app.common.constant.Env;
+import studyon.app.common.utils.EnvUtils;
 import studyon.app.layer.base.interceptor.DefaultValueInterceptor;
 
 
@@ -46,8 +46,8 @@ public class WebConfig implements WebMvcConfigurer {
     // 빈 초기화 후 앱 시작 전 호출
     @PostConstruct
     private void init() {
-        this.isLocal = AppUtils.hasProfile(AppProfile.LOCAL, env);
-        this.isProd = AppUtils.hasProfile(AppProfile.PROD, env);
+        this.isLocal = EnvUtils.hasProfile(env, Env.PROFILE_LOCAL);
+        this.isProd = EnvUtils.hasProfile(env, Env.PROFILE_PROD);
     }
 
     // 사용 Interceptor 등록

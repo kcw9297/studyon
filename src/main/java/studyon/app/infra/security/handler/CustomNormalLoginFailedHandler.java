@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -41,11 +42,16 @@ public class CustomNormalLoginFailedHandler implements AuthenticationFailureHand
         
         // [1] 현재 실패한 URL 조회
         String url = request.getRequestURI();
-        log.warn("[Login Failed] url = {}", url);
+
+        // 만약 정규 예외 이외의 내용이 발생하면, "InternalAuthenticationServiceException" 로 감싸져서 반환
+        Throwable rootCause = exception instanceof InternalAuthenticationServiceException ? exception.getCause() : exception;
+
+        log.warn("[Login Failed] url = {}, exception = {}, rootCause = {}",
+                url, exception.getClass().getSimpleName(), rootCause.getClass().getSimpleName());
 
         // [2] 오류 상황 전달
         // 일반 회원의 이메일이 존재하지 않거나, 이메일과 비밀번호가 일치하지 않은 경우
-        if (exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException)
+        if (rootCause instanceof UsernameNotFoundException || rootCause instanceof BadCredentialsException)
             HttpUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(Param.ERROR_GLOBAL, Msg.INCORRECT_EMAIL_PASSWORD)),
@@ -53,7 +59,7 @@ public class CustomNormalLoginFailedHandler implements AuthenticationFailureHand
             );
 
         // 회원 탈퇴가 완료된 회원인 경우
-        else if (exception instanceof WithdrawalException)
+        else if (rootCause instanceof WithdrawalException)
             HttpUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(Param.ERROR_GLOBAL, Msg.WITHDRAWAL)),
@@ -61,7 +67,7 @@ public class CustomNormalLoginFailedHandler implements AuthenticationFailureHand
             );
 
         // 정지된 회원인 경우
-        else if (exception instanceof DisabledException)
+        else if (rootCause instanceof DisabledException)
             HttpUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(Param.ERROR_GLOBAL, Msg.DISABLED)),

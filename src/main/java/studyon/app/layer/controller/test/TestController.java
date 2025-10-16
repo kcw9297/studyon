@@ -139,4 +139,8 @@ public class TestController {
         return Objects.isNull(mailVerifyRequest) || !mailVerifyRequest.checkVerifyCode(code) ?
                 "인증 실패!!" : "인증 성공!!";
     }
+
+
+
+
 }

@@ -24,9 +24,7 @@ import studyon.app.layer.domain.member.repository.MemberRepository;
  */
 
 @Transactional(readOnly = true) // 사용하지 않으면, 조회 작업 시 LAZY 로딩에 문제 발생
-@Service
 @RequiredArgsConstructor
-@Component
 public class CustomNormalUserService implements UserDetailsService {
 
     private final MemberRepository memberRepository;

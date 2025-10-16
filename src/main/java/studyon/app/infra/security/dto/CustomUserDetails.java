@@ -5,6 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +20,10 @@ import java.util.Objects;
 @Builder
 @Getter
 @AllArgsConstructor
-public class CustomUserDetails implements UserDetails, OAuth2User {
+public class CustomUserDetails implements UserDetails, OAuth2User, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     // 기본 사용자 정보
     private Long memberId;

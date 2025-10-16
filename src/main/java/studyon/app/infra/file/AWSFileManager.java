@@ -9,7 +9,7 @@ import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
-import studyon.app.common.constant.AppProfile;
+import studyon.app.common.constant.Env;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.base.utils.DTOMapper;
@@ -21,7 +21,7 @@ import studyon.app.layer.domain.file.FileDTO;
  * @author kcw97
  */
 
-@Profile(AppProfile.PROD)
+@Profile(Env.PROFILE_PROD)
 @Component
 @RequiredArgsConstructor
 public class AWSFileManager implements FileManager {

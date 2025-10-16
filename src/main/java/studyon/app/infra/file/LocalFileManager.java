@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import studyon.app.common.constant.AppProfile;
+import studyon.app.common.constant.Env;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.base.utils.DTOMapper;
@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-@Profile(AppProfile.LOCAL)
+@Profile(Env.PROFILE_LOCAL)
 @Component
 public class LocalFileManager implements FileManager {
 

@@ -34,7 +34,7 @@ public class PrintLogAspect {
          domain 내 클래스 범위 한정
      */
 
-    @Around("studyon.app.infra.aop.Pointcuts.layerPackSvcAnnoExReadMeth()")
+    @Around("studyon.app.infra.aop.aspect.Pointcuts.layerPackSvcAnnoExReadMeth()")
     public Object printSuccessLog(ProceedingJoinPoint joinPoint) throws Throwable {
 
         // [1] 로직 시작 시점 기록
@@ -78,7 +78,7 @@ public class PrintLogAspect {
         예외 발생 근원지에서만 출력 (프로젝트 내 모든 클래스 범위)
      */
     @AfterThrowing(
-            pointcut = "studyon.app.infra.aop.Pointcuts.basePack()",
+            pointcut = "studyon.app.infra.aop.aspect.Pointcuts.basePack()",
             throwing = "e"
     )
     public void printErrorLog(JoinPoint joinPoint, Exception e) {

@@ -75,9 +75,10 @@ class UserServiceUtils {
 
         // [2] 검증 수행
         if (isInactive) {
-            if (isWithdrawalOver)
+
+            if (isWithdrawal && isWithdrawalOver)
                 throw new BeforeWithdrawalException("탈퇴전 회원"); // 테스트 메세지 (실제로는 탈퇴복구 로직으로 해야함)
-            else
+            else if (isWithdrawal)
                 throw new WithdrawalException(Msg.WITHDRAWAL);
         }
 

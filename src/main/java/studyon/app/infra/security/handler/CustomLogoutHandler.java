@@ -9,7 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
+import studyon.app.common.constant.URL;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.layer.base.dto.Rest;
+import studyon.app.layer.base.utils.HttpUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 
 import java.io.IOException;
@@ -30,16 +34,10 @@ public class CustomLogoutHandler implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        // [1] 현재 회원의 session 조회
-        HttpSession session = SessionUtils.getSession(request);
 
-        // [2] 무효화
-        if (Objects.nonNull(session)) {
-            String sessionId = session.getId();
-            session.invalidate(); // 무효 처리
-
-
-            // 추가 처리 (캐시 제거 등)
-        }
+        HttpUtils.jsonOK(
+                response,
+                StrUtils.toJson(Rest.Response.ok(Rest.Message.of("로그아웃 성공"), URL.HOME)
+        ));
     }
 }

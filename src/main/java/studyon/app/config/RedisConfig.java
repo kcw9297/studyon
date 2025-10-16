@@ -16,6 +16,7 @@ import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.FlushMode;
@@ -74,7 +75,7 @@ public class RedisConfig implements SessionRepositoryCustomizer<RedisIndexedSess
 
     @Bean // HttpSession 을 Redis 내 저장 시, 사용하는 직렬화 클래스 지정
     public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
-        return new GenericJackson2JsonRedisSerializer(objectMapper);
+        return new JdkSerializationRedisSerializer();
     }
 
     @Bean // RedisTemplate customize
