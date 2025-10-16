@@ -54,44 +54,6 @@ public class MemberServiceImpl implements MemberService {
         return DTOMapper.toReadDTO(savedEntity);
     }
 
-    @Override
-    public MemberDTO.Read login(String email, String password) {
-
-        // [1] entity 조회
-        Member entity = memberRepository
-                .findByEmailAndProviderIsNull(email, )
-                .orElseThrow(() -> new LoginException("아이디와 비밀번호가 일치하지 않습니다"));
-
-        // [2] 검증
-        // [2-1] 아이디 - 패스워드 일치 판단 (암호화는 추후에 수행)
-        validateLogin(password, entity);
-
-        // [3] 로그인 시간 갱신
-        entity.login();
-
-        // [4] 회원 정보 반환 (entity -> DTO)
-        return DTOMapper.toReadDTO(entity);
-    }
-
-
-    // 로그인 검증
-    private void validateLogin(String password, Member entity) {
-        if (!Objects.equals(password, entity.getPassword()))
-            throw new LoginException("아이디와 비밀번호가 일치하지 않습니다");
-
-        if (Objects.nonNull(entity.getWithdrawAt()))
-            throw new LoginException("탈퇴한 회원입니다");
-    }
-
-
-    @Override
-    public MemberDTO.Read socialLogin(String providerId, Provider provider) {
-        return memberRepository
-                .findByProviderIdAndProvider(providerId, provider)
-                .map(DTOMapper::toReadDTO)
-                .orElse(null);
-    }
-
 
     @Override
     public void editPassword(Long memberId, String password) {

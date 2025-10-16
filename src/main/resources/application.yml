@@ -12,3 +12,4 @@ spring:
       - classpath:setting/application-env.yml
       - classpath:setting/application-web.yml
       - classpath:setting/application-mail.yml
+      - classpath:setting/application-security.yml
