@@ -13,13 +13,21 @@ import java.util.Map;
 public class Rest {
 
     @Data
-    @Builder
-    @AllArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Message {
 
         private String title;
         private String content;
+
+        public static Message of(String content) {
+            return new Message("", content);
+        }
+
+        public static Message of(String title, String content) {
+            return new Message(title, content);
+        }
+
     }
 
     @Data

@@ -91,4 +91,16 @@ public final class StrUtils {
         return urlEncoder.withoutPadding().encodeToString(bytes);
     }
 
+
+    public static String createLogStr(Class<?> clazz, String message) {
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+
+        // [0] : Thread.getStackTrace
+        // [1] : TraceUtils.getMethodLocation
+        // [2] : 실제 호출한 메소드
+        return stack.length > 2 ?
+                "[%s::%s] %s".formatted(clazz.getSimpleName(), stack[2].getMethodName(), message) :
+                "[%s::%s] %s".formatted(clazz.getSimpleName(), "UNKNOWN_METHOD", message);
+    }
+
 }

@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import studyon.app.common.constant.AppProfile;
+import studyon.app.common.constant.Env;
 import studyon.app.common.exception.ManagerException;
 
 import java.security.KeyFactory;
@@ -19,7 +19,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Slf4j
-@Profile(AppProfile.PROD)
+@Profile(Env.PROFILE_PROD)
 @Component
 @RequiredArgsConstructor
 public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
@@ -27,16 +27,16 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
     private static final String COOKIE_HEADER =
             "%s=%s; Path=/; Domain=.studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
 
-    @Value("${prod.aws.cloudfront.signed-cookie.expire-min}")
+    @Value("${aws.cloudfront.signed-cookie.expire-min}")
     private Integer expireMin;
 
-    @Value("${prod.aws.cloudfront.domain}")
+    @Value("${aws.cloudfront.domain}")
     private String cloudFrontDomain;
 
-    @Value("${prod.aws.cloudfront.key-pair-id}")
+    @Value("${aws.cloudfront.key-pair-id}")
     private String cloudFrontKeyPairId;
 
-    @Value("${prod.aws.cloudfront.private-key}")
+    @Value("${aws.cloudfront.private-key}")
     private String cloudFrontPrivateKey;
 
     private PrivateKey privateKey; // CloudFront Private Key (decoded)

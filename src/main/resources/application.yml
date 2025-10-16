@@ -1,4 +1,8 @@
 spring:
+
+  application: # 애플리케이션 이름
+    name: app
+
   profiles: # 활성 프로필 (local, prod)
     active: ${ACTIVE_PROFILE}
 
@@ -8,3 +12,4 @@ spring:
       - classpath:setting/application-env.yml
       - classpath:setting/application-web.yml
       - classpath:setting/application-mail.yml
+      - classpath:setting/application-security.yml

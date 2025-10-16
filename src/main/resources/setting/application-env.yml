@@ -2,49 +2,23 @@
 # common
 # ===============================
 
-spring:
+# 일반 상수
 
-  # 애플리케이션 이름
-  application:
-    name: app
+app:
+  domain: ${APP_DOMAIN:}
 
-
-# ===============================
-# profile - local
-# ===============================
----
-spring:
-  config:
-    activate:
-      on-profile: local
-
-local:
-  file:
-    dir: ${LOCAL_FILE_DIR}
-    handler: ${LOCAL_FILE_HANDLER}
-    domain: ${LOCAL_FILE_DOMAIN}
+file:
+  domain: ${FILE_DOMAIN:}
+  dir: ${FILE_DIR:}
+  handler: ${FILE_HANDLER:}
 
 
-
-# ===============================
-# profile - prod
-# ===============================
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-prod:
-  file:
-    domain: ${PROD_FILE_DOMAIN}
-
-  aws:
-    cloudfront:
-      domain: ${PROD_CLOUDFRONT_DOMAIN}
-      key-pair-id: ${PROD_CLOUDFRONT_KEY_PAIR_ID}
-      private-key: ${PROD_CLOUDFRONT_PRIVATE_KEY}
-      signed-cookie:
-        expire-min: 1
-    s3:
-      bucket-name: ${PROD_S3_BUCKET_NAME}
+aws:
+  cloudfront:
+    domain: ${AWS_CLOUDFRONT_DOMAIN:}
+    key-pair-id: ${AWS_CLOUDFRONT_KEY_PAIR_ID:}
+    private-key: ${AWS_CLOUDFRONT_PRIVATE_KEY:}
+    signed-cookie:
+      expire-min: 1
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME:}
