@@ -58,4 +58,4 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update #none
+      ddl-auto: create #none
