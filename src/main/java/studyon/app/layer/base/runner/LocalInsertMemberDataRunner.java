@@ -42,7 +42,7 @@ public class LocalInsertMemberDataRunner implements ApplicationRunner {
         boolean isCreate = EnvUtils.isPropertyEquals(env, Env.PROP_DDL_AUTO, Env.DDL_AUTO_CREATE);
 
         // [2] 로컬 환경이고, ddl-auto 옵션이 create 인 경우에만 생성
-        if (isLocal && isCreate) {
+        if (/*isLocal &&*/ isCreate) {
 
             List<Member> members = IntStream.rangeClosed(1, 5)
                     .mapToObj(i ->
@@ -56,6 +56,8 @@ public class LocalInsertMemberDataRunner implements ApplicationRunner {
 
             memberRepository.saveAll(members);
         }
+
+
     }
 
 

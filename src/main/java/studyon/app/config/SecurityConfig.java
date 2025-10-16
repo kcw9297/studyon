@@ -63,7 +63,7 @@ public class SecurityConfig {
     // Spring Security Permit URL
     public static final String[] PERMIT_ALL =
             {
-                    URL.HOME,
+                    URL.HOME, "/test/**",
                     URL.MEMBERS, URL.API_MEMBERS,
                     LECTURES_ALL, TEACHERS_ALL
             };
