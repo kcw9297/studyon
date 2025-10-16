@@ -10,6 +10,11 @@ import studyon.app.layer.domain.lecture_category.LectureCategory;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-15) : khj00 최초 작성
+ */
+
 /**
  * 강의 카테고리 엔티티 클래스
  * @version 1.0
@@ -19,7 +24,6 @@ import java.util.List;
 @Entity
 @Getter
 @DynamicUpdate
-@ToString(callSuper = true, exclude = {"lectureCategories"})
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category extends BaseEntity {
@@ -34,10 +38,6 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LectureCategory> lectureCategories = new ArrayList<>();
-
-
     @Builder
     public Category(String name, Category parent) {
         this.name = name;
@@ -50,12 +50,6 @@ public class Category extends BaseEntity {
 
     public void updateName(String name) {
         this.name = name;
-    }
-
-    // 연관 관계 메소드
-    public void addLectureCategory(LectureCategory lectureCategory) {
-        this.lectureCategories.add(lectureCategory);
-        lectureCategory.setCategory(this);
     }
 
 }

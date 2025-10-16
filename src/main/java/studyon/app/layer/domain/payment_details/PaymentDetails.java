@@ -6,6 +6,11 @@ import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.payment.Payment;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-15) : khj00 최초 작성
+ */
+
 /**
  * 결제 정보 엔티티 클래스
  * @version 1.0

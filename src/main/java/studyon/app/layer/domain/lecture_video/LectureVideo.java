@@ -1,14 +1,20 @@
 package studyon.app.layer.domain.lecture_video;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+        import lombok.*;
+        import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 
 import java.time.LocalDateTime;
+
+/**
+ * 강의 영상 엔티티 클래스
+ * @version 1.0
+ * @author khj00
+ */
 
 @Entity
 @Getter

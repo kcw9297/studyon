@@ -1,7 +1,8 @@
-package studyon.app.layer.domain.payment_refund;
+package studyon.app.layer.domain.lecture_index;
 
 
 import lombok.*;
+import studyon.app.layer.domain.lecture.Lecture;
 
 import java.time.LocalDateTime;
 
@@ -10,48 +11,45 @@ import java.time.LocalDateTime;
  *  ▶ ver 1.0 (2025-10-16) : khj00 최초 작성
  */
 
+
 /**
- * 환불 관련 DTO
+ * 강의 목차 DTO
  * @version 1.0
  * @author khj00
  */
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class PaymentRefundDTO {
-
+public class LectureIndexDTO {
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Read {
-        private Long orderRefundId;
-        private String refundReason;
-        private Double refundPrice;
-        private boolean isRefunded;
+        private Long lectureIndexId;
+        private String indexTitle;
+        private Long indexNumber;
         private LocalDateTime createdAt;
-        private Long paymentId;
-        private Long paymentDetailId;
+        private LocalDateTime updatedAt;
+        private Long lectureId;
     }
-
-    /** 등록용 DTO (환불 요청 시) */
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Write {
-        private String refundReason;
-        private Double refundPrice;
-        private Long paymentId;
-        private Long paymentDetailId;
+        private String indexTitle;
+        private Long indexNumber;
+        private Long lectureId;
     }
 
-    /** 수정용 DTO (관리자 승인/처리 시) */
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Edit {
-        private Long orderRefundId;
-        private boolean isRefunded;
+        private Long lectureIndexId;
+        private String indexTitle;
+        private Long indexNumber;
+        private Long lectureId;
     }
 }

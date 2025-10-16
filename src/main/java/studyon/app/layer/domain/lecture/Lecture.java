@@ -23,7 +23,6 @@ import java.util.List;
 @Entity
 @Getter
 @DynamicUpdate
-@ToString(callSuper = true, exclude = {"lectureCategories"})
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Lecture extends BaseEntity {
@@ -70,9 +69,6 @@ public class Lecture extends BaseEntity {
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
-    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LectureCategory> lectureCategories = new ArrayList<>();
-
     @Builder
     public Lecture(String title, String description, Double price,
                    Difficulty difficulty, Teacher teacher) {
@@ -105,9 +101,4 @@ public class Lecture extends BaseEntity {
         this.difficulty = difficulty;
     }
 
-    // 연관 관계 메소드
-    public void addLectureCategory(LectureCategory lectureCategory) {
-        this.lectureCategories.add(lectureCategory);
-        lectureCategory.setLecture(this);
-    }
 }

@@ -5,8 +5,14 @@ import lombok.Getter;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-15) : khj00 최초 작성
+ */
+
+
 /**
- * ENUM (= @Enumerated) 유형
+ * Difficulty 유형
  * @version 1.0
  * @author khj00
  */

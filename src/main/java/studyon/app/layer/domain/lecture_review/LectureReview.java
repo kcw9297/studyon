@@ -14,6 +14,11 @@ import studyon.app.layer.domain.member.Member;
 
 import java.time.LocalDateTime;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-15) : khj00 최초 작성
+ */
+
 /**
  * 강의 리뷰 엔티티 클래스
  * @version 1.0
@@ -40,12 +45,10 @@ public class LectureReview extends BaseEntity {
     private Integer rating;
 
     @CreationTimestamp
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

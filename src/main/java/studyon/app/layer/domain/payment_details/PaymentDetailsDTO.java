@@ -1,5 +1,4 @@
-package studyon.app.layer.domain.payment_refund;
-
+package studyon.app.layer.domain.payment_details;
 
 import lombok.*;
 
@@ -11,47 +10,40 @@ import java.time.LocalDateTime;
  */
 
 /**
- * 환불 관련 DTO
+ * 결제 상세 정보 DTO
  * @version 1.0
  * @author khj00
  */
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class PaymentRefundDTO {
+public class PaymentDetailsDTO {
 
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Read {
-        private Long orderRefundId;
-        private String refundReason;
-        private Double refundPrice;
-        private boolean isRefunded;
-        private LocalDateTime createdAt;
-        private Long paymentId;
         private Long paymentDetailId;
+        private String paymentApiResult;  // json
+        private Long paymentId;
+        private LocalDateTime createdAt;
     }
 
-    /** 등록용 DTO (환불 요청 시) */
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Write {
-        private String refundReason;
-        private Double refundPrice;
+        private String paymentApiResult;
         private Long paymentId;
-        private Long paymentDetailId;
     }
 
-    /** 수정용 DTO (관리자 승인/처리 시) */
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Edit {
-        private Long orderRefundId;
-        private boolean isRefunded;
+        private Long paymentDetailId;
+        private String paymentApiResult;
     }
 }

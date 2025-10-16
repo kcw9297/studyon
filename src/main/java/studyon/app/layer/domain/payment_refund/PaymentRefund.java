@@ -10,6 +10,11 @@ import studyon.app.layer.domain.payment_details.PaymentDetails;
 
 import java.time.LocalDateTime;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-16) : khj00 최초 작성
+ */
+
 /**
  * 환불 정보 엔티티 클래스
  * @version 1.0
@@ -48,7 +53,6 @@ public class PaymentRefund extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_detail_id", nullable = false)
     private PaymentDetails paymentDetails;
-
 
 
     @Builder

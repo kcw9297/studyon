@@ -6,6 +6,11 @@ import studyon.app.layer.domain.member.MemberDTO;
 
 import java.time.LocalDateTime;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-16) : khj00 최초 작성
+ */
+
 /**
  * 결제 DTO
  * @version 1.0

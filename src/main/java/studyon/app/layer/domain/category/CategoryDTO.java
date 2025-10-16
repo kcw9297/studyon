@@ -2,6 +2,11 @@ package studyon.app.layer.domain.category;
 
 import lombok.*;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-16) : khj00 최초 작성
+ */
+
 /**
  * 카테고리 기본 정보 DTO
  * @version 1.0
