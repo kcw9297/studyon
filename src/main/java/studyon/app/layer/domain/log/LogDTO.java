@@ -6,6 +6,12 @@ import studyon.app.common.enums.Entity;
 
 import java.time.LocalDateTime;
 
+/**
+ * 로그 DTO
+ * @version 1.0
+ * @author kcw97
+ */
+
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class LogDTO {
 

@@ -6,10 +6,13 @@ import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
+import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.log.Log;
 import studyon.app.layer.domain.log.LogDTO;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.MemberDTO;
+import studyon.app.layer.domain.payment.Payment;
+import studyon.app.layer.domain.payment.PaymentDTO;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -18,6 +21,7 @@ import java.util.UUID;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-16) : khj00 추가 작성(LogDTO toReadDTO() 이후)
  */
 
 /**
@@ -120,4 +124,26 @@ public class DTOMapper {
                 .build();
     }
 
+    public static Payment toEntity(PaymentDTO.Write dto, Member member, Lecture lecture) {
+
+        return Payment.builder()
+                .member(member)
+                .lecture(lecture)
+                .originalPrice(dto.getOriginalPrice())
+                .discountPrice(dto.getDiscountPrice())
+                .paidPrice(dto.getPaidPrice())
+                .build();
+    }
+
+    public static PaymentDTO.Read toReadDTO(Payment entity) {
+        return PaymentDTO.Read.builder()
+                .paymentId(entity.getPaymentId())
+                .paidAt(entity.getPaidAt())
+                .originalPrice(entity.getOriginalPrice())
+                .paidPrice(entity.getPaidPrice())
+                .discountPrice(entity.getDiscountPrice())
+                .memberId(entity.getMember().getMemberId())
+                .lectureId(entity.getLecture().getLectureId())
+                .build();
+    }
 }

@@ -8,6 +8,12 @@ import studyon.app.common.enums.Provider;
 
 import java.time.LocalDateTime;
 
+/**
+ * 멤버 정보를 담은 DTO
+ * @version 1.0
+ * @author kcw97
+ */
+
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class MemberDTO {
 

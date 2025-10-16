@@ -5,6 +5,12 @@ import lombok.experimental.SuperBuilder;
 import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Entity;
 
+/**
+ * 파일 기본 정보 DTO
+ * @version 1.0
+ * @author kcw97
+ */
+
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class FileDTO {
 
