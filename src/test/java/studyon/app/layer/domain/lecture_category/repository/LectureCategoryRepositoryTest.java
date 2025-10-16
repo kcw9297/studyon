@@ -15,13 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 class LectureCategoryRepositoryTest {
-
-    @Autowired
-    private LectureRepository lectureRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private TeacherRepository teacherRepository;
     @Autowired
     private LectureCategoryRepository lectureCategoryRepository;
 

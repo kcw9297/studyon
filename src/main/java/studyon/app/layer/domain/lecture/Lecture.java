@@ -79,6 +79,8 @@ public class Lecture extends BaseEntity {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.publishDate = LocalDateTime.now();
+
         this.difficulty = difficulty;
         this.videoCount = 0L;
         this.totalDuration = 0L;

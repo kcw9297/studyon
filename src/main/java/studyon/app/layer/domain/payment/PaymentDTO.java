@@ -27,4 +27,17 @@ public class PaymentDTO {
         private Long memberId;
         private Long lectureId;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Write {
+        private LocalDateTime paidAt;
+        private Double originalPrice;
+        private Double paidPrice;
+        private Double discountPrice;
+        private Long memberId;
+        private Long lectureId;
+    }
 }

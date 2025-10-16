@@ -2,8 +2,6 @@ package studyon.app.layer.domain.category;
 
 import lombok.*;
 
-
-
 /**
  * 카테고리 기본 정보 DTO
  * @version 1.0
@@ -34,4 +32,16 @@ public class CategoryDTO {
         private Long parentId;
         private Long lectureId;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Edit {
+        private Long categoryId;  // 수정할 카테고리 식별자
+        private String name;      // 수정할 이름
+        private Long parentId;    // 부모 카테고리가 변경될 수도 있음
+        private Long lectureId;   // 강의 연결이 변경될 수도 있음
+    }
+
 }
