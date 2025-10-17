@@ -49,6 +49,9 @@ public class CustomLogoutHandler implements LogoutSuccessHandler {
         String sessionId = SecurityUtils.getSessionId(authentication);
         CustomUserDetails userDetails = SecurityUtils.getUserDetails(authentication);
 
+        log.warn("sessionId = {}, userDetails = {}", sessionId, userDetails);
+
+        // TODO 수정해야 함
         if (Objects.nonNull(userDetails) && Objects.nonNull(sessionId))
             cacheManager.removeLogout(userDetails.getMemberId(), sessionId);
 
