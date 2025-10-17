@@ -9,18 +9,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import studyon.app.common.constant.Env;
-import studyon.app.common.constant.Msg;
 import studyon.app.common.utils.EnvUtils;
 import studyon.app.common.utils.SecurityUtils;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.aws.AWSCloudFrontProvider;
-import studyon.app.infra.security.dto.CustomUserDetails;
+import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.layer.domain.member.MemberProfile;
+import studyon.app.layer.domain.member.service.MemberService;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -45,6 +45,8 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
 
     private final Environment env;
     private final ObjectProvider<AWSCloudFrontProvider> awsCloudFrontProviderProvider;
+    private final CacheManager cacheManager;
+    private final MemberService memberService;
 
     @Value("${file.domain}")
     private String fileDomain;
@@ -66,6 +68,7 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         // 사용자 URL 요청인 경우에만 출력 (클라이언트 요청 당 1번만 작동하도록)
         if (handler instanceof HandlerMethod &&
                 Objects.equals(request.getDispatcherType(), DispatcherType.REQUEST)) {
+
             // 공통 로직 수행
             doCommon(request);
 
@@ -82,12 +85,23 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
     // 공통 로직
     private void doCommon(HttpServletRequest request) {
 
-        log.warn("isLogin = {}", SecurityUtils.isLogin());
-
-        request.setAttribute("isLogin", SecurityUtils.isLogin());
+        boolean isLogin = SecurityUtils.isLogin();
+        log.warn("isLogin = {}", isLogin);
+        request.setAttribute("isLogin", isLogin);
         request.setAttribute("fileDomain", fileDomain);
         request.setAttribute("ipAddress", getClientIp(request));
-        request.setAttribute("loginMemberEmail", ""); // 실제로 redis 내 회원 정보를 삽입해야 함
+        if (isLogin) checkMemberProfile(request);
+    }
+
+    // 회원 프로필 조회
+    private void checkMemberProfile(HttpServletRequest request) {
+
+        // [1] 프로필 조회
+        Long memberId = SessionUtils.getMemberId(request);
+        MemberProfile profile = cacheManager.getProfile(memberId);
+
+        // [2] 프로필이 없는 경우, 회원정보 조회 후 새로운 회원 프로필 정보 삽입
+        if (Objects.isNull(profile)) cacheManager.saveProfile(memberService.getProfile(memberId));
     }
 
     // 사용자의 실제 IP 추출
@@ -122,11 +136,11 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         }
     }
 
-
+    // "local" 프로필 수행
     private void doLocal(HttpServletRequest request, HttpServletResponse response) {
     }
 
-
+    // "prod" 프로필 수행
     private void doProd(HttpServletRequest request, HttpServletResponse response) {
 
         // [1] cloudFrontProvider 빈 추출

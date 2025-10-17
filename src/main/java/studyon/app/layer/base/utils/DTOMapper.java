@@ -25,6 +25,7 @@ import studyon.app.layer.domain.log.Log;
 import studyon.app.layer.domain.log.LogDTO;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.MemberDTO;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.payment.Payment;
 import studyon.app.layer.domain.payment.PaymentDTO;
 import studyon.app.layer.domain.payment_details.PaymentDetails;
@@ -355,6 +356,16 @@ public class DTOMapper {
                 .createdAt(entity.getCreatedAt())
                 .paymentId(entity.getPayment().getPaymentId())
                 .paymentDetailId(entity.getPaymentDetails().getPaymentDetailId())
+                .build();
+    }
+
+    public static MemberProfile toMemberProfileDTO(Member member) {
+        return MemberProfile.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .provider(member.getProvider())
+                .role(member.getRole())
                 .build();
     }
 }
