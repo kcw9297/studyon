@@ -3,6 +3,8 @@ package studyon.app.layer.domain.chat_room;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.domain.member.Member;
 
 import java.time.LocalDateTime;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
  */
 
 /**
- * 강의 서비스 인터페이스
+ * 채팅방 엔티티 클래스
  * @version 1.0
  * @author khs97
  */
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicUpdate
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ChatRoom {
     @Id
@@ -32,16 +35,12 @@ public class ChatRoom {
     private String roomName;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id") // 학생(고객) 기준
-    private Member member; // ✅ 유저 정보 직접 참조
-
     @Builder
-    public ChatRoom(String roomName, Member member) {
+    public ChatRoom(String roomName) {
         this.roomName = roomName;
-        this.member = member;
     }
 
     @Override

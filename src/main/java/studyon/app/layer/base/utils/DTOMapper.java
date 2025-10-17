@@ -6,6 +6,9 @@ import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Cache;
 import studyon.app.common.enums.Entity;
 import studyon.app.layer.domain.category.Category;
+import studyon.app.layer.domain.chat.Chat;
+import studyon.app.layer.domain.chat.ChatDTO;
+import studyon.app.layer.domain.chat_room.ChatRoom;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.lecture.Lecture;
@@ -139,6 +142,14 @@ public class DTOMapper {
                 .refundPrice(dto.getRefundPrice())
                 .payment(payment)
                 .paymentDetails(paymentDetails)
+                .build();
+    }
+
+    public static Chat toEntity(ChatDTO.Write dto, Member sender, ChatRoom chatRoom) {
+        return Chat.builder()
+                .message(dto.getMessage())
+                .sender(sender)
+                .chatRoom(chatRoom)
                 .build();
     }
 
@@ -288,6 +299,15 @@ public class DTOMapper {
                 .createdAt(entity.getCreatedAt())
                 .paymentId(entity.getPayment().getPaymentId())
                 .paymentDetailId(entity.getPaymentDetails().getPaymentDetailId())
+                .build();
+    }
+
+    public static ChatDTO.Read toReadDTO(Chat entity) {
+        return ChatDTO.Read.builder()
+                .chatId(entity.getChatId())
+                .chatRoomId(entity.getChatRoom().getChatRoomId())
+                .senderId(entity.getSender().getMemberId())
+                .message(entity.getMessage())
                 .build();
     }
 }
