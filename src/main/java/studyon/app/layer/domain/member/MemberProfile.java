@@ -2,6 +2,7 @@ package studyon.app.layer.domain.member;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import studyon.app.common.enums.Provider;
 import studyon.app.common.enums.Role;
 
 import java.time.LocalDateTime;
@@ -21,9 +22,6 @@ public final class MemberProfile {
     private Long memberId;
     private String nickname;
     private String email;
+    private Provider provider;
     private Role role;
-    private String profileImageFileName;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime lastLoginAt;
 }

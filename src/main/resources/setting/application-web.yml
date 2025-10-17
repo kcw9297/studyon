@@ -22,6 +22,7 @@ spring:
   # 공용 설정 - file
   servlet:
     multipart:
+      enabled: true
       max-file-size: 10MB
       max-request-size: 50MB
 
@@ -52,10 +53,6 @@ spring:
   config:
     activate:
       on-profile: local
-
-  devtools:
-    restart:
-      enabled: true # 자동 재시작
 
   session:
     timeout: 5m

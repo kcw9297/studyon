@@ -60,6 +60,49 @@ public class SessionUtils {
     }
 
 
+    public static Long getMemberId(HttpServletRequest request) {
+
+        // [1] 세션 조회
+        HttpSession session = getSession(request);
+
+        // 세션이 없는 경우 null 반환
+        if (Objects.isNull(session)) return null;
+
+        // [2]
+        Object attrMemberId = session.getAttribute(Param.MEMBER_ID);
+        return Objects.isNull(attrMemberId) ? null : (Long) attrMemberId;
+    }
+
+
+    public static <T> T getValue(HttpServletRequest request, String paramName) {
+
+        // [1] 세션 조회
+        HttpSession session = getSession(request);
+
+        // 세션이 없는 경우 null 반환
+        if (Objects.isNull(session)) return null;
+
+        // [2]
+        Object attrParam = session.getAttribute(paramName);
+        return Objects.isNull(attrParam) ? null : (T) attrParam;
+    }
+
+
+    public static void setSession(HttpServletRequest request, String paramName, Object paramValue) {
+
+        // [1] 세션 조회
+        HttpSession session = getSession(request);
+
+        // 세션이 없는 경우 null 반환
+        if (Objects.isNull(session)) return;
+
+        // [2] 세션 데이터 삽입
+        session.setAttribute(paramName, paramValue);
+    }
+
+
+
+
     /**
      * 세션 조회
      * @param request HttpServletRequest
