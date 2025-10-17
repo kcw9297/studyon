@@ -12,7 +12,7 @@
   강의등록
 </div>
 <form>
-  <label class="resister-description"for="lecture-title">강의 제목</label>
+  <label class="resister-description" for="lecture-title">강의 제목</label>
 
   <div class="resister-description">
     <input class="resister-lecture-title" type="text" id="lecture-title" name="lecture-title" required>

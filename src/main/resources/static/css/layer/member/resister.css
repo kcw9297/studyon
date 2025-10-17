@@ -1,0 +1,140 @@
+
+.resister-layout{
+    width: 1900px;      /* 중앙 고정 */
+    margin: 0 auto;     /* 화면 중앙 정렬 */
+    background: #ffffff;
+    min-height: 900px; /* 헤더+푸터 높이 제외 */
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    padding-left:600px;
+    padding-right:600px;
+}
+
+.resister-contatiner{
+    width: 100%;
+    height: 800px;;
+    display: flex;
+    background-color: #ffffff;
+    flex-direction: column;
+    padding-left:120px;
+    padding-right:120px;
+}
+
+.resist-title-dividebox{
+    width: 100%;
+    height: 70px;
+    background-color: white;
+    display: flex
+}
+
+.resist-dividebox{
+    width: 100%;
+    height: 10px;
+    background-color: white;
+    display: flex
+}
+
+.resist-dividebox-10px{
+    width: 100%;
+    height: 10px;
+    background-color: white;
+    display: flex
+}
+
+
+.resist-title{
+    font-size: 30px;
+    font-weight: bold;
+    align-items: center;
+    text-align: center;
+}
+
+.resist-label{
+    font-size: 25px;
+    align-items: center;
+}
+
+.resist-input {
+  width: 100%;
+  height: 55px;
+  font-size: 18px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  padding: 0 15px;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+/* 포커스 시 */
+.resist-input:focus {
+  border-color: #2ecc71;           /* 초록 포인트 */
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+  outline: none;
+}
+
+/* placeholder 색상 */
+.resist-input::placeholder {
+  color: #aaa;
+  font-size: 16px;
+}
+
+/* hover 시 약한 강조 */
+.resist-input:hover {
+  border-color: #a9dfbf;
+}
+
+/* 비활성화 */
+.resist-input:disabled {
+  background-color: #f5f5f5;
+  color: #888;
+  border-color: #ddd;
+  cursor: not-allowed;
+}
+
+
+.social-resist-label-box{
+    text-align:center;
+
+}
+
+.resist-divide-line{
+    border-bottom: 2px solid black;
+    margin-top: 20px;
+}
+
+.social-icons{
+    text-align:center;
+}
+.resist-button {
+  width: 100%;
+  height: 60px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2ecc71; /* 기본 초록 */
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.1s ease;
+}
+
+.resist-button:hover {
+  background-color: #27ae60; /* hover 시 살짝 진한 초록 */
+}
+
+.resist-button:active {
+  background-color: #1e874b; /* 눌렸을 때 */
+  transform: scale(0.98);
+}
+
+.resist-button:disabled {
+  background-color: #c8e6c9; /* 연한 초록톤 비활성화 */
+  color: #666;
+  cursor: not-allowed;
+}
+
+.asynchronous-message{
+    opacity: 0.6;
+}

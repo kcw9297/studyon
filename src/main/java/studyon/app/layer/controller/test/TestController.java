@@ -4,9 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.infra.mail.dto.MailVerifyRequest;
+import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.layer.domain.chat.service.ChatService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.mail.manager.MailManager;
@@ -17,19 +20,21 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@RestController
+@Controller
 @RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
 
     private final CacheManager cacheManager;
     private final MailManager mailManager;
+    private final ChatService chatService;
 
     /**
      * 회원 프로필 저장 (Form 데이터)
      * 예: POST /test/redis/profile
      *     memberId=1&nickname=yjs&email=test@test.com&role=PARENT
      */
+    @ResponseBody
     @PostMapping("/redis/profile")
     public Object saveProfile(HttpSession session, MemberProfile profile) {
         cacheManager.saveProfile(profile);
@@ -40,6 +45,7 @@ public class TestController {
      * 회원 프로필 조회
      * 예: GET /test/redis/profile?memberId=1
      */
+    @ResponseBody
     @GetMapping("/redis/profile")
     public Object getProfile(@RequestParam Long memberId) {
         return cacheManager.getProfile(memberId);
@@ -50,6 +56,7 @@ public class TestController {
      * 예: POST /test/redis/search
      *     memberId=1&keyword=SpringBoot
      */
+    @ResponseBody
     @PostMapping("/redis/search")
     public Object recordSearch(Long memberId, String keyword) {
         cacheManager.recordLatestSearch(memberId, keyword);
@@ -60,6 +67,7 @@ public class TestController {
      * 최근 검색어 목록 조회
      * 예: GET /test/redis/search?memberId=1
      */
+    @ResponseBody
     @GetMapping("/redis/search")
     public Object getSearchList(Long memberId) {
         return cacheManager.getLatestSearchList(memberId);
@@ -73,6 +81,7 @@ public class TestController {
      * 예: POST /test/session/save
      *     key=username&value=yjs
      */
+    @ResponseBody
     @PostMapping("/session/save")
     public Object saveSession(HttpSession session,
             String key, String value, Long memberId) {
@@ -87,6 +96,7 @@ public class TestController {
      * [2] 세션 값 조회
      * 예: GET /test/session/get?key=username
      */
+    @ResponseBody
     @GetMapping("/session/get")
     public Object getSessionValue(HttpServletRequest request, String key) {
         HttpSession session = request.getSession(false);
@@ -101,6 +111,7 @@ public class TestController {
      * [3] 세션 무효화 (로그아웃처럼)
      * 예: DELETE /test/session/invalidate
      */
+    @ResponseBody
     @DeleteMapping("/session/invalidate")
     public Object invalidateSession(HttpServletRequest request) {
 
@@ -119,16 +130,17 @@ public class TestController {
      * 인증 코드 메일 전송 테스트
      * 예: POST /test/mail/verify
      */
+    @ResponseBody
     @PostMapping("/mail/verify")
     public Object testSendVerify(HttpServletRequest request, String to) {
         return mailManager.sendVerifyCode(to, Duration.ofMinutes(1), SessionUtils.getSessionId(request, true));
     }
 
-
     /**
      * 인증 코드 메일 전송 테스트
      * 예: POST /test/mail/verify/cdde
      */
+    @ResponseBody
     @PostMapping("/mail/verify/code")
     public Object testSendVerifyCode(HttpServletRequest request, String code) {
 
@@ -140,7 +152,15 @@ public class TestController {
                 "인증 실패!!" : "인증 성공!!";
     }
 
+    @GetMapping("/websocket")
+    public String websocket() {
+        return "test/websocket";
+    }
 
-
+    @ResponseBody
+    @PostMapping("/chatbot")
+    public Object chatbot(String question) {
+        return Rest.Response.ok(Rest.Message.of("요청 성공", chatService.getAnswer(question)));
+    }
 
 }

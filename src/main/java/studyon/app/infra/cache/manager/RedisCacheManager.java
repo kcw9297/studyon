@@ -45,6 +45,11 @@ public class RedisCacheManager implements CacheManager {
         stringRedisTemplate.opsForSet().add(Cache.COMMON_LOGIN.getBaseKey(), value);
     }
 
+    @Override
+    public void removeLogout(Long memberId, String sessionId) {
+        stringRedisTemplate.opsForSet().remove(Cache.COMMON_LOGIN.getBaseKey(), sessionId);
+    }
+
 
     @Override
     public void saveProfile(MemberProfile profile) {
@@ -55,6 +60,17 @@ public class RedisCacheManager implements CacheManager {
 
         // [2] Redis Value 자료형으로 저장
         stringRedisTemplate.opsForValue().set(key, json);
+    }
+
+
+    @Override
+    public void removeProfile(Long memberId) {
+
+        // [1] key
+        String key = CacheUtils.createIdKey(Cache.MEMBER_PROFILE, memberId);
+
+        // [2] 프로필 삭제
+        stringRedisTemplate.delete(key);
     }
 
 
@@ -96,8 +112,12 @@ public class RedisCacheManager implements CacheManager {
         // [1] Redis 내 Hash 자료형으로 저장된 MemberProfile 데이터 조회 (Map 형태)
         String key = CacheUtils.createIdKey(Cache.MEMBER_PROFILE, memberId);
 
-        // [2] 데이터 조회 및 역직렬화 후 반환
-        return StrUtils.fromJson(stringRedisTemplate.opsForValue().get(key), new TypeReference<>() {});
+        // [2] 데이터 조회
+        String jsonProfile = stringRedisTemplate.opsForValue().get(key);
+
+        // [3] 데이터 존재 확인 후 역직렬화 후 반환
+        return Objects.isNull(jsonProfile) ?
+                null : StrUtils.fromJson(jsonProfile, new TypeReference<>() {});
     }
 
 

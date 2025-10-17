@@ -13,3 +13,4 @@ spring:
       - classpath:setting/application-web.yml
       - classpath:setting/application-mail.yml
       - classpath:setting/application-security.yml
+      - classpath:setting/application-ai.yml

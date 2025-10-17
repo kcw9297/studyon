@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import studyon.app.infra.security.dto.CustomUserDetails;
 
 import java.util.Objects;
@@ -29,5 +30,13 @@ public final class SecurityUtils {
 
         // [2] 인증 객체 반환 (로그인 회원인 경우)
         return isLogin() ? (CustomUserDetails) authentication : null;
+    }
+
+    public static CustomUserDetails getUserDetails(Authentication authentication) {
+        return Objects.isNull(authentication) ? null : (CustomUserDetails) authentication.getPrincipal();
+    }
+
+    public static String getSessionId(Authentication authentication) {
+        return Objects.isNull(authentication) ? null : ((WebAuthenticationDetails) authentication.getDetails()).getSessionId();
     }
 }
