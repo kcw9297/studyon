@@ -123,7 +123,6 @@ public class TestController {
         return mailManager.sendVerifyCode(to, Duration.ofMinutes(1), HttpUtils.getSessionId(request, true));
     }
 
-
     /**
      * 인증 코드 메일 전송 테스트
      * 예: POST /test/mail/verify/cdde
