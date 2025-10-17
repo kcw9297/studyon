@@ -2,6 +2,16 @@
 # common
 # ===============================
 
+server:
+  port: 8080 # 서버 포트
+
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID
+        path: /
+
+
 spring:
   # 공용 설정 - JSP View Template
   mvc:
@@ -64,12 +74,11 @@ spring:
 
 
 server:
-  port: 8080 # 서버 포트
 
   servlet:
     session:
       cookie:
-        path: /
+        max-age: 300 # spring session timeout 값과 일치하게
         http-only: false
         secure: false
 
@@ -99,11 +108,14 @@ spring:
 
 
 server:
-  port: 8080 # 서버 포트
+  forward-headers-strategy: native
+  #use-forward-headers: true
 
   servlet:
     session:
       cookie:
-        path: /
+        max-age: 300 # spring session timeout 값과 일치하게
         http-only: true
         secure: true
+        same-site: none
+        domain: ${APP_DOMAIN:}

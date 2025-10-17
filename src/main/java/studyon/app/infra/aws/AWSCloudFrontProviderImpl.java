@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import studyon.app.common.constant.AppProfile;
+import studyon.app.common.constant.Env;
 import studyon.app.common.exception.ManagerException;
 
 import java.security.KeyFactory;
@@ -19,7 +19,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Slf4j
-@Profile(AppProfile.PROD)
+@Profile(Env.PROFILE_PROD)
 @Component
 @RequiredArgsConstructor
 public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
@@ -27,16 +27,16 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
     private static final String COOKIE_HEADER =
             "%s=%s; Path=/; Domain=.studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
 
-    @Value("${prod.aws.cloudfront.signed-cookie.expire-min}")
+    @Value("${aws.cloudfront.signed-cookie.expire-min}")
     private Integer expireMin;
 
-    @Value("${prod.aws.cloudfront.domain}")
+    @Value("${aws.cloudfront.domain}")
     private String cloudFrontDomain;
 
-    @Value("${prod.aws.cloudfront.key-pair-id}")
+    @Value("${aws.cloudfront.key-pair-id}")
     private String cloudFrontKeyPairId;
 
-    @Value("${prod.aws.cloudfront.private-key}")
+    @Value("${aws.cloudfront.private-key}")
     private String cloudFrontPrivateKey;
 
     private PrivateKey privateKey; // CloudFront Private Key (decoded)
@@ -85,11 +85,14 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
     private CloudFrontCookieSigner.CookiesForCustomPolicy getSignedCookies(Date expires) {
 
         /*
-            쿠키 정책 JSON 문장 확인 (일부라도 형식에 맞지 않는 값이 전달되면 이미지나 영상이 보이지 않음
-            정상 출력 예시 : {"Statement": [{"Resource":"your_domain/*","Condition":{"DateLessThan":{"AWS:EpochTime":1759858862},"IpAddress":{"AWS:SourceIp":"0.0.0.0/0"}}}]}
+        쿠키 정책 JSON 문장 확인 (일부라도 형식에 맞지 않는 값이 전달되면 이미지나 영상이 보이지 않음
+        정상 출력 예시 : {"Statement": [{"Resource":"your_domain/*","Condition":{"DateLessThan":{"AWS:EpochTime":1759858862},"IpAddress":{"AWS:SourceIp":"0.0.0.0/0"}}}]}
+
+        String policy = new String(Base64.getUrlDecoder().decode(cookies.getPolicy().getValue()));
+        log.info("Decoded Policy: {}", policy);
          */
 
-        CloudFrontCookieSigner.CookiesForCustomPolicy cookies = CloudFrontCookieSigner.getCookiesForCustomPolicy(
+        return CloudFrontCookieSigner.getCookiesForCustomPolicy(
                 SignerUtils.Protocol.https,
                 cloudFrontDomain,
                 privateKey,
@@ -99,10 +102,6 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
                 null, // activeFrom
                 "0.0.0.0/0" // 허용 IP 범위
         );
-
-        String policy = new String(Base64.getUrlDecoder().decode(cookies.getPolicy().getValue()));
-        log.info("Decoded Policy: {}", policy);
-        return cookies;
     }
 
     // 쿠키 헤더 삽입

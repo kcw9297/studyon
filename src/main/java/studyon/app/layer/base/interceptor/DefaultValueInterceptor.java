@@ -1,11 +1,26 @@
 package studyon.app.layer.base.interceptor;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import studyon.app.common.constant.Env;
+import studyon.app.common.constant.Msg;
+import studyon.app.common.utils.EnvUtils;
+import studyon.app.common.utils.SecurityUtils;
+import studyon.app.common.utils.StrUtils;
+import studyon.app.infra.aws.AWSCloudFrontProvider;
+import studyon.app.infra.security.dto.CustomUserDetails;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -15,11 +30,12 @@ import java.util.Objects;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-15) : kcw97 local/prod 통합
  */
 
 /**
  * 기본 값 삽입을 위한 인터셉터 클래스
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 @Slf4j
@@ -27,15 +43,52 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class DefaultValueInterceptor implements HandlerInterceptor {
 
+    private final Environment env;
+    private final ObjectProvider<AWSCloudFrontProvider> awsCloudFrontProviderProvider;
+
+    @Value("${file.domain}")
+    private String fileDomain;
+
+    // 프로필 판별 값
+    private boolean isLocal;
+    private boolean isProd;
+
+    // 빈 초기화 후 앱 시작 전 호출
+    @PostConstruct
+    private void init() {
+        this.isLocal = EnvUtils.hasProfile(env, Env.PROFILE_LOCAL);
+        this.isProd = EnvUtils.hasProfile(env, Env.PROFILE_PROD);
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String ipAddress = getClientIp(request);
 
-        request.setAttribute("ipAddress", ipAddress);
-        request.setAttribute("loginMemberEmail", ""); // 실제로 redis 내 회원 정보를 삽입해야 함
+        // 사용자 URL 요청인 경우에만 출력 (클라이언트 요청 당 1번만 작동하도록)
+        if (handler instanceof HandlerMethod &&
+                Objects.equals(request.getDispatcherType(), DispatcherType.REQUEST)) {
+            // 공통 로직 수행
+            doCommon(request);
+
+            // 프로필 유형에 따라 로직 수행
+            if (isLocal) doLocal(request, response);
+            else if (isProd) doProd(request, response);
+        }
+
+
+        // 컨트롤러에 정상 접근하도록 true 반환 (false 반환 시 접근 실패)
         return true;
     }
 
+    // 공통 로직
+    private void doCommon(HttpServletRequest request) {
+
+        log.warn("isLogin = {}", SecurityUtils.isLogin());
+
+        request.setAttribute("isLogin", SecurityUtils.isLogin());
+        request.setAttribute("fileDomain", fileDomain);
+        request.setAttribute("ipAddress", getClientIp(request));
+        request.setAttribute("loginMemberEmail", ""); // 실제로 redis 내 회원 정보를 삽입해야 함
+    }
 
     // 사용자의 실제 IP 추출
     private String getClientIp(HttpServletRequest request) {
@@ -43,7 +96,6 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         String clientIp = (Objects.nonNull(forwarded)) ? forwarded.split(",")[0].trim() : request.getRemoteAddr();
         return getIPv4ClientIp(clientIp);
     }
-
 
     // IPv6 -> IPv4 변환
     private String getIPv4ClientIp(String clientIp) {
@@ -69,5 +121,27 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
             return clientIp;
         }
     }
+
+
+    private void doLocal(HttpServletRequest request, HttpServletResponse response) {
+    }
+
+
+    private void doProd(HttpServletRequest request, HttpServletResponse response) {
+
+        // [1] cloudFrontProvider 빈 추출
+        AWSCloudFrontProvider cloudFrontProvider =
+                awsCloudFrontProviderProvider.getIfAvailable();
+
+        // 만약 값이 없는 경우 (빈 주입이 비정상 수행된 경우)
+        if (Objects.isNull(cloudFrontProvider)) {
+            log.error(StrUtils.createLogStr(this.getClass(), "PROD 빈 주입이 정상 수행되지 않았습니다!"));
+            return;
+        }
+
+        // [2] signed cookie 삽입
+        cloudFrontProvider.setSignedCookies(response);
+    }
+
 
 }

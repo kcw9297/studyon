@@ -36,13 +36,13 @@ public class FileController {
         List<FileDTO.Read> readDtos = fileService.readList();
         log.warn("readDtos = {}", readDtos);
         model.addAttribute("files", readDtos);
-        return "files/list";
+        return "layer/files/list";
     }
 
     // 테스트 메소드
     @GetMapping("/upload.do")
     public String uploadView() {
-        return "files/upload";
+        return "layer/files/upload";
     }
 
     @PostMapping("/upload.do")

@@ -30,7 +30,7 @@ spring:
 
   mail:
     properties:
-      mail.debug: false # 디버깅 로그를 볼거면 true
+      mail.debug: false # true
 
 
 # ===============================

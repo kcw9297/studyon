@@ -55,15 +55,15 @@ public class WriteServiceLogAspect {
     // 로직 성공 처리 로그 기록
     @AfterReturning(
             pointcut =
-                    "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoWriteMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoEditMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoInactivateMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoRemoveMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoJoinMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoWithdrawMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoPayMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoRefundMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoCouponClsIssueMeth()",
+                    "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoWriteMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoEditMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoInactivateMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoRemoveMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoJoinMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoWithdrawMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoPayMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoRefundMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoCouponClsIssueMeth()",
             returning = "result"
     )
     public void afterSuccess(JoinPoint joinPoint, Object result) {
@@ -72,15 +72,16 @@ public class WriteServiceLogAspect {
 
     @AfterThrowing(
             pointcut =
-                    "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoWriteMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoEditMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoInactivateMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoRemoveMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoJoinMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoWithdrawMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoPayMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoRefundMeth() || " +
-                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoCouponClsIssueMeth()",
+                    "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoWriteMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoEditMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoInactivateMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoRemoveMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoJoinMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoWithdrawMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoPayMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoRefundMeth() || " +
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoCouponClsIssueMeth()" +
+                            "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoUploadMeth()",
             throwing = "e"
     )
     public void afterFail(JoinPoint joinPoint, Exception e) {

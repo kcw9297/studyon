@@ -1,0 +1,60 @@
+package studyon.app.infra.security.handler;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
+import studyon.app.common.constant.Msg;
+import studyon.app.common.constant.Param;
+import studyon.app.common.constant.StatusCode;
+import studyon.app.common.utils.StrUtils;
+import studyon.app.infra.security.exception.WithdrawalException;
+import studyon.app.layer.base.dto.Rest;
+import studyon.app.layer.base.utils.HttpUtils;
+
+import java.io.IOException;
+
+/**
+ * Spring Security 소샬 로그인 실패 처리 핸들러 클래스
+ * @version 1.0
+ * @author kcw97
+ */
+@Slf4j
+@Component
+public class CustomSocialLoginFailedHandler implements AuthenticationFailureHandler {
+
+    @Override
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+
+        // 탈퇴 전 회원은 다른 곳으로 안내하는 로직 추가 필수
+        
+        // [1] 현재 실패한 URL 조회
+        String url = request.getRequestURI();
+        log.warn("[Login Failed] url = {}", url);
+
+        // [2] 오류 상황 전달
+        // 소셜 회원정보를 얻는데 실패한 경우 (OAuth2User 조회 실패)
+        if (exception instanceof OAuth2AuthenticationException)
+            HttpUtils.jsonFail(
+                    response,
+                    StrUtils.toJson(Rest.Response.fail(StatusCode.INTERNAL_ERROR, Msg.REST_OAUTH2_AUTHENTICATION_ERROR)),
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR
+            );
+
+        // 기타 서버 오류가 발생한 경우
+        else
+            HttpUtils.jsonFail(
+                    response,
+                    StrUtils.toJson(Rest.Response.fail(StatusCode.INTERNAL_ERROR, Msg.REST_SERVER_ERROR)),
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR
+            );
+
+    }
+}

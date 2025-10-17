@@ -11,10 +11,6 @@ public interface MemberService {
 
     MemberDTO.Read join(MemberDTO.Join rq);
 
-    MemberDTO.Read login(String email, String password);
-
-    MemberDTO.Read socialLogin(String providerId, Provider provider);
-
     void editPassword(Long memberId, String password);
 
     void editNickname(Long memberId, String nickname);

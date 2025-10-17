@@ -5,6 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -15,59 +17,36 @@ import java.util.Objects;
  * @author kcw97
  */
 
+@Builder
 @Getter
 @AllArgsConstructor
-public class CustomUserDetails implements UserDetails, OAuth2User {
+public class CustomUserDetails implements UserDetails, OAuth2User, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     // 기본 사용자 정보
     private Long memberId;
-    private String loginId;
+    private String email;
     private String password;
     private String nickname;
     private Boolean isActive;
     private Collection<? extends GrantedAuthority> authorities;
 
     // 소셜 사용자 추가 정보
-    private String socialId;
-    private String nameAttributeKey;
+    private String providerId;
     private Map<String, Object> attributes;
-
-
-    /* --------- 정적 생성 메소드 --------- */
-
-    public static CustomUserDetails createNormal(Long memberId, String loginId, String password, String nickname, Boolean isActive,
-                                                 Collection<? extends GrantedAuthority> authorities) {
-        return new CustomUserDetails(
-                memberId, loginId, password, nickname, isActive, authorities, null, null, null
-        );
-    }
-
-    public static CustomUserDetails createSocial(Long memberId, String password, String nickname, Boolean isActive,
-                                                 Collection<? extends GrantedAuthority> authorities,
-                                                 String socialId, String nameAttributeKey, Map<String, Object> attributes) {
-        return new CustomUserDetails(
-                memberId, null, password, nickname, isActive, authorities, socialId, nameAttributeKey, attributes
-        );
-    }
 
     /* --------- UserDetails 구현 --------- */
 
     @Override
     public String getUsername() {
-        return loginId;
+        return email;
     }
 
     @Override
     public String getPassword() {
-        return password;    // 인증에만 사용한 이후, setter 를 통해 값을 null 으로 변경
-    }
-
-    /**
-     * 소셜 로그인 검증 후, 검증 객체 내 로그인 아이디/비밀번호 정보 제거
-     */
-    public void clearLoginInfo() {
-        this.loginId = null;
-        this.password = null;
+        return password;
     }
 
     @Override
@@ -99,9 +78,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getName() {
-        if (Objects.isNull(attributes)) return String.valueOf(memberId);
-        Object keyValue = attributes.get(nameAttributeKey);
-        return Objects.isNull(keyValue) ? String.valueOf(memberId) : keyValue.toString();
+        return providerId;
     }
 
     @Override

@@ -22,7 +22,6 @@ spring:
 
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MariaDBDialect
         default_batch_fetch_size: 1000
         connection:
           provider_disables_autocommit: true
@@ -59,4 +58,4 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update #none
+      ddl-auto: create #none

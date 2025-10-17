@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.infra.mail.dto.MailVerifyRequest;
+import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.mail.manager.MailManager;
@@ -103,7 +104,7 @@ public class TestController {
     @DeleteMapping("/session/invalidate")
     public Object invalidateSession(HttpServletRequest request) {
 
-        HttpSession session = HttpUtils.getSession(request);
+        HttpSession session = SessionUtils.getSession(request);
 
         if (session != null) {
             session.invalidate();
@@ -120,7 +121,7 @@ public class TestController {
      */
     @PostMapping("/mail/verify")
     public Object testSendVerify(HttpServletRequest request, String to) {
-        return mailManager.sendVerifyCode(to, Duration.ofMinutes(1), HttpUtils.getSessionId(request, true));
+        return mailManager.sendVerifyCode(to, Duration.ofMinutes(1), SessionUtils.getSessionId(request, true));
     }
 
 
@@ -132,10 +133,14 @@ public class TestController {
     public Object testSendVerifyCode(HttpServletRequest request, String code) {
 
         MailVerifyRequest mailVerifyRequest =
-                cacheManager.getMailRequest(HttpUtils.getSessionId(request));
+                cacheManager.getMailRequest(SessionUtils.getSessionId(request));
 
         log.warn("mailRequest = {}", mailVerifyRequest);
         return Objects.isNull(mailVerifyRequest) || !mailVerifyRequest.checkVerifyCode(code) ?
                 "인증 실패!!" : "인증 성공!!";
     }
+
+
+
+
 }
