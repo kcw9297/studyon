@@ -2,8 +2,10 @@ package studyon.app.layer.domain.lecture_question;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.ibatis.annotations.Many;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
+import studyon.app.layer.domain.lecture.Lecture;
 
 @Entity
 @Getter
@@ -31,11 +33,16 @@ public class LectureQuestion extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isSolved;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id", nullable = false)
+    private Lecture lecture;
+
     @Builder
-    public LectureQuestion(String title, String content, Boolean isSolved) {
+    public LectureQuestion(String title, String content, Boolean isSolved, Lecture lecture) {
         this.title = title;
         this.content = content;
         this.isSolved = isSolved;
+        this.lecture = lecture;
     }
 
     /*
