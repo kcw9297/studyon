@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.chat_room.ChatRoom;
 import studyon.app.layer.domain.member.Member;
@@ -16,16 +17,16 @@ import java.time.LocalDateTime;
  */
 
 /**
- * 강의 서비스 인터페이스
+ * 채팅 엔티티 클래스
  * @version 1.0
  * @author khs97
  */
 
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@DynamicUpdate
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Chat {
     @Id
