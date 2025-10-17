@@ -71,8 +71,10 @@ dependencies {
     // reflection
     //implementation 'com.google.guava:guava:32.1.3-jre'
 
-    // Spring Security
-    //implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Spring Security & Social Login
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 
     // JSP
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'

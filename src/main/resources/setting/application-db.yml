@@ -7,6 +7,9 @@ spring:
   # 공용 DBCP 설정
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     hikari:
       maximum-pool-size: 10
       connection-test-query: SELECT 1
@@ -19,7 +22,6 @@ spring:
 
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MariaDBDialect
         default_batch_fetch_size: 1000
         connection:
           provider_disables_autocommit: true
@@ -34,16 +36,11 @@ spring:
     activate:
       on-profile: local
 
-  datasource:
-    url: ${LOCAL_DATABASE_URL}
-    username: ${LOCAL_DATABASE_USERNAME}
-    password: ${LOCAL_DATABASE_PASSWORD}
-
   jpa:
-    show-sql: true
-
     hibernate:
-      ddl-auto: update #update
+      ddl-auto: update #create
+
+    show-sql: true
 
     properties:
       hibernate:
@@ -59,11 +56,6 @@ spring:
     activate:
       on-profile: prod
 
-  datasource:
-    url: ${PROD_DATABASE_URL}
-    username: ${PROD_DATABASE_USERNAME}
-    password: ${PROD_DATABASE_PASSWORD}
-
   jpa:
     hibernate:
-      ddl-auto: update #none
+      ddl-auto: create #none

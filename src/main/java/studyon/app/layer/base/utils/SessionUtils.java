@@ -1,0 +1,80 @@
+package studyon.app.layer.base.utils;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import studyon.app.common.constant.Param;
+import studyon.app.common.constant.URL;
+
+import java.util.Objects;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class SessionUtils {
+
+    public static String createSessionKey(String namespace, String sessionId) {
+        return "%s:sessions:%s".formatted(namespace, sessionId);
+    }
+
+    /**
+     * 세션 조회 (신규 생성 x)
+     * @param request HttpServletRequest
+     * @return session
+     */
+    public static HttpSession getSession(HttpServletRequest request) {
+        return getSession(request, false);
+    }
+
+    /**
+     * 세션 조회
+     * @param request HttpServletRequest
+     * @param create 신규 생성 여부
+     * @return session
+     */
+    public static HttpSession getSession(HttpServletRequest request, boolean create) {
+        return request.getSession(create);
+    }
+
+    /**
+     * 세션 아이디 조회 (신규 생성 x)
+     * @param request HttpServletRequest
+     * @return sessionId
+     */
+    public static String getSessionId(HttpServletRequest request) {
+        return getSessionId(request, false);
+    }
+
+    /**
+     * 세션 아이디 조회
+     * @param request HttpServletRequest
+     * @param create 신규 생성 여부
+     * @return sessionId
+     */
+    public static String getSessionId(HttpServletRequest request, boolean create) {
+
+        // [1] 세션 조회
+        HttpSession session = getSession(request, create);
+
+        // [2] 세션이 조회되지 않으면 null, 조회된 세션아이디 반환
+        return Objects.isNull(session) ? null : session.getId();
+    }
+
+
+    /**
+     * 세션 조회
+     * @param request HttpServletRequest
+     * @return 세션 내 저장된 redirect 주소
+     */
+    public static String getRedirectUrl(HttpServletRequest request) {
+
+        // [1] 세션 조회
+        HttpSession session = getSession(request, false);
+
+        // [2] 세션이 조회되지 않으면 HOME 주소 반환
+        if (Objects.isNull(session)) return URL.HOME;
+        Object attr = session.getAttribute(Param.REDIRECT_URL);
+
+        return Objects.isNull(attr) ? URL.HOME : (String) attr;
+    }
+
+}

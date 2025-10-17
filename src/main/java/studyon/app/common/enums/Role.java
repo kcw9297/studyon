@@ -19,14 +19,16 @@ import java.util.List;
 public enum Role {
 
     // Spring Security 적용을 위해 "ROLE_" 추가
-    ROLE_STUDENT("학생"),
-    ROLE_TEACHER("선생님"),
-    ROLE_ADMIN("관리자");
+    ROLE_STUDENT("STUDENT", "학생"),
+    ROLE_TEACHER("TEACHER", "선생님"),
+    ROLE_ADMIN("ADMIN", "관리자");
 
-    private final String memberState;
+    private final String roleName;
+    private final String value;
 
-    Role(String memberState) {
-        this.memberState = memberState;
+    Role(String roleName, String value) {
+        this.roleName = roleName;
+        this.value = value;
     }
 
     public static List<Role> get() {
