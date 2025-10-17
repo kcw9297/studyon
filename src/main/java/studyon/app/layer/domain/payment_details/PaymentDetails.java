@@ -26,10 +26,10 @@ import studyon.app.layer.domain.payment.Payment;
 public class PaymentDetails extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long PaymentDetailId;
+    private Long paymentDetailId;
 
     @Column(columnDefinition = "TEXT")
-    private String PaymentApiResult;
+    private String paymentApiResult;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id", nullable = false)
@@ -37,7 +37,7 @@ public class PaymentDetails extends BaseEntity {
 
     @Builder
     public PaymentDetails(String paymentApiResult, Payment payment) {
-        this.PaymentApiResult = paymentApiResult;
+        this.paymentApiResult = paymentApiResult;
         this.payment = payment;
     }
 }

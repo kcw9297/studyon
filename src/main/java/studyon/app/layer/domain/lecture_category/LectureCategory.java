@@ -2,7 +2,6 @@ package studyon.app.layer.domain.lecture_category;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.ibatis.annotations.One;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.category.Category;
@@ -26,11 +25,11 @@ public class LectureCategory extends BaseEntity {
     private Long lectureCategoryId;
 
     @ManyToOne
-    @JoinColumn(name = "lecture_id")
+    @JoinColumn(name = "lecture_id", nullable = false)
     private Lecture lecture;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
 

@@ -71,4 +71,14 @@ class LectureRepositoryTest {
         assertThat(lecture.getTeacher()).isNotNull();
         assertThat(lecture.getTeacher().getSubject()).isNotNull();
     }
+
+    @Test
+    @DisplayName("리뷰 평점 계산 테스트")
+    void testFindLectureAverageRatings() {
+        List<Object[]> result = lectureRepository.findLectureAverageRatings();
+        result.forEach(row ->
+                System.out.println("lectureId=" + row[0] + ", avg=" + row[1])
+        );
+    }
+
 }

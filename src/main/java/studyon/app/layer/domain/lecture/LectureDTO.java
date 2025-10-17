@@ -28,10 +28,13 @@ public class LectureDTO {
         private String title;
         private String description;
 
+        private Long teacherId;
+
         private Double price;
         private Difficulty difficulty;
         private Long videoCount;
         private Long totalStudents;
+        private Long totalDuration;
         private Double averageRate;
         private Long likeCount;
         private Boolean onSale;
@@ -43,7 +46,7 @@ public class LectureDTO {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Write {
-
+        private Long teacherId;
         private String title;
         private String description;
         private Double price;
@@ -57,7 +60,7 @@ public class LectureDTO {
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Edit {
         private Long lectureId;
-
+        private Long teacherId;
         private String title;
         private String description;
         private Double price;
