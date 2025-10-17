@@ -6,14 +6,21 @@ import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Cache;
 import studyon.app.common.enums.Entity;
 import studyon.app.layer.domain.category.Category;
+import studyon.app.layer.domain.coupon.Coupon;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture_category.LectureCategory;
 import studyon.app.layer.domain.lecture_category.LectureCategoryDTO;
+import studyon.app.layer.domain.lecture_index.LectureIndex;
+import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
+import studyon.app.layer.domain.lecture_question.LectureQuestion;
+import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
+import studyon.app.layer.domain.lecture_video.LectureVideo;
+import studyon.app.layer.domain.lecture_video.LectureVideoDTO;
 import studyon.app.layer.domain.log.Log;
 import studyon.app.layer.domain.log.LogDTO;
 import studyon.app.layer.domain.member.Member;
@@ -82,10 +89,63 @@ public class DTOMapper {
                 .build();
     }
 
-    public static PaymentDetails toEntity(PaymentDetailsDTO.Write dto, Payment payment) {
-        return PaymentDetails.builder()
-                .paymentApiResult(dto.getPaymentApiResult())
-                .payment(payment)
+
+    public static Lecture toEntity(LectureDTO.Write dto, Teacher teacher) {
+        return Lecture.builder()
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .price(dto.getPrice())
+                .difficulty(dto.getDifficulty())
+                .teacher(teacher)
+                .build();
+    }
+
+    public static LectureReview toEntity(LectureReviewDTO.Write dto, Lecture lecture, Member member) {
+        return LectureReview.builder()
+                .content(dto.getContent())
+                .rating(dto.getRating())
+                .lecture(lecture)
+                .member(member)
+                .build();
+    }
+
+    public static LectureCategory toEntity(Lecture lecture, Category category) {
+        return LectureCategory.builder()
+                .lecture(lecture)
+                .category(category)
+                .build();
+    }
+
+    public static LectureIndex toEntity(LectureIndexDTO.Write dto, Lecture lecture) {
+        return LectureIndex.builder()
+                .indexNumber(dto.getIndexNumber())
+                .indexTitle(dto.getIndexTitle())
+                .lecture(lecture)
+                .build();
+    }
+
+    public static LectureQuestion toEntity(LectureQuestionDTO.Write dto) {
+        return LectureQuestion.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .build();
+    }
+
+    public static LectureVideo toEntity(LectureVideoDTO.Write dto, LectureIndex lectureIndex) {
+        return LectureVideo.builder()
+                .title(dto.getTitle())
+                .seq(dto.getSeq())
+                .duration(dto.getDuration())
+                .videoUrl(dto.getVideoUrl())
+                .lectureIndex(lectureIndex)
+                .build();
+    }
+
+    public static Teacher toEntity(TeacherDTO.Write dto, Member member) {
+        return Teacher.builder()
+                .description(dto.getDescription())
+                .subject(dto.getSubject())
+                .member(member)
                 .build();
     }
 
@@ -99,37 +159,10 @@ public class DTOMapper {
                 .build();
     }
 
-    public static LectureReview toEntity(LectureReviewDTO.Write dto, Lecture lecture, Member member) {
-        return LectureReview.builder()
-                .content(dto.getContent())
-                .rating(dto.getRating())
-                .lecture(lecture)
-                .member(member)
-                .build();
-    }
-
-    public static Lecture toEntity(LectureDTO.Write dto, Teacher teacher) {
-        return Lecture.builder()
-                .title(dto.getTitle())
-                .description(dto.getDescription())
-                .price(dto.getPrice())
-                .difficulty(dto.getDifficulty())
-                .teacher(teacher)
-                .build();
-    }
-
-    public static LectureCategory toEntity(Lecture lecture, Category category) {
-        return LectureCategory.builder()
-                .lecture(lecture)
-                .category(category)
-                .build();
-    }
-
-    public static Teacher toEntity(TeacherDTO.Write dto, Member member) {
-        return Teacher.builder()
-                .description(dto.getDescription())
-                .subject(dto.getSubject())
-                .member(member)
+    public static PaymentDetails toEntity(PaymentDetailsDTO.Write dto, Payment payment) {
+        return PaymentDetails.builder()
+                .paymentApiResult(dto.getPaymentApiResult())
+                .payment(payment)
                 .build();
     }
 
@@ -206,6 +239,89 @@ public class DTOMapper {
                 .build();
     }
 
+    public static LectureDTO.Read toReadDTO(Lecture entity) {
+        return LectureDTO.Read.builder()
+                .lectureId(entity.getLectureId())
+                .title(entity.getTitle())
+                .description(entity.getDescription())
+                .price(entity.getPrice())
+                .difficulty(entity.getDifficulty())
+                .videoCount(entity.getVideoCount())
+                .totalStudents(entity.getTotalStudents())
+                .totalDuration(entity.getTotalDuration())
+                .averageRate(entity.getAverageRate())
+                .likeCount(entity.getLikeCount())
+                .onSale(entity.getOnSale())
+                .publishDate(entity.getPublishDate())
+                .teacherId(entity.getTeacher().getTeacherId())
+                .build();
+    }
+
+    public static LectureReviewDTO.Read toReadDTO(LectureReview entity) {
+        return LectureReviewDTO.Read.builder()
+                .lectureReviewId(entity.getLectureReviewId())
+                .content(entity.getContent())
+                .rating(entity.getRating())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .lectureId(entity.getLecture().getLectureId())
+                .memberId(entity.getMember().getMemberId())
+                .build();
+    }
+
+    public static LectureCategoryDTO.Read toReadDTO(LectureCategory entity) {
+        return LectureCategoryDTO.Read.builder()
+                .lectureCategoryId(entity.getLectureCategoryId())
+                .lectureId(entity.getLecture().getLectureId())
+                .categoryId(entity.getCategory().getCategoryId())
+                .build();
+    }
+
+    public static LectureIndexDTO.Read toReadDTO(LectureIndex entity) {
+        return LectureIndexDTO.Read.builder()
+                .lectureIndexId(entity.getLectureIndexId())
+                .indexTitle(entity.getIndexTitle())
+                .lectureId(entity.getLecture().getLectureId())
+                .build();
+    }
+
+    public static LectureQuestionDTO.Read toReadDTO(LectureQuestion entity) {
+        return LectureQuestionDTO.Read.builder()
+                .lectureQnaId(entity.getLectureQnaId())
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .answerCount(entity.getAnswerCount())
+                .viewCount(entity.getViewCount())
+                .viewCount(entity.getViewCount())
+                .isSolved(entity.getIsSolved())
+                .build();
+    }
+
+    public static LectureVideoDTO.Read toReadDTO(LectureVideo entity) {
+        return LectureVideoDTO.Read.builder()
+                .lectureVideoId(entity.getLectureVideoId())
+                .title(entity.getTitle())
+                .seq(entity.getSeq())
+                .duration(entity.getDuration())
+                .videoUrl(entity.getVideoUrl())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .lectureIndexId(entity.getLectureIndex().getLectureIndexId())
+                .build();
+    }
+
+    public static TeacherDTO.Read toReadDTO(Teacher entity) {
+        return TeacherDTO.Read.builder()
+                .teacherId(entity.getTeacherId())
+                .memberId(entity.getMember().getMemberId())
+                .description(entity.getDescription())
+                .subject(entity.getSubject())
+                .totalStudents(entity.getTotalStudents())
+                .totalReview(entity.getTotalReview())
+                .averageRating(entity.getAverageRating())
+                .build();
+    }
+
     public static PaymentDTO.Read toReadDTO(Payment entity) {
 
         return PaymentDTO.Read.builder()
@@ -229,55 +345,6 @@ public class DTOMapper {
                 .build();
     }
 
-    public static LectureReviewDTO.Read toReadDTO(LectureReview entity) {
-        return LectureReviewDTO.Read.builder()
-                .lectureReviewId(entity.getLectureReviewId())
-                .content(entity.getContent())
-                .rating(entity.getRating())
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .lectureId(entity.getLecture().getLectureId())
-                .memberId(entity.getMember().getMemberId())
-                .build();
-    }
-
-    public static LectureDTO.Read toReadDTO(Lecture entity) {
-        return LectureDTO.Read.builder()
-                .lectureId(entity.getLectureId())
-                .title(entity.getTitle())
-                .description(entity.getDescription())
-                .price(entity.getPrice())
-                .difficulty(entity.getDifficulty())
-                .videoCount(entity.getVideoCount())
-                .totalStudents(entity.getTotalStudents())
-                .totalDuration(entity.getTotalDuration())
-                .averageRate(entity.getAverageRate())
-                .likeCount(entity.getLikeCount())
-                .onSale(entity.getOnSale())
-                .publishDate(entity.getPublishDate())
-                .teacherId(entity.getTeacher().getTeacherId())
-                .build();
-    }
-
-    public static LectureCategoryDTO.Read toReadDTO(LectureCategory entity) {
-        return LectureCategoryDTO.Read.builder()
-                .lectureCategoryId(entity.getLectureCategoryId())
-                .lectureId(entity.getLecture().getLectureId())
-                .categoryId(entity.getCategory().getCategoryId())
-                .build();
-    }
-
-    public static TeacherDTO.Read toReadDTO(Teacher entity) {
-        return TeacherDTO.Read.builder()
-                .teacherId(entity.getTeacherId())
-                .memberId(entity.getMember().getMemberId())
-                .description(entity.getDescription())
-                .subject(entity.getSubject())
-                .totalStudents(entity.getTotalStudents())
-                .totalReview(entity.getTotalReview())
-                .averageRating(entity.getAverageRating())
-                .build();
-    }
 
     public static PaymentRefundDTO.Read toReadDTO(PaymentRefund entity) {
         return PaymentRefundDTO.Read.builder()
