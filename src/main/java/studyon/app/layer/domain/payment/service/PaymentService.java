@@ -1,7 +1,6 @@
 package studyon.app.layer.domain.payment.service;
 
 import studyon.app.layer.base.dto.Page;
-import studyon.app.layer.domain.payment.Payment;
 import studyon.app.layer.domain.payment.PaymentDTO;
 
 import java.util.List;

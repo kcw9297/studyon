@@ -1,7 +1,10 @@
 package studyon.app.layer.domain.lecture.service;
 
-import studyon.app.layer.base.dto.Page;
-import studyon.app.layer.domain.lecture.Lecture;
+
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-17) : khj00 최초 작성
+ */
 
 /**
  * 강의 서비스 인터페이스
@@ -10,5 +13,6 @@ import studyon.app.layer.domain.lecture.Lecture;
  */
 
 public interface LectureService {
-
+    // 강의 평점 업데이트 로직
+    void updateLectureAverageRatings();
 }

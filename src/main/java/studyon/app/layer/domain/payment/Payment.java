@@ -23,8 +23,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {

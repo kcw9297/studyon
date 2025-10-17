@@ -101,4 +101,9 @@ public class Lecture extends BaseEntity {
         this.difficulty = difficulty;
     }
 
+    // 강의 평점 업데이트 Setter
+
+    public void updateAverageRate(Double avg) {
+        this.averageRate = avg;
+    }
 }
