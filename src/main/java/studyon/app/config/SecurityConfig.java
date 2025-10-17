@@ -61,18 +61,19 @@ public class SecurityConfig {
     private static final String TEACHERS_ALL = URL.TEACHERS + PATTERN_ALL;
     private static final String ADMIN_ALL = URL.ADMIN + PATTERN_ALL;
     private static final String LECTURES_ALL = URL.LECTURES + PATTERN_ALL;
+    private static final String WEBSOCKET_ALL = "/ws" + PATTERN_ALL;
 
     // 접근을 모두 허용할 주소 (정적 자원 제외)
     public static final String[] PERMIT_ALL =
             {
                     URL.HOME,
                     URL.MEMBERS, URL.API_MEMBERS,
-                    LECTURES_ALL, TEACHERS_ALL
+                    LECTURES_ALL, TEACHERS_ALL, WEBSOCKET_ALL
             };
 
     // Spring Security CSRF ignore URL (로그인, 로그아웃은 검증 제외)
     public static final String[] CSRF_IGNORE_URLS = {
-            URL.LOGIN_PROCESS, URL.LOGOUT
+            URL.LOGIN_PROCESS, URL.LOGOUT, "/test/**"
     };
 
     // 로그아웃 시 삭제할 쿠키 이름 (세션 쿠키)
@@ -128,13 +129,14 @@ public class SecurityConfig {
 
                 // 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(URL.STATIC_RESOURCE_PATHS).permitAll() // 정적 자원 경로 허용
-                        .requestMatchers(fileAll).permitAll() // 파일 도메인 허용
-                        .requestMatchers(PERMIT_ALL).permitAll() // 모두 허용
-                        .requestMatchers("/test/**", "/file/**").permitAll() // 테스트 URL
-                        .requestMatchers(TEACHER_ALL).permitAll()//.hasRole(Role.ROLE_TEACHER.getRoleName()) // 선생님 페이지
-                        .requestMatchers(ADMIN_ALL).hasRole(Role.ROLE_ADMIN.getRoleName()) // 관리자 페이지
-                        .anyRequest().authenticated() // 그 외의 요청은 인증된 사용자만 허용 (로그인 회원에게만)
+                        //.requestMatchers(URL.STATIC_RESOURCE_PATHS).permitAll() // 정적 자원 경로 허용
+                        //.requestMatchers(fileAll).permitAll() // 파일 도메인 허용
+                        //.requestMatchers(PERMIT_ALL).permitAll() // 모두 허용
+                        //.requestMatchers("/test/**", "/file/**").permitAll() // 테스트 URL
+                        //.requestMatchers(TEACHER_ALL).permitAll()//.hasRole(Role.ROLE_TEACHER.getRoleName()) // 선생님 페이지
+                        //.requestMatchers(ADMIN_ALL).hasRole(Role.ROLE_ADMIN.getRoleName()) // 관리자 페이지
+                        //.anyRequest().authenticated() // 그 외의 요청은 인증된 사용자만 허용 (로그인 회원에게만)
+                        .anyRequest().permitAll()
                 )
 
                 // 일반 로그인 설정

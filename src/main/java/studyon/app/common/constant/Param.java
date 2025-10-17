@@ -15,12 +15,15 @@ public class Param {
     public static final String PASSWORD = "password";
     public static final String JSESSIONID = "JSESSIONID";
     public static final String SESSION = "SESSION";
+    public static final String MEMBER_ID = "memberId";
+    public static final String ERROR = "error";
+    public static final String ROLE = "role";
+    public static final String MSG = "msg";
 
     // 특정 상수 값
     // 만료 시간 (분)
     public static final int EXPIRATION_WITHDRAWAL_DAY = 3;
 
     // error field name
-    public static final String ERROR = "error";
     public static final String ERROR_GLOBAL = ERROR + "Global";
 }

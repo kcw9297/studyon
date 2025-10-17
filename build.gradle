@@ -33,7 +33,11 @@ java {
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+
+    // Spring AI 저장소 (필수)
+    maven { url 'https://repo.spring.io/milestone/' }
+    maven { url 'https://repo.spring.io/snapshot/' }
 }
 
 dependencies {
@@ -42,12 +46,16 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // spring utils (메일, 검증, 쟈시도, ...)
+    // spring utils (메일, 검증, 재시도, AI, ...)
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.retry:spring-retry'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    //developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-M2'
+
+    // websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -75,7 +83,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-
     // JSP
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
@@ -85,7 +92,6 @@ dependencies {
     implementation 'org.mariadb.jdbc:mariadb-java-client' // MariaDB Driver
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // MyBatis
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA
-
 
     // AWS S3 (SDK v2)
     implementation 'software.amazon.awssdk:s3:2.20.28'
