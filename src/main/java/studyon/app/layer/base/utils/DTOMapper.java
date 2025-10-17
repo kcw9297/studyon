@@ -125,10 +125,11 @@ public class DTOMapper {
                 .build();
     }
 
-    public static LectureQuestion toEntity(LectureQuestionDTO.Write dto) {
+    public static LectureQuestion toEntity(LectureQuestionDTO.Write dto, Lecture lecture) {
         return LectureQuestion.builder()
                 .title(dto.getTitle())
                 .content(dto.getContent())
+                .lecture(lecture)
                 .build();
     }
 
@@ -295,6 +296,7 @@ public class DTOMapper {
                 .viewCount(entity.getViewCount())
                 .viewCount(entity.getViewCount())
                 .isSolved(entity.getIsSolved())
+                .lectureId(entity.getLecture().getLectureId())
                 .build();
     }
 

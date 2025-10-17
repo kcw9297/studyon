@@ -22,7 +22,7 @@ public class LectureQuestionDTO {
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Read {
         private Long lectureQnaId;
-
+        private Long lectureId;
         private String title;
         private String content;
         private Long answerCount;
@@ -36,6 +36,7 @@ public class LectureQuestionDTO {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Write {
+        private Long lectureId;
         private String title;
         private String content;
     }
