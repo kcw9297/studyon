@@ -85,11 +85,14 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
     private CloudFrontCookieSigner.CookiesForCustomPolicy getSignedCookies(Date expires) {
 
         /*
-            쿠키 정책 JSON 문장 확인 (일부라도 형식에 맞지 않는 값이 전달되면 이미지나 영상이 보이지 않음
-            정상 출력 예시 : {"Statement": [{"Resource":"your_domain/*","Condition":{"DateLessThan":{"AWS:EpochTime":1759858862},"IpAddress":{"AWS:SourceIp":"0.0.0.0/0"}}}]}
+        쿠키 정책 JSON 문장 확인 (일부라도 형식에 맞지 않는 값이 전달되면 이미지나 영상이 보이지 않음
+        정상 출력 예시 : {"Statement": [{"Resource":"your_domain/*","Condition":{"DateLessThan":{"AWS:EpochTime":1759858862},"IpAddress":{"AWS:SourceIp":"0.0.0.0/0"}}}]}
+
+        String policy = new String(Base64.getUrlDecoder().decode(cookies.getPolicy().getValue()));
+        log.info("Decoded Policy: {}", policy);
          */
 
-        CloudFrontCookieSigner.CookiesForCustomPolicy cookies = CloudFrontCookieSigner.getCookiesForCustomPolicy(
+        return CloudFrontCookieSigner.getCookiesForCustomPolicy(
                 SignerUtils.Protocol.https,
                 cloudFrontDomain,
                 privateKey,
@@ -99,10 +102,6 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
                 null, // activeFrom
                 "0.0.0.0/0" // 허용 IP 범위
         );
-
-        String policy = new String(Base64.getUrlDecoder().decode(cookies.getPolicy().getValue()));
-        log.info("Decoded Policy: {}", policy);
-        return cookies;
     }
 
     // 쿠키 헤더 삽입

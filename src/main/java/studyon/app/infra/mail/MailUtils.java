@@ -17,7 +17,7 @@ public class MailUtils {
     public static final String VERIFY_SUBJECT = "[STUDYON] 이메일 인증 요청입니다.";
     public static final String NOTICE_PURCHASE_SUBJECT = "[STUDYON] 강의 구매 완료 안내 메일입니다.";
     public static final String CID_LOGO = "logo";
-    public static final ClassPathResource IMAGE_LOGO = new ClassPathResource("static/images/cat.gif");
+    public static final ClassPathResource IMAGE_LOGO = new ClassPathResource("static/img/gif/cat.gif");
 
 
     public static MimeMessageHelper getMimeMessageHelper(MimeMessage message) throws MessagingException {

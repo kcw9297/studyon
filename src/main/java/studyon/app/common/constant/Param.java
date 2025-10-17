@@ -3,8 +3,6 @@ package studyon.app.common.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Param {
 
@@ -24,5 +22,5 @@ public class Param {
 
     // error field name
     public static final String ERROR = "error";
-    public static final String ERROR_GLOBAL = ERROR + "_global";
+    public static final String ERROR_GLOBAL = ERROR + "Global";
 }

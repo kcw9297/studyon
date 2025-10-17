@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import studyon.app.common.constant.Env;
+import studyon.app.common.constant.URL;
 import studyon.app.common.utils.EnvUtils;
 import studyon.app.layer.base.interceptor.DefaultValueInterceptor;
 
@@ -42,18 +43,22 @@ public class WebConfig implements WebMvcConfigurer {
     // 프로필 판별 값
     private boolean isLocal;
     private boolean isProd;
+    private String allFilePath;
 
     // 빈 초기화 후 앱 시작 전 호출
     @PostConstruct
     private void init() {
         this.isLocal = EnvUtils.hasProfile(env, Env.PROFILE_LOCAL);
         this.isProd = EnvUtils.hasProfile(env, Env.PROFILE_PROD);
+        this.allFilePath = "%s/**".formatted(fileHandler);
     }
 
     // 사용 Interceptor 등록
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(defaultValueInterceptor).order(1);
+        registry.addInterceptor(defaultValueInterceptor).order(1)
+                .excludePathPatterns(URL.STATIC_RESOURCE_PATHS)
+                .excludePathPatterns(allFilePath);
     }
 
 
@@ -62,7 +67,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         // 로컬인 경우만 등록
         if (isLocal)
-            registry.addResourceHandler("%s/**".formatted(fileHandler))
+            registry.addResourceHandler(allFilePath)
                     .addResourceLocations("file:/%s/".formatted(fileDir));
     }
 

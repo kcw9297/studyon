@@ -1,4 +1,4 @@
-package studyon.app.layer.controller.home;
+package studyon.app.layer.controller.teacher;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,15 +10,10 @@ import studyon.app.layer.base.utils.ViewUtils;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class HomeController {
+public class TeacherController {
 
-    @GetMapping("index.html")
-    public String index() {
-        return "redirect:/";
-    }
-
-    @GetMapping
-    public String home(Model model) {
-        return ViewUtils.returnView(model,  "/layer/home/home");
+    @GetMapping("/teacher/lecture/register")
+    public String loginView(Model model) {
+        return ViewUtils.returnView(model, "layer/teacher/management/lecture_register");
     }
 }

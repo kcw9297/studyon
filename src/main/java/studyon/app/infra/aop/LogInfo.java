@@ -2,6 +2,7 @@ package studyon.app.infra.aop;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import studyon.app.common.enums.Entity;
 
@@ -11,6 +12,7 @@ import studyon.app.common.enums.Entity;
  * @author kcw97
  */
 @Getter
+@ToString
 @SuperBuilder
 @NoArgsConstructor
 public abstract class LogInfo {

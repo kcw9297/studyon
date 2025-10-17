@@ -1,5 +1,6 @@
 package studyon.app.config;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -60,10 +62,10 @@ public class SecurityConfig {
     private static final String ADMIN_ALL = URL.ADMIN + PATTERN_ALL;
     private static final String LECTURES_ALL = URL.LECTURES + PATTERN_ALL;
 
-    // Spring Security Permit URL
+    // 접근을 모두 허용할 주소 (정적 자원 제외)
     public static final String[] PERMIT_ALL =
             {
-                    URL.HOME, "/test/**",
+                    URL.HOME,
                     URL.MEMBERS, URL.API_MEMBERS,
                     LECTURES_ALL, TEACHERS_ALL
             };
@@ -73,14 +75,37 @@ public class SecurityConfig {
             URL.LOGIN_PROCESS, URL.LOGOUT
     };
 
-    //
+    // 로그아웃 시 삭제할 쿠키 이름 (세션 쿠키)
     public static final String[] LOGOUT_DELETE_COOKIES = {
-            "JSESSIONID","SESSION"
+            "JSESSIONID", "SESSION"
     };
 
     // 활성 프로필 (local or prod)
     @Value("${spring.profiles.active}")
     private String activeProfile;
+
+    @Value("${file.domain}")
+    private String fileDomain;
+
+    // 모든 파일 도메인 허용
+    private String fileAll;
+
+    // 초기화 메소드
+    @PostConstruct
+    public void init() {
+        this.fileAll = fileDomain + PATTERN_ALL;
+    }
+
+    /*
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web ->
+                web.ignoring()
+                        .requestMatchers(URL.STATIC_RESOURCE_PATHS)
+                        .requestMatchers(fileAll);
+    }
+
+     */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -98,25 +123,25 @@ public class SecurityConfig {
                 // CORS 설정 비활성화 (SSR 렌더링 시 프론트와 백엔드 요청이 모두 같은 도메인에서 발생)
                 .cors(AbstractHttpConfigurer::disable)
 
-                // 익명 사용자 비활성화 (비로그인 회원은 "인증" 상태로 처리하지 않음)
-                .anonymous(AbstractHttpConfigurer::disable)
-
                 // custom dao provider
                 .authenticationProvider(authenticationProvider())
 
                 // 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(URL.STATIC_RESOURCE_PATHS).permitAll() // 정적 자원 경로 허용
+                        .requestMatchers(fileAll).permitAll() // 파일 도메인 허용
                         .requestMatchers(PERMIT_ALL).permitAll() // 모두 허용
-                        .requestMatchers(TEACHER_ALL).hasRole(Role.ROLE_TEACHER.getRoleName()) // 선생님 페이지
+                        .requestMatchers("/test/**", "/file/**").permitAll() // 테스트 URL
+                        .requestMatchers(TEACHER_ALL).permitAll()//.hasRole(Role.ROLE_TEACHER.getRoleName()) // 선생님 페이지
                         .requestMatchers(ADMIN_ALL).hasRole(Role.ROLE_ADMIN.getRoleName()) // 관리자 페이지
                         .anyRequest().authenticated() // 그 외의 요청은 인증된 사용자만 허용 (로그인 회원에게만)
                 )
 
                 // 일반 로그인 설정
                 .formLogin(form -> form
+                        .loginPage(URL.LOGIN) // 로그인 페이지
                         .usernameParameter(Param.EMAIL) // 일반 로그인 아이디에 해당하는 필드명
                         .passwordParameter(Param.PASSWORD) // 일반 로그인 패스워드에 해당하는 필드명
-                        .loginPage(URL.LOGIN) // 로그인 페이지
                         .loginProcessingUrl(URL.LOGIN_PROCESS) // 로그인 처리 페이지
                         .successHandler(customNormalLoginSuccessHandler) // 로그인 성공처리 핸들러
                         .failureHandler(customNormalLoginFailedHandler) // 로그인 실패처리 핸들러
@@ -168,6 +193,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(new CustomAccessDeniedHandler())
                 );
                  */
+
 
 
         // [2] 배포 환경 설정

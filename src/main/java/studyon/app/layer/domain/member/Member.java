@@ -120,6 +120,30 @@ public class Member extends BaseEntity {
                 .build();
     }
 
+
+    /**
+     * 관리자 계정 생성 (테스트)
+     * @param email 가입 이메일
+     * @param password 가입 비밀번호
+     * @param nickname 가입 닉네임
+     * @return 일반 회원 엔티티 객체
+     */
+    public static Member createAdmin(String email, String password, String nickname) {
+
+        return Member.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .role(Role.ROLE_ADMIN)
+                .provider(Provider.NORMAL)
+                .build();
+    }
+
+
+
+
+
+
     /**
      * 선생님 계정 생성
      * @param email 선생님 이메일

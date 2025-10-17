@@ -1,0 +1,50 @@
+.error-container{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+  height: 800px;
+}
+
+
+.error-box {
+  text-align: center;
+  background: white;
+  padding: 60px 80px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.error-box h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.error-box p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.home-btn {
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 40px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.home-btn:hover {
+  background-color: #333;
+}
+
+.error-logo{
+  width: 200px;   /* 가로 크기 */
+  height: auto; 
+}
