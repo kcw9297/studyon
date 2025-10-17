@@ -1,6 +1,7 @@
 package studyon.app.layer.base.interceptor;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -8,12 +9,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import studyon.app.common.constant.Env;
+import studyon.app.common.constant.Msg;
 import studyon.app.common.utils.EnvUtils;
+import studyon.app.common.utils.SecurityUtils;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.aws.AWSCloudFrontProvider;
+import studyon.app.infra.security.dto.CustomUserDetails;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -56,18 +63,28 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-        // [1] 활성화 프로필 추출 (사용하는 프로필은 1개)
-        String activeProfile = env.getActiveProfiles()[0];
+        // 사용자 URL 요청인 경우에만 출력 (클라이언트 요청 당 1번만 작동하도록)
+        if (handler instanceof HandlerMethod &&
+                Objects.equals(request.getDispatcherType(), DispatcherType.REQUEST)) {
+            // 공통 로직 수행
+            doCommon(request);
 
-        // [2] 프로필 유형에 따라 로직 수행
-        doCommon(request);
-        if (isLocal) doLocal(request, response);
-        else if (isProd) doProd(request, response);
+            // 프로필 유형에 따라 로직 수행
+            if (isLocal) doLocal(request, response);
+            else if (isProd) doProd(request, response);
+        }
+
+
+        // 컨트롤러에 정상 접근하도록 true 반환 (false 반환 시 접근 실패)
         return true;
     }
 
-
+    // 공통 로직
     private void doCommon(HttpServletRequest request) {
+
+        log.warn("isLogin = {}", SecurityUtils.isLogin());
+
+        request.setAttribute("isLogin", SecurityUtils.isLogin());
         request.setAttribute("fileDomain", fileDomain);
         request.setAttribute("ipAddress", getClientIp(request));
         request.setAttribute("loginMemberEmail", ""); // 실제로 redis 내 회원 정보를 삽입해야 함

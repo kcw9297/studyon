@@ -40,6 +40,9 @@ public final class URL {
     // @Controller url
 
 
-
+    // 정적 상수 모음
+    public static final String[] STATIC_RESOURCE_PATHS = {
+            "/WEB-INF/**", "/css/**", "/js/**", "/img/**", "/favicon.ico", "/webjars/**", "/.well-known/**", "/error/**"
+    };
 
 }

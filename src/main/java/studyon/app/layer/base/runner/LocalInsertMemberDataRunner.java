@@ -16,6 +16,7 @@ import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -48,12 +49,13 @@ public class LocalInsertMemberDataRunner implements ApplicationRunner {
                     .mapToObj(i ->
                             Member.joinNormalStudent(
                                     "%s@a.a".formatted("abc%03d".formatted(i)),
-                                    passwordEncoder.encode("abc"),
+                                    passwordEncoder.encode("asd"),
                                     "abc%s".formatted(StrUtils.createRandomNumString(3))
                             )
                     )
-                    .toList();
+                    .collect(Collectors.toList());
 
+            members.add(Member.createAdmin("admin@a.a", passwordEncoder.encode("admin"),"관리자"));
             memberRepository.saveAll(members);
         }
 

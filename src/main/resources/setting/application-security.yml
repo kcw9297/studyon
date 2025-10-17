@@ -49,6 +49,11 @@ spring:
     activate:
       on-profile: local
 
+logging:
+  level:
+    org.springframework.security: INFO #DEBUG
+    org.springframework.web.servlet.resource: INFO #TRACE
+
 
 # ===============================
 # profile - prod
