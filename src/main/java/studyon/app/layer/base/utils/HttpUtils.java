@@ -72,6 +72,10 @@ public class HttpUtils {
         response.getWriter().write(message);
     }
 
+    public static ResponseEntity<?> ok(Rest.Message message) {
+        return new ResponseEntity<>(Rest.Response.ok(message), HttpStatus.OK);
+    }
+
     public static ResponseEntity<?> ok(Rest.Message message, Object data) {
         return new ResponseEntity<>(Rest.Response.ok(message, data), HttpStatus.OK);
     }

@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -113,6 +114,10 @@ public class SecurityConfig {
 
         // [1] Spring Security 기본 설정
         HttpSecurity config = http
+
+                // 에디터 iframe 사용을 위해, SameOrigin 만 허용
+                .headers(headers ->
+                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 
                 // CSRF 설정 (POST, DELETE, PATCH 등 변경이 발생하는 HTTP Method 는 반드시 검증 포함)
                 // AJAX 요청 시에는 반드시 "X-XSRF-TOKEN" 포함해야만 인증 성공 처리)

@@ -1,8 +1,5 @@
 package studyon.app.infra.cache.manager;
 
-import studyon.app.layer.domain.member.MemberProfile;
-import studyon.app.infra.mail.dto.MailVerifyRequest;
-
 import java.util.List;
 
 /*
@@ -19,12 +16,6 @@ import java.util.List;
 public interface CacheManager {
 
     /**
-     * key 삭제
-     * @param key 삭제 대상 Redis Key
-     */
-    void removeKey(String key);
-
-    /**
      * 현재 로그인 세션정보 기록
      * @param memberId 로그인 회원번호
      * @param sessionId 로그인 세션번호
@@ -38,18 +29,25 @@ public interface CacheManager {
      */
     void removeLogout(Long memberId, String sessionId);
 
-
     /**
-     * 가입/수정 시 그 회원의 프로필 정보 저장
-     * @param profile 회원 프로필 정보
+     * 회원의 프로필 정보 저장
+     * @param memberId 대상 회원번호
+     * @param profile 회원 프로필 정보 객체
      */
-    void saveProfile(MemberProfile profile);
+    void saveProfile(Long memberId, Object profile);
 
     /**
      * 프로필 정보 제거 (회원탈퇴, 회원정보 수정 등의 사유)
      * @param memberId 삭제 대상 회원번호
      */
     void removeProfile(Long memberId);
+
+    /**
+     * 강의 질문 게시글 캐시데이터 기록
+     * @param sessionId 현재 회원의 세션번호
+     * @param cacheData 저장할 캐시데이터 (DTO)
+     */
+    void recordLectureQuestionCache(String sessionId, Object cacheData);
 
     /**
      * 최근에 검색한 강의 검색어 기록
@@ -60,17 +58,10 @@ public interface CacheManager {
 
     /**
      * 인증 이메일 정보 기록
-     * @param mailVerifyRequest 인증 메일 요청
      * @param sessionId 요청 세션 아이디
+     * @param mailRequest 인증 메일 요청 DTO 객체
      */
-    boolean recordVerifyMail(MailVerifyRequest mailVerifyRequest, String sessionId);
-
-    /**
-     * 회원 프로필 조회
-     * @param memberId 조회 대상 회원번호
-     * @return 조회된 회원 프로필 반환
-     */
-    MemberProfile getProfile(Long memberId);
+    boolean recordVerifyMail(String sessionId, Object mailRequest);
 
     /**
      * 최근 검색어 목록 조회
@@ -80,9 +71,25 @@ public interface CacheManager {
     List<String> getLatestSearchList(Long memberId);
 
     /**
+     * 회원 프로필 조회
+     * @param memberId 조회 대상 회원번호
+     * @param type 저장했던 DTO Class Type
+     * @return 조회된 회원 프로필 반환
+     */
+    <T> T getProfile(Long memberId, Class<T> type);
+
+    /**
      * 이메일 인증 요청 조회
      * @param sessionId 요청 세션 아이디
+     * @param type 저장했던 DTO Class Type
      */
-    MailVerifyRequest getMailRequest(String sessionId);
+    <T> T getMailRequest(String sessionId, Class<T> type);
+
+    /**
+     * 강의 질문 게시글 캐시데이터 기록
+     * @param sessionId 현재 회원의 세션번호
+     * @param type 저장했던 DTO Class Type
+     */
+    <T> T getLectureQuestionCache(String sessionId, Class<T> type);
 
 }

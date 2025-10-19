@@ -16,8 +16,10 @@ public enum Cache {
     MEMBER_PROFILE("member:profile"),
     MEMBER_LATEST_SEARCH("member:search:latest"),
     MEMBER_LOGIN("member:login"),
-    COMMON_LOGIN("common:login"),
-    COMMON_VERIFY_MAIL("common:mail:verify");
+    LECTURE_CACHE("cache:lecture"),
+    LECTURE_QUESTION_CACHE("cache:lecture-question"),
+    CURRENT_LOGIN("current:login"),
+    VERIFICATION_MAIL("verification:mail");
 
     private final String baseKey;
 

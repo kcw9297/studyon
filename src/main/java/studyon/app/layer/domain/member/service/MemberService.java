@@ -2,7 +2,6 @@ package studyon.app.layer.domain.member.service;
 
 
 import studyon.app.layer.base.dto.Page;
-import studyon.app.common.enums.Provider;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 

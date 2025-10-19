@@ -72,7 +72,7 @@ public class MailManagerImpl implements MailManager {
         MailVerifyRequest request = MailVerifyRequest.createVerifyRequest(to, verifyCode, expiration);
 
         // [2] 만일 다른 인증 회원과 코드가 중복된 경우, 예외 반환 (다시 인증을 요청하도록 유도)
-        if (!cacheManager.recordVerifyMail(request, sessionId))
+        if (!cacheManager.recordVerifyMail(sessionId, request))
             throw new VerifyException("메일 전송에 실패했습니다! 다시 시도해 주세요");
 
         return request;

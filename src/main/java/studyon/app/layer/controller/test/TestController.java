@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.mail.dto.MailVerifyRequest;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.SessionUtils;
@@ -13,7 +14,6 @@ import studyon.app.layer.domain.chat.service.ChatService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.mail.manager.MailManager;
-import studyon.app.layer.base.utils.HttpUtils;
 
 import java.time.Duration;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class TestController {
     @ResponseBody
     @PostMapping("/redis/profile")
     public Object saveProfile(HttpSession session, MemberProfile profile) {
-        cacheManager.saveProfile(profile);
+        cacheManager.saveProfile(profile.getMemberId(), profile);
         return "✅ Redis에 회원 프로필 저장 완료: memberId=" + profile.getMemberId();
     }
 
@@ -48,7 +48,7 @@ public class TestController {
     @ResponseBody
     @GetMapping("/redis/profile")
     public Object getProfile(@RequestParam Long memberId) {
-        return cacheManager.getProfile(memberId);
+        return cacheManager.getProfile(memberId, MemberProfile.class);
     }
 
     /**
@@ -145,7 +145,7 @@ public class TestController {
     public Object testSendVerifyCode(HttpServletRequest request, String code) {
 
         MailVerifyRequest mailVerifyRequest =
-                cacheManager.getMailRequest(SessionUtils.getSessionId(request));
+                cacheManager.getMailRequest(SessionUtils.getSessionId(request), MailVerifyRequest.class);
 
         log.warn("mailRequest = {}", mailVerifyRequest);
         return Objects.isNull(mailVerifyRequest) || !mailVerifyRequest.checkVerifyCode(code) ?
@@ -161,6 +161,11 @@ public class TestController {
     @PostMapping("/chatbot")
     public Object chatbot(String question) {
         return Rest.Response.ok(Rest.Message.of("요청 성공", chatService.getAnswer(question)));
+    }
+
+    @GetMapping("/write")
+    public String write() {
+        return "test/write";
     }
 
 }

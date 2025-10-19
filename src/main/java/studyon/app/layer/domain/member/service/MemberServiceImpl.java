@@ -7,18 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.constant.Msg;
 import studyon.app.layer.base.dto.Page;
-import studyon.app.common.enums.Provider;
-import studyon.app.layer.base.exception.LoginException;
 import studyon.app.layer.base.exception.NotFoundException;
 import studyon.app.layer.base.utils.DTOMapper;
-import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 import studyon.app.layer.domain.member.mapper.MemberMapper;
 
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service

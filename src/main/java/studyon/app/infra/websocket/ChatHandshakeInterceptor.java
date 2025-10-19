@@ -37,7 +37,7 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
 
             if (Objects.nonNull(session)) {
                 Long memberId = (Long) session.getAttribute(Param.MEMBER_ID);
-                MemberProfile profile = cacheManager.getProfile(memberId);
+                MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
 
                 Long id = profile.getMemberId();
                 String role = profile.getRole().getRoleName();

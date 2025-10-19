@@ -1,11 +1,8 @@
 package studyon.app.layer.domain.member;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import studyon.app.common.enums.Provider;
 import studyon.app.common.enums.Role;
-
-import java.time.LocalDateTime;
 
 /**
  * 로그인 회원의 프로필 정보를 담은 DTO

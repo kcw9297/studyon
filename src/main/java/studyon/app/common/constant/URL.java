@@ -25,17 +25,22 @@ public final class URL {
     public static final String LECTURES = "/lectures";
     public static final String MEMBER = "/member";
     public static final String MEMBERS = "/members";
+    public static final String EDITOR = "/editor";
 
     // business method url
     public static final String READ = "/read";
     public static final String JOIN = "/join";
     public static final String FIND = "/find";
+    public static final String WRITE = "/write";
+    public static final String UPLOAD = "/upload";
 
     // Spring Security url
     public static final String LOGIN_PROCESS = LOGIN + PROCESS;
 
     // @RestController url
     public static final String API_MEMBERS = API + MEMBERS;
+    public static final String API_WRITE = API + WRITE;
+    public static final String API_EDITOR_UPLOAD = API + EDITOR + UPLOAD;
 
     // @Controller url
 

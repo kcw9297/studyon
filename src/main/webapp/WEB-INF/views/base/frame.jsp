@@ -6,12 +6,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <%-- Spring Security CSRF Token --%>
+        <meta name="_csrf" content="${_csrf.token}"/>
+        <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
         <%-- Title --%>
         <link rel="icon" href="<c:url value='/img/png/icon_title.png'/>" type="image/x-icon">
         <title>STUDY ON</title>
 
         <%-- JQuery --%>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
         <%-- 공용 CSS --%>
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/base/main.css'/>">
