@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="studyon.app.layer.domain.member.mapper.LectureMapper">
-    <select id="selectAll" resultType="studyon.app.layer.domain.lecture.LectureDTO.Read">
+    <select id="selectAll" resultType="studyon.app.layer.domain.lecture.LectureDTO$Read">
         SELECT
         l.lecture_id,
         l.title,
