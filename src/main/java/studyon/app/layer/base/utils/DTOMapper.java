@@ -52,8 +52,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class DTOMapper {
 
-    /*
-        !! toEntity() 메소드
+    /**
+     *  !! toEntity() 메소드
      */
 
     public static Member toEntity(MemberDTO.Join dto) {
@@ -175,8 +175,8 @@ public class DTOMapper {
                 .build();
     }
 
-    /*
-        !! toReadDTO() 메소드
+    /**
+     *  !! toReadDTO() 메소드
      */
     
     public static MemberDTO.Read toReadDTO(Member entity) {
@@ -247,6 +247,7 @@ public class DTOMapper {
                 .updatedAt(entity.getUpdatedAt())
                 .lectureId(entity.getLecture().getLectureId())
                 .memberId(entity.getMember().getMemberId())
+                .nickname(entity.getMember().getNickname())
                 .build();
     }
 
@@ -364,19 +365,16 @@ public class DTOMapper {
                 .build();
     }
 
-    /*
-        수정용 DTO -> 엔티티(필요 없어질 시 지울 예정)
+    /**
+     *  수정용 DTO -> 엔티티(필요 없어질 시 지울 예정)
      */
 
-    /*
     public static void applyEditToEntity(Teacher entity, TeacherDTO.Edit dto) {
         if (dto.getDescription() != null) {
-            entity.updateInfo(dto.getDescription());
+            entity.updateInfo(dto.getSubject(), dto.getDescription());
         }
         if (dto.getNickname() != null && entity.getMember() != null) {
             entity.getMember().updateNickname(dto.getNickname());
         }
     }
-
-     */
 }

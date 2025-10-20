@@ -16,7 +16,6 @@ import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -70,7 +69,7 @@ class LectureServiceTest {
         }
 
         PageRequest pageRequest = PageRequest.of(0, 5);
-        Page<Lecture> page = lectureRepository.findTop5ByOrderByPublishDateDesc(pageRequest);
+        Page<Lecture> page = lectureRepository.findByOrderByPublishDateDesc(pageRequest);
         List<Lecture> top5 = page.getContent();
 
         assertThat(top5).hasSize(5);

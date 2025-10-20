@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>선생님 리스트</title>
   <link rel="stylesheet" href="<c:url value='/css/base/main-template.css' />">
-  <link rel="stylesheet" href="<c:url value='/css/layer/lecture/teacher_list.css' />">
+  <link rel="stylesheet" href="<c:url value='/css/page/lecture/teacher_list.css' />">
   <link rel="stylesheet" href="<c:url value='/css/base/Global.css' />">
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>

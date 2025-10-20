@@ -20,4 +20,5 @@ public class LectureController {
     public String lectureRecommentView(Model model) {
         return ViewUtils.returnView(model, View.LECTURE,"lecture_recomment");
     }
+
 }

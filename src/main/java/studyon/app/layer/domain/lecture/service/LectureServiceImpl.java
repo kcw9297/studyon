@@ -4,11 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
+import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /*
  * [수정 이력]
@@ -27,17 +30,27 @@ import java.util.Objects;
 public class LectureServiceImpl implements LectureService {
     private final LectureRepository lectureRepository;
 
+    /** 강의 평점 업데이트 로직
+     * @param lectureId
+     * @return 평점 계산 결과
+     */
+
     @Override
-    public void updateLectureAverageRatings() {
-        List<Object[]> results = lectureRepository.findLectureAverageRatings();
+    public Double updateLectureAverageRatings(Long lectureId) {
+        // [1] 리뷰 DTO 리스트 조회
+        List<LectureReviewDTO.Read> reviews = lectureRepository.findByLectureId(lectureId)
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .collect(Collectors.toList());
 
-        for (Object[] row : results) {
-            Long lectureId = (Long) row[0];
-            Double avgRating = ((Number) row[1]).doubleValue();
+        // [2] 평균 평점 계산
+        Double avgRating = reviews.isEmpty()
+                ? 0.0
+                : reviews.stream().mapToInt(LectureReviewDTO.Read::getRating)
+                .average()
+                .orElse(0.0);
 
-            lectureRepository.findById(lectureId).ifPresent(lecture -> {
-                lecture.updateAverageRate(avgRating);
-            });
-        }
+        // [3] 소수점 둘째 자리 반올림 후 반환
+        return Math.round(avgRating * 100.0) / 100.0;
     }
 }

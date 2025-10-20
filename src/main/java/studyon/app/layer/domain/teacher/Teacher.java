@@ -62,9 +62,9 @@ public class Teacher extends BaseEntity {
         this.totalStudents = 0L;
     }
 
-    /*
-        갱신 로직 - 선생님 전용 페이지
-    */
+    /**
+     * 갱신 로직 - 선생님 전용 페이지
+     */
 
     public void updateInfo(Subject subject, String description) {
         this.subject = subject;

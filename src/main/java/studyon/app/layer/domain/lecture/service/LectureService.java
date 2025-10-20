@@ -13,6 +13,9 @@ package studyon.app.layer.domain.lecture.service;
  */
 
 public interface LectureService {
-    // 강의 평점 업데이트 로직
-    void updateLectureAverageRatings();
+    /** 강의 평점 업데이트 로직
+     * @param lectureId
+     * @return 평점 계산 결과
+     */
+    Double updateLectureAverageRatings(Long lectureId);
 }

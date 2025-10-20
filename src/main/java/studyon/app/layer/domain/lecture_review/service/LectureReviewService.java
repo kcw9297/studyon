@@ -1,5 +1,6 @@
 package studyon.app.layer.domain.lecture_review.service;
 
+import org.springframework.data.domain.Pageable;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface LectureReviewService {
      * @param teacherId 선생님 ID
      * @return 리뷰 DTO 리스트
      */
-    List<LectureReviewDTO.Read> getReviewsByTeacherId(Long teacherId);
+    List<LectureReviewDTO.Read> getReviewsByTeacherId(Long teacherId, Pageable pageable);
 }

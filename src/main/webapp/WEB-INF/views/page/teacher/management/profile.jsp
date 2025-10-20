@@ -1,11 +1,16 @@
+<%@ page contentType ="text/html;charset=utf-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>기본 레이아웃 | 선생님 프로필</title>
-  <link rel="stylesheet" href="MainTemplate.css">
-  <link rel="stylesheet" href="TeacherManagement.css">
+  <link rel="stylesheet" href="<c:url value='/css/base/main-template.css'/>">
+  <link rel="stylesheet" href="<c:url value='/css/page/teacher/management/teacher-management.css'/>">
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
 <body>
@@ -15,7 +20,7 @@
             <header id="header">
                 <div class="header-container">
                     <div class="header-logo">
-                        <img src="/img/png/logo.png" id="logo"alt="로고이미지">
+                        <img src="<c:url value='/img/png/logo_login.png'/>" id="logo"alt="로고이미지">
                     </div>
                     <div class="header-search">검색창</div>
                     <div class="header-info">
@@ -34,12 +39,12 @@
                 </div>
                 <div class="divide-box-30px"></div>
                 <div class="teacher-photo">
-                      <img src="/img/png/teacher-profile-img.png" alt="강사이미지" class="teacher-img">
+                      <img src="<c:url value='/img/png/teacher-profile-img.png'/>" alt="강사이미지" class="teacher-img">
                     </div>
                 <div class="Teacher-info-box">
                   <div class="profile-change-button-box">
                     <button class="profile-change-button">
-                      <img src="/img/png/upload.png" class="svg-upload">
+                      <img src="<c:url value='/img/png/upload.png'/>" class="svg-upload">
                     </button>
                   </div>
                   
@@ -56,6 +61,6 @@
         </div>
     </main>
   </div>
-  <script src="Maintemplate.js"></script>
+  <script src="<c:url value='/js/base/Maintemplate.js'/>"></script>
 </body>
 </html>

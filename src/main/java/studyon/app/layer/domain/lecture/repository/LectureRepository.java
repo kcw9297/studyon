@@ -4,10 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture_review.LectureReview;
 
 import java.util.List;
-import java.util.Objects;
 
 /*
  * [수정 이력]
@@ -22,23 +23,31 @@ import java.util.Objects;
 
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
+    /* 테스트용 코드 */
     // 최신 등록순 (publishDate 내림차순)
     List<Lecture> findAllByOrderByPublishDateDesc();
 
-    // 최근 꺼 다섯개만.
-    Page<Lecture> findTop5ByOrderByPublishDateDesc(Pageable pageable);
+    // 테스트용 데이터 정렬
+    Page<Lecture> findByOrderByPublishDateDesc(Pageable pageable);
+
+    // 강의 리뷰 정렬
+    List<LectureReview> findByLectureId(Long lectureId);
 
     /**
-     * 강의별 평균 평점 조회
-     * (lecture_review 테이블의 평균 rating을 계산)
+     * 특정 선생님이 담당하는 BEST 강의 5개 정렬
+     * @param teacherId 선생님 ID
+     * @param pageable 정렬용 변수
+     * @return 해당 선생님이 등록한 강의 리스트
      */
+    @Query("SELECT l FROM Lecture l WHERE l.teacher.teacherId = :teacherId ORDER BY l.totalStudents DESC")
+    List<Lecture> findBestLectures(@Param("teacherId") Long teacherId, Pageable pageable);
 
-    @Query("""
-            SELECT lr.lecture.lectureId AS lectureId,
-                           ROUND(AVG(lr.rating), 2) AS avgRating
-                    FROM LectureReview lr
-                    GROUP BY lr.lecture.lectureId
-            """)
-    List<Object[]> findLectureAverageRatings();
-
+    /**
+     * 특정 선생님의 최근 등록된 강의 5개 정렬
+     * @param teacherId 선생님 ID
+     * @param pageable 정렬용 변수
+     * @return 해당 선생님이 등록한 최신 강의 리스트 (publish_date 기준 정렬)
+     */
+    @Query("SELECT l FROM Lecture l WHERE l.teacher.teacherId = :teacherId ORDER BY l.publishDate DESC")
+    List<Lecture> findRecentLectures(@Param("teacherId") Long teacherId, Pageable pageable);
 }
