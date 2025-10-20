@@ -51,7 +51,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -60,7 +60,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -69,7 +69,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -78,7 +78,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -87,7 +87,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>

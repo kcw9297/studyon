@@ -16,7 +16,7 @@ import studyon.app.layer.domain.lecture.Lecture;
 public class LectureQuestion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lectureQnaId;
+    private Long lectureQuestionId;
 
     @Column(nullable = false)
     private String title;

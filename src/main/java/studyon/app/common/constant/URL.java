@@ -25,6 +25,8 @@ public final class URL {
     public static final String LECTURES = "/lectures";
     public static final String MEMBER = "/member";
     public static final String MEMBERS = "/members";
+    public static final String SUBJECT = "/subject";
+    public static final String REGISTER = "/register";
     public static final String EDITOR = "/editor";
 
     // Security

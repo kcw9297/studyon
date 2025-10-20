@@ -8,6 +8,12 @@ import studyon.app.layer.domain.member.MemberDTO;
 
 import java.util.List;
 
+/**
+ * 멤버 페이징용 매퍼
+ * @version 1.0
+ * @author kcw97
+ */
+
 @Mapper
 @Repository
 public interface MemberMapper {
