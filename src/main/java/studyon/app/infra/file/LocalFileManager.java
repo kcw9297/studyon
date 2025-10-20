@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Env;
 import studyon.app.common.enums.Entity;
+import studyon.app.common.enums.FileType;
 import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.domain.file.FileDTO;
 
@@ -14,6 +15,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+
+
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-20) : kcw97 임시파일 저장/삭제 가능 추가. FileType 추가
+ */
+
+/**
+ * 파일의 저장, 삭제, 다운로드 메소드 처리
+ * @version 1.1
+ * @author kcw97
+ */
 
 @Profile(Env.PROFILE_LOCAL)
 @Component
@@ -24,7 +38,7 @@ public class LocalFileManager implements FileManager {
 
 
     @Override
-    public FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity) {
+    public FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
 
         try {
             // [1] 저장 파일 디렉토리 확인 (없을 시 생성)
@@ -47,6 +61,21 @@ public class LocalFileManager implements FileManager {
         } catch (Exception e) {
             throw new ManagerException("로컬 스토리지 파일 업로드에 실패했습니다!", e);
         }
+    }
+
+    @Override
+    public String uploadToTemp(MultipartFile file) {
+        return "";
+    }
+
+    @Override
+    public void removeTemp(String fileName) {
+
+    }
+
+    @Override
+    public String copyTempToEntity(String fileName, Long entityId, Entity entity, FileType fileType) {
+        return "";
     }
 
 

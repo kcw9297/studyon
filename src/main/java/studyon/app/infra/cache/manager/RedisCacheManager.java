@@ -20,7 +20,6 @@ public class RedisCacheManager implements CacheManager {
     public static final int MAX_RECENT_SEARCH_KEYWORD = 10; // 최대 최근 검색어 개수
 
     private final StringRedisTemplate stringRedisTemplate;
-    private final RedisTemplate<String, Object> redisTemplate;
 
 
     @Override
@@ -88,7 +87,7 @@ public class RedisCacheManager implements CacheManager {
         if (stringRedisTemplate.hasKey(key)) return false;
 
         // [3] 인증 정보를 직렬화 후 저장
-        Boolean result = redisTemplate.opsForValue().setIfAbsent(key, mailRequest);
+        Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(key, StrUtils.toJson(mailRequest));
         return Objects.equals(result, true);
     }
 
@@ -111,14 +110,7 @@ public class RedisCacheManager implements CacheManager {
 
     @Override
     public <T> T getMailRequest(String sessionId, Class<T> type) {
-
-        // [1] Key
-        String key = CacheUtils.createIdKey(Cache.VERIFICATION_MAIL, sessionId);
-
-        // [2] 데이터 조회 및 역직렬화 후 반환
-        Object jsonCache = redisTemplate.opsForValue().get(key);
-        return Objects.isNull(jsonCache) ?
-                null : StrUtils.fromJson((String) jsonCache, new TypeReference<>() {});
+        return getValue(Cache.VERIFICATION_MAIL, sessionId, type);
     }
 
 
@@ -136,7 +128,7 @@ public class RedisCacheManager implements CacheManager {
         String key = CacheUtils.createIdKey(cache, id);
 
         // [2] Redis Value 자료형으로 저장
-        redisTemplate.opsForValue().set(key, data);
+        stringRedisTemplate.opsForValue().set(key, StrUtils.toJson(data));
     }
 
     // Value 자료형 제거 시  공통적으로 처리하는 key 생성 & 삭제 로직
@@ -146,7 +138,7 @@ public class RedisCacheManager implements CacheManager {
         String key = CacheUtils.createIdKey(cache, id);
 
         // [2] Redis Value 제거
-        redisTemplate.delete(key);
+        stringRedisTemplate.delete(key);
     }
 
     // Value 자료형 조회 (타입 정보 제공)
@@ -156,9 +148,9 @@ public class RedisCacheManager implements CacheManager {
         String key = CacheUtils.createIdKey(cache, id);
 
         // [2] 데이터 조회 및 역직렬화 후 반환
-        Object jsonCache = redisTemplate.opsForValue().get(key);
+        String jsonCache = stringRedisTemplate.opsForValue().get(key);
         return Objects.isNull(jsonCache) ?
-                null : StrUtils.fromJson((String) jsonCache, new TypeReference<>() {});
+                null : StrUtils.fromJson(jsonCache, type);
     }
 
 
