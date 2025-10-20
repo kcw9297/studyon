@@ -6,8 +6,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import studyon.app.infra.cache.CacheUtils;
-import studyon.app.infra.mail.dto.MailVerifyRequest;
-import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.common.enums.Cache;
 import studyon.app.common.utils.StrUtils;
 
@@ -26,12 +24,6 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public void removeKey(String key) {
-        stringRedisTemplate.delete(key);
-    }
-
-
-    @Override
     public void recordLogin(Long memberId, String sessionId) {
 
         // [1] key
@@ -42,35 +34,31 @@ public class RedisCacheManager implements CacheManager {
 
         // [3] 공용 캐시에도, 로그인 회원 정보 기록
         String value = CacheUtils.createCommonLoginValue(memberId);
-        stringRedisTemplate.opsForSet().add(Cache.COMMON_LOGIN.getBaseKey(), value);
+        stringRedisTemplate.opsForSet().add(Cache.CURRENT_LOGIN.getBaseKey(), value);
     }
+
 
     @Override
     public void removeLogout(Long memberId, String sessionId) {
-        stringRedisTemplate.opsForSet().remove(Cache.COMMON_LOGIN.getBaseKey(), sessionId);
+        stringRedisTemplate.opsForSet().remove(Cache.CURRENT_LOGIN.getBaseKey(), sessionId);
     }
 
 
     @Override
-    public void saveProfile(MemberProfile profile) {
-
-        // [1] key, json 직렬화 문자열 생성
-        String key = CacheUtils.createIdKey(Cache.MEMBER_PROFILE, profile.getMemberId());
-        String json = StrUtils.toJson(profile); // JSON 직렬화된 회원 정보
-
-        // [2] Redis Value 자료형으로 저장
-        stringRedisTemplate.opsForValue().set(key, json);
+    public void saveProfile(Long memberId, Object profile) {
+        setJsonValue(Cache.MEMBER_PROFILE, memberId, profile);
     }
 
 
     @Override
     public void removeProfile(Long memberId) {
+        deleteValue(Cache.MEMBER_PROFILE, memberId);
+    }
 
-        // [1] key
-        String key = CacheUtils.createIdKey(Cache.MEMBER_PROFILE, memberId);
 
-        // [2] 프로필 삭제
-        stringRedisTemplate.delete(key);
+    @Override
+    public void recordLectureQuestionCache(String sessionId, Object cacheData) {
+        setJsonValue(Cache.LECTURE_QUESTION_CACHE, sessionId, cacheData);
     }
 
 
@@ -90,34 +78,18 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public boolean recordVerifyMail(MailVerifyRequest mailVerifyRequest, String sessionId) {
+    public boolean recordVerifyMail(String sessionId, Object mailRequest) {
 
         // [1] Key
-        String key = CacheUtils.createIdKey(Cache.COMMON_VERIFY_MAIL, sessionId);
+        String key = CacheUtils.createIdKey(Cache.VERIFICATION_MAIL, sessionId);
 
         // [2] 이미 중복되는 값이 있는지 확인
         // 존재 시 false 반환 (다시 시도하도록 유도)
         if (stringRedisTemplate.hasKey(key)) return false;
 
         // [3] 인증 정보를 직렬화 후 저장
-        // 정상적으로 생성 요청이 전달되었고 (결과가 null 이 아님) 1개의 원소가 잘 삽입된 경우 true (범용적인 사용을 위해 삭제 기간은 길게 둠)
-        Boolean result = redisTemplate.opsForValue().setIfAbsent(key, mailVerifyRequest, mailVerifyRequest.getExpiration().plusMinutes(30));
+        Boolean result = redisTemplate.opsForValue().setIfAbsent(key, mailRequest);
         return Objects.equals(result, true);
-    }
-
-
-    @Override
-    public MemberProfile getProfile(Long memberId) {
-
-        // [1] Redis 내 Hash 자료형으로 저장된 MemberProfile 데이터 조회 (Map 형태)
-        String key = CacheUtils.createIdKey(Cache.MEMBER_PROFILE, memberId);
-
-        // [2] 데이터 조회
-        String jsonProfile = stringRedisTemplate.opsForValue().get(key);
-
-        // [3] 데이터 존재 확인 후 역직렬화 후 반환
-        return Objects.isNull(jsonProfile) ?
-                null : StrUtils.fromJson(jsonProfile, new TypeReference<>() {});
     }
 
 
@@ -131,15 +103,63 @@ public class RedisCacheManager implements CacheManager {
         return stringRedisTemplate.opsForList().range(key, 0L, -1L);
     }
 
+    @Override
+    public <T> T getProfile(Long memberId, Class<T> type) {
+        return getValue(Cache.MEMBER_PROFILE, memberId, type);
+    }
+
 
     @Override
-    public MailVerifyRequest getMailRequest(String sessionId) {
+    public <T> T getMailRequest(String sessionId, Class<T> type) {
 
-        // [1] Redis 내 Hash 자료형으로 저장된 MemberProfile 데이터 조회 (Map 형태)
-        String key = CacheUtils.createIdKey(Cache.COMMON_VERIFY_MAIL, sessionId);
+        // [1] Key
+        String key = CacheUtils.createIdKey(Cache.VERIFICATION_MAIL, sessionId);
 
         // [2] 데이터 조회 및 역직렬화 후 반환
-        return StrUtils.fromJson(stringRedisTemplate.opsForValue().get(key), new TypeReference<>() {});
+        Object jsonCache = redisTemplate.opsForValue().get(key);
+        return Objects.isNull(jsonCache) ?
+                null : StrUtils.fromJson((String) jsonCache, new TypeReference<>() {});
     }
+
+
+    @Override
+    public <T> T getLectureQuestionCache(String sessionId, Class<T> type) {
+        return getValue(Cache.LECTURE_QUESTION_CACHE, sessionId, type);
+    }
+
+
+
+    // Value 자료형으로 저장 시 공통적으로 처리하는 key 생성 & 저장 로직
+    private void setJsonValue(Cache cache, Object id, Object data) {
+
+        // [1] Key
+        String key = CacheUtils.createIdKey(cache, id);
+
+        // [2] Redis Value 자료형으로 저장
+        redisTemplate.opsForValue().set(key, data);
+    }
+
+    // Value 자료형 제거 시  공통적으로 처리하는 key 생성 & 삭제 로직
+    private void deleteValue(Cache cache, Object id) {
+
+        // [1] Key
+        String key = CacheUtils.createIdKey(cache, id);
+
+        // [2] Redis Value 제거
+        redisTemplate.delete(key);
+    }
+
+    // Value 자료형 조회 (타입 정보 제공)
+    private <T> T getValue(Cache cache, Object id, Class<T> type) {
+
+        // [1] Key
+        String key = CacheUtils.createIdKey(cache, id);
+
+        // [2] 데이터 조회 및 역직렬화 후 반환
+        Object jsonCache = redisTemplate.opsForValue().get(key);
+        return Objects.isNull(jsonCache) ?
+                null : StrUtils.fromJson((String) jsonCache, new TypeReference<>() {});
+    }
+
 
 }

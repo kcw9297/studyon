@@ -53,7 +53,7 @@ public class CustomSocialLoginSuccessHandler extends SimpleUrlAuthenticationSucc
         SavedRequest savedRequest = requestCache.getRequest(request, response);
 
         // [5] 만일 이전에 접근한 주소가 있으면, 그 주소로 Redirect
-        String redirectUrl = Objects.isNull(savedRequest) ? URL.HOME : savedRequest.getRedirectUrl();
+        String redirectUrl = Objects.isNull(savedRequest) ? URL.INDEX : savedRequest.getRedirectUrl();
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 }

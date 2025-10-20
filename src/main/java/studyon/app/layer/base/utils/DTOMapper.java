@@ -3,10 +3,8 @@ package studyon.app.layer.base.utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
-import studyon.app.common.enums.Cache;
 import studyon.app.common.enums.Entity;
 import studyon.app.layer.domain.category.Category;
-import studyon.app.layer.domain.coupon.Coupon;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.lecture.Lecture;
@@ -194,25 +192,6 @@ public class DTOMapper {
                 .build();
     }
 
-    public static FileDTO.Upload toUploadDTO(MultipartFile file, Long entityId, Entity entity) {
-
-        // [1] 파일 정보 추출
-        String originalName = file.getOriginalFilename();
-        String ext = Objects.isNull(originalName) || originalName.isBlank() ?
-                "" : originalName.substring(originalName.lastIndexOf(".") + 1);
-        String storeName = "%s.%s".formatted(UUID.randomUUID().toString(), ext);
-
-        // [2] 추출 정보 기반 DTO 생성 및 반환
-        return FileDTO.Upload.builder()
-                .originalName(originalName)
-                .storeName(storeName)
-                .ext(ext)
-                .size(file.getSize())
-                .entityId(entityId)
-                .entity(entity)
-                .build();
-    }
-
     public static FileDTO.Read toReadDTO(File entity) {
 
         return FileDTO.Read.builder()
@@ -358,6 +337,20 @@ public class DTOMapper {
                 .createdAt(entity.getCreatedAt())
                 .paymentId(entity.getPayment().getPaymentId())
                 .paymentDetailId(entity.getPaymentDetails().getPaymentDetailId())
+                .build();
+    }
+
+    public static MemberDTO.Read toReadDto(Member member) {
+        return MemberDTO.Read.builder()
+                .memberId(member.getMemberId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .lastLoginAt(member.getLastLoginAt())
+                .cdate(member.getCdate())
+                .withdrawAt(member.getWithdrawAt())
+                .isActive(member.getIsActive())
+                .provider(member.getProvider())
+                .role(member.getRole())
                 .build();
     }
 

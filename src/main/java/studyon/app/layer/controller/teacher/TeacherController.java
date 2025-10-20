@@ -14,6 +14,6 @@ public class TeacherController {
 
     @GetMapping("/teacher/lecture/register")
     public String loginView(Model model) {
-        return ViewUtils.returnView(model, "layer/teacher/management/lecture_register");
+        return ViewUtils.returnView(model, , "layer/teacher/management/lecture_register");
     }
 }

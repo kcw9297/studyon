@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Env;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.exception.ManagerException;
-import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.file.FileDTO;
 
 import java.io.File;
@@ -38,7 +37,7 @@ public class LocalFileManager implements FileManager {
                 throw new ManagerException("저장할 파일이 존재하지 않습니다!"); // 파일이 존재하지 않으면 예외 발생
 
             // [3] 업로드 파일 DTO 생성 및 파일 저장
-            FileDTO.Upload dto = DTOMapper.toUploadDTO(file, entityId, entity); // 업로드 파일 정보를 담은 DTO 생성
+            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity); // 업로드 파일 정보를 담은 DTO 생성
             file.transferTo(new File("%s/%s".formatted(uploadPath, dto.getStoreName()))); // 파일 업로드
             return dto;
 

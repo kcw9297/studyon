@@ -3,6 +3,7 @@ package studyon.app.layer.domain.member;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import studyon.app.common.enums.Role;
 import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Provider;
 
@@ -54,6 +55,8 @@ public class MemberDTO {
         private Boolean isActive;
 
         private Provider provider;
+
+        private Role role;
     }
 
 

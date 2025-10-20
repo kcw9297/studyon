@@ -3,22 +3,18 @@ package studyon.app.infra.security.handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.URL;
-import studyon.app.common.enums.Cache;
 import studyon.app.common.utils.SecurityUtils;
 import studyon.app.common.utils.StrUtils;
-import studyon.app.infra.cache.CacheUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.security.dto.CustomUserDetails;
 import studyon.app.layer.base.dto.Rest;
-import studyon.app.layer.base.utils.HttpUtils;
-import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.layer.base.utils.RestUtils;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -56,9 +52,9 @@ public class CustomLogoutHandler implements LogoutSuccessHandler {
             cacheManager.removeLogout(userDetails.getMemberId(), sessionId);
 
         // [2] 로그아웃 응답 반환
-        HttpUtils.jsonOK(
+        RestUtils.jsonOK(
                 response,
-                StrUtils.toJson(Rest.Response.ok(Rest.Message.of("로그아웃 성공"), URL.HOME)
+                StrUtils.toJson(Rest.Response.ok(Rest.Message.of("로그아웃 성공"), URL.INDEX)
         ));
     }
 }

@@ -51,7 +51,7 @@ public class SessionDestroyedListener implements ApplicationListener<SessionDest
 
         // [4] 만약 로그인 세션이 더 이상 남아있지 않으면, 로그인 회원 목록에서 제거
         if (Objects.equals(remain, 0L))
-            stringRedisTemplate.opsForSet().remove(Cache.COMMON_LOGIN.getBaseKey(), commonLoginValue);
+            stringRedisTemplate.opsForSet().remove(Cache.CURRENT_LOGIN.getBaseKey(), commonLoginValue);
 
     }
 }

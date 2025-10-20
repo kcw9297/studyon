@@ -29,6 +29,35 @@ public class FileController {
     private final FileService fileService;
     private final FileRepository fileRepository;
 
+    @ResponseBody
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<?> download(@PathVariable Long fileId) {
+
+        // [1] 파일 조회
+        FileDTO.Read readDto = fileService.read(fileId);
+
+        // [2] 다운로드를 위한 파일 byte array 추출
+        byte[] fileBytes = fileManager.download(readDto.getStoreName(), readDto.getEntity());
+        String contentDisposition = "attachment; filename=\"%s\"".formatted(StrUtils.encodeToUTF8(readDto.getOriginalName()));
+
+        // [3] header, body 내 정보 삽입 후 HTTP 응답 반환
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .body(fileBytes);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     // 테스트 메소드
     @GetMapping("/list.do")
     public String listView(Model model) {
@@ -80,20 +109,4 @@ public class FileController {
         return "OK";
     }
 
-    @ResponseBody
-    @GetMapping("/download/{fileId}")
-    public ResponseEntity<?> download(@PathVariable Long fileId) {
-
-        // [1] 파일 조회
-        FileDTO.Read readDto = fileService.read(fileId);
-
-        // [2] 다운로드를 위한 파일 byte array 추출
-        byte[] fileBytes = fileManager.download(readDto.getStoreName(), readDto.getEntity());
-        String contentDisposition = "attachment; filename=\"%s\"".formatted(StrUtils.encodeToUTF8(readDto.getOriginalName()));
-
-        // [3] header, body 내 정보 삽입 후 HTTP 응답 반환
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                .body(fileBytes);
-    }
 }

@@ -16,7 +16,7 @@ import studyon.app.common.constant.Param;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.security.exception.WithdrawalException;
 import studyon.app.layer.base.dto.Rest;
-import studyon.app.layer.base.utils.HttpUtils;
+import studyon.app.layer.base.utils.RestUtils;
 
 import java.io.IOException;
 
@@ -52,7 +52,7 @@ public class CustomNormalLoginFailedHandler implements AuthenticationFailureHand
         // [2] 오류 상황 전달
         // 일반 회원의 이메일이 존재하지 않거나, 이메일과 비밀번호가 일치하지 않은 경우
         if (rootCause instanceof UsernameNotFoundException || rootCause instanceof BadCredentialsException)
-            HttpUtils.jsonFail(
+            RestUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(Param.ERROR_GLOBAL, Msg.INCORRECT_EMAIL_PASSWORD)),
                     HttpServletResponse.SC_BAD_REQUEST
@@ -60,7 +60,7 @@ public class CustomNormalLoginFailedHandler implements AuthenticationFailureHand
 
         // 회원 탈퇴가 완료된 회원인 경우
         else if (rootCause instanceof WithdrawalException)
-            HttpUtils.jsonFail(
+            RestUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(Param.ERROR_GLOBAL, Msg.WITHDRAWAL)),
                     HttpServletResponse.SC_FORBIDDEN
@@ -68,7 +68,7 @@ public class CustomNormalLoginFailedHandler implements AuthenticationFailureHand
 
         // 정지된 회원인 경우
         else if (rootCause instanceof DisabledException)
-            HttpUtils.jsonFail(
+            RestUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(Param.ERROR_GLOBAL, Msg.DISABLED)),
                     HttpServletResponse.SC_FORBIDDEN
@@ -76,7 +76,7 @@ public class CustomNormalLoginFailedHandler implements AuthenticationFailureHand
 
         // 그 밖의 기타 예기치 않은 오류로 실패한 경우
         else
-            HttpUtils.jsonFail(
+            RestUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(Param.ERROR_GLOBAL, Msg.SERVER_ERROR)),
                     HttpServletResponse.SC_INTERNAL_SERVER_ERROR
