@@ -1,11 +1,14 @@
+<%@ page contentType ="text/html;charset=utf-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>기본 레이아웃 | Oneday OneClass</title>
-  <link rel="stylesheet" href="MainTemplate.css">
-  <link rel="stylesheet" href="LectureRecommend.css">
+  <link rel="stylesheet" href="/css/base/main-Template.css">
+  <link rel="stylesheet" href="/css/layer/lecture/lecture_recommend.css">
 </head>
 <body>
   <div id="wrap">
@@ -14,7 +17,7 @@
             <header id="header">
                 <div class="header-container">
                     <div class="header-logo">
-                        <img src="resources/logo.png" id="logo"alt="로고이미지">
+                        <img src="/img/png/logo.png" id="logo"alt="로고이미지">
                     </div>
                     <div class="header-search">검색창</div>
                     <div class="header-info">
@@ -40,7 +43,7 @@
                   </div>
                     <div class ="recent-lecture-container">
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -49,7 +52,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -58,7 +61,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -67,7 +70,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -103,7 +106,7 @@
 
                 <div class ="recent-lecture-container">
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -112,7 +115,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -121,7 +124,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -130,7 +133,7 @@
                         </div>
                       </div>
                       <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                        <img src="/img/png/sample1.png" alt="강의이미지">
                         <div class="lecture-info">
                           <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
                           <p class="lecture-info-text">인프런</p>
@@ -163,13 +166,13 @@
       <div class="social-login-box">
         <div class="social-icons">
           <a href="#">
-              <img src="resources/kakao.png" alt="카카오 로그인">
+              <img src="/img/png/kakao.png" alt="카카오 로그인">
           </a>
           <a href="#">
-              <img src="resources/google.png" alt="구글 로그인">
+              <img src="/img/png/google.png" alt="구글 로그인">
           </a>
           <a href="#">
-              <img src="resources/kakao.png" alt="구글 로그인">
+              <img src="/img/png/kakao.png" alt="구글 로그인">
           </a>
         </div>
       </div>

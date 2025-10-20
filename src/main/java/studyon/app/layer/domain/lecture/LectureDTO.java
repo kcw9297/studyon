@@ -2,7 +2,6 @@ package studyon.app.layer.domain.lecture;
 
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import studyon.app.common.enums.Difficulty;
 import studyon.app.infra.aop.LogInfo;
@@ -66,5 +65,14 @@ public class LectureDTO {
         private Double price;
         private Difficulty difficulty;
         private Boolean onSale;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Search {
+        private String filter; // "title", "difficulty", "teacher"
+        private String keyword;
     }
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="studyon.app.layer.domain.member.mapper.LectureMapper">
+    <select id="selectAll" resultType="studyon.app.layer.domain.lecture.LectureDTO$Read">
+        SELECT
+        l.lecture_id,
+        l.title,
+        l.description,
+        l.price,
+        l.average_rate,
+        l.like_count,
+        l.total_students,
+        l.publish_date,
+        l.difficulty,
+        l.on_sale,
+        t.teacher_id,
+        t.subject,
+        t.average_rating AS teacher_rating
+        FROM lecture l
+        JOIN teacher t ON l.teacher_id = t.teacher_id
+        <where>
+            <if test="rq.filter eq 'title'">
+                l.title Like CONCAT('%', #{rq.keyword}, '%')
+            </if>
+            <if test="rq.filter eq ''difficulty'">
+                l.difficulty = #{rq.keyword}
+            </if>
+            <if test="rq.filter eq 'teacher'">
+                t.subject LIKE CONCAT('%', #{rq.keyword}, '%')
+            </if>
+        </where>
+        ORDER BY l.lecture_id DESC
+        LIMIT #{prq.size} OFFSET #{prq.startPage}
+    </select>
+
+    <!-- 전체 개수 (페이징용) -->
+    <select id="countAll" resultType="Integer">
+        SELECT COUNT(*)
+        FROM lecture l
+        JOIN teacher t ON l.teacher_id = t.teacher_id
+        <where>
+            <if test="rq.filter eq 'title'">
+                l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+            </if>
+            <if test="rq.filter eq 'difficulty'">
+                l.difficulty = #{rq.keyword}
+            </if>
+            <if test="rq.filter eq 'teacher'">
+                t.subject LIKE CONCAT('%', #{rq.keyword}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

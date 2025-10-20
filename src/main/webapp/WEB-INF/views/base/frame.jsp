@@ -32,17 +32,17 @@
 
                     <%-- 공용 헤더 --%>
                     <header id="header">
-                        <c:import url="/WEB-INF/views/base/header.jsp" />
+                        <jsp:include page="/WEB-INF/views/base/header.jsp" />
                     </header>
 
                     <%-- 메인 콘텐츠 --%>
                     <div id="content">
-                        <c:import url="${body}" />
+                        <jsp:include page="${body}" />
                     </div>
 
                     <%-- 공용 푸터 --%>
                     <footer id="footer">
-                        <c:import url="/WEB-INF/views/base/footer.jsp" />
+                        <jsp:include page="/WEB-INF/views/base/footer.jsp" />
                     </footer>
 
                 </div>

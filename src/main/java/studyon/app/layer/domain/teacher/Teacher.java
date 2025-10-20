@@ -3,6 +3,7 @@ package studyon.app.layer.domain.teacher;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.member.Member;
 
@@ -30,8 +31,9 @@ public class Teacher extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 100, nullable = false)
-    private String subject;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Subject subject;
 
     @Column(nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long totalStudents;
@@ -49,7 +51,7 @@ public class Teacher extends BaseEntity {
 
 
     @Builder
-    public Teacher(String subject, String description, Long teacherId, Member member) {
+    public Teacher(Subject subject, String description, Long teacherId, Member member) {
         this.member = member;
         this.teacherId = teacherId;
         this.subject = subject;
@@ -64,7 +66,7 @@ public class Teacher extends BaseEntity {
         갱신 로직 - 선생님 전용 페이지
     */
 
-    public void updateInfo(String subject, String description) {
+    public void updateInfo(Subject subject, String description) {
         this.subject = subject;
         this.description = description;
     }

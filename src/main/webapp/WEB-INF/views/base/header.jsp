@@ -3,7 +3,7 @@
 
 <div class="header-container">
     <div class="header-logo">
-        <img src="<c:url value='${isLogin ? "img/png/logo_login.png" : "img/png/logo_logout.png"}'/>" id="logo" alt="image">
+        <img src="<c:url value='${isLogin ? "/img/png/logo_login.png" : "/img/png/logo_logout.png"}'/>" id="logo" alt="image">
     </div>
     <div class="header-search">
 
@@ -25,13 +25,13 @@
 
         <c:if test="${not isLogin}">
             <a href="<c:url value='/login'/>" id="loginModalBtn" class="modal">
-                <img src="<c:url value='img/png/login.png'/>" class="svg-login" alt="로그인">
+                <img src="<c:url value='/img/png/login.png'/>" class="svg-login" alt="로그인">
             </a>
         </c:if>
 
         <c:if test="${isLogin}">
             <a href="#" id="loginModalBtn" onclick="header()" class="modal">
-                <img src="<c:url value='img/png/header.png'/>" class="svg-login" alt="로그아웃">
+                <img src="<c:url value='/img/png/header.png'/>" class="svg-login" alt="로그아웃">
             </a>
         </c:if>
     </div>

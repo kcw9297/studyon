@@ -6,11 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import studyon.app.common.enums.View;
 import studyon.app.infra.mail.dto.MailVerifyRequest;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.chat.service.ChatService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.infra.cache.manager.CacheManager;
@@ -155,7 +158,7 @@ public class TestController {
 
     @GetMapping("/websocket")
     public String websocket() {
-        return "test/websocket";
+        return "page/test/websocket";
     }
 
     @ResponseBody
@@ -165,8 +168,8 @@ public class TestController {
     }
 
     @GetMapping("/write")
-    public String write() {
-        return "test/write";
+    public String write(Model model) {
+        return ViewUtils.returnView(model, View.TEST, "write");
     }
 
 

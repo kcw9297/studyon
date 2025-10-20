@@ -268,7 +268,7 @@ public class DTOMapper {
 
     public static LectureQuestionDTO.Read toReadDTO(LectureQuestion entity) {
         return LectureQuestionDTO.Read.builder()
-                .lectureQnaId(entity.getLectureQnaId())
+                .lectureQnaId(entity.getLectureQuestionId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
                 .answerCount(entity.getAnswerCount())
@@ -301,11 +301,11 @@ public class DTOMapper {
                 .totalStudents(entity.getTotalStudents())
                 .totalReview(entity.getTotalReview())
                 .averageRating(entity.getAverageRating())
+                .nickname(entity.getMember().getNickname())
                 .build();
     }
 
     public static PaymentDTO.Read toReadDTO(Payment entity) {
-
         return PaymentDTO.Read.builder()
                 .paymentId(entity.getPaymentId())
                 .paidAt(entity.getPaidAt())
@@ -363,4 +363,20 @@ public class DTOMapper {
                 .role(member.getRole())
                 .build();
     }
+
+    /*
+        수정용 DTO -> 엔티티(필요 없어질 시 지울 예정)
+     */
+
+    /*
+    public static void applyEditToEntity(Teacher entity, TeacherDTO.Edit dto) {
+        if (dto.getDescription() != null) {
+            entity.updateInfo(dto.getDescription());
+        }
+        if (dto.getNickname() != null && entity.getMember() != null) {
+            entity.getMember().updateNickname(dto.getNickname());
+        }
+    }
+
+     */
 }
