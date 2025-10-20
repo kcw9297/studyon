@@ -327,7 +327,6 @@ public class DTOMapper {
     }
 
     public static PaymentDTO.Read toReadDTO(Payment entity) {
-
         return PaymentDTO.Read.builder()
                 .paymentId(entity.getPaymentId())
                 .paidAt(entity.getPaidAt())
@@ -372,5 +371,19 @@ public class DTOMapper {
                 .build();
     }
 
+    /*
+        수정용 DTO -> 엔티티(필요 없어질 시 지울 예정)
+     */
 
+    /*
+    public static void applyEditToEntity(Teacher entity, TeacherDTO.Edit dto) {
+        if (dto.getDescription() != null) {
+            entity.updateInfo(dto.getDescription());
+        }
+        if (dto.getNickname() != null && entity.getMember() != null) {
+            entity.getMember().updateNickname(dto.getNickname());
+        }
+    }
+
+     */
 }

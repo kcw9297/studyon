@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>기본 레이아웃 | Oneday OneClass</title>
+  <title>기본 레이아웃 | 선생님 프로필</title>
   <link rel="stylesheet" href="MainTemplate.css">
   <link rel="stylesheet" href="TeacherManagement.css">
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">

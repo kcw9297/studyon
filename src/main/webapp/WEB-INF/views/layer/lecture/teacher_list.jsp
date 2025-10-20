@@ -47,7 +47,6 @@
                           <p class="lecture-title">${t.nickname}</p>
                           <p class="lecture-info-text">${t.description}</p>
                           <p class="lecture-info-text">${t.averageRating}</p>
-                          <p class="lecture-info-text">⭐4.9 (15) 🧸200+</p>          
                         </div>
                       </div>
                     </c:forEach>

@@ -27,7 +27,7 @@ public class TeacherDTO {
         private Long teacherId;
 
         private Long memberId;
-
+//        private String email;
         private String description;
         private Subject subject;
         private Long totalStudents;

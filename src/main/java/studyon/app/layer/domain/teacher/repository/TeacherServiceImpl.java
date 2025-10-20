@@ -3,7 +3,9 @@ package studyon.app.layer.domain.teacher.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import studyon.app.common.constant.Msg;
 import studyon.app.common.enums.Subject;
+import studyon.app.layer.base.exception.NotFoundException;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
@@ -44,5 +46,20 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository.findBySubject(subject).stream()
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public TeacherDTO.Read getTeacherProfile(Long teacherId) {
+        return teacherRepository.findById(teacherId)
+                .map(DTOMapper::toReadDTO)
+                .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER));
+    }
+
+    @Override
+    public void updateTeacherProfile(Long teacherId, TeacherDTO.Edit dto) {
+        return teacherRepository.findById(teacherId)
+                .ifPresentOrElse(
+                        teacher -> teacherRepository.save(DTOMapper.toEntity(dto, teacher))
+                );
     }
 }
