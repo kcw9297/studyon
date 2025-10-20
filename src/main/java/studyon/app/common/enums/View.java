@@ -16,6 +16,7 @@ public enum View {
     TEST("test"),
     MEMBER("member"),
     TEACHER("teacher"),
+    LECTURE("lecture"),
     HOME("home"),
     EDITOR("editor");
 

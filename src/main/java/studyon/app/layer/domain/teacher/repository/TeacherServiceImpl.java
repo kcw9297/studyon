@@ -55,11 +55,17 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER));
     }
 
+
     @Override
     public void updateTeacherProfile(Long teacherId, TeacherDTO.Edit dto) {
-        return teacherRepository.findById(teacherId)
+        /*
+        teacherRepository.findById(teacherId)
                 .ifPresentOrElse(
                         teacher -> teacherRepository.save(DTOMapper.toEntity(dto, teacher))
                 );
+
+         */
     }
+
+
 }
