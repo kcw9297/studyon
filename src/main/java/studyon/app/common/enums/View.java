@@ -18,7 +18,8 @@ public enum View {
     TEACHER("teacher"),
     LECTURE("lecture"),
     HOME("home"),
-    EDITOR("editor");
+    EDITOR("editor"),
+    MYPAGE("mypage");
 
 
     private final String value;

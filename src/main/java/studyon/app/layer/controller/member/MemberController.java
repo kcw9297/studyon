@@ -45,6 +45,6 @@ public class MemberController {
         model.addAttribute("read", profile);
 
         // [3] 성공 응답 반환
-        return ViewUtils.returnView(model, View.MEMBER, "mypage/profile");
+        return ViewUtils.returnView(model, View.MEMBER, "profile");
     }
 }

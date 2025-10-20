@@ -54,6 +54,21 @@ spring:
     activate:
       on-profile: local
 
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          no-store: true
+          must-revalidate: true
+      chain:
+        cache: false
+
   session:
     timeout: 5m
 

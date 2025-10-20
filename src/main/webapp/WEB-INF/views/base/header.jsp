@@ -19,6 +19,9 @@
 
     </div>
     <div class="header-info">
+        <div>
+            ㅇㅇㅇ님 안녕하세요
+        </div>
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">
         </button>
