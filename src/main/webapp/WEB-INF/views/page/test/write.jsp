@@ -33,7 +33,7 @@
         <input type="hidden" id="content" name="content">
 
         <!-- iframe 에디터 -->
-        <iframe src="<c:url value="/summernote?width=1000&height=500"/>"></iframe>
+        <iframe src="<c:url value="/editor?width=1000&height=500"/>"></iframe>
 
         <!-- 하단 버튼 -->
         <div style="margin-top: 20px;">

@@ -9,6 +9,6 @@ public class LoginController {
 
     @GetMapping(URL.LOGIN)
     public String loginView() {
-        return "layer/login/login";
+        return "page/login/login";
     }
 }

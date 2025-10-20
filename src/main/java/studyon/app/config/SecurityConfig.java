@@ -65,7 +65,7 @@ public class SecurityConfig {
     public static final String[] PERMIT_ALL =
             {
                     URL.INDEX,
-                    URL.MEMBERS, URL.API_MEMBERS,
+                    URL.MEMBERS, URL.MEMBER_API,
                     LECTURES_ALL, TEACHERS_ALL, WEBSOCKET_ALL
             };
 

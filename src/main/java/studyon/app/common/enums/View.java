@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 public enum View {
 
+    TEST("test"),
     MEMBER("member"),
     TEACHER("teacher"),
     HOME("home"),
