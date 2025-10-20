@@ -27,7 +27,7 @@ public class TeacherController {
     // [1] 강의 생성 뷰
     @GetMapping(URL.LECTURE + URL.REGISTER)
     public String loginView(Model model) {
-        return ViewUtils.returnView(model, "layer/teacher/management/lecture_register");
+        return ViewUtils.returnView(model, , "layer/teacher/management/lecture_register");
     }
 
 

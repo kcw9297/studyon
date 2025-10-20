@@ -12,7 +12,6 @@ import software.amazon.awssdk.services.s3.model.*;
 import studyon.app.common.constant.Env;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.exception.ManagerException;
-import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.file.FileDTO;
 
 /**
@@ -38,7 +37,7 @@ public class AWSFileManager implements FileManager {
         try {
 
             // [1] 업로드 파일 DTO 생성 및 저장 경로 생성
-            FileDTO.Upload dto = DTOMapper.toUploadDTO(file, entityId, entity);
+            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity);
 
             String key = // 저장 경로 (key : 저장 경로 + 파일명)
                     "%s/%s".formatted(entity.getValue(), dto.getStoreName());

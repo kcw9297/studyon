@@ -16,7 +16,7 @@ import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.security.dto.CustomUserDetails;
 import studyon.app.layer.base.dto.Rest;
-import studyon.app.layer.base.utils.HttpUtils;
+import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class CustomNormalLoginSuccessHandler extends SimpleUrlAuthenticationSucc
         SavedRequest savedRequest = requestCache.getRequest(request, response);
 
         // [4] 만일 이전에 접근한 주소가 있으면, 그 주소로 Redirect
-        String redirectUrl = Objects.isNull(savedRequest) ? URL.HOME : savedRequest.getRedirectUrl();
-        HttpUtils.jsonOK(response, StrUtils.toJson(Rest.Response.ok(redirectUrl)));
+        String redirectUrl = Objects.isNull(savedRequest) ? URL.INDEX : savedRequest.getRedirectUrl();
+        RestUtils.jsonOK(response, StrUtils.toJson(Rest.Response.ok(redirectUrl)));
     }
 }

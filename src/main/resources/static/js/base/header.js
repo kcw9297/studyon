@@ -1,5 +1,5 @@
 
-function logout(e) {
+function header(e) {
 
     fetch("/logout", {
         method: "post",

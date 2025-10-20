@@ -4,20 +4,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.Msg;
-import studyon.app.common.constant.Param;
 import studyon.app.common.constant.StatusCode;
 import studyon.app.common.utils.StrUtils;
-import studyon.app.infra.security.exception.WithdrawalException;
 import studyon.app.layer.base.dto.Rest;
-import studyon.app.layer.base.utils.HttpUtils;
+import studyon.app.layer.base.utils.RestUtils;
 
 import java.io.IOException;
 
@@ -42,7 +37,7 @@ public class CustomSocialLoginFailedHandler implements AuthenticationFailureHand
         // [2] 오류 상황 전달
         // 소셜 회원정보를 얻는데 실패한 경우 (OAuth2User 조회 실패)
         if (exception instanceof OAuth2AuthenticationException)
-            HttpUtils.jsonFail(
+            RestUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(StatusCode.INTERNAL_ERROR, Msg.REST_OAUTH2_AUTHENTICATION_ERROR)),
                     HttpServletResponse.SC_INTERNAL_SERVER_ERROR
@@ -50,7 +45,7 @@ public class CustomSocialLoginFailedHandler implements AuthenticationFailureHand
 
         // 기타 서버 오류가 발생한 경우
         else
-            HttpUtils.jsonFail(
+            RestUtils.jsonFail(
                     response,
                     StrUtils.toJson(Rest.Response.fail(StatusCode.INTERNAL_ERROR, Msg.REST_SERVER_ERROR)),
                     HttpServletResponse.SC_INTERNAL_SERVER_ERROR

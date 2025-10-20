@@ -1,6 +1,5 @@
 package studyon.app.layer.base.utils;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,22 +12,7 @@ import studyon.app.layer.base.dto.Rest;
 import java.io.IOException;
 import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class HttpUtils {
-
-    /**
-     * cookie 삭제
-     * @param response HttpServletResponse
-     * @param cookieName 쿠키명
-     */
-    public static void deleteCookie(HttpServletResponse response, String cookieName) {
-
-        Cookie cookie = new Cookie(cookieName, null);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-    }
+public class RestUtils {
 
 
     /**
@@ -70,6 +54,10 @@ public class HttpUtils {
         response.setCharacterEncoding(Param.UTF_8);
         response.setStatus(status);
         response.getWriter().write(message);
+    }
+
+    public static ResponseEntity<?> ok(Rest.Message message) {
+        return new ResponseEntity<>(Rest.Response.ok(message), HttpStatus.OK);
     }
 
     public static ResponseEntity<?> ok(Rest.Message message, Object data) {
