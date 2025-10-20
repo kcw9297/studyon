@@ -72,15 +72,6 @@ spring:
   session:
     timeout: 5m
 
-  web:
-    resources:
-      cache:
-        cachecontrol:
-          no-store: true
-          must-revalidate: true
-      chain:
-        cache: false
-
   data:
     redis:
       timeout: 5000
