@@ -17,7 +17,6 @@ public final class URL {
     public static final String HOME = "/home";
     public static final String API = "/api";
     public static final String ADMIN = "/admin";
-    public static final String PROCESS = "/process";
     public static final String LOGIN = "/login";
     public static final String LOGOUT = "/header";
     public static final String TEACHER = "/teacher";
@@ -28,6 +27,8 @@ public final class URL {
     public static final String MEMBERS = "/members";
     public static final String EDITOR = "/editor";
 
+    // Security
+    public static final String LOGIN_PROCESS = LOGIN + "/process";
 
     /* MEMBER */
     public static final String MEMBER_API = API + MEMBERS;

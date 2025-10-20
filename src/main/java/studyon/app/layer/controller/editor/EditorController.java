@@ -18,6 +18,6 @@ public class EditorController {
 
     @GetMapping(URL.EDITOR)
     public String editor(Model model) {
-        return "base/editor";
+        return "page/editor/summernote";
     }
 }
