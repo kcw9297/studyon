@@ -289,7 +289,7 @@ public class DTOMapper {
 
     public static LectureQuestionDTO.Read toReadDTO(LectureQuestion entity) {
         return LectureQuestionDTO.Read.builder()
-                .lectureQnaId(entity.getLectureQnaId())
+                .lectureQnaId(entity.getLectureQuestionId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
                 .answerCount(entity.getAnswerCount())
@@ -322,6 +322,7 @@ public class DTOMapper {
                 .totalStudents(entity.getTotalStudents())
                 .totalReview(entity.getTotalReview())
                 .averageRating(entity.getAverageRating())
+                .nickname(entity.getMember().getNickname())
                 .build();
     }
 
@@ -370,4 +371,6 @@ public class DTOMapper {
                 .role(member.getRole())
                 .build();
     }
+
+
 }

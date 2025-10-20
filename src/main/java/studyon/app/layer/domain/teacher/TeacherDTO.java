@@ -2,6 +2,7 @@ package studyon.app.layer.domain.teacher;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import studyon.app.common.enums.Subject;
 import studyon.app.infra.aop.LogInfo;
 
 /*
@@ -28,11 +29,12 @@ public class TeacherDTO {
         private Long memberId;
 
         private String description;
-        private String subject;
+        private Subject subject;
         private Long totalStudents;
         private Long totalReview;
         private Double averageRating;
 
+        private String nickname;
     }
 
     @Data
@@ -41,7 +43,8 @@ public class TeacherDTO {
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Write {
         private String description;
-        private String subject;
+        private Subject subject;
+        private String nickname;
     }
 
     @Data
@@ -52,6 +55,8 @@ public class TeacherDTO {
         private Long teacherId;
 
         private String description;
-        private String subject;
+        private Subject subject;
+
+        private String nickname;
     }
 }

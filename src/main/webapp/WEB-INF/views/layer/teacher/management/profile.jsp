@@ -15,7 +15,7 @@
             <header id="header">
                 <div class="header-container">
                     <div class="header-logo">
-                        <img src="resources/logo.png" id="logo"alt="로고이미지">
+                        <img src="/img/png/logo.png" id="logo"alt="로고이미지">
                     </div>
                     <div class="header-search">검색창</div>
                     <div class="header-info">
@@ -34,12 +34,12 @@
                 </div>
                 <div class="divide-box-30px"></div>
                 <div class="teacher-photo">
-                      <img src="resources/teacher-profile-img.png" alt="강사이미지" class="teacher-img">
+                      <img src="/img/png/teacher-profile-img.png" alt="강사이미지" class="teacher-img">
                     </div>
                 <div class="Teacher-info-box">
                   <div class="profile-change-button-box">
                     <button class="profile-change-button">
-                      <img src="resources/upload.png" class="svg-upload">
+                      <img src="/img/png/upload.png" class="svg-upload">
                     </button>
                   </div>
                   

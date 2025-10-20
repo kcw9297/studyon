@@ -1,22 +1,27 @@
+<%@ page contentType ="text/html;charset=utf-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>기본 레이아웃 | Oneday OneClass</title>
-  <link rel="stylesheet" href="MainTemplate.css">
-  <link rel="stylesheet" href="TeacherList.css">
-  <link rel="stylesheet" href="/resources/css/Global.css">
+  <title>선생님 리스트</title>
+  <link rel="stylesheet" href="<c:url value='/css/base/main-template.css' />">
+  <link rel="stylesheet" href="<c:url value='/css/layer/lecture/teacher_list.css' />">
+  <link rel="stylesheet" href="<c:url value='/css/base/Global.css' />">
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
 <body>
+
+    <c:set var="ctx" value="${pageContext.request.contextPath}" />
   <div id="wrap">
     <main id="container">
         <div class="center-box">
             <header id="header">
                 <div class="header-container">
                     <div class="header-logo">
-                        <img src="resources/logo.png" id="logo"alt="로고이미지">
+                        <img src="<c:url value='/img/png/logo_logout.png'/>" id="logo"alt="로고이미지">
                     </div>
                     <div class="header-search">검색창</div>
                     <div class="header-info">
@@ -27,78 +32,26 @@
             <div id="content">콘텐츠영역
                 <div id="empty-box"></div>
                 <div class="nav-box">
-                    <div class="nav-item">수학</div>
-                    <div class="nav-item">영어</div>
-                    <div class="nav-item">국어</div>
-                    <div class="nav-item">과학탐구</div>
-                    <div class="nav-item">사회탐구</div>
+                    <a class="nav-item" href="<c:url value='/teacher/find/MATH'/>">수학</a>
+                    <a class="nav-item" href="<c:url value='/teacher/find/ENGLISH'/>">영어</a>
+                    <a class="nav-item" href="<c:url value='/teacher/find/KOREAN'/>">국어</a>
+                    <a class="nav-item" href="<c:url value='/teacher/find/SCIENCE'/>">과학탐구</a>
+                    <a class="nav-item" href="<c:url value='/teacher/find/SOCIAL'/>">사회탐구</a>
                 </div>
-                <div class="teacher-list-title">수학 선생님</div>
+                <div class="teacher-list-title">${subject.value} 선생님</div>
                 <div class ="recent-lecture-container">
-                      <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
+                    <c:forEach var="t" items="${teachers}">
+                    <div class="recent-lecture-item">
+                        <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
                         <div class="lecture-info">
-                          <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
-                          <p class="lecture-info-text">인프런</p>
-                          <p class="lecture-info-text">₩90,000</p>
+                          <p class="lecture-title">${t.nickname}</p>
+                          <p class="lecture-info-text">${t.description}</p>
+                          <p class="lecture-info-text">${t.averageRating}</p>
                           <p class="lecture-info-text">⭐4.9 (15) 🧸200+</p>          
                         </div>
                       </div>
-                      <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
-                        <div class="lecture-info">
-                          <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
-                          <p class="lecture-info-text">인프런</p>
-                          <p class="lecture-info-text">₩90,000</p>
-                          <p class="lecture-info-text">⭐4.9 (15) 🧸200+</p>          
-                        </div>
-                      </div>
-                      <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
-                        <div class="lecture-info">
-                          <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
-                          <p class="lecture-info-text">인프런</p>
-                          <p class="lecture-info-text">₩90,000</p>
-                          <p class="lecture-info-text">⭐4.9 (15) 🧸200+</p>          
-                        </div>
-                      </div>
-                      <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
-                        <div class="lecture-info">
-                          <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
-                          <p class="lecture-info-text">인프런</p>
-                          <p class="lecture-info-text">₩90,000</p>
-                          <p class="lecture-info-text">⭐4.9 (15) 🧸200+</p>          
-                        </div>
-                      </div>
-                      <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
-                        <div class="lecture-info">
-                          <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
-                          <p class="lecture-info-text">인프런</p>
-                          <p class="lecture-info-text">₩90,000</p>
-                          <p class="lecture-info-text">⭐4.9 (15) 🧸200+</p>          
-                        </div>
-                      </div>
-                      <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
-                        <div class="lecture-info">
-                          <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
-                          <p class="lecture-info-text">인프런</p>
-                          <p class="lecture-info-text">₩90,000</p>
-                          <p class="lecture-info-text">⭐4.9 (15) 🧸200+</p>          
-                        </div>
-                      </div>
-                      <div class="recent-lecture-item">
-                        <img src="resources/sample1.png" alt="강의이미지">
-                        <div class="lecture-info">
-                          <p class="lecture-title">일 잘하는 사람은 '이렇게' 말합니다</p>
-                          <p class="lecture-info-text">인프런</p>
-                          <p class="lecture-info-text">₩90,000</p>
-                          <p class="lecture-info-text">⭐4.9 (15) 🧸200+</p>          
-                        </div>
-                      </div>
-                  </div>
+                    </c:forEach>
+                </div>
             </div>
             <footer id="footer">푸터영역</footer>
         </div>
@@ -122,19 +75,19 @@
       <div class="social-login-box">
         <div class="social-icons">
           <a href="#">
-              <img src="resources/kakao.png" alt="카카오 로그인">
+              <img src="<c:url value='/img/png/kakao.png'/>" alt="카카오 로그인">
           </a>
           <a href="#">
-              <img src="resources/google.png" alt="구글 로그인">
+              <img src="<c:url value='/img/png/google.png'/>" alt="구글 로그인">
           </a>
           <a href="#">
-              <img src="resources/kakao.png" alt="구글 로그인">
+              <img src="<c:url value='/img/png/kakao.png'/>" alt="구글 로그인">
           </a>
         </div>
       </div>
 
     </div>
   </div>
-  <script src="Maintemplate.js"></script>
+  <script src="<c:url value='/js/Maintemplate.js'/>"></script>
 </body>
 </html>
