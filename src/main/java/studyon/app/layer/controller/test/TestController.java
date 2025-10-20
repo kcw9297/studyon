@@ -4,11 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.mail.dto.MailVerifyRequest;
 import studyon.app.layer.base.dto.Rest;
+import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.chat.service.ChatService;
 import studyon.app.layer.domain.member.MemberProfile;
@@ -166,6 +167,15 @@ public class TestController {
     @GetMapping("/write")
     public String write() {
         return "test/write";
+    }
+
+
+
+
+    @PostMapping("/api/editor/write")
+    public ResponseEntity<?> write(String title, String content) {
+        log.warn("content = {}", content);
+        return RestUtils.ok(Rest.Message.of("글 작성 성공"));
     }
 
 }

@@ -51,7 +51,7 @@
     </body>
 
     <%-- 공용 Script --%>
-    <script src="<c:url value='/js/base/logout.js'/>"></script>
+    <script src="<c:url value='/js/base/header.js'/>"></script>
 
 
 </html>

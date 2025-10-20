@@ -12,13 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class URL {
 
-    // base url
-    public static final String HOME = "/";
+    // base url (entity)
+    public static final String INDEX = "/";
+    public static final String HOME = "/home";
     public static final String API = "/api";
     public static final String ADMIN = "/admin";
     public static final String PROCESS = "/process";
     public static final String LOGIN = "/login";
-    public static final String LOGOUT = "/logout";
+    public static final String LOGOUT = "/header";
     public static final String TEACHER = "/teacher";
     public static final String TEACHERS =  "/teachers";
     public static final String LECTURE = "/lecture";
@@ -27,22 +28,13 @@ public final class URL {
     public static final String MEMBERS = "/members";
     public static final String EDITOR = "/editor";
 
-    // business method url
-    public static final String READ = "/read";
-    public static final String JOIN = "/join";
-    public static final String FIND = "/find";
-    public static final String WRITE = "/write";
-    public static final String UPLOAD = "/upload";
 
-    // Spring Security url
-    public static final String LOGIN_PROCESS = LOGIN + PROCESS;
+    /* MEMBER */
+    public static final String MEMBER_API = API + MEMBERS;
+    public static final String MEMBER_ADMIN_API = ADMIN + MEMBER_API;
+    public static final String MEMBER_ADMIN = ADMIN + MEMBER;
 
-    // @RestController url
-    public static final String API_MEMBERS = API + MEMBERS;
-    public static final String API_WRITE = API + WRITE;
-    public static final String API_EDITOR_UPLOAD = API + EDITOR + UPLOAD;
 
-    // @Controller url
 
 
     // 정적 상수 모음

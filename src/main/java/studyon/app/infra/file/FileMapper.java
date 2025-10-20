@@ -10,9 +10,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-class FileUtils {
+public class FileMapper {
 
-    public static FileDTO.Upload toUploadDTO(MultipartFile file, Long entityId, Entity entity) {
+    static FileDTO.Upload toUploadDTO(MultipartFile file, Long entityId, Entity entity) {
 
         // [1] 파일 정보 추출
         String originalName = file.getOriginalFilename();

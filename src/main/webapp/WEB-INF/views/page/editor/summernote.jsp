@@ -120,7 +120,6 @@
                 fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
                 focus : false,  // 에디터 로딩후 포커스 여부
                 tabDisable: true, // tab 비활성화 (완전 차단은 아니라, 이벤트에서도 차단 필요)
-                disableDragAndDrop: true, // Drag&Drop 차단 (완전 차단이 아니라 이벤트 차단도 필요)
                 shortcuts: false, // 브라우저 기본 키보드 이벤트(Ctrl+C, Ctrl+V 등)를 제외한 단축키 차단
                 onInit : function() {
 
@@ -132,13 +131,6 @@
                     if (oldContent) $('#summernote').summernote('code', oldContent);
                 },
                 callbacks: {
-
-                    // Drag&Drop
-                    onDrop: function (e) {
-                        e.preventDefault(); // 사용 차단
-                        e.stopPropagation();
-                        console.warn('[Drag&Drop 차단됨]');
-                    },
 
                     // keydown 이벤트 처리
                     onKeydown: function (e) {

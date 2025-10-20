@@ -36,7 +36,25 @@ public final class SecurityUtils {
         return Objects.isNull(authentication) ? null : (CustomUserDetails) authentication.getPrincipal();
     }
 
+    public static Long getMemberId() {
+        CustomUserDetails customUserDetails = getUserDetails();
+        return Objects.isNull(customUserDetails) ? null : customUserDetails.getMemberId();
+    }
+
+    public static String getSessionId() {
+
+        // [1] SecurityContextHolder 내 Authentication 인증객체 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // [2] WebAuthenticationDetails 내 세션번호 정보 반환
+        return ((WebAuthenticationDetails) authentication.getDetails()).getSessionId();
+    }
+
     public static String getSessionId(Authentication authentication) {
         return Objects.isNull(authentication) ? null : ((WebAuthenticationDetails) authentication.getDetails()).getSessionId();
     }
+
+
+
+
 }

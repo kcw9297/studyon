@@ -25,7 +25,7 @@
                 <div id="empty-box"></div>
                 <div class="error-container">
                   <div class="error-box">
-                    <img src="<c:url value='/img/png/logo.png'/>" class="error-logo">
+                    <img src="<c:url value='/img/png/logo_login.png'/>" class="error-logo">
                     <h1>404 ERROR</h1>
                     <p>죄송합니다. 페이지를 찾을 수 없습니다.<br>
                       존재하지 않는 주소를 입력하셨거나<br>

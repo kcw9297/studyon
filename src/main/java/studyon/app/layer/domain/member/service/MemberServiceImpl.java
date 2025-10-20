@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.constant.Msg;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.exception.NotFoundException;
 import studyon.app.layer.base.utils.DTOMapper;
@@ -28,22 +29,32 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page.Response<MemberDTO.Read> readPagedList(MemberDTO.Search rq, Page.Request prq) {
-
-        // [1] 회원 페이징
-        List<MemberDTO.Read> memberInfos = memberMapper.selectAll(rq, prq);
-
-        // [2] 페이징 결과 기반 카운트
-        Integer count = memberMapper.countAll(rq);
-
-        // [3] 조회 결과 반환
-        return Page.Response.create(memberInfos, prq.getPage(), prq.getSize(), count);
+    public MemberDTO.Read read(Long memberId) {
+        return memberRepository
+                .findById(memberId)
+                .map(DTOMapper::toReadDto)
+                .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER));
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public MemberProfile getProfile(Long memberId) {
+    public Page.Response<MemberDTO.Read> readPagedList(MemberDTO.Search rq, Page.Request prq) {
+
+        // [1] 회원 페이징
+        List<MemberDTO.Read> memberReads = memberMapper.selectAll(rq, prq);
+
+        // [2] 페이징 결과 기반 카운트
+        Integer count = memberMapper.countAll(rq);
+
+        // [3] 조회 결과 반환
+        return Page.Response.create(memberReads, prq.getPage(), prq.getSize(), count);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberProfile readProfile(Long memberId) {
         return memberRepository
                 .findById(memberId)
                 .map(DTOMapper::toMemberProfileDTO)
@@ -52,11 +63,19 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public void editPassword(Long memberId, String password) {
+    public String initPassword(Long memberId) {
+
+        // [1] 초기화할 패스워드 문자열 생성
+        String newPassword = StrUtils.createShortUUID();
+
+        // [2] 회원 조회 후 초기화 수행
         memberRepository
                 .findById(memberId)
                 .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER))
-                .updatePassword(passwordEncoder.encode(password)); // 비밀번호 갱신 (암호화된 비밀번호 사용)
+                .updatePassword(passwordEncoder.encode(newPassword)); // 암호화 후 초기화 수행
+
+        // [3] 초기화에 성공한 비밀번호 반환
+        return newPassword;
     }
 
 

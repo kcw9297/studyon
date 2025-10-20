@@ -114,10 +114,10 @@ public class SessionUtils {
         HttpSession session = getSession(request, false);
 
         // [2] 세션이 조회되지 않으면 HOME 주소 반환
-        if (Objects.isNull(session)) return URL.HOME;
+        if (Objects.isNull(session)) return URL.INDEX;
         Object attr = session.getAttribute(Param.REDIRECT_URL);
 
-        return Objects.isNull(attr) ? URL.HOME : (String) attr;
+        return Objects.isNull(attr) ? URL.INDEX : (String) attr;
     }
 
 }

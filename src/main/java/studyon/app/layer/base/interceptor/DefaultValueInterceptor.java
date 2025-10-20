@@ -102,7 +102,7 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
 
         // [2] 프로필이 없는 경우, 회원정보 조회 후 새로운 회원 프로필 정보 삽입
         if (Objects.isNull(profile)) {
-            MemberProfile newProfile = memberService.getProfile(memberId);
+            MemberProfile newProfile = memberService.readProfile(memberId);
             if (Objects.nonNull(newProfile)) cacheManager.saveProfile(memberId, newProfile);
         }
     }

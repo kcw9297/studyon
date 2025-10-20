@@ -22,7 +22,7 @@
 <main class="main">
     <h2>게시글 작성</h2>
 
-    <form id="writeForm" method="post" action="<c:url value="/api/editor/write"/>">
+    <form id="writeForm" method="post" action="<c:url value="/test/write"/>">
         <!-- 글 제목 -->
         <div class="field">
             <label for="title">제목</label>
@@ -33,7 +33,7 @@
         <input type="hidden" id="content" name="content">
 
         <!-- iframe 에디터 -->
-        <iframe src="<c:url value="/editor?width=1000&height=500"/>"></iframe>
+        <iframe src="<c:url value="/summernote?width=1000&height=500"/>"></iframe>
 
         <!-- 하단 버튼 -->
         <div style="margin-top: 20px;">
