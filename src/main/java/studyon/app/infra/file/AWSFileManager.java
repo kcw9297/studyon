@@ -11,6 +11,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import studyon.app.common.constant.Env;
 import studyon.app.common.enums.Entity;
+import studyon.app.common.enums.FileType;
 import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.domain.file.FileDTO;
 
@@ -32,7 +33,7 @@ public class AWSFileManager implements FileManager {
 
 
     @Override
-    public FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity) {
+    public FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
 
         try {
 
@@ -57,6 +58,21 @@ public class AWSFileManager implements FileManager {
         } catch (Exception e) {
             throw new ManagerException("AWS S3 파일 업로드에 실패했습니다!", e);
         }
+    }
+
+    @Override
+    public String uploadToTemp(MultipartFile file) {
+        return "";
+    }
+
+    @Override
+    public void removeTemp(String fileName) {
+
+    }
+
+    @Override
+    public String copyTempToEntity(String fileName, Long entityId, Entity entity, FileType fileType) {
+        return "";
     }
 
 

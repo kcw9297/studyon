@@ -41,6 +41,15 @@ public final class StrUtils {
         }
     }
 
+    public static <T> T fromJson(String json, Class<T> type) {
+        try {
+            return objectMapper.readValue(json, type);
+        } catch (Exception e) {
+            throw new UtilsException("-> DTO Object 역직렬화에 실패했습니다!", e);
+        }
+    }
+
+
 
     public static String encodeToUTF8(String text) {
 
@@ -102,5 +111,4 @@ public final class StrUtils {
                 "[%s::%s] %s".formatted(clazz.getSimpleName(), stack[2].getMethodName(), message) :
                 "[%s::%s] %s".formatted(clazz.getSimpleName(), "UNKNOWN_METHOD", message);
     }
-
 }

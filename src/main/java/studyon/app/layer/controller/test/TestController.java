@@ -6,9 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import studyon.app.common.enums.Entity;
+import studyon.app.common.enums.FileType;
 import studyon.app.common.enums.View;
+import studyon.app.infra.file.FileManager;
 import studyon.app.infra.mail.dto.MailVerifyRequest;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
@@ -30,6 +33,7 @@ import java.util.Objects;
 public class TestController {
 
     private final CacheManager cacheManager;
+    private final FileManager fileManager;
     private final MailManager mailManager;
     private final ChatService chatService;
 
@@ -168,14 +172,21 @@ public class TestController {
     }
 
     @GetMapping("/write")
-    public String write(Model model) {
-        return ViewUtils.returnView(model, View.TEST, "write");
+    public String write() {
+        return ViewUtils.returnNoFrameView(View.TEST, "write");
     }
 
 
+    @ResponseBody
+    @PostMapping("/editor/upload")
+    public ResponseEntity<?> write(MultipartFile file) {
+        String fileName = fileManager.uploadToTemp(file);
+        return RestUtils.ok(Rest.Message.of("파일 등록 성공. filename = " + fileName));
+    }
 
 
-    @PostMapping("/api/editor/write")
+    @ResponseBody
+    @PostMapping("/editor/write")
     public ResponseEntity<?> write(String title, String content) {
         log.warn("content = {}", content);
         return RestUtils.ok(Rest.Message.of("글 작성 성공"));

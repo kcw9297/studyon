@@ -11,6 +11,9 @@ import studyon.app.common.enums.View;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ViewUtils {
 
+    public static String returnNoFrameView(View view, String viewName) {
+        return "page/%s/%s".formatted(view.getValue(), viewName);
+    }
 
     public static String returnView(Model model, View view, String viewName) {
         model.addAttribute("body", resolvePageView(view, viewName));

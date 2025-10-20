@@ -33,8 +33,8 @@
         </c:if>
 
         <c:if test="${isLogin}">
-            <a href="#" id="loginModalBtn" onclick="header()" class="modal">
-                <img src="<c:url value='/img/png/header.png'/>" class="svg-login" alt="로그아웃">
+            <a href="#" id="loginModalBtn" onclick="logout()" class="modal">
+                <img src="<c:url value='/img/png/logout.png'/>" class="svg-login" alt="로그아웃">
             </a>
         </c:if>
     </div>

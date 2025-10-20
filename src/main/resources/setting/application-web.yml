@@ -72,6 +72,15 @@ spring:
   session:
     timeout: 5m
 
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          no-store: true
+          must-revalidate: true
+      chain:
+        cache: false
+
   data:
     redis:
       timeout: 5000
@@ -93,6 +102,11 @@ server:
         max-age: 300 # spring session timeout 값과 일치하게
         http-only: false
         secure: false
+
+    jsp:
+      init-parameters:
+        development: true
+
 
 # ===============================
 # profile - prod
