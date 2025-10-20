@@ -2,6 +2,7 @@ package studyon.app.layer.domain.file;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import studyon.app.common.enums.FileType;
 import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Entity;
 
@@ -28,6 +29,7 @@ public class FileDTO {
         private String ext;
         private Long size;
         private Entity entity;
+        private FileType fileType;
     }
 
 
@@ -43,6 +45,7 @@ public class FileDTO {
         private Long size;
         private Long entityId;
         private Entity entity;
+        private FileType fileType;
     }
 
 

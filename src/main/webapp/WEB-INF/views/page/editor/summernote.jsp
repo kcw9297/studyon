@@ -175,8 +175,7 @@
                         document.execCommand('insertHTML', false, escapedText);
                     },
 
-                    // 이미지 업로드 (버튼을 이용한 등록)
-                    /*
+                    // 이미지 업로드
                     onImageUpload: function (files) {
 
                         // [1] 파일 개수정보 추출
@@ -200,7 +199,7 @@
                         const file = files[0];
                         console.warn(file);
                         if (file.size > MAX_SIZE) {
-                            alert(`파일 ${file.name}은(는) 2MB 이하만 업로드 가능합니다.`);
+                            alert(`2MB 이하 파일만 업로드 가능합니다.`);
                             return;
                         }
 
@@ -222,16 +221,14 @@
                         formData.append("_csrf", token); // 인증 토큰 추가
 
                         $.ajax({
-                            url: '/api/editor/upload',
+                            url: '/test/editor/upload',
                             type: 'POST',
                             data: formData,
                             processData: false,
                             contentType: false,
-                            beforeSend: function(xhr) {
-                                if (token) xhr.setRequestHeader('X-XSRF-TOKEN', token);
-                            },
-                            success: function (url) {
-                                $('#summernote').summernote('insertImage', url);
+                            success: function (rp) {
+                                //$('#summernote').summernote('insertImage', url);
+                                alert(rp.message.content);
                                 syncToParent();
                             },
                             error: function () {
@@ -240,7 +237,6 @@
                         });
 
                     },
-                    */
 
 
                 }

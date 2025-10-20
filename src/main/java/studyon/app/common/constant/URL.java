@@ -18,7 +18,7 @@ public final class URL {
     public static final String API = "/api";
     public static final String ADMIN = "/admin";
     public static final String LOGIN = "/login";
-    public static final String LOGOUT = "/header";
+    public static final String LOGOUT = "/logout";
     public static final String TEACHER = "/teacher";
     public static final String TEACHERS =  "/teachers";
     public static final String LECTURE = "/lecture";

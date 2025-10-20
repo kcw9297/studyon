@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
+import studyon.app.common.enums.FileType;
 import studyon.app.infra.file.FileManager;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.common.utils.StrUtils;
@@ -77,7 +78,7 @@ public class FileController {
     @PostMapping("/upload.do")
     public String upload(MultipartFile file) {
 
-        FileDTO.Upload uploadDto = fileManager.upload(file, 1L, Entity.MEMBER);
+        FileDTO.Upload uploadDto = fileManager.upload(file, 1L, Entity.MEMBER, FileType.PROFILE);
         File entity = DTOMapper.toEntity(uploadDto);
         fileRepository.save(entity);
 
@@ -89,7 +90,7 @@ public class FileController {
     public String uploadAll(List<MultipartFile> files) {
 
         List<FileDTO.Upload> dtos = files.stream()
-                .map(file -> fileManager.upload(file, 1L, Entity.MEMBER))
+                .map(file -> fileManager.upload(file, 1L, Entity.MEMBER, FileType.PROFILE))
                 .toList();
 
         log.warn("uploadFileDTOs : {}", dtos);
