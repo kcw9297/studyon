@@ -13,6 +13,7 @@ public class Msg {
     public static final String DISABLED = "현재 정지된 상태입니다.\n관리자에게 문의하세요";
     public static final String SERVER_ERROR = "오류가 발생했습니다.\n잠시 후에 시도해 주세요";
     public static final String NOT_FOUND_MEMBER = "존재하지 않은 회원이거나, 이미 탈퇴한 회원입니다";
+    public static final String NOT_FOUND_TEACHER = "존재하지 않는 선생님입니다. \n 선생님 ID를 확인해주세요";
 
     // Rest Message
     public static final Rest.Message REST_OAUTH2_AUTHENTICATION_ERROR =

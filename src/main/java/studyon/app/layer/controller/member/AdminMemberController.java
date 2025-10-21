@@ -47,7 +47,7 @@ public class AdminMemberController {
         model.addAttribute("page", page);
 
         // [2] view 반환
-        return ViewUtils.returnView(model, View.MEMBER, "read");
+        return ViewUtils.returnView(model, View.MEMBER, "list");
     }
 
 

@@ -29,7 +29,7 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
     private final LectureQuestionRepository lectureQuestionRepository;
 
     @Override
-    public List<LectureQuestionDTO.Read> getAllQuestions() {
+    public List<LectureQuestionDTO.Read> readAllQuestions() {
         return lectureQuestionRepository.findAll()
                 .stream()
                 .map(DTOMapper::toReadDTO)
@@ -37,7 +37,7 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
     }
 
     @Override
-    public Optional<LectureQuestionDTO.Read> getQuestion(Long id) {
+    public Optional<LectureQuestionDTO.Read> readQuestion(Long id) {
         return Optional.empty();
     }
 
