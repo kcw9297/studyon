@@ -13,6 +13,14 @@
 
     <!-- 기존 CSS 로드 후 추가 -->
     <style>
+
+        /* 내부 이미지 선택 차단 */
+        .note-editable img {
+            -webkit-user-drag: none;
+            user-select: none;
+            cursor: default;
+        }
+
         /* 높이 조절 핸들 숨기기 */
         .note-resizebar {
             display: none !important;
@@ -70,14 +78,6 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.1/dist/lang/summernote-ko-KR.js"></script>
     <script>
 
-        // CSRF 토큰 쿠키 추출 함수
-        function getCSRFToken() {
-        // 현재 페이지의 meta 태그에서 읽기
-            const token = $('meta[name="_csrf"]').attr('content');
-            console.log('🔑 Meta 태그 토큰:', token);
-            return token;
-        }
-
         // 방향성 - 업로드 시에만 업로드 파일 반영
         // 최종적으로 업로드된 파일의 <img> 태그 추출해서 고아파일 색출 후 필요 없는파일은 삭제
         // 수정은, 기존의 본문을 불러와서 반영하고, 마찬가지로 파일의 변동에 따라 새롭게 추가된 파일 / 사라진 파일을 판별 (파일 정보로 판별)
@@ -87,8 +87,8 @@
             // 파일 변수
             const MAX_SIZE = 2 * 1024 * 1024; // 2MB
             const MAX_COUNT = 5;
-            const ALLOW_EXTS = ['webp', 'jpg', 'jpeg', 'png'];
-            const ALLOW_TYPES = ['image/webp', 'image/jpeg', 'image/png'];
+            const ALLOW_EXTS = ['webp', 'jpg', 'jpeg', 'png', 'gif'];
+            const ALLOW_TYPES = ['image/webp', 'image/jpeg', 'image/png', 'image/gif'];
             let uploadCount = 0; // 여태까지 시도한 업로드 횟수
 
             // 에디터 상수
@@ -109,28 +109,32 @@
                 toolbar: [
                     ['fontname', ['fontname']],
                     ['fontsize', ['fontsize']],
-                    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
-                    ['color', ['forecolor','color']],
+                    ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                    ['color', ['forecolor', 'color']],
                     ['table', ['table']],
                     ['para', ['ul', 'ol', 'paragraph']],
                     ['height', ['height']],
-                    ['insert',['picture','link']],
+                    ['insert', ['picture', 'link']],
                 ],
-                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
-                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
-                focus : false,  // 에디터 로딩후 포커스 여부
+                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체', '굴림', '돋움체', '바탕체'],
+                fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36', '50', '72'],
+                focus: false,  // 에디터 로딩후 포커스 여부
                 tabDisable: true, // tab 비활성화 (완전 차단은 아니라, 이벤트에서도 차단 필요)
                 shortcuts: false, // 브라우저 기본 키보드 이벤트(Ctrl+C, Ctrl+V 등)를 제외한 단축키 차단
-                onInit : function() {
-
-                    // tooltip 비활성화
-                    $('.note-editor [data-name="ul"]').tooltip('disable');
-
-                    // 페이지 로드 후, 부모 HTML 내의 "content" id 값과 동기화 (갱신 작업 시 유효)
-                    const oldContent = $(window.parent.document).find('#content').val();
-                    if (oldContent) $('#summernote').summernote('code', oldContent);
-                },
                 callbacks: {
+
+                    // 초기화
+                    onInit: function () {
+
+                        // tooltip 비활성화
+                        $('.note-editor [data-name="ul"]').tooltip('disable');
+
+                        // 페이지 로드 후, 부모 HTML 내의 "content" id 값과 동기화 (갱신 작업 시 유효)
+                        const oldContent = $(window.parent.document).find('#content').val();
+                        console.warn("oldContnet ", oldContent)
+                        if (oldContent) $('#summernote').summernote('code', oldContent);
+
+                    },
 
                     // keydown 이벤트 처리
                     onKeydown: function (e) {
@@ -145,8 +149,11 @@
                     // 내용이 변경되는 경우, 부모 HTML 내의 "content" id 값과 동기화
                     // 에디터가 iframe 기반으로 사용되므로, 반드시 동기화 필요
                     onChange: function () {
-                        console.log("변경 감지");
-                        syncToParent();
+                        // 부모의 "onEditorContentChange" 함수 호출 (변경 감지를 처리할 함수)
+                        if (typeof window.parent.onEditorContentChange === 'function') {
+                            const contents = $('#summernote').summernote('code');
+                            window.parent.onEditorContentChange(contents);
+                        }
                     },
 
                     // 붙여넣기
@@ -191,29 +198,28 @@
 
                         // 2) 업로드 시도 후 전체 이미지 개수 초과
                         if (currentCount + uploadCount > MAX_COUNT) {
-                            alert(`이미지는 최대 ${MAX_COUNT}개까지만 업로드할 수 있습니다.`);
+                            alert("이미지는 최대 " + MAX_COUNT + "개까지만 업로드할 수 있습니다.");
                             return;
                         }
 
                         // 3) 개별 이미지가 크기 제한(2MB) 초과
                         const file = files[0];
-                        console.warn(file);
                         if (file.size > MAX_SIZE) {
-                            alert(`2MB 이하 파일만 업로드 가능합니다.`);
+                            alert("2MB 이하 파일만 업로드 가능합니다.");
                             return;
                         }
 
                         // 4) 확장자 검증
                         const ext = file.name.split('.').pop().toLowerCase();
                         if (!ALLOW_EXTS.includes(ext) || !ALLOW_TYPES.includes(file.type)) {
-                            alert(`허용되지 않은 파일 형식입니다: ${file.name}`);
+                            alert(`허용되지 않은 파일 형식입니다`);
                             return;
                         }
 
 
-                        // ------------- 실제 업로드 처리 -------------
+                        // 파일 업로드 처리
                         const formData = new FormData();
-                        const token = getCSRFToken();
+                        const token = $('meta[name="_csrf"]').attr('content');
                         console.log('🔑 CSRF 토큰:', token);
                         console.log('🍪 전체 쿠키:', document.cookie);
                         formData.append("file", file);
@@ -221,18 +227,16 @@
                         formData.append("_csrf", token); // 인증 토큰 추가
 
                         $.ajax({
-                            url: '/test/editor/upload',
+                            url: '/file/upload/temp',
                             type: 'POST',
                             data: formData,
                             processData: false,
                             contentType: false,
-                            success: function (rp) {
-                                //$('#summernote').summernote('insertImage', url);
-                                alert(rp.message.content);
-                                syncToParent();
+                            success: function (url) {
+                                $('#summernote').summernote('insertImage', url);
                             },
                             error: function () {
-                                alert(`[${file.name}] 업로드 실패`);
+                                log.warn("파일 업로드에 실패했습니다.\n잠시 후에 다시 시도해 주세요");
                             }
                         });
 
@@ -241,13 +245,9 @@
 
                 }
             });
+        })
 
-            function syncToParent() {
-                const contents = $('#summernote').summernote('code');
-                $(window.parent.document).find('#content').val(contents);
-            }
 
-        });
     </script>
 
 </head>

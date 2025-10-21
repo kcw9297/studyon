@@ -54,23 +54,23 @@ spring:
     activate:
       on-profile: local
 
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
-
-  web:
-    resources:
-      cache:
-        cachecontrol:
-          no-store: true
-          must-revalidate: true
-      chain:
-        cache: false
+#  devtools:
+#    livereload:
+#      enabled: true
+#    restart:
+#      enabled: true
+#
+#  web:
+#    resources:
+#      cache:
+#        cachecontrol:
+#          no-store: true
+#          must-revalidate: true
+#      chain:
+#        cache: false
 
   session:
-    timeout: 5m
+    timeout: 60m
 
   data:
     redis:
@@ -90,7 +90,7 @@ server:
   servlet:
     session:
       cookie:
-        max-age: 300 # spring session timeout 값과 일치하게
+        max-age: 3600 # spring session timeout 값과 일치하게
         http-only: false
         secure: false
 

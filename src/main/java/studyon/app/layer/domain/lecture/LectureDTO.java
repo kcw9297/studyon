@@ -38,6 +38,8 @@ public class LectureDTO {
         private Long likeCount;
         private Boolean onSale;
         private LocalDateTime publishDate;
+
+        private String nickname;
     }
 
     @Data

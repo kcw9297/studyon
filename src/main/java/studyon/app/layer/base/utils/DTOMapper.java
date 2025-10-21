@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
 import studyon.app.layer.domain.category.Category;
+import studyon.app.layer.domain.category.CategoryDTO;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.lecture.Lecture;
@@ -52,8 +53,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class DTOMapper {
 
-    /*
-        !! toEntity() 메소드
+    /**
+     *  !! toEntity() 메소드
      */
 
     public static Member toEntity(MemberDTO.Join dto) {
@@ -88,6 +89,11 @@ public class DTOMapper {
                 .build();
     }
 
+    public static Category toEntity(CategoryDTO.Write dto, Lecture lecture) {
+        return Category.builder()
+                .name(dto.getName())
+                .build();
+    }
 
     public static Lecture toEntity(LectureDTO.Write dto, Teacher teacher) {
         return Lecture.builder()
@@ -175,8 +181,8 @@ public class DTOMapper {
                 .build();
     }
 
-    /*
-        !! toReadDTO() 메소드
+    /**
+     *  !! toReadDTO() 메소드
      */
     
     public static MemberDTO.Read toReadDTO(Member entity) {
@@ -220,6 +226,13 @@ public class DTOMapper {
                 .build();
     }
 
+    public static CategoryDTO.Read toReadDTO(Category entity) {
+        return CategoryDTO.Read.builder()
+                .categoryId(entity.getCategoryId())
+                .name(entity.getName())
+                .build();
+    }
+
     public static LectureDTO.Read toReadDTO(Lecture entity) {
         return LectureDTO.Read.builder()
                 .lectureId(entity.getLectureId())
@@ -235,6 +248,7 @@ public class DTOMapper {
                 .onSale(entity.getOnSale())
                 .publishDate(entity.getPublishDate())
                 .teacherId(entity.getTeacher().getTeacherId())
+                .nickname(entity.getTeacher().getMember().getNickname())
                 .build();
     }
 
@@ -247,6 +261,7 @@ public class DTOMapper {
                 .updatedAt(entity.getUpdatedAt())
                 .lectureId(entity.getLecture().getLectureId())
                 .memberId(entity.getMember().getMemberId())
+                .nickname(entity.getMember().getNickname())
                 .build();
     }
 
@@ -268,11 +283,10 @@ public class DTOMapper {
 
     public static LectureQuestionDTO.Read toReadDTO(LectureQuestion entity) {
         return LectureQuestionDTO.Read.builder()
-                .lectureQnaId(entity.getLectureQuestionId())
+                .lectureQuestionId(entity.getLectureQuestionId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
                 .answerCount(entity.getAnswerCount())
-                .viewCount(entity.getViewCount())
                 .viewCount(entity.getViewCount())
                 .isSolved(entity.getIsSolved())
                 .lectureId(entity.getLecture().getLectureId())
@@ -363,20 +377,4 @@ public class DTOMapper {
                 .role(member.getRole())
                 .build();
     }
-
-    /*
-        수정용 DTO -> 엔티티(필요 없어질 시 지울 예정)
-     */
-
-    /*
-    public static void applyEditToEntity(Teacher entity, TeacherDTO.Edit dto) {
-        if (dto.getDescription() != null) {
-            entity.updateInfo(dto.getDescription());
-        }
-        if (dto.getNickname() != null && entity.getMember() != null) {
-            entity.getMember().updateNickname(dto.getNickname());
-        }
-    }
-
-     */
 }

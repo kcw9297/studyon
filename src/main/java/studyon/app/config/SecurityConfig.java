@@ -118,10 +118,11 @@ public class SecurityConfig {
 
                 // CSRF 설정 (POST, DELETE, PATCH 등 변경이 발생하는 HTTP Method 는 반드시 검증 포함)
                 // AJAX 요청 시에는 반드시 "X-XSRF-TOKEN" 포함해야만 인증 성공 처리)
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers(CSRF_IGNORE_URLS) // CSRF 검증 예외 URL
-                )
+                //.csrf(csrf -> csrf
+                //        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                //        .ignoringRequestMatchers(CSRF_IGNORE_URLS) // CSRF 검증 예외 URL
+                //)
+                .csrf(AbstractHttpConfigurer::disable)
 
                 // CORS 설정 비활성화 (SSR 렌더링 시 프론트와 백엔드 요청이 모두 같은 도메인에서 발생)
                 .cors(AbstractHttpConfigurer::disable)

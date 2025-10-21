@@ -42,7 +42,7 @@ public class LocalFileManager implements FileManager {
 
         try {
             // [1] 저장 파일 디렉토리 확인 (없을 시 생성)
-            String uploadPath = "%s/%s/".formatted(fileDir, entity.getValue());
+            String uploadPath = "%s/%s/".formatted(fileDir, entity.getName());
             File dir = new File(uploadPath);
             if (!dir.exists()) dir.mkdirs();
 
@@ -51,7 +51,7 @@ public class LocalFileManager implements FileManager {
                 throw new ManagerException("저장할 파일이 존재하지 않습니다!"); // 파일이 존재하지 않으면 예외 발생
 
             // [3] 업로드 파일 DTO 생성 및 파일 저장
-            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity); // 업로드 파일 정보를 담은 DTO 생성
+            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity, fileType); // 업로드 파일 정보를 담은 DTO 생성
             file.transferTo(new File("%s/%s".formatted(uploadPath, dto.getStoreName()))); // 파일 업로드
             return dto;
 
@@ -64,8 +64,8 @@ public class LocalFileManager implements FileManager {
     }
 
     @Override
-    public String uploadToTemp(MultipartFile file) {
-        return "";
+    public FileDTO.Upload uploadToTemp(MultipartFile file) {
+        return upload(file, null, Entity.TEMP, null);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class LocalFileManager implements FileManager {
 
         try {
             // [1] 파일 저장 경로
-            String filePath = "%s/%s/%s".formatted(fileDir, entity.getValue(), storeName);
+            String filePath = "%s/%s/%s".formatted(fileDir, entity.getName(), storeName);
 
             // [2] Path 생성
             Path path = Paths.get(filePath);
@@ -103,7 +103,7 @@ public class LocalFileManager implements FileManager {
 
         try {
             // [1] 파일 저장 경로
-            String filePath = "%s/%s/%s".formatted(fileDir, entity.getValue(), storeName);
+            String filePath = "%s/%s/%s".formatted(fileDir, entity.getName(), storeName);
 
             // [2] 파일 삭제
             Files.delete(Paths.get(filePath));

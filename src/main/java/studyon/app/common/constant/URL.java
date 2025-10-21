@@ -28,6 +28,7 @@ public final class URL {
     public static final String SUBJECT = "/subject";
     public static final String REGISTER = "/register";
     public static final String EDITOR = "/editor";
+    public static final String FILE = "/file";
 
     // Security
     public static final String LOGIN_PROCESS = LOGIN + "/process";
@@ -37,7 +38,8 @@ public final class URL {
     public static final String MEMBER_ADMIN_API = ADMIN + MEMBER_API;
     public static final String MEMBER_ADMIN = ADMIN + MEMBER;
 
-
+    /* TEACHER */
+    public static final String TEACHERS_API = API + TEACHERS;
 
 
     // 정적 상수 모음

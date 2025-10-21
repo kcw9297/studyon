@@ -99,12 +99,13 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         // [1] 프로필 조회
         Long memberId = SessionUtils.getMemberId(request);
         MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        log.warn("profile = {}", profile);
 
         // [2] 프로필이 없는 경우, 회원정보 조회 후 새로운 회원 프로필 정보 삽입
         if (Objects.isNull(profile)) {
             MemberProfile newProfile = memberService.readProfile(memberId);
-            if (Objects.nonNull(newProfile)) cacheManager.saveProfile(memberId, newProfile);
-        }
+            log.warn("newProfile = {}", newProfile);
+            cacheManager.saveProfile(memberId, newProfile);
     }
 
     // 사용자의 실제 IP 추출
