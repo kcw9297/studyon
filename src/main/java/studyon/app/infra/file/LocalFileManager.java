@@ -51,7 +51,7 @@ public class LocalFileManager implements FileManager {
                 throw new ManagerException("저장할 파일이 존재하지 않습니다!"); // 파일이 존재하지 않으면 예외 발생
 
             // [3] 업로드 파일 DTO 생성 및 파일 저장
-            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity); // 업로드 파일 정보를 담은 DTO 생성
+            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity, fileType); // 업로드 파일 정보를 담은 DTO 생성
             file.transferTo(new File("%s/%s".formatted(uploadPath, dto.getStoreName()))); // 파일 업로드
             return dto;
 
@@ -64,8 +64,8 @@ public class LocalFileManager implements FileManager {
     }
 
     @Override
-    public String uploadToTemp(MultipartFile file) {
-        return "";
+    public FileDTO.Upload uploadToTemp(MultipartFile file) {
+        return upload(file, null, Entity.TEMP, null);
     }
 
     @Override

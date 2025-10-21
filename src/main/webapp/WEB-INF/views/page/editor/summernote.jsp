@@ -13,6 +13,14 @@
 
     <!-- 기존 CSS 로드 후 추가 -->
     <style>
+
+        /* 내부 이미지 선택 차단 */
+        .note-editable img {
+            -webkit-user-drag: none;
+            user-select: none;
+            cursor: default;
+        }
+
         /* 높이 조절 핸들 숨기기 */
         .note-resizebar {
             display: none !important;
@@ -87,8 +95,8 @@
             // 파일 변수
             const MAX_SIZE = 2 * 1024 * 1024; // 2MB
             const MAX_COUNT = 5;
-            const ALLOW_EXTS = ['webp', 'jpg', 'jpeg', 'png'];
-            const ALLOW_TYPES = ['image/webp', 'image/jpeg', 'image/png'];
+            const ALLOW_EXTS = ['webp', 'jpg', 'jpeg', 'png', 'gif'];
+            const ALLOW_TYPES = ['image/webp', 'image/jpeg', 'image/png', 'image/gif'];
             let uploadCount = 0; // 여태까지 시도한 업로드 횟수
 
             // 에디터 상수
@@ -109,19 +117,19 @@
                 toolbar: [
                     ['fontname', ['fontname']],
                     ['fontsize', ['fontsize']],
-                    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
-                    ['color', ['forecolor','color']],
+                    ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                    ['color', ['forecolor', 'color']],
                     ['table', ['table']],
                     ['para', ['ul', 'ol', 'paragraph']],
                     ['height', ['height']],
-                    ['insert',['picture','link']],
+                    ['insert', ['picture', 'link']],
                 ],
-                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
-                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
-                focus : false,  // 에디터 로딩후 포커스 여부
+                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체', '굴림', '돋움체', '바탕체'],
+                fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36', '50', '72'],
+                focus: false,  // 에디터 로딩후 포커스 여부
                 tabDisable: true, // tab 비활성화 (완전 차단은 아니라, 이벤트에서도 차단 필요)
                 shortcuts: false, // 브라우저 기본 키보드 이벤트(Ctrl+C, Ctrl+V 등)를 제외한 단축키 차단
-                onInit : function() {
+                onInit: function () {
 
                     // tooltip 비활성화
                     $('.note-editor [data-name="ul"]').tooltip('disable');
@@ -129,6 +137,7 @@
                     // 페이지 로드 후, 부모 HTML 내의 "content" id 값과 동기화 (갱신 작업 시 유효)
                     const oldContent = $(window.parent.document).find('#content').val();
                     if (oldContent) $('#summernote').summernote('code', oldContent);
+
                 },
                 callbacks: {
 
@@ -191,22 +200,21 @@
 
                         // 2) 업로드 시도 후 전체 이미지 개수 초과
                         if (currentCount + uploadCount > MAX_COUNT) {
-                            alert(`이미지는 최대 ${MAX_COUNT}개까지만 업로드할 수 있습니다.`);
+                            alert("이미지는 최대 " + MAX_COUNT + "개까지만 업로드할 수 있습니다.");
                             return;
                         }
 
                         // 3) 개별 이미지가 크기 제한(2MB) 초과
                         const file = files[0];
-                        console.warn(file);
                         if (file.size > MAX_SIZE) {
-                            alert(`2MB 이하 파일만 업로드 가능합니다.`);
+                            alert("2MB 이하 파일만 업로드 가능합니다.");
                             return;
                         }
 
                         // 4) 확장자 검증
                         const ext = file.name.split('.').pop().toLowerCase();
                         if (!ALLOW_EXTS.includes(ext) || !ALLOW_TYPES.includes(file.type)) {
-                            alert(`허용되지 않은 파일 형식입니다: ${file.name}`);
+                            alert(`허용되지 않은 파일 형식입니다`);
                             return;
                         }
 
@@ -227,12 +235,12 @@
                             processData: false,
                             contentType: false,
                             success: function (rp) {
-                                //$('#summernote').summernote('insertImage', url);
-                                alert(rp.message.content);
+                                $('#summernote').summernote('insertImage', rp.data.url);
                                 syncToParent();
                             },
-                            error: function () {
-                                alert(`[${file.name}] 업로드 실패`);
+                            error: function (xhr) {
+                                log.warn(xhr.responseJSON);
+                                alert(`[\${file.name}] 업로드 실패`);
                             }
                         });
 
@@ -246,8 +254,9 @@
                 const contents = $('#summernote').summernote('code');
                 $(window.parent.document).find('#content').val(contents);
             }
+        })
 
-        });
+
     </script>
 
 </head>

@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.chat.service.ChatService;
+import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.mail.manager.MailManager;
@@ -36,6 +38,9 @@ public class TestController {
     private final FileManager fileManager;
     private final MailManager mailManager;
     private final ChatService chatService;
+
+    @Value("${file.domain}")
+    private String fileDomain;
 
     /**
      * 회원 프로필 저장 (Form 데이터)
@@ -179,17 +184,26 @@ public class TestController {
 
     @ResponseBody
     @PostMapping("/editor/upload")
-    public ResponseEntity<?> write(MultipartFile file) {
-        String fileName = fileManager.uploadToTemp(file);
-        return RestUtils.ok(Rest.Message.of("파일 등록 성공. filename = " + fileName));
-    }
+    public ResponseEntity<?> write(HttpSession session, MultipartFile file) {
 
+        FileDTO.Upload fileUpload = fileManager.uploadToTemp(file);
+        log.warn("fileUpload = {} fileDomain = {}", fileUpload, fileDomain);
+
+        cacheManager.recordEditorTempFile(session.getId(), fileUpload.getOriginalName());
+        return RestUtils.ok(Map.of("url", "%s/%s/%s".formatted(fileDomain, Entity.TEMP.getValue(), fileUpload.getStoreName())));
+    }
 
     @ResponseBody
     @PostMapping("/editor/write")
     public ResponseEntity<?> write(String title, String content) {
         log.warn("content = {}", content);
         return RestUtils.ok(Rest.Message.of("글 작성 성공"));
+    }
+
+    @PostMapping("/editor/write/exit")
+    public ResponseEntity<?> writeExit() {
+        log.warn("write 창 닫음");
+        return ResponseEntity.ok().build();
     }
 
 }

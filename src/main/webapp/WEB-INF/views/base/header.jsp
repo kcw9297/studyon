@@ -19,9 +19,11 @@
 
     </div>
     <div class="header-info">
-        <div>
-            ㅇㅇㅇ님 안녕하세요
-        </div>
+        <c:if test="${isLogin}">
+            <div style="margin-right: 20px">
+                    ${sessionScope.profile.nickname}님 안녕하세요
+            </div>
+        </c:if>
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">
         </button>

@@ -43,11 +43,17 @@ public interface CacheManager {
     void removeProfile(Long memberId);
 
     /**
-     * 강의 질문 게시글 캐시데이터 기록
+     * 에디터에 업로드된 임시파일 정보 기록
      * @param sessionId 현재 회원의 세션번호
-     * @param cacheData 저장할 캐시데이터 (DTO)
+     * @param tempFileName 현재 저장된 임시파일명
      */
-    void recordLectureQuestionCache(String sessionId, Object cacheData);
+    void recordEditorTempFile(String sessionId, String tempFileName);
+
+    /**
+     * 에디터에 업로드된 임시파일 정보 일괄 조회 후 삭제
+     * @param sessionId 현재 회원의 세션번호
+     */
+    List<String> getAndRemoveAllEditorTempFiles(String sessionId);
 
     /**
      * 최근에 검색한 강의 검색어 기록
@@ -84,12 +90,4 @@ public interface CacheManager {
      * @param type 저장했던 DTO Class Type
      */
     <T> T getMailRequest(String sessionId, Class<T> type);
-
-    /**
-     * 강의 질문 게시글 캐시데이터 기록
-     * @param sessionId 현재 회원의 세션번호
-     * @param type 저장했던 DTO Class Type
-     */
-    <T> T getLectureQuestionCache(String sessionId, Class<T> type);
-
 }

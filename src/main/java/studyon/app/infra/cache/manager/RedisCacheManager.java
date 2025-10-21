@@ -1,16 +1,17 @@
 package studyon.app.infra.cache.manager;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import studyon.app.infra.cache.CacheUtils;
 import studyon.app.common.enums.Cache;
 import studyon.app.common.utils.StrUtils;
 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Component
@@ -56,8 +57,32 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public void recordLectureQuestionCache(String sessionId, Object cacheData) {
-        setJsonValue(Cache.LECTURE_QUESTION_CACHE, sessionId, cacheData);
+    public void recordEditorTempFile(String sessionId, String tempFileName) {
+
+        // [1] key
+        String key = CacheUtils.createIdKey(Cache.EDITOR_TEMP, sessionId);
+        String backupKey = CacheUtils.createBackupKey(key);
+
+        // [2] Redis List 자료형으로 저장
+        stringRedisTemplate.opsForList().rightPush(key, tempFileName);
+        stringRedisTemplate.expire(key, Duration.ofSeconds(30)); // 30초뒤 만료
+
+        // [3] 백업 데이터 저장 (만료/삭제 시 처리 목적)
+        stringRedisTemplate.opsForList().rightPush(backupKey, tempFileName);
+        stringRedisTemplate.expire(key, Duration.ofSeconds(300)); // 원본보다 더 긴 만료시간
+    }
+
+
+    @Override
+    public List<String> getAndRemoveAllEditorTempFiles(String sessionId) {
+
+        // [1] key
+        String key = CacheUtils.createIdKey(Cache.EDITOR_TEMP, sessionId);
+        List<String> members = stringRedisTemplate.opsForList().range(key, 0, -1);
+
+        // [2] key 삭제 및 반환
+        stringRedisTemplate.delete(key);
+        return Objects.isNull(members) ?  new ArrayList<>() : members;
     }
 
 
@@ -111,12 +136,6 @@ public class RedisCacheManager implements CacheManager {
     @Override
     public <T> T getMailRequest(String sessionId, Class<T> type) {
         return getValue(Cache.VERIFICATION_MAIL, sessionId, type);
-    }
-
-
-    @Override
-    public <T> T getLectureQuestionCache(String sessionId, Class<T> type) {
-        return getValue(Cache.LECTURE_QUESTION_CACHE, sessionId, type);
     }
 
 

@@ -2,11 +2,13 @@ package studyon.app.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
@@ -25,6 +27,7 @@ import org.springframework.session.config.SessionRepositoryCustomizer;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisIndexedHttpSession;
+import studyon.app.common.constant.Env;
 import studyon.app.infra.redis.RedisEventListener;
 
 import java.time.Duration;
@@ -34,6 +37,7 @@ import java.util.Objects;
  *
  */
 
+@Slf4j
 @Configuration
 @EnableCaching // SpringCache 활성화 (Redis)
 @EnableRedisIndexedHttpSession // Session Event 수신 가능
@@ -126,6 +130,11 @@ public class RedisConfig implements SessionRepositoryCustomizer<RedisIndexedSess
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(messageListenerAdapter(), new PatternTopic(KEY_EVENT_EXPIRED));
         container.addMessageListener(messageListenerAdapter(), new PatternTopic(KEY_EVENT_DEL));
+
+        container.setErrorHandler(e -> {
+            log.error("Redis 메시지 리스너 오류 발생", e);
+        });
+
         return container;
     }
 

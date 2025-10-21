@@ -17,6 +17,10 @@ public final class CacheUtils {
         return "%s:%s".formatted(cache.getBaseKey(), id);
     }
 
+    public static String createBackupKey(String key) {
+        return "BACKUP:%s".formatted(key);
+    }
+
     public static String createCommonLoginValue(Long memberId) {
         return "login:%s".formatted(memberId);
     }

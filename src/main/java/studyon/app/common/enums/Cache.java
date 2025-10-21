@@ -16,8 +16,7 @@ public enum Cache {
     MEMBER_PROFILE("member:profile"),
     MEMBER_LATEST_SEARCH("member:search:latest"),
     MEMBER_LOGIN("member:login"),
-    LECTURE_CACHE("cache:lecture"),
-    LECTURE_QUESTION_CACHE("cache:lecture-question"),
+    EDITOR_TEMP("temp:editor"),
     CURRENT_LOGIN("current:login"),
     VERIFICATION_MAIL("verification:mail");
 

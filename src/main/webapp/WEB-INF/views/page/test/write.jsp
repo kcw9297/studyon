@@ -17,6 +17,7 @@
         }
     </style>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
 
         // CSRF 토큰 쿠키 추출 함수
@@ -32,6 +33,7 @@
         // 수정은, 기존의 본문을 불러와서 반영하고, 마찬가지로 파일의 변동에 따라 새롭게 추가된 파일 / 사라진 파일을 판별 (파일 정보로 판별)
         // 파일 테이블에 파일 유형도 첨부하여 구분할 예정, EDITOR, THUMBNAIL, 등...
         $(document).ready(function() {
+
 
             $('#writeForm').on('submit', function(e) {
                 e.preventDefault();
@@ -62,8 +64,11 @@
                     }
                 });
                  */
+            });
 
-
+            // [6] 브라우저 창 닫기 / 새로고침 시 연결 종료
+            window.addEventListener("beforeunload", (e) => {
+                navigator.sendBeacon("/test/editor/write/exit");
             });
 
         });

@@ -38,7 +38,7 @@ public class AWSFileManager implements FileManager {
         try {
 
             // [1] 업로드 파일 DTO 생성 및 저장 경로 생성
-            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity);
+            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity, fileType);
 
             String key = // 저장 경로 (key : 저장 경로 + 파일명)
                     "%s/%s".formatted(entity.getValue(), dto.getStoreName());
@@ -61,8 +61,8 @@ public class AWSFileManager implements FileManager {
     }
 
     @Override
-    public String uploadToTemp(MultipartFile file) {
-        return "";
+    public FileDTO.Upload uploadToTemp(MultipartFile file) {
+        return null;
     }
 
     @Override
