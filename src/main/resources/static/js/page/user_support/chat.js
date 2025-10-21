@@ -1,53 +1,89 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const loginBtn = document.getElementById("loginModalBtn");
-  const modalBg = document.getElementById("loginModalBg");
-  const closeBtn = document.getElementById("closeModal");
+// const socket = new WebSocket("ws://localhost:8080/chat");
 
-  // 🔹 로그인 버튼 클릭 시 모달 열기
-  loginBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    modalBg.style.display = "flex";
-  });
+// socket.onopen = () => {
+//   console.log("Websocket connected");
+// }
+// socket.send(JSON.stringify({
+//   sender:"user",
+//   message:text
+// }))
 
-  // 🔹 닫기 버튼 클릭 시 모달 닫기
-  closeBtn.addEventListener("click", function () {
-    modalBg.style.display = "none";
-  });
+// socket.onmessage = (event) => {
+//   const data = JSON.parse(event.data);
+//   const agentMsg = document.createElement("div");
 
-  // 🔹 배경 클릭 시 모달 닫기
-  window.addEventListener("click", function (e) {
-    if (e.target === modalBg) {
-      modalBg.style.display = "none";
-    }
-  });
-});
+//   agentMsg.classList.add("message", "agent");
+//   agentMsg.textContent = data.message;
 
-
+//   chatMessages.appendChild(agentMsg);
+//   chatMessages.scrollTop = chatMessages.scrollHeight;
+// }
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("searchInput");
-  const searchResults = document.getElementById("searchResults");
+    const sendBtn = document.getElementById("send"); // ID가 send인 버튼을 sendBtn 변수에 담음
+    const chatMessages = document.querySelector(".chat-messages"); // chat-messages 클래스를 가진 div 블록을 chatMessages 변수에 담음
+    const input = document.querySelector(".chat-input input"); // chat input의 input이 실제 메세지입력임 메세지 입력을 자바스크립트 input 변수에 담음
+    const params = new URLSearchParams(window.location.search);
+    const roomId = params.get("roomId") || "0";
+    const socket = new WebSocket("ws://localhost:8080/ws/chat");
 
-  // 🔍 포커스 시 결과창 표시
-  searchInput.addEventListener("focus", () => {
-    searchResults.style.display = "flex";
-  });
 
-  // 🔍 입력 중일 때 (예: API 검색 연결 가능)
-  searchInput.addEventListener("input", (e) => {
-    const keyword = e.target.value.trim();
-    if (keyword === "") {
-      searchResults.style.display = "none";
-    } else {
-      searchResults.style.display = "flex";
-    }
-  });
+    socket.onopen = () => {
+        console.log("✅ WebSocket 연결 성공!");
 
-  // ✅ input 외부 클릭 시 닫기
-  document.addEventListener("click", (e) => {
-    if (!searchResults.contains(e.target) && e.target !== searchInput) {
-      searchResults.style.display = "none";
-    }
-  });
+        // ✅ 입장 시 DB에 저장된 이전 메시지 불러오기
+        fetch(`/usersupport/messages/${roomId}`)
+            .then(res => res.json())
+            .then(messages => {
+                console.log("📥 기존 메시지 불러옴:", messages);
+                messages.forEach(msg => {
+                    const div = document.createElement("div");
+
+                    // ✅ senderId가 6(관리자)이면 agent, 아니면 user로 처리
+                    div.classList.add("message", msg.senderId === 6 ? "agent" : "user");
+
+                    div.textContent = msg.message;
+                    chatMessages.appendChild(div);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            })
+            .catch(err => console.error("❌ 메시지 불러오기 실패:", err));
+    };
+
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        const newMessage = document.createElement("div");
+        if (data.type === "ADMIN") {
+            newMessage.classList.add("message", "agent");  // 상담사 메시지
+        } else {
+            newMessage.classList.add("message", "user");   // 고객 메시지
+        }
+        newMessage.textContent = data.msg;
+
+        chatMessages.appendChild(newMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    sendBtn.addEventListener("click", () => {
+        const text = input.value.trim(); // ✅ 올바른 속성
+        if (text === "") return; // 빈 문자열이면 무시
+
+        socket.send(JSON.stringify({
+            msg: text,
+            roomId: roomId
+        }));
+
+
+        input.value = ""; // 입력칸 비우기
+        chatMessages.scrollTop = chatMessages.scrollHeight; // 스크롤을 맨 아래로 내림
+    });
+
+    //엔터키로도 전송가능함
+    input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendBtn.click();
+    });
 });
+
+

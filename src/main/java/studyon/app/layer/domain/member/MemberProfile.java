@@ -21,7 +21,7 @@ public final class MemberProfile implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
+    
     private Long memberId;
     private String nickname;
     private String email;

@@ -22,6 +22,12 @@
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/base/home.css'/>">
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/base/frame.css'/>">
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/mypage/mypage.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/lecture/lecture_detail.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/chatbot/chatbot.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/user_support/start_chat.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/user_support/chat.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/admin.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/admin_support.css'/>">
 
 
     </head>
@@ -56,7 +62,9 @@
     <script src="<c:url value='/js/base/header.js'/>"></script>
     <script src="<c:url value='/js/mypage/account.js'/>"></script>
     <script src="<c:url value='/js/mypage/coupons.js'/>"></script>
-
+    <script src="<c:url value='/js/page/lecture/lecture_detail.js'/>"></script>
+    <script src="<c:url value='/js/page/chatbot/chatbot.js'/>"></script>
+    <script src="<c:url value='/js/page/user_support/start_chat.js'/>"></script>
 
 </html>
 
