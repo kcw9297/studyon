@@ -13,13 +13,8 @@ import studyon.app.layer.base.utils.SessionUtils;
 
 import java.util.Objects;
 
-/**
- * HttpSession 만료 시, 해당 이벤트를 처리하는 리스너 클래스
- * @version 1.0
- * @author kcw97
- */
+
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class SessionDestroyedListener implements ApplicationListener<SessionDestroyedEvent> {
 
@@ -31,6 +26,7 @@ public class SessionDestroyedListener implements ApplicationListener<SessionDest
     @Override
     public void onApplicationEvent(SessionDestroyedEvent event) {
 
+        /*
         // [1] 만료 세션정보 조회
         String sessionId = event.getSessionId();
         String sessionKey = SessionUtils.createSessionKey(namespace, sessionId);
@@ -53,5 +49,7 @@ public class SessionDestroyedListener implements ApplicationListener<SessionDest
         if (Objects.equals(remain, 0L))
             stringRedisTemplate.opsForSet().remove(Cache.CURRENT_LOGIN.getBaseKey(), commonLoginValue);
 
+
+         */
     }
 }
