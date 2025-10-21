@@ -34,7 +34,6 @@ public class LectureServiceImpl implements LectureService {
      * @param lectureId
      * @return 평점 계산 결과
      */
-
     @Override
     public Double updateLectureAverageRatings(Long lectureId) {
         // [1] 리뷰 DTO 리스트 조회

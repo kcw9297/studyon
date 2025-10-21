@@ -37,7 +37,8 @@ public final class URL {
     public static final String MEMBER_ADMIN_API = ADMIN + MEMBER_API;
     public static final String MEMBER_ADMIN = ADMIN + MEMBER;
 
-
+    /* TEACHER */
+    public static final String TEACHERS_API = API + TEACHERS;
 
 
     // 정적 상수 모음

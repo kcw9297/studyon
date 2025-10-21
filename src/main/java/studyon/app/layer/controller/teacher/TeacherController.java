@@ -45,19 +45,19 @@ public class TeacherController {
     /**
      * [GET] 강의 생성 뷰
      */
-    @GetMapping(URL.LECTURE + URL.REGISTER)
-    public String loginView(Model model) {
+    @GetMapping("/lecture/register")
+    public String registerLectureView(Model model) {
         return ViewUtils.returnView(model, View.TEACHER,"management/lecture_register");
     }
 
     /**
      * [GET] 과목별 선생님 목록 뷰
-     * @param subject
+     * @param subject 교과목
      */
     @GetMapping("/find/{subject}")
     public String teacherListView(@PathVariable Subject subject, Model model) {
         // [1] 과목별 데이터 조회
-        List<TeacherDTO.Read> teachers = teacherService.findTeachersBySubject(subject);
+        List<TeacherDTO.Read> teachers = teacherService.readTeachersBySubject(subject);
 
         // [2] JSP에 전달할 데이터 추가
         model.addAttribute("subject", subject);
@@ -70,8 +70,9 @@ public class TeacherController {
     }
 
     /**
-     * [GET] 선생님 프로필 페이지
+     * [GET] 학생들에게 보여지는 선생님 프로필 페이지
      * @param teacherId 선생님 ID
+     * @param count 보여지는 개수 조정을 위한 카운트 변수
      */
     @GetMapping("/profile/{teacherId}")
     public String showProfile(@PathVariable Long teacherId, Model model, @RequestParam(defaultValue = "5") int count) {

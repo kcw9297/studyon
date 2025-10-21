@@ -23,12 +23,12 @@ public interface TeacherService {
      * 모든 선생님 조회
      * @return 선생님 리스트
      */
-    List<TeacherDTO.Read> findAllTeachers();
+    List<TeacherDTO.Read> readAllTeachers();
     /**
      * 과목별 선생님 조회
      * @return 해당 선생님 리스트
      */
-    List<TeacherDTO.Read> findTeachersBySubject(Subject subject);
+    List<TeacherDTO.Read> readTeachersBySubject(Subject subject);
     /**
      * 선생님 프로필 가져오기
      * @return 해당 선생님 리스트

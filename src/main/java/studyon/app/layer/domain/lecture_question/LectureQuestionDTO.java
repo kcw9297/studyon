@@ -21,7 +21,7 @@ public class LectureQuestionDTO {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Read {
-        private Long lectureQnaId;
+        private Long lectureQuestionId;
         private Long lectureId;
         private String title;
         private String content;
@@ -36,6 +36,17 @@ public class LectureQuestionDTO {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Write {
+        private Long lectureId;
+        private String title;
+        private String content;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Edit {
+        private Long lectureQuestionId;
         private Long lectureId;
         private String title;
         private String content;

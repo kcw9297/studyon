@@ -16,5 +16,5 @@ public interface LectureReviewService {
      * @param teacherId 선생님 ID
      * @return 리뷰 DTO 리스트
      */
-    List<LectureReviewDTO.Read> getReviewsByTeacherId(Long teacherId, Pageable pageable);
+    List<LectureReviewDTO.Read> readReviewsByTeacherId(Long teacherId, Pageable pageable);
 }

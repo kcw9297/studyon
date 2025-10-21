@@ -18,9 +18,9 @@ import java.util.Optional;
 
 public interface LectureQuestionService {
     /** 전체 질문 목록 조회 */
-    List<LectureQuestionDTO.Read> getAllQuestions();
+    List<LectureQuestionDTO.Read> readAllQuestions();
     /** 특정 질문 조회 */
-    Optional<LectureQuestionDTO.Read> getQuestion(Long id);
+    Optional<LectureQuestionDTO.Read> readQuestion(Long id);
 
     /** 질문 등록 */
     LectureQuestionDTO.Read createQuestion(LectureQuestionDTO.Write dto);

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
 import studyon.app.layer.domain.category.Category;
+import studyon.app.layer.domain.category.CategoryDTO;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.lecture.Lecture;
@@ -88,6 +89,11 @@ public class DTOMapper {
                 .build();
     }
 
+    public static Category toEntity(CategoryDTO.Write dto, Lecture lecture) {
+        return Category.builder()
+                .name(dto.getName())
+                .build();
+    }
 
     public static Lecture toEntity(LectureDTO.Write dto, Teacher teacher) {
         return Lecture.builder()
@@ -220,6 +226,13 @@ public class DTOMapper {
                 .build();
     }
 
+    public static CategoryDTO.Read toReadDTO(Category entity) {
+        return CategoryDTO.Read.builder()
+                .categoryId(entity.getCategoryId())
+                .name(entity.getName())
+                .build();
+    }
+
     public static LectureDTO.Read toReadDTO(Lecture entity) {
         return LectureDTO.Read.builder()
                 .lectureId(entity.getLectureId())
@@ -269,11 +282,10 @@ public class DTOMapper {
 
     public static LectureQuestionDTO.Read toReadDTO(LectureQuestion entity) {
         return LectureQuestionDTO.Read.builder()
-                .lectureQnaId(entity.getLectureQuestionId())
+                .lectureQuestionId(entity.getLectureQuestionId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
                 .answerCount(entity.getAnswerCount())
-                .viewCount(entity.getViewCount())
                 .viewCount(entity.getViewCount())
                 .isSolved(entity.getIsSolved())
                 .lectureId(entity.getLecture().getLectureId())

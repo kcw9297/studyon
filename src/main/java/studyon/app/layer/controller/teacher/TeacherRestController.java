@@ -28,7 +28,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(URL.API + URL.TEACHERS)  // teacher+api
+@RequestMapping(URL.TEACHERS_API)
 @RequiredArgsConstructor
 public class TeacherRestController {
 
@@ -41,17 +41,21 @@ public class TeacherRestController {
 
     @GetMapping
     public ResponseEntity<?> getAllTeachers() {
-        List<TeacherDTO.Read> teachers = teacherService.findAllTeachers();
-        return RestUtils.ok(Rest.Message.of("선생님을 불러왔습니다."), teachers);
+        // [1] 모든 선생님 정보 가져와서 리스팅
+        List<TeacherDTO.Read> teachers = teacherService.readAllTeachers();
+        // [2] 리스팅한 정보 리턴하기
+        return RestUtils.ok(Rest.Message.of("모든 선생님을 불러왔습니다."), teachers);
     }
 
     /**
      * [GET] 과목별 선생님 정보 가져오기
-     * @param subject
+     * @param subject 과목
      */
-    @GetMapping(URL.SUBJECT + "/{subject}")
+    @GetMapping( "/subject/{subject}")
     public ResponseEntity<?> getTeachersBySubject(@PathVariable Subject subject) {
-        List<TeacherDTO.Read> teachersBySubject = teacherService.findTeachersBySubject(subject);
+        // [1] 과목별로 선생님 정보 가져와서 리스팅
+        List<TeacherDTO.Read> teachersBySubject = teacherService.readTeachersBySubject(subject);
+        // [2] 리스팅한 정보 리턴하기
         return RestUtils.ok(Rest.Message.of("해당 과목 선생님들을 불러왔습니다."), teachersBySubject);
     }
 }

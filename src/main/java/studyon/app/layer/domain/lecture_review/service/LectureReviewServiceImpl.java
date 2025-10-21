@@ -30,14 +30,14 @@ import static java.util.Arrays.stream;
 public class LectureReviewServiceImpl implements LectureReviewService {
 
     private final LectureReviewRepository lectureReviewRepository;
+
     /**
      * 특정 선생님의 모든 강의 리뷰를 최신순으로 조회
      * @param teacherId 선생님 ID
      * @return 리뷰 DTO 리스트
      */
-
     @Override
-    public List<LectureReviewDTO.Read> getReviewsByTeacherId(Long teacherId, Pageable pageable) {
+    public List<LectureReviewDTO.Read> readReviewsByTeacherId(Long teacherId, Pageable pageable) {
         // [1] 선생님 ID를 기반으로 최신순 리뷰 정렬
         return lectureReviewRepository.findRecentReviewsByTeacherId(teacherId, pageable)
                 .stream()

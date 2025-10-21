@@ -15,6 +15,7 @@ import studyon.app.layer.domain.lecture.Lecture;
 
 @Entity
 @Getter
+@Setter  // 연관 관계 메소드
 @DynamicUpdate
 @ToString(callSuper = true, exclude = {"lecture"})
 @EqualsAndHashCode(callSuper = true)
@@ -34,21 +35,8 @@ public class LectureCategory extends BaseEntity {
 
 
     @Builder
-
     public LectureCategory(Lecture lecture, Category category) {
         this.lecture = lecture;
-        this.category = category;
-    }
-
-    /*
-    연관 관계 편의 메소드
-     */
-
-    public void setLecture(Lecture lecture) {
-        this.lecture = lecture;
-    }
-
-    public void setCategory(Category category) {
         this.category = category;
     }
 }

@@ -46,9 +46,8 @@ public class TeacherServiceImpl implements TeacherService {
      */
 
     @Override
-    public List<TeacherDTO.Read> findAllTeachers() {
+    public List<TeacherDTO.Read> readAllTeachers() {
         // [1] 레포지토리에서 모든 선생님 정보 가져오기
-
         return teacherRepository.findAll().stream()
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
@@ -59,7 +58,7 @@ public class TeacherServiceImpl implements TeacherService {
      * @return 해당 선생님 리스트
      */
     @Override
-    public List<TeacherDTO.Read> findTeachersBySubject(Subject subject) {
+    public List<TeacherDTO.Read> readTeachersBySubject(Subject subject) {
         // [1] 레포지토리에서 과목별로 선생님 정보 가져와서 DTO 변환 후 리스팅
         return teacherRepository.findBySubject(subject).stream()
                 .map(DTOMapper::toReadDTO)
@@ -67,6 +66,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
     /**
      * 선생님 프로필 가져오기
+     * @param teacherId 선생님 아이디
      * @return 해당 선생님 리스트
      */
     @Override
@@ -79,6 +79,8 @@ public class TeacherServiceImpl implements TeacherService {
 
     /**
      * 선생님 프로필 업데이트(필요시)
+     * @param teacherId 선생님 아이디
+     * @param dto 선생님 정보를 담은 DTO - 업데이트용
      */
     @Override
     public void updateTeacherProfile(Long teacherId, TeacherDTO.Edit dto) {
@@ -94,6 +96,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
     /**
      * 선생님 담당 BEST 강의 조회(우선 수강생 수로 정렬함)
+     * @param teacherId 선생님 아이디
+     * @param count 리스트 카운트용 변수(보여지는 개수)
      * @return 해당 선생님 강의 리스트
      */
     @Override
@@ -108,11 +112,13 @@ public class TeacherServiceImpl implements TeacherService {
     }
     /**
      * 선생님 최신 강의 조회
+     *
+     * @param teacherId 선생님 아이디
+     * @param count 리스트 카운트용 변수(보여지는 개수)
      * @return 해당 선생님 최신 강의 리스트
      */
     @Override
     public List<LectureDTO.Read> readRecentLectures(Long teacherId, int count) {
-
         // [1] 정렬을 위해 필요한 변수 불러오기
         Pageable pageable = PageRequest.of(0, count);
         // [2] 해당하는 선생님 ID를 통해 최근 강의 조회 후 리스팅

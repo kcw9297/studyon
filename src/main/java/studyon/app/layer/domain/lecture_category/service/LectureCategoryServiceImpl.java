@@ -5,12 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.category.Category;
+import studyon.app.layer.domain.category.CategoryDTO;
 import studyon.app.layer.domain.category.repository.CategoryRepository;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_category.LectureCategory;
 import studyon.app.layer.domain.lecture_category.LectureCategoryDTO;
 import studyon.app.layer.domain.lecture_category.repository.LectureCategoryRepository;
+
+import java.util.stream.Collectors;
 
 /*
  * [수정 이력]
@@ -32,21 +36,25 @@ public class LectureCategoryServiceImpl implements LectureCategoryService {
     private final CategoryRepository categoryRepository;
     private final LectureCategoryRepository lectureCategoryRepository;
 
-
+    /**
+     * 연관 카테고리 매핑
+     * @param lectureId 강의 아이디
+     * @param categoryId 카테고리 아이디
+     * @return PaymentDetails(Optional)
+     */
     @Override
     public LectureCategoryDTO.Read saveMapping(Long lectureId, Long categoryId) {
-        // 각각 조회하는 단계
-        Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의 ID: " + lectureId));
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리 ID: " + categoryId));
-
-        LectureCategory mapping = LectureCategory.builder()
-                .lecture(lecture)
-                .category(category)
+        // [1] 각각 조회하는 단계
+        LectureDTO.Read lecture = lectureRepository.findById(lectureId)
+                .map(DTOMapper::toReadDTO)
+                .orElseThrow();
+        CategoryDTO.Read category = categoryRepository.findById(categoryId)
+                .map(DTOMapper::toReadDTO)
+                .orElseThrow();
+        // [2] DTO 저장 후 리턴
+        return LectureCategoryDTO.Read.builder()
+                .lectureId(lecture.getLectureId())
+                .categoryId(category.getCategoryId())
                 .build();
-
-        LectureCategory saved = lectureCategoryRepository.save(mapping);
-        return DTOMapper.toReadDTO(saved);
     }
 }
