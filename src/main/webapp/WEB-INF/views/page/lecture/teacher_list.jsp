@@ -17,13 +17,13 @@
     </div>
     <div class="teacher-list-title">${subject.value} 선생님</div>
     <div class ="recent-lecture-container">
-        <c:forEach var="t" items="${teachers}">
+        <c:forEach var="teacher" items="${teachers}">
         <div class="recent-lecture-item">
             <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
             <div class="lecture-info">
-              <p class="lecture-title">${t.nickname}</p>
-              <p class="lecture-info-text">${t.description}</p>
-              <p class="lecture-info-text">⭐${t.averageRating}</p>
+              <p class="lecture-title">${teacher.nickname}</p>
+              <p class="lecture-info-text">${teacher.description}</p>
+              <p class="lecture-info-text">⭐${teacher.averageRating}</p>
             </div>
           </div>
         </c:forEach>

@@ -77,7 +77,7 @@ public class TeacherController {
     @GetMapping("/profile/{teacherId}")
     public String showProfile(@PathVariable Long teacherId, Model model, @RequestParam(defaultValue = "5") int count) {
         // [1] 프로필 불러오기
-        TeacherDTO.Read profile = teacherService.getTeacherProfile(teacherId);
+        TeacherDTO.Read profile = teacherService.read(teacherId);
         List<LectureDTO.Read> bestLectures = teacherService.readBestLectures(teacherId, count);
         List<LectureDTO.Read> recentLectures = teacherService.readRecentLectures(teacherId, count);
         List<LectureReviewDTO.Read> comment = teacherService.readRecentReview(teacherId, count);

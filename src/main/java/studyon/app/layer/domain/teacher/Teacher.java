@@ -64,6 +64,8 @@ public class Teacher extends BaseEntity {
 
     /**
      * 갱신 로직 - 선생님 전용 페이지
+     * @param subject 과목
+     * @param description 소개
      */
 
     public void updateInfo(Subject subject, String description) {

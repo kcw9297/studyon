@@ -16,21 +16,21 @@
         </div>
         <div>Best 강의 추천</div>
         <div class ="recent-lecture-container">
-            <c:forEach var="bl" items="${bestLectures}">
+            <c:forEach var="bestLecture" items="${bestLectures}">
             <div class="recent-lecture-item">
                 <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
                 <div class="lecture-info">
-                    <p class="lecture-title">${bl.title}</p>
-                    <p class="lecture-info-text">${bl.description}</p>
-                    <p class="lecture-info-text">₩<fmt:formatNumber value="${bl.price}" type="number"/></p>
+                    <p class="lecture-title">${bestLecture.title}</p>
+                    <p class="lecture-info-text">${bestLecture.description}</p>
+                    <p class="lecture-info-text">₩<fmt:formatNumber value="${bestLecture.price}" type="number"/></p>
                     <p class="lecture-info-text"><!--⭐<c:out value="${bl.averageRate}" />-->
                         &#x1F9F8;
                         <c:choose>
-                            <c:when test="${bl.totalStudents >= 10}">
+                            <c:when test="${bestLecture.totalStudents >= 10}">
                                 10+
                             </c:when>
                             <c:otherwise>
-                                <c:out value="${bl.totalStudents}" />
+                                <c:out value="${bestLecture.totalStudents}" />
                             </c:otherwise>
                         </c:choose>
                     </p>
@@ -41,21 +41,21 @@
         </div>
         <div>최근 등록된 강좌</div>
         <div class ="recent-lecture-container">
-            <c:forEach var="rl" items="${recentLectures}">
+            <c:forEach var="recentLecture" items="${recentLectures}">
             <div class="recent-lecture-item">
                 <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
                 <div class="lecture-info">
-                    <p class="lecture-title">${rl.title}</p>
-                    <p class="lecture-info-text">${rl.description}</p>
-                    <p class="lecture-info-text">₩<fmt:formatNumber value="${rl.price}" type="number"/></p>
+                    <p class="lecture-title">${recentLecture.title}</p>
+                    <p class="lecture-info-text">${recentLecture.description}</p>
+                    <p class="lecture-info-text">₩<fmt:formatNumber value="${recentLecture.price}" type="number"/></p>
                     <p class="lecture-info-text"><!--⭐<c:out value="${rl.averageRate}" />-->
                         &#x1F9F8;
                         <c:choose>
-                            <c:when test="${rl.totalStudents >= 10}">
+                            <c:when test="${recentLecture.totalStudents >= 10}">
                                 10+
                             </c:when>
                             <c:otherwise>
-                                <c:out value="${rl.totalStudents}" />
+                                <c:out value="${recentLecture.totalStudents}" />
                             </c:otherwise>
                         </c:choose>
                     </p>
@@ -66,10 +66,10 @@
 
         <div>생생 수강평</div>
         <div class="lecture-comment-box">
-            <c:forEach var="comm" items="${comment}">
+            <c:forEach var="comment" items="${comment}">
             <div class="lecture-comment-box-item">
-                <div class="lecture-comment-username">${comm.nickname}</div>
-                <div class="lecture-comment-comment">${comm.content}</div>
+                <div class="lecture-comment-username">${comment.nickname}</div>
+                <div class="lecture-comment-comment">${comment.content}</div>
             </div>
             </c:forEach>
         </div>

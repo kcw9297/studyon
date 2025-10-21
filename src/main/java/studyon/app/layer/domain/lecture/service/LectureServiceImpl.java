@@ -2,15 +2,16 @@ package studyon.app.layer.domain.lecture.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.utils.DTOMapper;
+import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
-import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /*
@@ -31,11 +32,11 @@ public class LectureServiceImpl implements LectureService {
     private final LectureRepository lectureRepository;
 
     /** 강의 평점 업데이트 로직
-     * @param lectureId
+     * @param lectureId 선생님 ID
      * @return 평점 계산 결과
      */
     @Override
-    public Double updateLectureAverageRatings(Long lectureId) {
+    public Double updateAverageRatings(Long lectureId) {
         // [1] 리뷰 DTO 리스트 조회
         List<LectureReviewDTO.Read> reviews = lectureRepository.findByLectureId(lectureId)
                 .stream()
@@ -51,5 +52,37 @@ public class LectureServiceImpl implements LectureService {
 
         // [3] 소수점 둘째 자리 반올림 후 반환
         return Math.round(avgRating * 100.0) / 100.0;
+    }
+
+
+    /** 최근 강의 리스트 불러오는 메소드
+     * @param subject 과목
+     * @param count 카운트용 변수
+     * @return 최근 강의 리스트
+     */
+    @Override
+    public List<LectureDTO.Read> readRecentLectures(Subject subject, int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return lectureRepository.findRecentLecturesBySubject(subject, pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                .collect(Collectors.toList());
+    }
+
+    /** BEST 강의 리스트 불러오는 메소드
+     * @param subject 과목
+     * @param count 카운트용 변수
+     * @return BEST 강의 리스트
+     */
+
+    @Override
+    public List<LectureDTO.Read> readBestLectures(Subject subject, int count) {
+        // [1] 리스팅 카운트용 변수
+        Pageable pageable = PageRequest.of(0, count);
+        // [2] 과목 기반으로 BEST 리뷰 정렬
+        return lectureRepository.findBestLecturesBySubject(subject, pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                .collect(Collectors.toList());
     }
 }

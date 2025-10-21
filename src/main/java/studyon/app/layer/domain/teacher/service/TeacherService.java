@@ -33,11 +33,11 @@ public interface TeacherService {
      * 선생님 프로필 가져오기
      * @return 해당 선생님 리스트
      */
-    TeacherDTO.Read getTeacherProfile(Long teacherId);
+    TeacherDTO.Read read(Long teacherId);
     /**
      * 선생님 프로필 업데이트(필요시)
      */
-    void updateTeacherProfile(Long teacherId, TeacherDTO.Edit dto);
+    void update(Long teacherId, TeacherDTO.Edit dto);
     /**
      * 선생님 담당 강의 조회
      * @return 해당 선생님 강의 리스트

@@ -70,7 +70,7 @@ public class TeacherServiceImpl implements TeacherService {
      * @return 해당 선생님 리스트
      */
     @Override
-    public TeacherDTO.Read getTeacherProfile(Long teacherId) {
+    public TeacherDTO.Read read(Long teacherId) {
         // [1] 해당되는 ID에 따른 선생님 프로필 불러오기
         return teacherRepository.findById(teacherId)
                 .map(DTOMapper::toReadDTO)
@@ -83,15 +83,12 @@ public class TeacherServiceImpl implements TeacherService {
      * @param dto 선생님 정보를 담은 DTO - 업데이트용
      */
     @Override
-    public void updateTeacherProfile(Long teacherId, TeacherDTO.Edit dto) {
+    public void update(Long teacherId, TeacherDTO.Edit dto) {
         // [1] 선생님 아이디로 조회 후 정보 수정 및 저장
         teacherRepository.findById(teacherId)
                 .ifPresentOrElse(
-                        teacher -> {
-                            DTOMapper.applyEditToEntity(teacher, dto);
-                            teacherRepository.save(teacher);
-                        },
-                        () -> { throw new NotFoundException(Msg.NOT_FOUND_MEMBER); }
+                        teacher -> teacher.updateInfo(dto.getSubject(), dto.getDescription()),
+                        () -> { throw new NotFoundException(Msg.NOT_FOUND_TEACHER); }
                 );
     }
     /**
@@ -105,9 +102,9 @@ public class TeacherServiceImpl implements TeacherService {
         // [1] 정렬을 위해 필요한 변수 불러오기
         Pageable pageable = PageRequest.of(0, count);
         // [2] 해당하는 선생님 ID를 통해 Best 강의 조회 후 리스팅
-        return lectureRepository.findBestLectures(teacherId, pageable)
+        return lectureRepository.findBestLecturesByTeacherId(teacherId, pageable)
                 .stream()
-                .map(DTOMapper::toReadDTO)
+                .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
     /**
@@ -122,12 +119,19 @@ public class TeacherServiceImpl implements TeacherService {
         // [1] 정렬을 위해 필요한 변수 불러오기
         Pageable pageable = PageRequest.of(0, count);
         // [2] 해당하는 선생님 ID를 통해 최근 강의 조회 후 리스팅
-        return lectureRepository.findRecentLectures(teacherId, pageable)
+        return lectureRepository.findRecentLecturesByTeacherId(teacherId, pageable)
                 .stream()
-                .map(DTOMapper::toReadDTO)
+                .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 선생님 최신 강의 수강평 조회
+     *
+     * @param teacherId 선생님 아이디
+     * @param count 리스트 카운트용 변수(보여지는 개수)
+     * @return 해당 선생님 최신 강의 수강평 리스트
+     */
     @Override
     public List<LectureReviewDTO.Read> readRecentReview(Long teacherId, int count) {
         // [1] 정렬을 위해 필요한 변수 불러오기
@@ -135,8 +139,7 @@ public class TeacherServiceImpl implements TeacherService {
         // [2] 해당하는 선생님 ID를 통해 최근 리뷰 조회 후 리스팅
         return lectureReviewRepository.findRecentReviewsByTeacherId(teacherId, pageable)
                 .stream()
-                .map(DTOMapper::toReadDTO)
+                .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
-
     }
 }

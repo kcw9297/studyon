@@ -248,6 +248,7 @@ public class DTOMapper {
                 .onSale(entity.getOnSale())
                 .publishDate(entity.getPublishDate())
                 .teacherId(entity.getTeacher().getTeacherId())
+                .nickname(entity.getTeacher().getMember().getNickname())
                 .build();
     }
 
