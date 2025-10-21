@@ -31,6 +31,4 @@ public class MypageController {
         model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/coupons.jsp");
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }
-
-
 }

@@ -19,7 +19,10 @@ public enum View {
     LECTURE("lecture"),
     HOME("home"),
     EDITOR("editor"),
-    MYPAGE("mypage");
+    MYPAGE("mypage"),
+    CHATBOT("chatbot"),
+    USERSUPPORT("usersupport"),
+    ADMIN("admin");
 
 
     private final String value;

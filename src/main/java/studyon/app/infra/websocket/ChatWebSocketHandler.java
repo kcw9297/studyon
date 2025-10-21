@@ -9,8 +9,11 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import studyon.app.common.constant.Param;
 import studyon.app.common.enums.Role;
+import studyon.app.layer.domain.chat.Chat;
+import studyon.app.layer.domain.chat.repository.ChatRepository;
+import studyon.app.layer.domain.chat_room.repository.ChatRoomRepository;
+import studyon.app.layer.domain.member.repository.MemberRepository;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -19,87 +22,101 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class ChatWebSocketHandler extends TextWebSocketHandler {
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRepository chatRepository;
+    private final MemberRepository memberRepository;
 
-    //private final ChatRoomRepository chatRoomRepository;
-    //private final ChatRepository chatRepository;
-    //private final MemberRepository memberRepository;
-
-    private final Map<String, WebSocketSession> memberSessions = new HashMap<>();
-    private WebSocketSession agentSession;
+    private final Map<Long, WebSocketSession> userSessions = new HashMap<>();
+    private WebSocketSession adminSession;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-
-        // [1] session 내 attributes 조회
         Map<String, Object> attributes = session.getAttributes();
+        String role = (String) attributes.get("role");
+        Long memberId = (Long) attributes.get("memberId");
 
-        // [2] WebSocketSession 내 회원정보 조회
-        String role = (String) attributes.get(Param.ROLE);
-        String memberId = String.valueOf(attributes.get(Param.MEMBER_ID));
+        log.info("🔗 WebSocket 연결됨 / memberId={} / role={}", memberId, role);
 
-        // [3]
         if (Objects.equals(role, Role.ROLE_ADMIN.getRoleName())) {
-            agentSession = session;
-            log.info("✅ 관리자 접속");
-
+            adminSession = session;
+            log.info("✅ 관리자 연결 완료: {}", memberId);
         } else {
-            memberSessions.put(memberId, session);
-            log.info("👤 고객 접속: {}", memberId);
+            userSessions.put(memberId, session);
+            log.info("👤 사용자 연결 완료: {}", memberId);
         }
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-
         JSONObject json = new JSONObject(message.getPayload());
-        String role = json.optString(Param.ROLE);
-        String memberId = json.optString(Param.MEMBER_ID);
-        String msg = json.optString(Param.MSG);
-        int roomId = json.optInt("roomId", -1); // ✅ 프론트에서 보낸 roomId 받기
-        System.out.println("💬 받은 메시지: " + msg + " / roomId=" + roomId);
+        String msg = json.optString("msg");
+        Long roomId = json.optLong("roomId", -1);
 
 
-        /*
-        // ✅ 닉네임 조회
-        String nickname = memberRepo.findById(Integer.parseInt(memberId))
-                .map(Member::getNickname)
-                .orElse("익명");
+        if ("ROOM_CHANGE".equals(json.optString("type"))) {
+            Long newRoomId = json.optLong("roomId");
+            session.getAttributes().put("currentRoomId", newRoomId);
+            log.info("👁️ 관리자 현재 방 변경됨 → {}", newRoomId);
+            return;
+        }
+        Map<String, Object> attributes = session.getAttributes();
+        String role = (String) attributes.get("role");
+        Long memberId = (Long) attributes.get("memberId");
 
-        // ✅ 프론트에서 받은 roomId 기준으로 ChatRoom 찾기
-        ChatRoom room = roomRepo.findById((long) roomId)
-                .orElseThrow(() -> new IllegalArgumentException("❌ 존재하지 않는 roomId: " + roomId));
+        log.info("💬 받은 메시지 → memberId={} / role={} / roomId={} / msg={}", memberId, role, roomId, msg);
 
-        // ✅ DB에 채팅 저장
-        chatRepo.save(Chat.builder()
-                .chatRoom(room)
-                .senderId(memberId)
-                .message(msg)
-                .createdAt(LocalDateTime.now())
-                .build());
+        var roomOpt = chatRoomRepository.findById(roomId);
+        var memberOpt = memberRepository.findById(memberId);
 
-         */
+        if (roomOpt.isPresent() && memberOpt.isPresent()) {
+            Chat chat = Chat.builder()
+                    .chatRoom(roomOpt.get())
+                    .sender(memberOpt.get())
+                    .message(msg)
+                    .build();
 
-        // ✅ 메시지 생성 및 전송
+            chatRepository.save(chat);
+            log.info("💾 채팅 저장 완료 → roomId={}, senderId={}, msg={}", roomId, memberId, msg);
+        } else {
+            log.warn("⚠️ Chat 저장 실패 (room or member not found)");
+        }
+
         JSONObject data = new JSONObject();
-        data.put("type", Objects.equals(role, Role.ROLE_ADMIN.getRoleName()) ? Role.ROLE_ADMIN.getRoleName() : Role.ROLE_STUDENT.getRoleName());
+        data.put("type", Objects.equals(role, Role.ROLE_ADMIN.getRoleName()) ? "ADMIN" : "STUDENT");
         data.put("sender", memberId);
-        data.put("nickname", "nickname001");
         data.put("msg", msg);
         data.put("roomId", roomId);
 
-        // 상담사 ↔ 고객 전송
-        if (Objects.equals(role, Role.ROLE_STUDENT.getRoleName()) && Objects.nonNull(agentSession)) {
-            agentSession.sendMessage(new TextMessage(data.toString()));
-
-        } else if (Objects.equals(role, Role.ROLE_ADMIN.getRoleName())) {
-
-            // 상담사가 메시지 보낼 때 고객 세션이 연결돼 있다면 보내기
-            for (WebSocketSession userSession : memberSessions.values())
-                if (userSession.isOpen()) userSession.sendMessage(new TextMessage(data.toString()));
-
+        if (Objects.equals(role, Role.ROLE_STUDENT.getRoleName())) {
+            if (adminSession != null && adminSession.isOpen()) {
+                Object currentRoom = adminSession.getAttributes().get("currentRoomId");
+                if (Objects.equals(currentRoom, roomId)) {
+                    adminSession.sendMessage(new TextMessage(data.toString()));
+                    log.info("📤 [고객 → 관리자] 같은 방 메시지 전달 완료 roomId={}", roomId);
+                } else {
+                    log.info("🚫 [고객 → 관리자] 관리자가 다른 방을 보고 있음 (roomId={})", roomId);
+                }
+            }
         }
 
-        // ✅ 본인에게도 표시
+        else if (Objects.equals(role, Role.ROLE_ADMIN.getRoleName())) {
+            chatRoomRepository.findById(roomId).ifPresent(room -> {
+                Long targetMemberId = room.getUserId(); // 🔹 ChatRoom이 Member를 FK로 가지고 있어야 함
+                WebSocketSession userSession = userSessions.get(targetMemberId);
+
+                if (userSession != null && userSession.isOpen()) {
+                    try {
+                        userSession.sendMessage(new TextMessage(data.toString()));
+                        log.info("📤 사용자({})에게 메시지 전달 완료 (roomId={})", targetMemberId, roomId);
+                    } catch (Exception e) {
+                        log.error("❌ 사용자에게 메시지 전송 실패", e);
+                    }
+                } else {
+                    log.warn("⚠️ 대상 사용자 세션이 열려 있지 않음 (roomId={})", roomId);
+                }
+            });
+        }
+
         session.sendMessage(new TextMessage(data.toString()));
     }
 }
