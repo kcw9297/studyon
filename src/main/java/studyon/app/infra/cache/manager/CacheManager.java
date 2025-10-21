@@ -43,19 +43,6 @@ public interface CacheManager {
     void removeProfile(Long memberId);
 
     /**
-     * 에디터에 업로드된 임시파일 정보 기록
-     * @param sessionId 현재 회원의 세션번호
-     * @param tempFileName 현재 저장된 임시파일명
-     */
-    void recordEditorTempFile(String sessionId, String tempFileName);
-
-    /**
-     * 에디터에 업로드된 임시파일 정보 일괄 조회 후 삭제
-     * @param sessionId 현재 회원의 세션번호
-     */
-    List<String> getAndRemoveAllEditorTempFiles(String sessionId);
-
-    /**
      * 최근에 검색한 강의 검색어 기록
      * @param memberId 검색 수행 회원
      * @param keyword 검색 키워드
@@ -90,4 +77,67 @@ public interface CacheManager {
      * @param type 저장했던 DTO Class Type
      */
     <T> T getMailRequest(String sessionId, Class<T> type);
+
+    /**
+     * 기존 캐시데이터를 불러오거나 새로운 캐시데이터 생성 (특정 엔티티의 작성/수정에 대한 캐시 데이터 생성)
+     * @param entityName 대상 엔티티명
+     * @param id         구별 가능한 아이디 값 (sessionId, memberId, ...)
+     * @param clazz 저장했던 DTO Class Type
+     * @return 새롭게 생성하는 경우 null, 이미 존재하는 경우 조회된 캐시 데이터 반환
+     */
+    <T> T getOrRecordCache(String entityName, Object id, Class<T> clazz);
+
+    /**
+     * Entity Id가 포함된 기존 캐시데이터를 불러오거나 새로운 캐시데이터 생성
+     * @param entityName 대상 엔티티명
+     * @param id         구별 가능한 아이디 값 (sessionId, memberId, ...)
+     * @param entityId   대상 엔티티 고유번호
+     * @param clazz 저장했던 DTO Class Type
+     * @return 새롭게 생성하는 경우 null, 이미 존재하는 경우 조회된 캐시 데이터 반환
+     */
+    <T> T getOrRecordCache(String entityName, Object id, Long entityId, Class<T> clazz);
+
+    /**
+     * 캐시데이터 조회 후 갱신
+     * @param id  구별 가능한 아이디 값 (sessionId, memberId, ...)
+     * @param entityName 저장 대상 엔티티명
+     * @param cacheData 캐시 데이터
+     * @return 갱신할 캐시 데이터가 존재하지 않으면 false, 갱신 성공 시 true
+     */
+    boolean updateCache(String entityName, Object id, Object cacheData);
+
+    /**
+     * Entity Id가 포함된 캐시데이터 조회 후 갱신
+     * @param entityName 대상 엔티티명
+     * @param id  구별 가능한 아이디 값 (sessionId, memberId, ...)
+     * @param entityId 대상 엔티티 고유번호
+     * @param cacheData 캐시 데이터
+     * @return 갱신할 캐시 데이터가 존재하지 않으면 false, 갱신 성공 시 true
+     */
+    boolean updateCache(String entityName, Object id, Long entityId, Object cacheData);
+
+    /**
+     * 캐시 데이터 조회
+     * @param entityName 대상 엔티티명
+     * @param id  구별 가능한 아이디 값 (sessionId, memberId, ...)
+     */
+    void removeCache(String entityName, Object id);
+
+    /**
+     * 캐시 데이터 조회
+     * @param entityName 대상 엔티티명
+     * @param entityId 대상 엔티티 고유번호
+     * @param id  구별 가능한 아이디 값 (sessionId, memberId, ...)
+     */
+    void removeCache(String entityName, Long entityId, Object id);
+
+
+    /**
+     * 백업 데이터 조회 후 삭제
+     * @param key keyName
+     * @param clazz 저장했던 DTO Class Type
+     * @return 조회된 백업 데이터 반환
+     */
+    <T> T getAndRemoveBackupKey(String key, Class<T> clazz);
+
 }

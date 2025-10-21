@@ -176,34 +176,5 @@ public class TestController {
         return Rest.Response.ok(Rest.Message.of("요청 성공", chatService.getAnswer(question)));
     }
 
-    @GetMapping("/write")
-    public String write() {
-        return ViewUtils.returnNoFrameView(View.TEST, "write");
-    }
-
-
-    @ResponseBody
-    @PostMapping("/editor/upload")
-    public ResponseEntity<?> write(HttpSession session, MultipartFile file) {
-
-        FileDTO.Upload fileUpload = fileManager.uploadToTemp(file);
-        log.warn("fileUpload = {} fileDomain = {}", fileUpload, fileDomain);
-
-        cacheManager.recordEditorTempFile(session.getId(), fileUpload.getOriginalName());
-        return RestUtils.ok(Map.of("url", "%s/%s/%s".formatted(fileDomain, Entity.TEMP.getValue(), fileUpload.getStoreName())));
-    }
-
-    @ResponseBody
-    @PostMapping("/editor/write")
-    public ResponseEntity<?> write(String title, String content) {
-        log.warn("content = {}", content);
-        return RestUtils.ok(Rest.Message.of("글 작성 성공"));
-    }
-
-    @PostMapping("/editor/write/exit")
-    public ResponseEntity<?> writeExit() {
-        log.warn("write 창 닫음");
-        return ResponseEntity.ok().build();
-    }
 
 }

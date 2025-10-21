@@ -42,7 +42,7 @@ public class LocalFileManager implements FileManager {
 
         try {
             // [1] 저장 파일 디렉토리 확인 (없을 시 생성)
-            String uploadPath = "%s/%s/".formatted(fileDir, entity.getValue());
+            String uploadPath = "%s/%s/".formatted(fileDir, entity.getName());
             File dir = new File(uploadPath);
             if (!dir.exists()) dir.mkdirs();
 
@@ -84,7 +84,7 @@ public class LocalFileManager implements FileManager {
 
         try {
             // [1] 파일 저장 경로
-            String filePath = "%s/%s/%s".formatted(fileDir, entity.getValue(), storeName);
+            String filePath = "%s/%s/%s".formatted(fileDir, entity.getName(), storeName);
 
             // [2] Path 생성
             Path path = Paths.get(filePath);
@@ -103,7 +103,7 @@ public class LocalFileManager implements FileManager {
 
         try {
             // [1] 파일 저장 경로
-            String filePath = "%s/%s/%s".formatted(fileDir, entity.getValue(), storeName);
+            String filePath = "%s/%s/%s".formatted(fileDir, entity.getName(), storeName);
 
             // [2] 파일 삭제
             Files.delete(Paths.get(filePath));

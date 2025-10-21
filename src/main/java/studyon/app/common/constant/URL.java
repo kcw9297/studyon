@@ -28,6 +28,7 @@ public final class URL {
     public static final String SUBJECT = "/subject";
     public static final String REGISTER = "/register";
     public static final String EDITOR = "/editor";
+    public static final String FILE = "/file";
 
     // Security
     public static final String LOGIN_PROCESS = LOGIN + "/process";

@@ -5,12 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
-import studyon.app.common.enums.Cache;
 import studyon.app.common.enums.Entity;
+import studyon.app.infra.cache.CacheUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.file.FileManager;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,21 +32,27 @@ public class RedisEventListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
 
-        // 이벤트가 발생한 key 값 & 이벤트 유형 조회
-        String key = new String(message.getBody());
+        // [1] 이벤트가 발생한 key 값 & 이벤트 유형 조회
+        String targetKey = new String(message.getBody());
         String eventType = new String(pattern);
-        log.warn("key = {}, eventType = {}", key, eventType);
+        log.warn("key = {}, eventType = {}", targetKey, eventType);
+
+        // [2] id 값 분리
+        String[] split = targetKey.split(":");
+        String id = split[split.length - 1];
+
+        // [3] 확인에 필요한 key 생성
+        String lectureQuestionTempKey = CacheUtils.createTempKey(Entity.LECTURE_QUESTION.getName(), id); // 강의질문 임시 키
 
         // 임시파일 삭제 요청인 경우, 해당 키의
-        if (key.startsWith(Cache.EDITOR_TEMP.getBaseKey())) {
-            log.warn("에디터 임시파일 제거");
-            String[] split = key.split(":");
-            String sessionId = split[split.length - 1];
-
-            List<String> tempFileNames = cacheManager.getAndRemoveAllEditorTempFiles(sessionId);
+        if (Objects.equals(targetKey, lectureQuestionTempKey)) {
+            log.warn(" 임시파일 제거");
+            /*
+            String backupKey = CacheUtils.createBackupKey(lectureQuestionTempKey);
+            List<String> tempFileNames = cacheManager.getAndRemoveBackupKey(backupKey, );
             log.warn("tempFileNames = {}", tempFileNames);
             tempFileNames.forEach(tempFileName -> fileManager.remove(tempFileName, Entity.TEMP));
-
+             */
 
         }
     }

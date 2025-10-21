@@ -42,13 +42,13 @@ public class WriteServiceLogAspect {
 
     // EntityType Value - EntityType Map
     private static final Map<String, Entity> ENTITY_TYPE_MAP = Map.ofEntries(
-             Map.entry(Entity.MEMBER.getValue(), Entity.MEMBER),
-             Map.entry(Entity.TEACHER.getValue(), Entity.TEACHER),
-             Map.entry(Entity.LECTURE.getValue(), Entity.LECTURE),
-             Map.entry(Entity.LECTURE_QUESTION.getValue(), Entity.LECTURE_QUESTION),
-             Map.entry(Entity.LECTURE_ANSWER.getValue(), Entity.LECTURE_ANSWER),
-             Map.entry(Entity.PURCHASE.getValue(), Entity.PURCHASE),
-             Map.entry(Entity.REFUND.getValue(), Entity.REFUND)
+             Map.entry(Entity.MEMBER.getName(), Entity.MEMBER),
+             Map.entry(Entity.TEACHER.getName(), Entity.TEACHER),
+             Map.entry(Entity.LECTURE.getName(), Entity.LECTURE),
+             Map.entry(Entity.LECTURE_QUESTION.getName(), Entity.LECTURE_QUESTION),
+             Map.entry(Entity.LECTURE_ANSWER.getName(), Entity.LECTURE_ANSWER),
+             Map.entry(Entity.PURCHASE.getName(), Entity.PURCHASE),
+             Map.entry(Entity.REFUND.getName(), Entity.REFUND)
     );
 
 

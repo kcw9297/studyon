@@ -28,9 +28,9 @@ public enum Entity {
     TEMP("temp"),
     UNKNOWN("unknown");
 
-    private final String value;
+    private final String name;
 
-    Entity(String value) {this.value = value;}
+    Entity(String name) {this.name = name;}
 
     public static List<Entity> get() {
         return Arrays.asList(Entity.values());
