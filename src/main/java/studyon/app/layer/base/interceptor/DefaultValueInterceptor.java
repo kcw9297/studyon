@@ -103,20 +103,23 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
 
         // [2] 프로필이 없는 경우, 회원정보 조회 후 새로운 회원 프로필 정보 삽입
         if (Objects.isNull(profile)) {
-            MemberProfile newProfile = memberService.readProfile(memberId);
-            log.warn("newProfile = {}", newProfile);
-            cacheManager.saveProfile(memberId, newProfile);
+            profile = memberService.readProfile(memberId);
+            log.warn("newProfile = {}", profile);
+            cacheManager.saveProfile(memberId, profile);
+        }
+
+        request.setAttribute("memberProfile", profile);
     }
 
     // 사용자의 실제 IP 추출
-    private String getClientIp(HttpServletRequest request) {
+    private String getClientIp(HttpServletRequest request){
         String forwarded = request.getHeader("X-Forwarded-For");
         String clientIp = (Objects.nonNull(forwarded)) ? forwarded.split(",")[0].trim() : request.getRemoteAddr();
         return getIPv4ClientIp(clientIp);
     }
 
     // IPv6 -> IPv4 변환
-    private String getIPv4ClientIp(String clientIp) {
+    private String getIPv4ClientIp (String clientIp){
         try {
 
             // [1] ip 형태 구분을 위한 객체 생성
@@ -141,11 +144,11 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
     }
 
     // "local" 프로필 수행
-    private void doLocal(HttpServletRequest request, HttpServletResponse response) {
+    private void doLocal (HttpServletRequest request, HttpServletResponse response){
     }
 
     // "prod" 프로필 수행
-    private void doProd(HttpServletRequest request, HttpServletResponse response) {
+    private void doProd (HttpServletRequest request, HttpServletResponse response){
 
         // [1] cloudFrontProvider 빈 추출
         AWSCloudFrontProvider cloudFrontProvider =
@@ -160,6 +163,4 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         // [2] signed cookie 삽입
         cloudFrontProvider.setSignedCookies(response);
     }
-
-
 }
