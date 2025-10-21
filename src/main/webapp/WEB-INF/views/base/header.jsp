@@ -21,7 +21,7 @@
     <div class="header-info">
         <c:if test="${isLogin}">
             <div style="margin-right: 20px">
-                    ${sessionScope.profile.nickname}님 안녕하세요
+                    ${memberProfile.nickname}님 안녕하세요
             </div>
         </c:if>
         <button>
