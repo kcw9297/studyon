@@ -349,3 +349,7 @@ a {
     background-color: orange;
     transition: all 0.5s ease;
 }
+
+.header-logo {
+    cursor: pointer;
+}

@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <div class="header-container">
-    <div class="header-logo">
+    <div class="header-logo" onclick="location.href='/'">
         <img src="<c:url value='${isLogin ? "/img/png/logo_login.png" : "/img/png/logo_logout.png"}'/>" id="logo" alt="image">
     </div>
     <div class="header-search">
