@@ -106,7 +106,6 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
             MemberProfile newProfile = memberService.readProfile(memberId);
             log.warn("newProfile = {}", newProfile);
             cacheManager.saveProfile(memberId, newProfile);
-        }
     }
 
     // 사용자의 실제 IP 추출

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
+import studyon.app.common.enums.FileType;
 import studyon.app.layer.domain.file.FileDTO;
 
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileMapper {
 
-    static FileDTO.Upload toUploadDTO(MultipartFile file, Long entityId, Entity entity) {
+    static FileDTO.Upload toUploadDTO(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
 
         // [1] 파일 정보 추출
         String originalName = file.getOriginalFilename();
@@ -28,6 +29,7 @@ public class FileMapper {
                 .size(file.getSize())
                 .entityId(entityId)
                 .entity(entity)
+                .fileType(fileType)
                 .build();
     }
 }

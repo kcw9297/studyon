@@ -2,14 +2,17 @@ package studyon.app.layer.controller.file;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import studyon.app.common.constant.URL;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.enums.FileType;
+import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.file.FileManager;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.common.utils.StrUtils;
@@ -22,13 +25,18 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/file")
+@RequestMapping(URL.FILE)
 @RequiredArgsConstructor
 public class FileController {
 
     private final FileManager fileManager;
     private final FileService fileService;
     private final FileRepository fileRepository;
+    private final CacheManager cacheManager;
+
+    @Value("${file.domain}")
+    private String fileDomain;
+
 
     @ResponseBody
     @GetMapping("/download/{fileId}")
@@ -46,6 +54,20 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(fileBytes);
     }
+
+    @ResponseBody
+    @PostMapping("/upload/temp")
+    public String uploadTemp(MultipartFile file) {
+
+        // [1] 파일 업로드
+        FileDTO.Upload fileUpload = fileManager.uploadToTemp(file);
+        log.warn("fileUpload = {} fileDomain = {}", fileUpload, fileDomain);
+
+        // [2] 업로드된 임시 파일 주소 반환
+        return "%s/%s/%s".formatted(fileDomain, fileUpload.getEntity().getName(), fileUpload.getStoreName());
+    }
+
+
 
 
 
@@ -86,6 +108,7 @@ public class FileController {
         return "redirect:/file/list.do";
     }
 
+    // 테스트 메소드
     @PostMapping("/upload_all.do")
     public String uploadAll(List<MultipartFile> files) {
 

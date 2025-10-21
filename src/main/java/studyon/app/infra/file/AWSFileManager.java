@@ -38,10 +38,10 @@ public class AWSFileManager implements FileManager {
         try {
 
             // [1] 업로드 파일 DTO 생성 및 저장 경로 생성
-            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity);
+            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity, fileType);
 
             String key = // 저장 경로 (key : 저장 경로 + 파일명)
-                    "%s/%s".formatted(entity.getValue(), dto.getStoreName());
+                    "%s/%s".formatted(entity.getName(), dto.getStoreName());
 
             // [2] S3 업로드 요청 객체 생성
             PutObjectRequest request = PutObjectRequest.builder()
@@ -61,8 +61,8 @@ public class AWSFileManager implements FileManager {
     }
 
     @Override
-    public String uploadToTemp(MultipartFile file) {
-        return "";
+    public FileDTO.Upload uploadToTemp(MultipartFile file) {
+        return null;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class AWSFileManager implements FileManager {
 
         try {
             // [1] 파일 경로 (key : 저장 경로 + 파일명)
-            String key = "%s/%s".formatted(entity.getValue(), storeName);
+            String key = "%s/%s".formatted(entity.getName(), storeName);
 
             // [2] S3 스토리지에 저장된 파일 다운로드 요청 (InputStream)
             ResponseInputStream<GetObjectResponse> getRes = s3.getObject(
@@ -104,7 +104,7 @@ public class AWSFileManager implements FileManager {
     public void remove(String storeName, Entity entity) {
 
         // [1] 파일 경로 (key : 저장 경로 + 파일명)
-        String key = "%s/%s".formatted(entity.getValue(), storeName);
+        String key = "%s/%s".formatted(entity.getName(), storeName);
 
         // [2] 파일 삭제
         s3.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(key).build());

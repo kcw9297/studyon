@@ -56,6 +56,10 @@ public class RestUtils {
         response.getWriter().write(message);
     }
 
+    public static ResponseEntity<?> ok(Object data) {
+        return new ResponseEntity<>(Rest.Response.ok(data), HttpStatus.OK);
+    }
+
     public static ResponseEntity<?> ok(Rest.Message message) {
         return new ResponseEntity<>(Rest.Response.ok(message), HttpStatus.OK);
     }
