@@ -28,13 +28,15 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
      * @param teacherId 선생님 ID
      * @param pageable 정렬 조회용 변수
      */
-    // @WHERE절 과다 ? 바인딩으로 인한 DTO 객체 반환 처리
-    @Query("SELECT r FROM LectureReview r " +  // 리뷰 엔티티를 조회 시작점으로
-            "JOIN r.lecture l " +  // 리뷰와 강의를 조인
-            "JOIN l.teacher t " +  // 강의와 선생님 조인
-            "JOIN r.member m " +  // 선생님과 멤버 조인
+    // FETCH JOIN 사용을 통해 지연 로딩으로 인한 단점 방지
+    @Query(value = "SELECT r FROM LectureReview r " +  // 리뷰 엔티티를 조회 시작점으로
+            "JOIN FETCH r.lecture l " +  // 리뷰와 강의를 조인
+            "JOIN FETCH l.teacher t " +  // 강의와 선생님 조인
+            "JOIN FETCH r.member m " +  // 선생님과 멤버 조인
             "WHERE t.teacherId = :teacherId " +
-            "ORDER BY r.createdAt DESC")
+            "ORDER BY r.createdAt DESC",
+            countQuery = "SELECT COUNT(r) FROM LectureReview r JOIN r.lecture l JOIN l.teacher t WHERE t.teacherId = :teacherId")
+    // countQuery == 페이징(리스팅) 오류를 막기 위해 씀
     List<LectureReview> findRecentReviewsByTeacherId(Long teacherId, Pageable pageable);
 
     /**

@@ -17,60 +17,60 @@
         <div>Best 강의 추천</div>
         <div class ="recent-lecture-container">
             <c:forEach var="bestLecture" items="${bestLectures}">
-            <div class="recent-lecture-item">
-                <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
-                <div class="lecture-info">
-                    <p class="lecture-title">${bestLecture.title}</p>
-                    <p class="lecture-info-text">${bestLecture.description}</p>
-                    <p class="lecture-info-text">₩<fmt:formatNumber value="${bestLecture.price}" type="number"/></p>
-                    <p class="lecture-info-text"><!--⭐<c:out value="${bl.averageRate}" />-->
-                        &#x1F9F8;
-                        <c:choose>
-                            <c:when test="${bestLecture.totalStudents >= 10}">
-                                10+
-                            </c:when>
-                            <c:otherwise>
-                                <c:out value="${bestLecture.totalStudents}" />
-                            </c:otherwise>
-                        </c:choose>
-                    </p>
-                    <!--🧸 띄어쓰기 없이 출력 안돼서 &#x1F9F8; html 엔티티로 교체 -->
+                <div class="recent-lecture-item">
+                    <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
+                    <div class="lecture-info">
+                        <p class="lecture-title">${bestLecture.title}</p>
+                        <p class="lecture-info-text">${bestLecture.description}</p>
+                        <p class="lecture-info-text">₩<fmt:formatNumber value="${bestLecture.price}" type="number"/></p>
+                        <p class="lecture-info-text"><!--⭐<c:out value="${bl.averageRate}" />-->
+                            &#x1F9F8;
+                            <c:choose>
+                                <c:when test="${bestLecture.totalStudents >= 10}">
+                                    10+
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${bestLecture.totalStudents}" />
+                                </c:otherwise>
+                            </c:choose>
+                        </p>
+                        <!--🧸 띄어쓰기 없이 출력 안돼서 &#x1F9F8; html 엔티티로 교체 -->
+                    </div>
                 </div>
-            </div>
             </c:forEach>
         </div>
         <div>최근 등록된 강좌</div>
         <div class ="recent-lecture-container">
             <c:forEach var="recentLecture" items="${recentLectures}">
-            <div class="recent-lecture-item">
-                <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
-                <div class="lecture-info">
-                    <p class="lecture-title">${recentLecture.title}</p>
-                    <p class="lecture-info-text">${recentLecture.description}</p>
-                    <p class="lecture-info-text">₩<fmt:formatNumber value="${recentLecture.price}" type="number"/></p>
-                    <p class="lecture-info-text"><!--⭐<c:out value="${rl.averageRate}" />-->
-                        &#x1F9F8;
-                        <c:choose>
-                            <c:when test="${recentLecture.totalStudents >= 10}">
-                                10+
-                            </c:when>
-                            <c:otherwise>
-                                <c:out value="${recentLecture.totalStudents}" />
-                            </c:otherwise>
-                        </c:choose>
-                    </p>
+                <div class="recent-lecture-item">
+                    <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
+                    <div class="lecture-info">
+                        <p class="lecture-title">${recentLecture.title}</p>
+                        <p class="lecture-info-text">${recentLecture.description}</p>
+                        <p class="lecture-info-text">₩<fmt:formatNumber value="${recentLecture.price}" type="number"/></p>
+                        <p class="lecture-info-text"><!--⭐<c:out value="${rl.averageRate}" />-->
+                            &#x1F9F8;
+                            <c:choose>
+                                <c:when test="${recentLecture.totalStudents >= 10}">
+                                    10+
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${recentLecture.totalStudents}" />
+                                </c:otherwise>
+                            </c:choose>
+                        </p>
+                    </div>
                 </div>
-            </div>
             </c:forEach>
         </div>
 
         <div>생생 수강평</div>
         <div class="lecture-comment-box">
             <c:forEach var="comment" items="${comment}">
-            <div class="lecture-comment-box-item">
-                <div class="lecture-comment-username">${comment.nickname}</div>
-                <div class="lecture-comment-comment">${comment.content}</div>
-            </div>
+                <div class="lecture-comment-box-item">
+                    <div class="lecture-comment-username">${comment.nickname}</div>
+                    <div class="lecture-comment-comment">${comment.content}</div>
+                </div>
             </c:forEach>
         </div>
 

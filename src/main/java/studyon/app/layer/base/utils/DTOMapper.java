@@ -377,17 +377,4 @@ public class DTOMapper {
                 .role(member.getRole())
                 .build();
     }
-
-    /**
-     *  수정용 DTO -> 엔티티(필요 없어질 시 지울 예정)
-     */
-
-    public static void applyEditToEntity(Teacher entity, TeacherDTO.Edit dto) {
-        if (dto.getDescription() != null) {
-            entity.updateInfo(dto.getSubject(), dto.getDescription());
-        }
-        if (dto.getNickname() != null && entity.getMember() != null) {
-            entity.getMember().updateNickname(dto.getNickname());
-        }
-    }
 }

@@ -48,7 +48,7 @@ public class LectureController {
      * @param count 보여지는 개수 조정을 위한 카운트 변수
      */
     @GetMapping("/recommend/{subject}")
-    public String lectureRecommentView(@PathVariable Subject subject, Model model, @RequestParam(defaultValue = "4") int count) {
+    public String lectureRecommendView(@PathVariable Subject subject, Model model, @RequestParam(defaultValue = "4") int count) {
         // [1] 강의 목록들, 리뷰 생성
         List<LectureReviewDTO.Read> reviews = lectureReviewService.readSubjectReviews(subject, count);
         List<LectureDTO.Read> recentLectures = lectureService.readRecentLectures(subject, count);
