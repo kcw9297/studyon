@@ -37,6 +37,7 @@ public class RedisEventListener implements MessageListener {
         String eventType = new String(pattern);
         log.warn("key = {}, eventType = {}", targetKey, eventType);
 
+        /*
         // [2] id 값 분리
         String[] split = targetKey.split(":");
         String id = split[split.length - 1];
@@ -47,13 +48,14 @@ public class RedisEventListener implements MessageListener {
         // 임시파일 삭제 요청인 경우, 해당 키의
         if (Objects.equals(targetKey, lectureQuestionTempKey)) {
             log.warn(" 임시파일 제거");
-            /*
+
             String backupKey = CacheUtils.createBackupKey(lectureQuestionTempKey);
             List<String> tempFileNames = cacheManager.getAndRemoveBackupKey(backupKey, );
             log.warn("tempFileNames = {}", tempFileNames);
             tempFileNames.forEach(tempFileName -> fileManager.remove(tempFileName, Entity.TEMP));
-             */
+
 
         }
+        */
     }
 }

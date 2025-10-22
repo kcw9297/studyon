@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import studyon.app.common.utils.StrUtils;
-import studyon.app.layer.base.entity.BaseEntity;
-import studyon.app.common.enums.Role;
 import studyon.app.common.enums.Provider;
+import studyon.app.common.enums.Role;
+import studyon.app.layer.base.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 

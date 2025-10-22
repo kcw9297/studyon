@@ -46,6 +46,7 @@ public class FileDTO {
         private Long entityId;
         private Entity entity;
         private FileType fileType;
+        private String filePath;
     }
 
 

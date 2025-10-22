@@ -21,48 +21,40 @@
     <script>
 
         // 스크립트 상수
-        let isWaiting = false;
-        let pending = false;
-        let isSubmitted = false; // 작성 완료 여부 플래그
+        let isRunning = true;
+        let updateTimer = null;
 
-        // 에디터 본문이 편집된 경우 감지
+        // 에디터 본문이 편집된 경우 감지 (부모와 동기화)
         function onEditorContentChange(contents) {
-            if (isSubmitted) return; // 제출이 완료된 경우 건너뜀
             console.log('부모 content 변경 감지:', contents);
             $('#content').val(contents);
-            scheduleUpdate();
         }
 
         // 변경 감지 후 갱신 (변경된 내용을 캐시에 반영)
-        function scheduleUpdate() {
+        function scheduleUpdateCache() {
 
             // [1] 대기 상태가 아니라면 갱신 수행
-            if (!isWaiting) {
-                // 대기 중이 아니면 즉시 전송
-                sendUpdate();
-                isWaiting = true;
+            if (!isRunning) return;
 
-                // 5초 뒤에 대기 해제
-                setTimeout(() => {
-                    isWaiting = false;
+            updateTimer = setInterval(() => {
+                sendUpdateCache(); // 주기적 요청
+                console.log('서버에 주기적 업데이트 요청 전송');
+            }, 5000); // 10초마다
+        }
 
-                    // 대기 중 변경이 쌓였으면 마지막 데이터로 한 번 더 전송
-                    if (pending) {
-                        sendUpdate();
-                        pending = false;
-                    }
-                }, 1000);
 
-            } else {
+        function stopUpdateTimer() {
 
-                // [2] 대기 중일 때는 데이터만 저장
-                pending = true;
-                console.log('⌛ 전송 예약됨 (5초 후)');
+            if (updateTimer) {
+                clearInterval(updateTimer);
+                updateTimer = null;
+                isRunning = false;
+                console.log('업데이트 타이머 정지');
             }
         }
 
         // 변경 업데이트
-        function sendUpdate() {
+        function sendUpdateCache() {
 
             // 현재 작성된 데이터
             const formData = new FormData();
@@ -72,8 +64,8 @@
 
             // 데이터 전송 (캐시 동기화)
             $.ajax({
-                url: '/testboard/change',
-                type: 'POST',
+                url: '/testboard/cache',
+                type: 'PUT',
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -104,6 +96,8 @@
 
              */
 
+            scheduleUpdateCache();
+
 
             $('#writeForm').on('submit', function(e) {
                 e.preventDefault();
@@ -116,13 +110,14 @@
                 formData.append("_csrf", token); // 인증 토큰 추가
 
                 $.ajax({
-                    url: '/testboard/write',
+                    url: '/testboard',
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
 
                     success: function (rp) {
+                        stopUpdateTimer();
                         const message = rp.message || "저장에 성공했습니다!";
                         const redirect = rp.redirect || "/";
                         alert(message.content);

@@ -2,22 +2,39 @@ package studyon.app.infra.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import studyon.app.common.enums.Entity;
+import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.layer.controller.test.TestCache;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 @Transactional
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SchedulingService {
+public class CacheSchedulingService {
 
-    /*
-    @Scheduled(fixedRate = 10000) // 간격 : 10초
+    private final CacheManager cacheManager;
+
+    /**
+     * 주기적으로 LectureQuestion Cache 데이터 삭제 (고아 파일 삭제)
+     */
+    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS) // 간격 : 10초
     public void executeMin() {
-        log.info("Execute Min");
+
+        List<TestCache> allBackUp =
+                cacheManager.getAllBackupValue(Entity.LECTURE_QUESTION.getName(), TestCache.class);
+
+        log.info("[SchedulingService] - allBackUp = {}", allBackUp);
     }
 
+
+/*
 
     // yaml 상수도 가져올 수 있음
     @Scheduled(fixedDelayString = "${scheduler.fixed.delay}")

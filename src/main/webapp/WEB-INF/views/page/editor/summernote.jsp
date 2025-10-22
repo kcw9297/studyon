@@ -223,17 +223,18 @@
                         console.log('🔑 CSRF 토큰:', token);
                         console.log('🍪 전체 쿠키:', document.cookie);
                         formData.append("file", file);
-                        formData.append("entity", "LECTURE_QUESTION");
+                        formData.append("content", $('#summernote').val());
                         formData.append("_csrf", token); // 인증 토큰 추가
 
                         $.ajax({
-                            url: '/file/upload/temp',
+                            url: '/testboard/editor_file',  // urlParams.get('fileUploadUrl')
                             type: 'POST',
                             data: formData,
                             processData: false,
                             contentType: false,
-                            success: function (url) {
-                                $('#summernote').summernote('insertImage', url);
+                            success: function (rp) {
+                                console.warn(rp);
+                                $('#summernote').summernote('insertImage', rp.data.url);
                             },
                             error: function () {
                                 log.warn("파일 업로드에 실패했습니다.\n잠시 후에 다시 시도해 주세요");

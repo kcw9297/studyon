@@ -1,9 +1,7 @@
 package studyon.app.layer.domain.teacher;
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import studyon.app.common.enums.Subject;
-import studyon.app.infra.aop.LogInfo;
 
 /*
  * [수정 이력]

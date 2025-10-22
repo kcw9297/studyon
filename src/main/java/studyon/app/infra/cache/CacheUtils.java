@@ -21,12 +21,8 @@ public final class CacheUtils {
         return "BACKUP:%s".formatted(key);
     }
 
-    public static String createTempKey(String entityName, Object id) {
-        return "TEMP:%s:%s".formatted(entityName, id);
-    }
-
-    public static String createTempKey(String entityName, Long entityId, Object id) {
-        return "TEMP:%s:%s:%s".formatted(entityName, entityId, id);
+    public static String createCacheKey(String entityName, Object id) {
+        return "CACHE:%s:%s".formatted(entityName, id);
     }
 
     public static String createCommonLoginValue(Long memberId) {
@@ -34,6 +30,6 @@ public final class CacheUtils {
     }
 
     public static String createCacheKeyPattern(String entityName, Object id) {
-        return "TEMP:%s:%s:*".formatted(entityName, id);
+        return "CACHE:%s:%s:*".formatted(entityName, id);
     }
 }

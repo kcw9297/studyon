@@ -4,11 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
-import studyon.app.layer.domain.lecture.Lecture;
-import studyon.app.layer.domain.lecture_category.LectureCategory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * [수정 이력]

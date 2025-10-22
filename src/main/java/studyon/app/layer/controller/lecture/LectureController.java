@@ -53,11 +53,12 @@ public class LectureController {
         List<LectureReviewDTO.Read> reviews = lectureReviewService.readSubjectReviews(subject, count);
         List<LectureDTO.Read> recentLectures = lectureService.readRecentLectures(subject, count);
         List<LectureDTO.Read> bestLectures = lectureService.readBestLectures(subject, count);
-        // [2] 각각 변수 바인딩
+        // [2] 모델에 변수 바인딩
         model.addAttribute("recentLectures", recentLectures);
         model.addAttribute("bestLectures", bestLectures);
         model.addAttribute("reviews", reviews);
         model.addAttribute("subject", subject);
+        // [3] 뷰 리턴
         return ViewUtils.returnView(model, View.LECTURE,"lecture_recommend");
     }
 }

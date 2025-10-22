@@ -1,5 +1,6 @@
 package studyon.app.layer.controller.file;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,10 +33,6 @@ public class FileController {
     private final FileManager fileManager;
     private final FileService fileService;
     private final FileRepository fileRepository;
-    private final CacheManager cacheManager;
-
-    @Value("${file.domain}")
-    private String fileDomain;
 
 
     @ResponseBody
@@ -53,18 +50,6 @@ public class FileController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(fileBytes);
-    }
-
-    @ResponseBody
-    @PostMapping("/upload/temp")
-    public String uploadTemp(MultipartFile file) {
-
-        // [1] 파일 업로드
-        FileDTO.Upload fileUpload = fileManager.uploadToTemp(file);
-        log.warn("fileUpload = {} fileDomain = {}", fileUpload, fileDomain);
-
-        // [2] 업로드된 임시 파일 주소 반환
-        return "%s/%s/%s".formatted(fileDomain, fileUpload.getEntity().getName(), fileUpload.getStoreName());
     }
 
 

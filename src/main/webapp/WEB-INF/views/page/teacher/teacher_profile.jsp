@@ -6,7 +6,7 @@
 <%-- Local CSS --%>
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management/teacher_profile.css'/>">
 
-    <div id="content">콘텐츠영역
+    <div id="content">
         <div id="empty-box"></div>
         <div class="teacher-img-area">
             <img src="<c:url value='/img/png/teacher_profile_img.png'/>" alt="강사이미지" class="teacher-img">
@@ -23,7 +23,7 @@
                         <p class="lecture-title">${bestLecture.title}</p>
                         <p class="lecture-info-text">${bestLecture.description}</p>
                         <p class="lecture-info-text">₩<fmt:formatNumber value="${bestLecture.price}" type="number"/></p>
-                        <p class="lecture-info-text"><!--⭐<c:out value="${bl.averageRate}" />-->
+                        <p class="lecture-info-text"><!--⭐<c:out value="${bestLecture.averageRate}" />-->
                             &#x1F9F8;
                             <c:choose>
                                 <c:when test="${bestLecture.totalStudents >= 10}">
@@ -48,7 +48,7 @@
                         <p class="lecture-title">${recentLecture.title}</p>
                         <p class="lecture-info-text">${recentLecture.description}</p>
                         <p class="lecture-info-text">₩<fmt:formatNumber value="${recentLecture.price}" type="number"/></p>
-                        <p class="lecture-info-text"><!--⭐<c:out value="${rl.averageRate}" />-->
+                        <p class="lecture-info-text"><!--⭐<c:out value="${recentLecture.averageRate}" />-->
                             &#x1F9F8;
                             <c:choose>
                                 <c:when test="${recentLecture.totalStudents >= 10}">
