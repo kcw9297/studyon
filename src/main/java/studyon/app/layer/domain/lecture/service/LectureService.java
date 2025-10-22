@@ -2,6 +2,7 @@ package studyon.app.layer.domain.lecture.service;
 
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.LectureDTO;
+import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 
 import java.util.List;
 
@@ -50,4 +51,10 @@ public interface LectureService {
      * @return 전체 인기순 강의 목록
      */
     List<LectureDTO.Read> readAllPopularLectures(int count);
+
+    /** 과목별 강의 리뷰 목록 조회 로직(추천 강의 화면)
+     * @param count 정렬용 변수
+     * @return 과목별 최근 강의 리뷰 목록
+     */
+    List<LectureReviewDTO.Read> readRecentLectureReviews(Subject subject, int count);
 }
