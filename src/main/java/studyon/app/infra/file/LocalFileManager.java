@@ -38,6 +38,9 @@ public class LocalFileManager implements FileManager {
     @Value("${file.dir}") // properties(yml) 파일 내 프로퍼티 값을 직접 사용 (빈 주입 시기에 같이 삽입)
     private String fileDir;
 
+    @Value("${file.domain}") // properties(yml) 파일 내 프로퍼티 값을 직접 사용 (빈 주입 시기에 같이 삽입)
+    private String fileDomain;
+
 
     @Override
     public FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
@@ -70,11 +73,11 @@ public class LocalFileManager implements FileManager {
         String ext = Objects.isNull(originalName) || originalName.isBlank() ?
                 "" : originalName.substring(originalName.lastIndexOf(".") + 1);
         String storeName = "%s.%s".formatted(UUID.randomUUID().toString(), ext);
-        String filePath = "%s/%s".formatted(uploadPath, storeName);
-
+        String transferPath = "%s/%s".formatted(uploadPath, storeName);
+        String filePath = "%s/%s/%s".formatted(fileDomain, entity.getName(), storeName);
 
         // [4] 파일 업로드
-        file.transferTo(new File(filePath)); // 파일 업로드
+        file.transferTo(new File(transferPath)); // 파일 업로드
 
         // [5] 업로드 정보 DTO 생성 및 반환
         return FileDTO.Upload.builder()

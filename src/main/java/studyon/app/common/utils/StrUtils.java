@@ -12,10 +12,7 @@ import org.springframework.web.util.UriUtils;
 import studyon.app.common.exception.UtilsException;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StrUtils {
@@ -27,44 +24,40 @@ public final class StrUtils {
     private static final Base64.Encoder urlEncoder = Base64.getUrlEncoder();
 
     // Summernote용 Safelist
-    private static final Safelist SAFELIST = new Safelist()
-            .addTags("p", "div", "br", "hr")
-            .addTags("h1", "h2", "h3", "h4", "h5", "h6")
-            .addTags("blockquote", "pre", "code")
-            .addTags("span", "font", "strong", "b", "em", "i", "u", "s", "strike", "del")
-            .addTags("sup", "sub", "small", "mark")
-            .addTags("ul", "ol", "li")
-            .addTags("table", "thead", "tbody", "tfoot", "tr", "th", "td", "caption")
-            .addTags("a", "img")
-            .addTags("video", "source", "iframe")
+    private static final Safelist SAFELIST = Safelist.relaxed()
+            .addTags("font", "mark", "video", "source", "iframe")
+            // img src 허용
+            .addAttributes("img", "src", "style", "width", "height", "class")
             .addAttributes("span", "style", "class")
             .addAttributes("font", "face", "size", "color", "style")
             .addAttributes("p", "style", "class", "align")
-            .addAttributes("div", "style", "class")
+            .addAttributes("div", "style", "class", "align")
             .addAttributes("h1", "style", "class")
             .addAttributes("h2", "style", "class")
             .addAttributes("h3", "style", "class")
             .addAttributes("h4", "style", "class")
             .addAttributes("h5", "style", "class")
             .addAttributes("h6", "style", "class")
-            .addAttributes("blockquote", "class")
-            .addAttributes("pre", "class")
-            .addAttributes("img", "src", "alt", "title", "style", "width", "height", "class")
-            .addAttributes("a", "href", "target", "title", "rel")
-            .addAttributes("table", "style", "class", "border", "width")
+            .addAttributes("blockquote", "style", "class")
+            .addAttributes("pre", "style", "class")
+            .addAttributes("code", "style", "class")
+            .addAttributes("strong", "style", "class")
+            .addAttributes("em", "style", "class")
+            .addAttributes("u", "style", "class")
+            .addAttributes("a", "href", "target", "rel") // href 추가
+            .addAttributes("table", "style", "class", "border", "width", "cellpadding", "cellspacing")
             .addAttributes("tr", "style", "class")
             .addAttributes("td", "style", "class", "colspan", "rowspan", "width", "height")
-            .addAttributes("th", "style", "class", "colspan", "rowspan", "width", "height")
+            .addAttributes("th", "style", "class", "colspan", "rowspan", "width", "height", "scope")
+            .addAttributes("thead", "style", "class")
+            .addAttributes("tbody", "style", "class")
             .addAttributes("ul", "style", "class")
-            .addAttributes("ol", "style", "class")
+            .addAttributes("ol", "style", "class", "start", "type")
             .addAttributes("li", "style", "class")
-            .addAttributes("video", "src", "controls", "width", "height", "style")
-            .addAttributes("iframe", "src", "width", "height", "style", "frameborder", "allowfullscreen")
-            .addProtocols("a", "href", "http", "https", "mailto", "/", "#")
-            .addProtocols("img", "src", "http", "https", "/")
-            .addProtocols("iframe", "src", "http", "https")
-            .addProtocols("video", "src", "http", "https", "/");
-
+            .addAttributes("video", "src", "controls", "width", "height", "style", "class")
+            .addAttributes("source", "src", "type")
+            .addAttributes("iframe", "src", "width", "height", "style", "class", "frameborder", "allowfullscreen")
+            .preserveRelativeLinks(true);
 
     public static String toJson(Object data) {
 
@@ -158,11 +151,10 @@ public final class StrUtils {
 
     public static String purifyHtml(String htmlContent) {
 
-        // [1] HTML 파싱
-        String html = Jsoup.parse(htmlContent).body().html();
-
-        // [2] 위험 태그 제거 후 반환
-        return Jsoup.clean(html, SAFELIST);
+        return Objects.isNull(htmlContent) || htmlContent.isBlank() ?
+                "" :
+                Jsoup.clean(htmlContent, "https://example.com", SAFELIST,
+                new Document.OutputSettings().prettyPrint(false));
     }
 
 

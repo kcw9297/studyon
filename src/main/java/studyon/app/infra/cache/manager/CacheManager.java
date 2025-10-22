@@ -26,9 +26,8 @@ public interface CacheManager {
     /**
      * 로그아웃 회원 정보 제거
      * @param memberId 로그인 회원번호
-     * @param sessionId 로그인 세션번호
      */
-    void removeLogout(Long memberId, String sessionId);
+    void removeLogout(Long memberId);
 
     /**
      * 회원의 프로필 정보 저장

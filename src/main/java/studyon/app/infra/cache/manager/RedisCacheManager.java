@@ -1,6 +1,7 @@
 package studyon.app.infra.cache.manager;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import studyon.app.infra.cache.CacheUtils;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-
+@Slf4j
 @Component("customRedisCacheManager")
 @RequiredArgsConstructor
 public class RedisCacheManager implements CacheManager {
@@ -39,8 +40,8 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public void removeLogout(Long memberId, String sessionId) {
-        stringRedisTemplate.opsForSet().remove(Cache.CURRENT_LOGIN.getBaseKey(), sessionId);
+    public void removeLogout(Long memberId) {
+        stringRedisTemplate.opsForSet().remove(Cache.CURRENT_LOGIN.getBaseKey(), memberId);
     }
 
 
@@ -145,7 +146,9 @@ public class RedisCacheManager implements CacheManager {
     public <T> T getCache(String entityName, Object id, Class<T> clazz) {
 
         // [1] key
-        String key = CacheUtils.createTempKey(entityName, id);
+        String key = CacheUtils.createCacheKey(entityName, id);
+
+        log.warn("[getCache] key - {}", key);
 
         // [2] 캐시 조회 후 반환 (조회 성공 시, 만료시간 갱신)
         String value = stringRedisTemplate.opsForValue().getAndExpire(key, EXPIRATION_CACHE);
@@ -157,13 +160,13 @@ public class RedisCacheManager implements CacheManager {
     public <T> T getOrRecordCache(String entityName, Object id, Class<T> clazz) {
 
         // [1] key
-        String key = CacheUtils.createTempKey(entityName, id);
+        String key = CacheUtils.createCacheKey(entityName, id);
         String backupKey = CacheUtils.createBackupKey(key);
 
         // [2] 캐시가 이미 존재하는지 확인
         // 만약 존재하는 경우 데이터를 그대로 반환
-        T get = getCache(key, backupKey, clazz);
-        if (Objects.nonNull(get)) return get;
+        String value = stringRedisTemplate.opsForValue().getAndExpire(key, EXPIRATION_CACHE);
+        if (Objects.nonNull(value)) return StrUtils.fromJson(value, clazz);
 
         // [3] 새롭게 생성해야 하는 경우
         // 이전의 같은 엔티티의 다른 캐시데이터는 모두 삭제
@@ -190,7 +193,7 @@ public class RedisCacheManager implements CacheManager {
     public void updateCache(String entityName, Object id, Object cacheData) {
 
         // [1] key
-        String key = CacheUtils.createTempKey(entityName, id);
+        String key = CacheUtils.createCacheKey(entityName, id);
 
         // [2] 캐시 데이터 확인 및 갱신 수행
         // 존재하지 않는 경우 갱신을 수행하지 않음 (캐시가 없으면 유효하지 않은 접근으로 판단)
@@ -202,7 +205,7 @@ public class RedisCacheManager implements CacheManager {
     public void removeCache(String entityName, Object id) {
 
         // [1] key
-        String key = CacheUtils.createTempKey(entityName, id);
+        String key = CacheUtils.createCacheKey(entityName, id);
         String backupKey = CacheUtils.createBackupKey(key);
 
         // [2] 현재 캐시와, 백업 데이터 함께 삭제

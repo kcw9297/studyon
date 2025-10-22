@@ -49,7 +49,7 @@ public class CustomLogoutHandler implements LogoutSuccessHandler {
 
         // TODO 수정해야 함
         if (Objects.nonNull(userDetails) && Objects.nonNull(sessionId))
-            cacheManager.removeLogout(userDetails.getMemberId(), sessionId);
+            cacheManager.removeLogout(userDetails.getMemberId());
 
         // [2] 로그아웃 응답 반환
         RestUtils.jsonOK(
