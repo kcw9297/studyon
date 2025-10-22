@@ -67,7 +67,6 @@ public class Teacher extends BaseEntity {
      * @param subject 과목
      * @param description 소개
      */
-
     public void updateInfo(Subject subject, String description) {
         this.subject = subject;
         this.description = description;

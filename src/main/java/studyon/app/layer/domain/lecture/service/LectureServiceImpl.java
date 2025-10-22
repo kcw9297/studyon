@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 
 /**
- * 강의 서비스 인터페이스
+ * 강의 서비스 인터페이스 구현체
  * @version 1.0
  * @author khj00
  */
@@ -62,7 +62,9 @@ public class LectureServiceImpl implements LectureService {
      */
     @Override
     public List<LectureDTO.Read> readRecentLectures(Subject subject, int count) {
+        // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
+        // [2] 과목 기반으로 최근 강의 정렬
         return lectureRepository.findRecentLecturesBySubject(subject, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
@@ -79,10 +81,39 @@ public class LectureServiceImpl implements LectureService {
     public List<LectureDTO.Read> readBestLectures(Subject subject, int count) {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
-        // [2] 과목 기반으로 BEST 리뷰 정렬
+        // [2] 과목 기반으로 BEST 강의 정렬
         return lectureRepository.findBestLecturesBySubject(subject, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                .collect(Collectors.toList());
+    }
+
+    /** 최신순 강의 목록 조회 로직 (홈화면)
+     * @param count 정렬용 변수
+     * @return 최신순(강의 목록 구별 X) 강의 목록
+     */
+    @Override
+    public List<LectureDTO.Read> readAllRecentLectures(int count) {
+        // [1] 리스팅 카운트용 변수
+        Pageable pageable = PageRequest.of(0, count);
+        // [2] 모든 강의 중 카운트만큼 최신순 정렬
+        return lectureRepository.findAllByOrderByPublishDateDesc(pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .collect(Collectors.toList());
+    }
+    /** 인기순(수강생수 기준) 강의 목록 조회 로직 (홈화면)
+     * @param count 정렬용 변수
+     * @return 전체 인기순 강의 목록
+     */
+    @Override
+    public List<LectureDTO.Read> readAllPopularLectures(int count) {
+        // [1] 리스팅 카운트용 변수
+        Pageable pageable = PageRequest.of(0, count);
+        // [2] 모든 강의 중 카운트만큼 인기순 정렬
+        return lectureRepository.findAllByOrderByTotalStudentsDesc(pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
     }
 }

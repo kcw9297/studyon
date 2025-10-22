@@ -4,10 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studyon.app.layer.base.utils.DTOMapper;
-import studyon.app.layer.domain.payment.Payment;
-import studyon.app.layer.domain.payment.PaymentDTO;
 import studyon.app.layer.domain.payment.repository.PaymentRepository;
-import studyon.app.layer.domain.payment_details.PaymentDetails;
 import studyon.app.layer.domain.payment_details.PaymentDetailsDTO;
 import studyon.app.layer.domain.payment_details.repository.PaymentDetailRepository;
 

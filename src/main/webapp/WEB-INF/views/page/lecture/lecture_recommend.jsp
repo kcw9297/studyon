@@ -31,7 +31,7 @@
               <p class="lecture-title">${bestLecture.title}</p>
               <p class="lecture-info-text">${bestLecture.nickname}</p>
               <p class="lecture-info-text">₩<fmt:formatNumber value="${bestLecture.price}" type="number"/></p>
-                <p class="lecture-info-text"><!--⭐<c:out value="${bl.averageRate}" />-->
+                <p class="lecture-info-text"><!--⭐<c:out value="${bestLecture.averageRate}" />-->
                     &#x1F9F8;
                     <c:choose>
                         <c:when test="${bestLecture.totalStudents >= 10}">
@@ -70,7 +70,7 @@
                       <p class="lecture-title">${recentLecture.title}</p>
                       <p class="lecture-info-text">${recentLecture.nickname}</p>
                       <p class="lecture-info-text">₩<fmt:formatNumber value="${recentLecture.price}" type="number"/></p>
-                        <p class="lecture-info-text"><!--⭐<c:out value="${bl.averageRate}" />-->
+                        <p class="lecture-info-text"><!--⭐<c:out value="${recentLecture.averageRate}" />-->
                             &#x1F9F8;
                             <c:choose>
                                 <c:when test="${recentLecture.totalStudents >= 10}">
