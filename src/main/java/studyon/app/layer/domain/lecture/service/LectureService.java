@@ -26,14 +26,29 @@ public interface LectureService {
 
     /** 과목별 최근 강의 목록 조회 로직
      * @param subject 해당 과목
+     * @param count 정렬용 변수
      * @return 해당 과목의 최근 강의 목록
      */
     List<LectureDTO.Read> readRecentLectures(Subject subject, int count);
 
     /** 과목별 BEST 강의 목록 조회 로직
-     * @param subject 해당 과목 
+     * @param subject 해당 과목
+     * @param count 정렬용 변수
      * @return 해당 과목의 BEST 강의 목록
      */
-    
     List<LectureDTO.Read> readBestLectures(Subject subject, int count);
+
+
+    /** 최신순 강의 목록 조회 로직 (홈화면)
+     * @param count 정렬용 변수
+     * @return 전체 최신순 강의 목록
+     */
+    List<LectureDTO.Read> readAllRecentLectures(int count);
+
+
+    /** 인기순(수강생수 기준) 강의 목록 조회 로직 (홈화면)
+     * @param count 정렬용 변수
+     * @return 전체 인기순 강의 목록
+     */
+    List<LectureDTO.Read> readAllPopularLectures(int count);
 }

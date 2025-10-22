@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.Lecture;
-import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture_review.LectureReview;
 
 import java.util.List;
@@ -24,16 +23,19 @@ import java.util.List;
  */
 
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
+    /**
+     * 최근 등록된 강의 (홈화면)
+     * @param pageable 정렬용 변수
+     * @return 최근 등록된 강의 리스트
+     */
+    List<Lecture> findAllByOrderByPublishDateDesc(Pageable pageable);
 
-    /* 테스트용 코드 */
-    // 최신 등록순 (publishDate 내림차순)
-    List<Lecture> findAllByOrderByPublishDateDesc();
-
-    // 테스트용 데이터 정렬
-    Page<Lecture> findByOrderByPublishDateDesc(Pageable pageable);
-
-    // 강의 리뷰 정렬
-    List<LectureReview> findByLectureId(Long lectureId);
+    /**
+     * 최근 인기 강의 (홈화면) -> 총 수강 학생 수 정렬
+     * @param pageable 정렬용 변수
+     * @return 인기순 강의 리스트
+     */
+    List<Lecture> findAllByOrderByTotalStudentsDesc(Pageable pageable);
 
     /**
      * 특정 선생님이 담당하는 BEST 강의 조회
@@ -72,5 +74,11 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     @Query("SELECT l FROM Lecture l WHERE l.teacher.subject = :subject ORDER BY l.publishDate DESC")
     List<Lecture> findRecentLecturesBySubject(@Param("subject") Subject subject, Pageable pageable);
 
+    /* 테스트용 코드 */
+    // 테스트용 데이터 정렬
+    Page<Lecture> findByOrderByPublishDateDesc(Pageable pageable);
+
+    // 강의 리뷰 정렬
+    List<LectureReview> findByLectureId(Long lectureId);
 
 }

@@ -41,7 +41,6 @@ public class TeacherController {
     private final TeacherService teacherService;
     private final LectureService lectureService;
 
-
     /**
      * [GET] 강의 생성 뷰
      */
@@ -53,6 +52,7 @@ public class TeacherController {
     /**
      * [GET] 과목별 선생님 목록 뷰
      * @param subject 교과목
+     * @return JSP 뷰
      */
     @GetMapping("/find/{subject}")
     public String teacherListView(@PathVariable Subject subject, Model model) {
@@ -73,6 +73,7 @@ public class TeacherController {
      * [GET] 학생들에게 보여지는 선생님 프로필 페이지
      * @param teacherId 선생님 ID
      * @param count 보여지는 개수 조정을 위한 카운트 변수
+     * @return JSP 뷰
      */
     @GetMapping("/profile/{teacherId}")
     public String showProfile(@PathVariable Long teacherId, Model model, @RequestParam(defaultValue = "5") int count) {
