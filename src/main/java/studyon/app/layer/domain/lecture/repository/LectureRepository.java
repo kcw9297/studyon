@@ -14,11 +14,12 @@ import java.util.List;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-16) : khj00 최초 작성
+ *  ▶ ver 1.1 (2025-10-22) : khj00 : 지연 로직 방지 @Query 추가
  */
 
 /**
  * 강의 레포지토리 인터페이스
- * @version 1.0
+ * @version 1.1
  * @author khj00
  */
 
@@ -28,6 +29,12 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
      * @param pageable 정렬용 변수
      * @return 최근 등록된 강의 리스트
      */
+    @Query("""
+    SELECT l FROM Lecture l
+    JOIN FETCH l.teacher t
+    JOIN FETCH t.member m
+    ORDER BY l.publishDate DESC
+    """) // fetch join을 통해 다중 쿼리 생성 방지
     List<Lecture> findAllByOrderByPublishDateDesc(Pageable pageable);
 
     /**
@@ -35,25 +42,43 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
      * @param pageable 정렬용 변수
      * @return 인기순 강의 리스트
      */
+    @Query("""
+    SELECT l FROM Lecture l
+    JOIN FETCH l.teacher t
+    JOIN FETCH t.member m
+    ORDER BY l.totalStudents DESC
+    """)
     List<Lecture> findAllByOrderByTotalStudentsDesc(Pageable pageable);
 
     /**
-     * 특정 선생님이 담당하는 BEST 강의 조회
+     * 특정 선생님이 담당하는 BEST 강의 조회 (수강생 수 기준)
      * @param teacherId 선생님 ID
      * @param pageable 정렬용 변수
      * @return 해당 선생님이 등록한 강의 리스트
      */
-    @Query("SELECT l FROM Lecture l WHERE l.teacher.teacherId = :teacherId ORDER BY l.totalStudents DESC")
+    @Query("""
+        SELECT l FROM Lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH t.member m
+        WHERE t.teacherId = :teacherId
+        ORDER BY l.totalStudents DESC
+        """)
     List<Lecture> findBestLecturesByTeacherId(@Param("teacherId") Long teacherId, Pageable pageable);
 
 
     /**
-     * 특정 과목의 BEST 강의 조회
+     * 특정 과목의 BEST 강의 조회 (수강생 수 기준)
      * @param subject 과목
      * @param pageable 정렬용 변수
      * @return 해당 선생님이 등록한 최신 강의 리스트 (total_students 기준 정렬)
      */
-    @Query("SELECT l FROM Lecture l WHERE l.teacher.subject = :subject ORDER BY l.totalStudents DESC")
+    @Query("""
+        SELECT l FROM Lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH t.member m
+        WHERE t.subject = :subject
+        ORDER BY l.totalStudents DESC
+        """)
     List<Lecture> findBestLecturesBySubject(@Param("subject") Subject subject, Pageable pageable);
 
     /**
@@ -62,7 +87,13 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
      * @param pageable 정렬용 변수
      * @return 해당 선생님이 등록한 최신 강의 리스트 (publish_date 기준 정렬)
      */
-    @Query("SELECT l FROM Lecture l WHERE l.teacher.teacherId = :teacherId ORDER BY l.publishDate DESC")
+    @Query("""
+        SELECT l FROM Lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH t.member m
+        WHERE t.teacherId = :teacherId
+        ORDER BY l.publishDate DESC
+        """)
     List<Lecture> findRecentLecturesByTeacherId(@Param("teacherId") Long teacherId, Pageable pageable);
 
     /**
@@ -71,7 +102,13 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
      * @param pageable 정렬용 변수
      * @return 해당 선생님이 등록한 최신 강의 리스트 (publish_date 기준 정렬)
      */
-    @Query("SELECT l FROM Lecture l WHERE l.teacher.subject = :subject ORDER BY l.publishDate DESC")
+    @Query("""
+        SELECT l FROM Lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH t.member m
+        WHERE t.subject = :subject
+        ORDER BY l.publishDate DESC
+        """)
     List<Lecture> findRecentLecturesBySubject(@Param("subject") Subject subject, Pageable pageable);
 
     /* 테스트용 코드 */

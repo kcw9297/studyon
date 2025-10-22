@@ -27,8 +27,8 @@
                 <p class="lecture-info-text"><!--⭐<c:out value="${bl.averageRate}" />-->
                     &#x1F9F8;
                     <c:choose>
-                        <c:when test="${recentLecture.totalStudents >= 1000}">
-                            1000+
+                        <c:when test="${recentLecture.totalStudents >= 10}">
+                            10+
                         </c:when>
                         <c:otherwise>
                             <c:out value="${recentLecture.totalStudents}" />
@@ -52,8 +52,8 @@
                 <p class="lecture-info-text"><!--⭐<c:out value="${popularLecture.averageRate}" />-->
                     &#x1F9F8;
                     <c:choose>
-                        <c:when test="${popularLecture.totalStudents >= 1000}">
-                            1000+
+                        <c:when test="${popularLecture.totalStudents >= 10}">
+                            10+
                         </c:when>
                         <c:otherwise>
                             <c:out value="${popularLecture.totalStudents}" />

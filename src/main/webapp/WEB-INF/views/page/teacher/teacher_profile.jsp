@@ -23,7 +23,7 @@
                         <p class="lecture-title">${bestLecture.title}</p>
                         <p class="lecture-info-text">${bestLecture.description}</p>
                         <p class="lecture-info-text">₩<fmt:formatNumber value="${bestLecture.price}" type="number"/></p>
-                        <p class="lecture-info-text"><!--⭐<c:out value="${bl.averageRate}" />-->
+                        <p class="lecture-info-text"><!--⭐<c:out value="${bestLecture.averageRate}" />-->
                             &#x1F9F8;
                             <c:choose>
                                 <c:when test="${bestLecture.totalStudents >= 10}">
