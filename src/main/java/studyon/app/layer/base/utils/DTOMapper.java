@@ -42,6 +42,7 @@ import java.util.UUID;
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
  *  ▶ ver 1.1 (2025-10-17) : khj00 추가 작성(LogDTO toReadDTO() 이후)
+ *  ▶ ver 1.2 (2025-10-22) : kcw97 fileDTO 매핑 방식 수정
  */
 
 /**
@@ -75,6 +76,7 @@ public class DTOMapper {
                 .size(dto.getSize())
                 .entityId(dto.getEntityId())
                 .entity(dto.getEntity())
+                .fileType(dto.getFileType())
                 .build();
     }
 

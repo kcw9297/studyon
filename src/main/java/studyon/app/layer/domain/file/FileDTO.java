@@ -6,6 +6,9 @@ import studyon.app.common.enums.FileType;
 import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Entity;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 파일 기본 정보 DTO
  * @version 1.0
@@ -37,7 +40,10 @@ public class FileDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Upload {
+    public static class Upload implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
 
         private String originalName;
         private String storeName;

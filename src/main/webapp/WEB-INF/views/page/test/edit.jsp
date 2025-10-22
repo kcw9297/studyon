@@ -60,7 +60,7 @@
             const formData = new FormData();
             const token = $('meta[name="_csrf"]').attr('content');
             formData.append("content", $("#content").val());
-            formData.append("action", "WRITE");
+            formData.append("action", "EDIT");
             formData.append("_csrf", token); // 인증 토큰 추가
 
             // 데이터 전송 (캐시 동기화)
@@ -100,7 +100,7 @@
             scheduleUpdateCache();
 
 
-            $('#writeForm').on('submit', function(e) {
+            $('#editForm').on('submit', function(e) {
                 e.preventDefault();
                 console.log('폼 제출 감지됨 form = {}', $(this).serialize());
 
@@ -109,18 +109,18 @@
                 console.log('🔑 CSRF 토큰:', token);
                 console.log('🍪 전체 쿠키:', document.cookie);
                 formData.append("_csrf", token); // 인증 토큰 추가
-                formData.append("action", "WRITE");
+                formData.append("action", "EDIT");
 
                 $.ajax({
-                    url: '/testboard',
-                    type: 'POST',
+                    url: `/testboard/${id}`,
+                    type: 'PUT',
                     data: formData,
                     processData: false,
                     contentType: false,
 
                     success: function (rp) {
                         stopUpdateTimer();
-                        const message = rp.message || "저장에 성공했습니다!";
+                        const message = rp.message || "수정에 성공했습니다!";
                         const redirect = rp.redirect || "/";
                         alert(message.content);
                         window.location.href = redirect;
@@ -143,17 +143,18 @@
 <main class="main">
     <h2>게시글 작성</h2>
 
-    <form id="writeForm" method="post" action="<c:url value="/testboard/write"/>">
+    <form id="editForm" method="post" action="<c:url value="/testboard/edit"/>">
 
         <!-- 숨겨진 content -->
-        <textarea id="content" name="content" class="write" hidden>${not empty data.content ? data.content : ''}</textarea>
+        <input type="hidden" name="id" value="${id}"/>
+        <textarea id="content" name="content" class="edit" hidden>${not empty data.content ? data.content : ''}</textarea>
 
         <!-- iframe 에디터 -->
-        <iframe src="<c:url value="/editor?width=1000&height=500&action=WRITE&fileUploadUrl=/testboard/editor_file"/>"></iframe>
+        <iframe src="<c:url value="/editor?width=1200&height=500&action=EDIT&fileUploadUrl=/testboard/${id}/editor_file"/>"></iframe>
 
         <!-- 하단 버튼 -->
         <div style="margin-top: 20px;">
-            <button type="submit">작성</button>
+            <button type="submit">수정</button>
             <button type="button" onclick="location.href='/'">뒤로</button>
         </div>
     </form>

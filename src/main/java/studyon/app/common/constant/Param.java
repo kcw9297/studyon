@@ -3,6 +3,8 @@ package studyon.app.common.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Param {
 
@@ -20,9 +22,17 @@ public class Param {
     public static final String ROLE = "role";
     public static final String MSG = "msg";
 
+    // redis key
+    public static final String KEY_BACKUP = "BACKUP";
+    public static final String KEY_CACHE = "CACHE";
+    public static final String KEY_LOGIN = "LOGIN";
+
+
     // 특정 상수 값
     // 만료 시간 (분)
-    public static final int EXPIRATION_WITHDRAWAL_DAY = 3;
+    public static final int EXPIRATION_TIME = 3;
+    public static final int MAX_RECENT_SEARCH_KEYWORD = 10; // 최대 최근 검색어 개수
+    public static final Duration EXPIRATION_CACHE = Duration.ofSeconds(30); // 캐시 만료시간
 
     // error field name
     public static final String ERROR_GLOBAL = ERROR + "Global";

@@ -71,7 +71,7 @@ class UserServiceUtils {
         // [1] 비활성 여부, 탈퇴 여부, 탈퇴 처리가 완료된 여부 확인
         boolean isInactive = !member.getIsActive();
         boolean isWithdrawal = Objects.nonNull(member.getWithdrawAt());
-        boolean isWithdrawalOver = isWithdrawal && member.getWithdrawAt().plusDays(Param.EXPIRATION_WITHDRAWAL_DAY).isAfter(LocalDateTime.now());
+        boolean isWithdrawalOver = isWithdrawal && member.getWithdrawAt().plusDays(Param.EXPIRATION_TIME).isAfter(LocalDateTime.now());
 
         // [2] 검증 수행
         if (isInactive) {
