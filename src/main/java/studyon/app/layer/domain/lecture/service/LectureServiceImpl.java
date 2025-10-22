@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 
 /**
- * 강의 서비스 인터페이스
+ * 강의 서비스 인터페이스 구현체
  * @version 1.0
  * @author khj00
  */

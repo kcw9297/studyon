@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 
 /**
- * 강의 질문 서비스 구현 클래스
+ * 강의 질문 서비스 인터페이스 구현 클래스
  * @version 1.0
  * @author khj00
  */

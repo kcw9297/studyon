@@ -20,8 +20,8 @@ import java.util.List;
  */
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
-    // [1] 과목별로 선생님 불러오는 메소드
 
+    // [1] 과목별로 선생님 불러오는 메소드
     @Query("""
     SELECT t FROM Teacher t
     JOIN FETCH t.member

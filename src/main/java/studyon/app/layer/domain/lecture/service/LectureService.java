@@ -1,15 +1,14 @@
 package studyon.app.layer.domain.lecture.service;
 
+import studyon.app.common.enums.Subject;
+import studyon.app.layer.domain.lecture.LectureDTO;
+
+import java.util.List;
 
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-17) : khj00 최초 작성
  */
-
-import studyon.app.common.enums.Subject;
-import studyon.app.layer.domain.lecture.LectureDTO;
-
-import java.util.List;
 
 /**
  * 강의 서비스 인터페이스
