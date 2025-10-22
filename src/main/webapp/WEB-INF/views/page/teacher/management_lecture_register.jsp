@@ -58,4 +58,4 @@
 
 
 <%-- Local Script --%>
-<script src="<c:url value='/js/layer/teacher/management/lecture_register.js'/>"></script>
+<script src="<c:url value='/js/page/teacher/management/management_lecture_register.js'/>"></script>

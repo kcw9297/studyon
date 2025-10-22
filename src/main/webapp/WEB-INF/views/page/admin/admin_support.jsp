@@ -2,25 +2,11 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
-<div id="content">콘텐츠영역
+<div id="content">
     <div id="empty-box"></div>
-
-    <div>
-      <div class="nav-bar">
-        <div class="nav-item active">대시보드</div>
-        <div class="nav-item">회원관리</div>
-        <div class="nav-item">강사관리</div>
-        <div class="nav-item">고객상담</div>
-        <div class="nav-item">신고관리</div>
-        <div class="nav-item">배너관리</div>
-        <div class="nav-item">선생님관리</div>
-        <div class="nav-item">강의관리</div>
-        <div class="nav-item">강의통계</div>
-        <div class="nav-item">쿠폰관리</div>
-        <div class="nav-item">공지사항등록</div>
-      </div>
-    </div>
-
+    <jsp:include page="/WEB-INF/views/page/admin/navbar.jsp">
+        <jsp:param name="active" value="support"/>
+    </jsp:include>
     <div class="Support-Container">
       <div class="chat-layout">
         <!-- 왼쪽: 채팅방 목록 -->
@@ -41,10 +27,11 @@
 
         <!-- 오른쪽: 채팅 내용 -->
         <div class="chat-window">
-          <div class="chat-header">상담 중: 고객 1</div>
+          <div class="chat-header">채팅방을 선택해주세요</div>
           <div class="chat-messages">
-            <div class="message user">안녕하세요!</div>
-            <div class="message agent">안녕하세요, 무엇을 도와드릴까요?</div>
+            <%--<div class="message user"></div>--%>
+            <%--<div class="message agent"></div>--%>
+
           </div>
           <div class="chat-input">
             <input type="text" placeholder="메시지를 입력하세요..." />

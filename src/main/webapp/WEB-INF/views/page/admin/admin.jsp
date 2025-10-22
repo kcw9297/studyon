@@ -1,58 +1,88 @@
 <%@ page contentType ="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-        <div id="content">콘텐츠영역
-            <div id="empty-box"></div>
-
-            <div>
-              <div class="nav-bar">
-                <div class="nav-item active">대시보드</div>
-                  <div class="nav-item" id="nav-member">회원관리</div>
-                  <div class="nav-item" id="nav-teacher">강사관리</div>
-                  <div class="nav-item" id="nav-support">고객상담</div>
-                  <div class="nav-item" id="nav-report">신고관리</div>
-                  <div class="nav-item" id="nav-banner">배너관리</div>
-                  <div class="nav-item" id="nav-instructor">선생님관리</div>
-                  <div class="nav-item" id="nav-lecture">강의관리</div>
-                  <div class="nav-item" id="nav-stat">강의통계</div>
-                  <div class="nav-item" id="nav-coupon">쿠폰관리</div>
-                  <div class="nav-item" id="nav-notice">공지사항등록</div>
-              </div>
-            </div>
-
+<div id="empty-box"></div>
+<jsp:include page="/WEB-INF/views/page/admin/navbar.jsp">
+    <jsp:param name="active" value="dashboard"/>
+</jsp:include>
+<div class="admin-content-container">
+    <!-- 신규 회원 수 카드 -->
+    <div class="dashboard-card">
+        <div class="card-icon">👤</div>
+        <div class="card-info">
+            <div class="card-title">신규 회원 수</div>
+            <div class="card-number">52명</div>
+            <div class="card-sub">오늘 가입</div>
         </div>
-        <footer id="footer">푸터영역</footer>
     </div>
 
-</main>
-</div>
-<div id="loginModalBg" class="modal-bg">
-<div class="modal-content">
-  <span id="closeModal" class="close">&times;</span>
-  <h2>StudyOn</h2>
-  <input type="text" placeholder="이메일 입력">
-  <input type="password" placeholder="비밀번호 입력">
-  <div class="divider-line"></div>
-  <button>로그인</button>
-  <div class="resister-box">
-    <a href="#">회원가입</a>
-    <a href="#">아이디(이메일) 찾기</a>
-    <a href="#">비밀번호 찾기</a>
-  </div>
-  <div class="divider-line"></div>
-  <div class="social-login-box">
-    <div class="social-icons">
-      <a href="#">
-          <img src="resources/kakao.png" alt="카카오 로그인">
-      </a>
-      <a href="#">
-          <img src="resources/google.png" alt="구글 로그인">
-      </a>
-      <a href="#">
-          <img src="resources/kakao.png" alt="구글 로그인">
-      </a>
+    <!-- 이번달 매출 카드 -->
+    <div class="dashboard-card sales">
+        <div class="card-icon">💰</div>
+        <div class="card-info">
+            <div class="card-title">이번달 매출</div>
+            <div class="card-number">₩3,280,000</div>
+            <div class="card-sub">10월 기준</div>
+        </div>
     </div>
-  </div>
 
-</div>
+    <div class="dashboard-card mvp">
+        <div class="card-icon">🏆</div>
+        <div class="card-info">
+            <div class="card-title">이번달 MVP 강사</div>
+            <div class="card-number">최예나 강사</div>
+            <div class="card-sub">매출 ₩3,280,000 (10월 기준)</div>
+        </div>
+    </div>
+
+    <div class="dashboard-card loser">
+        <div class="card-icon">💀</div>
+        <div class="card-info">
+            <div class="card-title">이번달 꼴등 강사</div>
+            <div class="card-number">박패배 강사</div>
+            <div class="card-sub">매출 ₩0 (방출 후보)</div>
+        </div>
+    </div>
+
+    <div class="dashboard-card loser">
+        <div class="card-icon">💀</div>
+        <div class="card-info">
+            <div class="card-title">이번달 꼴등 강사</div>
+            <div class="card-number">박패배 강사</div>
+            <div class="card-sub">매출 ₩0 (방출 후보)</div>
+        </div>
+    </div>
+
+    <div class="status-card">
+        <div class="status-icon">👥</div>
+        <div class="status-info">
+            <div class="status-title">총 회원 수</div>
+            <div class="status-value">1,284명</div>
+        </div>
+    </div>
+
+    <div class="status-card">
+        <div class="status-icon">🎓</div>
+        <div class="status-info">
+            <div class="status-title">전체 강의 수</div>
+            <div class="status-value">86개</div>
+        </div>
+    </div>
+
+    <div class="status-card">
+        <div class="status-icon">💡</div>
+        <div class="status-info">
+            <div class="status-title">활성 사용자 수</div>
+            <div class="status-value">312명</div>
+            <div class="status-sub">(최근 7일 로그인)</div>
+        </div>
+    </div>
+
+    <div class="status-card system">
+        <div class="status-icon">🖥️</div>
+        <div class="status-info">
+            <div class="status-title">시스템 상태</div>
+            <div class="status-value">✅ 정상 작동</div>
+        </div>
+    </div>
 </div>

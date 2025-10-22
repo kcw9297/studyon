@@ -6,7 +6,7 @@
 <%-- Local CSS --%>
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/lecture/lecture_recommend.css'/>">
 
-<div id="content">콘텐츠영역
+<div id="content">
     <div id="empty-box"></div>
     <div class="main-container">
       <div class="sidebar-container">

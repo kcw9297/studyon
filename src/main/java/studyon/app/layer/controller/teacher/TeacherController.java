@@ -1,5 +1,6 @@
 package studyon.app.layer.controller.teacher;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -11,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.URL;
 import studyon.app.common.enums.Subject;
 import studyon.app.common.enums.View;
+import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.service.TeacherService;
 
@@ -40,6 +44,7 @@ public class TeacherController {
 
     private final TeacherService teacherService;
     private final LectureService lectureService;
+    private final CacheManager cacheManager;
 
     /**
      * [GET] 강의 생성 뷰
@@ -88,6 +93,53 @@ public class TeacherController {
         model.addAttribute("comment", comment);
         model.addAttribute("profile", profile);
 
-        return ViewUtils.returnView(model, View.TEACHER, "teacher_profile");
+        return ViewUtils.returnView(model, View.TEACHER, "management_profile");
     }
+
+    @GetMapping("/management/profile")
+    public String teacherManagementProfile(Model model, HttpServletRequest request) {
+
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /login");
+            return "redirect:/login";
+        }
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        log.info(profile.toString());
+        return ViewUtils.returnView(model, View.TEACHER, "management_profile");
+    }
+
+    @GetMapping("/management/lectureregister")
+    public String lectureregister(Model model, HttpServletRequest request) {
+
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /login");
+            return "redirect:/login";
+        }
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        log.info(profile.toString());
+        return ViewUtils.returnView(model, View.TEACHER, "management_lecture_register");
+    }
+
+    @GetMapping("/management/lecturelist")
+    public String lectureList(Model model, HttpServletRequest request) {
+
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /login");
+            return "redirect:/login";
+        }
+
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", memberId, profile.getNickname());
+        return ViewUtils.returnView(model, View.TEACHER, "management_lecture");
+    }
+
+
+
+
 }

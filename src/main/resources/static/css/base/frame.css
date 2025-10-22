@@ -70,9 +70,10 @@ html, body {
 #content {
   background-color: #ffffff;
   height: auto;
-  min-height: 700px;
+  min-height: 1000px;
   border-radius: 10px;
   color: #333;
+    margin-top:50px;
 }
 
 .header-container{
@@ -348,4 +349,8 @@ a {
     border:1px solid #551A8B;
     background-color: orange;
     transition: all 0.5s ease;
+}
+
+.header-logo {
+    cursor: pointer;
 }

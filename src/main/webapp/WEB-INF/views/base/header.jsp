@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <div class="header-container">
-    <div class="header-logo">
+    <div class="header-logo" onclick="location.href='/'">
         <img src="<c:url value='${isLogin ? "/img/png/logo_login.png" : "/img/png/logo_logout.png"}'/>" id="logo" alt="image">
     </div>
     <div class="header-search">
@@ -24,9 +24,13 @@
                     ${memberProfile.nickname}님 안녕하세요
             </div>
         </c:if>
+
+        <a href="/teacher/management/profile"> 선생님 페이지 </a>
+
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">
         </button>
+
 
         <c:if test="${not isLogin}">
             <a href="<c:url value='/login'/>" id="loginModalBtn" class="modal">

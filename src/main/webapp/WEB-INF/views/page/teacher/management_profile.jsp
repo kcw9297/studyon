@@ -4,16 +4,16 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%-- Local CSS --%>
-<link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management/profile.css'/>">
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_profile.css'/>">
 
-<div id="content">콘텐츠영역
+<div id="content">
     <div id="empty-box"></div>
-    <div class="TeacherManagement-navbar">
-        <a href="#" class="nav-item">강사 메인</a>
-        <a href="#" class="nav-item">강의 등록</a>
-        <a href="#" class="nav-item">강의 통계</a>
-        <a href="#" class="nav-item">내 강의관리</a>
-        <a href="#" class="nav-item">수강평 관리</a>
+    <div class="teacher-management-navbar">
+        <a href="<c:url value='/teacher/management/profile'/>" class="nav-item">강사 메인</a>
+        <a href="<c:url value='/teacher/management/lectureregister'/>" class="nav-item">강의 등록</a>
+        <a href="<c:url value='/teacher/management/statistics'/>" class="nav-item">강의 통계</a>
+        <a href="<c:url value='/teacher/management/lectures'/>" class="nav-item">내 강의관리</a>
+        <a href="<c:url value='/teacher/management/reviews'/>" class="nav-item">수강평 관리</a>
     </div>
     <div class="divide-box-30px"></div>
     <div class="teacher-photo">
@@ -31,7 +31,7 @@
         <div class="teacher-details-label">이름 : 한석원</div>
         <div class="teacher-details-label">email : tjrdnjs@gmail.com</div>
         <div class="teacher-details-label">강의 수 : 10</div>
-        <div class="teacher-details-label">수강생 수 : 200<br>
+        <div class="teacher-details-label">수강생 수 : 200<br></div>
         <div class="teacher-details-label">평균 평점 : 4.5/5.0</div>
     </div>
   </div>

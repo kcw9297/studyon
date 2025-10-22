@@ -70,7 +70,7 @@ spring:
 #        cache: false
 
   session:
-    timeout: 5m
+    timeout: 60m
 
   data:
     redis:
@@ -90,7 +90,7 @@ server:
   servlet:
     session:
       cookie:
-        max-age: 300 # spring session timeout 값과 일치하게
+        max-age: 3600 # spring session timeout 값과 일치하게
         http-only: false
         secure: false
 
@@ -109,7 +109,7 @@ spring:
       on-profile: prod
 
   session:
-    timeout: 5m
+    timeout: 60m
 
   data:
     redis:
@@ -131,7 +131,7 @@ server:
   servlet:
     session:
       cookie:
-        max-age: 300 # spring session timeout 값과 일치하게
+        max-age: 3600 # spring session timeout 값과 일치하게
         http-only: true
         secure: true
         same-site: none

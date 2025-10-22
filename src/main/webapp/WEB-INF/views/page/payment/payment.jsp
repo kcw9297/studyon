@@ -25,7 +25,7 @@
                   </div>
                 </div>
             </header>
-            <div id="content">콘텐츠영역
+            <div id="content">
                 <div id="empty-box"></div>
                 <div id="empty-box"></div>
                 <div class="content-wrapper">

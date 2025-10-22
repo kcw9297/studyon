@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </header>
-            <div id="content">콘텐츠영역
+            <div id="content">
                 <div id="empty-box"></div>
                 <div class="TeacherManagement-navbar">
                     <a href="#" class="nav-item">강사 메인</a>
