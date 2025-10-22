@@ -14,8 +14,6 @@ import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepositor
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
-
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-17) : khj00 최초 작성

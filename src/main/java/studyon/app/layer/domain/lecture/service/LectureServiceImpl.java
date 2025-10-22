@@ -62,7 +62,9 @@ public class LectureServiceImpl implements LectureService {
      */
     @Override
     public List<LectureDTO.Read> readRecentLectures(Subject subject, int count) {
+        // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
+        // [2] 과목 기반으로 최근 강의 정렬
         return lectureRepository.findRecentLecturesBySubject(subject, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
@@ -79,7 +81,7 @@ public class LectureServiceImpl implements LectureService {
     public List<LectureDTO.Read> readBestLectures(Subject subject, int count) {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
-        // [2] 과목 기반으로 BEST 리뷰 정렬
+        // [2] 과목 기반으로 BEST 강의 정렬
         return lectureRepository.findBestLecturesBySubject(subject, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
