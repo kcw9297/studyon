@@ -28,6 +28,9 @@
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/user_support/chat.css'/>">
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/admin.css'/>">
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/admin_support.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture_register.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture.css'/>">
+        <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_profile.css'/>">
 
 
     </head>

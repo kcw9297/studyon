@@ -100,6 +100,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                     activeRoomId = div.dataset.roomId;
                     console.log(`💬 방 클릭됨: ${activeRoomId}`);
 
+                    if (socket && socket.readyState === WebSocket.OPEN) {
+                        socket.send(JSON.stringify({
+                            type: "ROOM_CHANGE",
+                            roomId: parseInt(activeRoomId)
+                        }));
+                        console.log("👁️ 서버에 ROOM_CHANGE 전송:", activeRoomId);
+                    }
+
                     // 활성화 표시
                     document.querySelectorAll(".room").forEach(r => r.classList.remove("active"));
                     div.classList.add("active");

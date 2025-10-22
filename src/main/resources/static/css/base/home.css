@@ -2,19 +2,19 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
-  width: 100%;             /* ✅ 1420px 고정 대신 부모에 맞춤 */
-  box-sizing: border-box;  /* ✅ padding/gap 계산 포함 */
+  width: 100%;
+  height:330px;
+  box-sizing: border-box;
   background-color: white;
 }
 
-
 .recent-lecture-item {
-  width: 260px;            /* 고정 폭 (5등분용) */
-  height: 280px;           /* 고정 높이 */
+  width: 260px;
+  height: 300px;
   border-radius: 10px;
   display: flex;
-  flex-direction: column;  /* ✅ 세로로 쌓기 */
-  justify-content: flex-start; /* 위쪽부터 쌓기 */
+  flex-direction: column;
+  justify-content: flex-start;
   box-sizing: border-box;
 }
 

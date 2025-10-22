@@ -1,14 +1,13 @@
 .TeacherManagement-navbar{
     display: flex;
-    background-color: #ffffff;
+    background-color: white;
     padding: 10px;
     margin-bottom: 20px;
 }
 
-.nav-item{
-    margin-right:40px;
+.TeacherManagement nav-item{
     font-size: 18px;
-    color: #333;
+    color:white;
     text-decoration: none;
 }
 
@@ -20,7 +19,7 @@
 }
 
 .teacher-img{
-    border:3px solid rgb(46, 214, 82);
+    border:10px solid rgb(46, 214, 82);
     width:400px;
     height:400px;
     border-radius:180px;
@@ -44,9 +43,8 @@
 }
 
 .nav-item{
-    margin-right:40px;
     font-size: 24px;
-    color: #333;
+    color: white;
     text-decoration: none;
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: bold;

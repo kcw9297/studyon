@@ -24,9 +24,13 @@
                     ${memberProfile.nickname}님 안녕하세요
             </div>
         </c:if>
+
+        <a href="/teacher/management/profile"> 선생님 페이지 </a>
+
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">
         </button>
+
 
         <c:if test="${not isLogin}">
             <a href="<c:url value='/login'/>" id="loginModalBtn" class="modal">

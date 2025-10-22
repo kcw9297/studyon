@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log("📩 수신 성공:", data);  // ✅ 수신 성공 로그
 
         const newMessage = document.createElement("div");
         if (data.type === "ADMIN") {
@@ -74,6 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
             msg: text,
             roomId: roomId
         }));
+
+        console.log("📤 메시지 전송 성공:", text, "(room:", roomId, ")"); // ✅ 추가
 
 
         input.value = ""; // 입력칸 비우기
