@@ -42,7 +42,7 @@ public class LectureReviewServiceImpl implements LectureReviewService {
      */
     @Override
     public List<LectureReviewDTO.Read> readTeacherReviews(Long teacherId, int count) {
-        // [1] 리스팅(페이징?) 개수 지정
+        // [1] 리스팅 카운트용 변수 지정
         Pageable pageable = PageRequest.of(0, count);
         // [2] 선생님 ID를 기반으로 최신순 리뷰 정렬
         return lectureReviewRepository.findRecentReviewsByTeacherId(teacherId, pageable)
