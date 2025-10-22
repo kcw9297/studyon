@@ -6,13 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Difficulty;
-import studyon.app.layer.domain.category.Category;
-import studyon.app.layer.domain.lecture_category.LectureCategory;
 import studyon.app.layer.domain.teacher.Teacher;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 강의 엔티티 클래스

@@ -2,7 +2,6 @@ package studyon.app.layer.domain.coupon;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 /*
  * [수정 이력]

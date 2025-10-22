@@ -2,7 +2,6 @@ package studyon.app.layer.domain.lecture_question;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.ibatis.annotations.Many;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture.Lecture;

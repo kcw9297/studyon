@@ -7,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.member.Member;
