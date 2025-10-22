@@ -3,6 +3,7 @@ package studyon.app.layer.controller.test;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,16 +11,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.URL;
 import studyon.app.common.enums.Entity;
+import studyon.app.common.enums.FileType;
 import studyon.app.common.enums.View;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.file.FileManager;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.ViewUtils;
+import studyon.app.layer.domain.file.FileDTO;
+import studyon.app.layer.domain.file.repository.FileRepository;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -30,6 +38,7 @@ public class TestBoardController {
     private final TestBoardRepository repository;
     private final FileManager fileManager;
     private final CacheManager cacheManager;
+    private final FileRepository fileRepository;
 
     @GetMapping("/write")
     public String write(HttpSession session, Model model) {
@@ -45,23 +54,39 @@ public class TestBoardController {
 
 
     @ResponseBody
-    @PostMapping("/change")
-    public ResponseEntity<?> change(HttpSession session, Long entityId, String content) {
+    @PostMapping("/cache")
+    public ResponseEntity<?> cache(HttpSession session, String content) {
 
-        log.warn("[TestBoardController][write] - entityId = {}, content = {}", entityId, content);
-        TestCache testCache = new TestCache(entityId, content);
-        boolean result;
+        // 현재 캐시 조회
+        TestCache cache =
+                cacheManager.getCache(Entity.LECTURE_QUESTION.getName(), session.getId(), TestCache.class);
 
-        if (Objects.isNull(entityId))
-            result = cacheManager.updateCache(Entity.LECTURE_QUESTION.getName(), session.getId(), testCache);
 
-        else
-            result = cacheManager.updateCache(Entity.LECTURE_QUESTION.getName(), session.getId(), entityId, testCache);
+        // 캐시가 없으면 실패 응답
+        if (Objects.isNull(cache))
+            return RestUtils.fail400(Rest.Message.of("세션이 만료되었습니다\n다시 시도해 주세요"), URL.INDEX);
 
-        return result ?
-                ResponseEntity.ok().build() :
-                RestUtils.fail400(Rest.Message.of("세션이 만료되었습니다\n다시 시도해 주세요"), URL.INDEX);
+
+        // 캐시 데이터 검증 전 현재 캐시정보 내 이미지 확인
+        String purified = StrUtils.purifyHtml(content);
+        List<String> currentImages = StrUtils.purifyAndExtractImgSrcFromHtml(content);
+        Set<String> uploadedImages = cache.getUploadedImages();
+
+        // 새롭게 추가된 이미지
+        List<String> existingImages = currentImages.stream()
+                .filter(uploadedImages::contains)
+                .toList();
+
+        uploadedImages.addAll(currentImages);
+
+        // 확인
+        content = content + "<script>alert('해킹')</script>";
+        log.warn("[TestBoardController][write] - content = {}, purified = {}", content, purified);
+        log.warn("[TestBoardController][change] - existingImages = {}, uploadedImages = {}", existingImages, uploadedImages);
+        cacheManager.updateCache(Entity.LECTURE_QUESTION.getName(), session.getId(), new TestCache(purified, uploadedImages));
+        return ResponseEntity.ok().build();
     }
+
 
     @ResponseBody
     @PostMapping("/write")
@@ -73,6 +98,27 @@ public class TestBoardController {
         log.warn("testBoard = {}", testBoard);
         cacheManager.removeCache(Entity.LECTURE_QUESTION.getName(), session.getId());
         return RestUtils.ok(Rest.Message.of("글 작성 성공"), URL.INDEX);
+    }
+
+
+    @ResponseBody
+    @PostMapping("/file")
+    public String uploadTemp(HttpSession session, MultipartFile file) {
+
+        // [1] 파일 업로드 (서비스에서 할 것)
+        FileDTO.Upload fileUpload = fileManager.upload(file, null, Entity.LECTURE_QUESTION, FileType.EDITOR);
+        log.warn("fileUpload = {} fileDomain = {} sessionId = {}", fileUpload, fileDomain, session.getId());
+
+        // [2] 업로드한 파일 정보 기반 캐시 생성
+        cacheManager.getOrRecordCache(Entity.LECTURE_QUESTION.getName(), session.getId(), TestCache.class);
+
+
+        cacheManager.updateCache(Entity.LECTURE_QUESTION.getName(), session.getId());
+
+
+
+        // [2] 업로드된 임시 파일 주소 반환
+        return "%s/%s/%s".formatted(fileDomain, fileUpload.getEntity().getName(), fileUpload.getStoreName());
     }
 
 }

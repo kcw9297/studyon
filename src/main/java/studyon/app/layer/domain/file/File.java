@@ -3,12 +3,19 @@ package studyon.app.layer.domain.file;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import studyon.app.common.enums.FileType;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Entity;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-22) : kcw97 FileType 추가
+ */
+
 /**
  * 파일 엔티티 클래스
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 
@@ -44,14 +51,19 @@ public class File extends BaseEntity {
     @Column(nullable = false, updatable = false)
     private Entity entity;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, updatable = false)
+    private FileType fileType;
+
 
     @Builder
-    public File(String originalName, String storeName, String ext, Long size, Long entityId, Entity entity) {
+    public File(String originalName, String storeName, String ext, Long size, Long entityId, Entity entity, FileType fileType) {
         this.originalName = originalName;
         this.storeName = storeName;
         this.ext = ext;
         this.size = size;
         this.entityId = entityId;
         this.entity = entity;
+        this.fileType = fileType;
     }
 }

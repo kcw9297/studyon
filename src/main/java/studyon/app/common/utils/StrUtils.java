@@ -5,11 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Safelist;
 import org.springframework.web.util.UriUtils;
 import studyon.app.common.exception.UtilsException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -21,6 +25,45 @@ public final class StrUtils {
 
     private static final Random random = new Random();
     private static final Base64.Encoder urlEncoder = Base64.getUrlEncoder();
+
+    // Summernote용 Safelist
+    private static final Safelist SAFELIST = new Safelist()
+            .addTags("p", "div", "br", "hr")
+            .addTags("h1", "h2", "h3", "h4", "h5", "h6")
+            .addTags("blockquote", "pre", "code")
+            .addTags("span", "font", "strong", "b", "em", "i", "u", "s", "strike", "del")
+            .addTags("sup", "sub", "small", "mark")
+            .addTags("ul", "ol", "li")
+            .addTags("table", "thead", "tbody", "tfoot", "tr", "th", "td", "caption")
+            .addTags("a", "img")
+            .addTags("video", "source", "iframe")
+            .addAttributes("span", "style", "class")
+            .addAttributes("font", "face", "size", "color", "style")
+            .addAttributes("p", "style", "class", "align")
+            .addAttributes("div", "style", "class")
+            .addAttributes("h1", "style", "class")
+            .addAttributes("h2", "style", "class")
+            .addAttributes("h3", "style", "class")
+            .addAttributes("h4", "style", "class")
+            .addAttributes("h5", "style", "class")
+            .addAttributes("h6", "style", "class")
+            .addAttributes("blockquote", "class")
+            .addAttributes("pre", "class")
+            .addAttributes("img", "src", "alt", "title", "style", "width", "height", "class")
+            .addAttributes("a", "href", "target", "title", "rel")
+            .addAttributes("table", "style", "class", "border", "width")
+            .addAttributes("tr", "style", "class")
+            .addAttributes("td", "style", "class", "colspan", "rowspan", "width", "height")
+            .addAttributes("th", "style", "class", "colspan", "rowspan", "width", "height")
+            .addAttributes("ul", "style", "class")
+            .addAttributes("ol", "style", "class")
+            .addAttributes("li", "style", "class")
+            .addAttributes("video", "src", "controls", "width", "height", "style")
+            .addAttributes("iframe", "src", "width", "height", "style", "frameborder", "allowfullscreen")
+            .addProtocols("a", "href", "http", "https", "mailto", "/", "#")
+            .addProtocols("img", "src", "http", "https", "/")
+            .addProtocols("iframe", "src", "http", "https")
+            .addProtocols("video", "src", "http", "https", "/");
 
 
     public static String toJson(Object data) {
@@ -111,4 +154,29 @@ public final class StrUtils {
                 "[%s::%s] %s".formatted(clazz.getSimpleName(), stack[2].getMethodName(), message) :
                 "[%s::%s] %s".formatted(clazz.getSimpleName(), "UNKNOWN_METHOD", message);
     }
+
+
+    public static String purifyHtml(String htmlContent) {
+
+        // [1] HTML 파싱
+        String html = Jsoup.parse(htmlContent).body().html();
+
+        // [2] 위험 태그 제거 후 반환
+        return Jsoup.clean(html, SAFELIST);
+    }
+
+
+    public static List<String> purifyAndExtractImgSrcFromHtml(String htmlContent) {
+
+        // [1] HTML 내 위험 코드 정화
+        String purified = purifyHtml(htmlContent);
+        Document purifiedDoc = Jsoup.parse(purified);
+
+        // [2] 이미지 태그만 추출 후  src 속성만 추출 후 반환
+        return purifiedDoc.select("img").stream()
+                .map(img -> img.attr("src"))
+                .filter(src -> !src.isBlank())
+                .toList();
+    }
+
 }

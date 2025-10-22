@@ -29,29 +29,6 @@ public interface FileManager {
     FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity, FileType fileType);
 
     /**
-     * 임시 파일 저장
-     * @param file 업로드 대상 파일
-     * @return 업로드에 성공한 파일 정보
-     */
-    FileDTO.Upload uploadToTemp(MultipartFile file);
-
-    /**
-     * 임시 파일 삭제
-     * @param fileName 삭제 대상 파일명
-     */
-    void removeTemp(String fileName);
-
-    /**
-     * 임시파일을 실제 entity 파일 저장소에 전달 (temp 내의 파일은 삭제)
-     * @param fileName 업로드 대상 파일명
-     * @param entityId 업로드 파일이 속하는 엔티티 고유번호
-     * @param entity 업로드 파일이 속하는 엔티티 타입
-     * @param fileType 파일 유형 (썸네일, 직접업로드, 프로필 이미지, 에디터, ...)
-     * @return 업로드 파일
-     */
-    String copyTempToEntity(String fileName, Long entityId, Entity entity, FileType fileType);
-
-    /**
      * 파일 다운로드
      * @param storeName 저장 파일명
      * @param entity 저장된 파일이 속하는 엔티티 타입

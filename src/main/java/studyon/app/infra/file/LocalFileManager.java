@@ -11,10 +11,12 @@ import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.domain.file.FileDTO;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.UUID;
 
 
 /*
@@ -50,10 +52,9 @@ public class LocalFileManager implements FileManager {
             if (Objects.isNull(file) || file.isEmpty())
                 throw new ManagerException("저장할 파일이 존재하지 않습니다!"); // 파일이 존재하지 않으면 예외 발생
 
-            // [3] 업로드 파일 DTO 생성 및 파일 저장
-            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity, fileType); // 업로드 파일 정보를 담은 DTO 생성
-            file.transferTo(new File("%s/%s".formatted(uploadPath, dto.getStoreName()))); // 파일 업로드
-            return dto;
+            // [3] 파일 업로드 & 파일 업로드 정보 DTO 생성 후 반환
+            return uploadAndMapToDto(file, entityId, entity, fileType, uploadPath);
+
 
         } catch (ManagerException e) {
             throw e;
@@ -63,19 +64,29 @@ public class LocalFileManager implements FileManager {
         }
     }
 
-    @Override
-    public FileDTO.Upload uploadToTemp(MultipartFile file) {
-        return upload(file, null, Entity.TEMP, null);
-    }
+    // 업로드 후, 파일 정보 DTO 생성
+    private FileDTO.Upload uploadAndMapToDto(MultipartFile file, Long entityId, Entity entity, FileType fileType, String uploadPath) throws IOException {
+        String originalName = file.getOriginalFilename();
+        String ext = Objects.isNull(originalName) || originalName.isBlank() ?
+                "" : originalName.substring(originalName.lastIndexOf(".") + 1);
+        String storeName = "%s.%s".formatted(UUID.randomUUID().toString(), ext);
+        String filePath = "%s/%s".formatted(uploadPath, storeName);
 
-    @Override
-    public void removeTemp(String fileName) {
 
-    }
+        // [4] 파일 업로드
+        file.transferTo(new File(filePath)); // 파일 업로드
 
-    @Override
-    public String copyTempToEntity(String fileName, Long entityId, Entity entity, FileType fileType) {
-        return "";
+        // [5] 업로드 정보 DTO 생성 및 반환
+        return FileDTO.Upload.builder()
+                .originalName(originalName)
+                .storeName(storeName)
+                .ext(ext)
+                .size(file.getSize())
+                .entityId(entityId)
+                .entity(entity)
+                .fileType(fileType)
+                .filePath(filePath)
+                .build();
     }
 
 
@@ -112,4 +123,6 @@ public class LocalFileManager implements FileManager {
             throw new ManagerException("로컬 스토리지 파일 삭제에 실패했습니다!", e);
         }
     }
+
+
 }

@@ -15,6 +15,11 @@ import studyon.app.common.enums.FileType;
 import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.domain.file.FileDTO;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.UUID;
+
 /**
  * AWS S3 스토리지 조작 메소드 처리 클래스
  * @version 1.0
@@ -31,6 +36,9 @@ public class AWSFileManager implements FileManager {
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
+    @Value("${aws.cloudfront.domain}")
+    private String cloudFrontDomain;
+
 
     @Override
     public FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
@@ -38,7 +46,7 @@ public class AWSFileManager implements FileManager {
         try {
 
             // [1] 업로드 파일 DTO 생성 및 저장 경로 생성
-            FileDTO.Upload dto = FileMapper.toUploadDTO(file, entityId, entity, fileType);
+            FileDTO.Upload dto = mapToDto(file, entityId, entity, fileType);
 
             String key = // 저장 경로 (key : 저장 경로 + 파일명)
                     "%s/%s".formatted(entity.getName(), dto.getStoreName());
@@ -60,20 +68,32 @@ public class AWSFileManager implements FileManager {
         }
     }
 
-    @Override
-    public FileDTO.Upload uploadToTemp(MultipartFile file) {
-        return null;
+    // 파일 업로드정보 DTO 매핑
+    private FileDTO.Upload mapToDto(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
+
+        // [1] 업로드에 필요한 파일 정보 생성
+        String originalName = file.getOriginalFilename();
+        String ext = Objects.isNull(originalName) || originalName.isBlank() ?
+                "" : originalName.substring(originalName.lastIndexOf(".") + 1);
+        String storeName = "%s.%s".formatted(UUID.randomUUID().toString(), ext);
+        String filePath = "%s/%s/%s".formatted(cloudFrontDomain, entity.getName(), storeName);
+
+
+        // [2] 업로드 정보 DTO 생성 및 반환
+        return FileDTO.Upload.builder()
+                .originalName(originalName)
+                .storeName(storeName)
+                .ext(ext)
+                .size(file.getSize())
+                .entityId(entityId)
+                .entity(entity)
+                .fileType(fileType)
+                .filePath(filePath)
+                .build();
     }
 
-    @Override
-    public void removeTemp(String fileName) {
 
-    }
 
-    @Override
-    public String copyTempToEntity(String fileName, Long entityId, Entity entity, FileType fileType) {
-        return "";
-    }
 
 
     @Override
