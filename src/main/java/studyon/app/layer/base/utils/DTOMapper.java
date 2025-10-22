@@ -2,7 +2,6 @@ package studyon.app.layer.base.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
 import studyon.app.layer.domain.category.Category;
 import studyon.app.layer.domain.category.CategoryDTO;
@@ -27,22 +26,17 @@ import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.payment.Payment;
 import studyon.app.layer.domain.payment.PaymentDTO;
-import studyon.app.layer.domain.payment_details.PaymentDetails;
-import studyon.app.layer.domain.payment_details.PaymentDetailsDTO;
 import studyon.app.layer.domain.payment_refund.PaymentRefund;
 import studyon.app.layer.domain.payment_refund.PaymentRefundDTO;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
-
-import java.util.Objects;
-import java.util.UUID;
 
 
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
  *  ▶ ver 1.1 (2025-10-17) : khj00 추가 작성(LogDTO toReadDTO() 이후)
- *  ▶ ver 1.2 (2025-10-22) : kcw97 fileDTO 매핑 방식 수정
+ *  ▶ ver 1.2 (2025-10-22) : kcw97 fileDTO 매핑 방식 수정 및 PaymentDetails 삭제
  */
 
 /**
@@ -159,27 +153,18 @@ public class DTOMapper {
 
     public static Payment toEntity(PaymentDTO.Write dto, Member member, Lecture lecture) {
         return Payment.builder()
-                .originalPrice(dto.getOriginalPrice())
-                .discountPrice(dto.getDiscountPrice())
                 .paidPrice(dto.getPaidPrice())
+                .paymentApiResult(dto.getPaymentApiResult())
                 .member(member)
                 .lecture(lecture)
                 .build();
     }
 
-    public static PaymentDetails toEntity(PaymentDetailsDTO.Write dto, Payment payment) {
-        return PaymentDetails.builder()
-                .paymentApiResult(dto.getPaymentApiResult())
-                .payment(payment)
-                .build();
-    }
-
-    public static PaymentRefund toEntity(PaymentRefundDTO.Write dto, Payment payment, PaymentDetails paymentDetails) {
+    public static PaymentRefund toEntity(PaymentRefundDTO.Write dto, Payment payment) {
         return PaymentRefund.builder()
                 .refundReason(dto.getRefundReason())
                 .refundPrice(dto.getRefundPrice())
                 .payment(payment)
-                .paymentDetails(paymentDetails)
                 .build();
     }
 
@@ -321,25 +306,17 @@ public class DTOMapper {
                 .build();
     }
 
+    // TODO 패치조인 필요
     public static PaymentDTO.Read toReadDTO(Payment entity) {
         return PaymentDTO.Read.builder()
-                .paymentId(entity.getPaymentId())
-                .paidAt(entity.getPaidAt())
-                .originalPrice(entity.getOriginalPrice())
-                .paidPrice(entity.getPaidPrice())
-                .discountPrice(entity.getDiscountPrice())
-                .memberId(entity.getMember().getMemberId())
                 .lectureId(entity.getLecture().getLectureId())
-                .build();
-    }
-
-
-    public static PaymentDetailsDTO.Read toReadDTO(PaymentDetails entity) {
-
-        return PaymentDetailsDTO.Read.builder()
-                .paymentDetailId(entity.getPaymentDetailId())
-                .paymentId(entity.getPayment().getPaymentId())
-                .paymentApiResult(entity.getPaymentApiResult())
+                .lectureTitle(entity.getLecture().getTitle())
+                .nickname(entity.getMember().getNickname())
+                .paymentId(entity.getPaymentId())
+                .paidPrice(entity.getPaidPrice())
+                .cdate(entity.getCdate())
+                .isRefunded(entity.getIsRefunded())
+                .refundedAt(entity.getRefundedAt())
                 .build();
     }
 
@@ -350,9 +327,7 @@ public class DTOMapper {
                 .refundReason(entity.getRefundReason())
                 .refundPrice(entity.getRefundPrice())
                 .isRefunded(entity.isRefunded())
-                .createdAt(entity.getCreatedAt())
                 .paymentId(entity.getPayment().getPaymentId())
-                .paymentDetailId(entity.getPaymentDetails().getPaymentDetailId())
                 .build();
     }
 

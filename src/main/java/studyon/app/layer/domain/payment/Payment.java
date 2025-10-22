@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-15) : khj00 최초 작성
+ *  ▶ ver 1.1 (2025-10-22) : kcw97 PaymentDetails 정보 통합
  */
 /**
  * 결제 엔티티 클래스
- * @version 1.0
+ * @version 1.1
  * @author khj00
  */
 
@@ -26,22 +27,23 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime paidAt;
-
-    @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
-    private Double originalPrice;
-
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double paidPrice;
 
-    @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
-    private Double discountPrice;
+    @Column(nullable = false, updatable = false, columnDefinition = "TEXT")
+    private String paymentApiResult;
+
+    @Column(nullable = false)
+    private Boolean isRefunded;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime refundedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -51,16 +53,15 @@ public class Payment extends BaseEntity {
     @JoinColumn(name = "lecture_id", nullable = false)
     private Lecture lecture;
 
+
     @Builder
-    public Payment(Double originalPrice, Double paidPrice, Double discountPrice, Member member, Lecture lecture) {
-        this.originalPrice = originalPrice;
+    public Payment(Double paidPrice, Member member, Lecture lecture, String paymentApiResult) {
         this.paidPrice = paidPrice;
-        this.discountPrice = discountPrice;
+        this.paymentApiResult = paymentApiResult;
         this.member = member;
         this.lecture = lecture;
+        this.isRefunded = false;
+        this.refundedAt = null;
     }
-    
-    /*
-      할인율 업데이트 추가는 나중에 고려 후 작성 예정
-     */
+
 }

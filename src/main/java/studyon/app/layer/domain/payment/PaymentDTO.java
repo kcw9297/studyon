@@ -1,8 +1,7 @@
 package studyon.app.layer.domain.payment;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import studyon.app.layer.domain.member.Member;
-import studyon.app.layer.domain.member.MemberDTO;
 
 import java.time.LocalDateTime;
 
@@ -19,18 +18,33 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 public class PaymentDTO {
+
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Read {
-        private Long paymentId;
-        private LocalDateTime paidAt;
-        private Double originalPrice;
-        private Double paidPrice;
-        private Double discountPrice;
-        private Long memberId;
+
         private Long lectureId;
+
+        private String lectureTitle;
+
+        private String nickname;
+
+        private Long paymentId;
+
+        @JsonFormat(pattern = "#,###")
+        private Double paidPrice;
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime cdate;
+
+        private Boolean isRefunded;
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime refundedAt;
+
+
     }
 
     @Data
@@ -38,10 +52,9 @@ public class PaymentDTO {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Write {
-        private LocalDateTime paidAt;
-        private Double originalPrice;
+
         private Double paidPrice;
-        private Double discountPrice;
+        private String paymentApiResult;
         private Long memberId;
         private Long lectureId;
     }
