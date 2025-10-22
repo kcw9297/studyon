@@ -22,20 +22,21 @@
       <div class="recomment-lecture-title">
         ${subject.value} 주간 인기/추천 강의
       </div>
-    <div class="recent-lecture-container"></div>
-    <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
-
-        <div class="recomment-lecture-title">
-            최근 수강평
-        </div>
-        <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
-        <div class="lecture-comment-box"></div>
-
-        <div class="recomment-lecture-title">
-            요새 뜨는 강의
-        </div>
         <div class="recent-lecture-container"></div>
         <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
+
+            <div class="recomment-lecture-title">
+                최근 수강평
+            </div>
+            <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
+            <div class="lecture-comment-box"></div>
+
+            <div class="recomment-lecture-title">
+                요새 뜨는 강의
+            </div>
+            <div class="recent-lecture-container"></div>
+            <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
+        </div>
     </div>
 </div>
 
