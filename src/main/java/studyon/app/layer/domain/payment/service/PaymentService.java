@@ -3,8 +3,6 @@ package studyon.app.layer.domain.payment.service;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.payment.PaymentDTO;
 
-import java.util.List;
-
 /**
  * 결제 서비스 인터페이스
  * @version 1.0
@@ -18,7 +16,7 @@ public interface PaymentService {
      * @param dto 결제 요청 데이터
      * @return 생성된 Payment 엔티티
      */
-    PaymentDTO.Read createPayment(PaymentDTO.Write dto);
+    PaymentDTO.Read createPayment(PaymentDTO.Pay dto);
 
     /**
      * 특정 회원의 결제 목록 조회

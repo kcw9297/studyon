@@ -51,23 +51,29 @@ class Pointcuts {
 
     /*
      * Pointcut - package 범위
-     * 보안 관련영역은 범위에서 제외
+     * 보안, 로그 관련영역은 범위에서 제외
      */
 
     @Pointcut("execution(* studyon.app.infra.security..*(..))")
     public void securityPack() {}
 
+    // studyon.app.layer.domain 내 패키지 (기본 패키지 주소)
+    @Pointcut("execution(* studyon.app.layer.domain.log..*(..))")
+    public void logPack() {}
+
     // studyon.app 내 패키지 (기본 패키지 주소)
-    @Pointcut("execution(* studyon.app..*(..)) && !securityPack()")
+    @Pointcut("execution(* studyon.app..*(..)) && !securityPack() && !logPack()")
     public void basePack() {}
 
     // studyon.layer.app 내 패키지 (기본 패키지 주소)
-    @Pointcut("execution(* studyon.app.layer..*(..)) !securityPack()")
+    @Pointcut("execution(* studyon.app.layer..*(..)) !securityPack() && !logPack()")
     public void layerPack() {}
 
     // studyon.app.layer.domain 내 패키지 (기본 패키지 주소)
-    @Pointcut("execution(* studyon.app.layer.domain..*(..)) !securityPack()")
+    @Pointcut("execution(* studyon.app.layer.domain..*(..)) !securityPack() && !logPack()")
     public void domainPack() {}
+
+
 
     /*
      * Pointcut - 클래스 이름

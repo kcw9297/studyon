@@ -91,6 +91,7 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         request.setAttribute("fileDomain", fileDomain);
         request.setAttribute("ipAddress", getClientIp(request));
         if (isLogin) checkMemberProfile(request);
+        else request.setAttribute("loginMemberEmail", "GUEST");
     }
 
     // 회원 프로필 조회
@@ -109,6 +110,7 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         }
 
         request.setAttribute("memberProfile", profile);
+        request.setAttribute("loginMemberEmail", profile.getEmail());
     }
 
     // 사용자의 실제 IP 추출

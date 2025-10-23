@@ -138,14 +138,13 @@ public final class StrUtils {
 
 
     public static String createLogStr(Class<?> clazz, String message) {
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 
-        // [0] : Thread.getStackTrace
-        // [1] : TraceUtils.getMethodLocation
-        // [2] : 실제 호출한 메소드
-        return stack.length > 2 ?
-                "[%s::%s] %s".formatted(clazz.getSimpleName(), stack[2].getMethodName(), message) :
-                "[%s::%s] %s".formatted(clazz.getSimpleName(), "UNKNOWN_METHOD", message);
+        String caller = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+                .walk(frames ->
+                        frames.skip(1).findFirst().map(StackWalker.StackFrame::getMethodName).orElse("UNKNOWN")
+                );
+
+        return "[%s::%s] %s".formatted(clazz.getSimpleName(), caller, message);
     }
 
 

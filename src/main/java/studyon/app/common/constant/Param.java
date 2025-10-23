@@ -21,6 +21,8 @@ public class Param {
     public static final String ERROR = "error";
     public static final String ROLE = "role";
     public static final String MSG = "msg";
+    public static final String IMP_UID = "imp_uid";
+    public static final String PAID_AMOUNT = "paid_amount";
 
     // redis key
     public static final String KEY_BACKUP = "BACKUP";
