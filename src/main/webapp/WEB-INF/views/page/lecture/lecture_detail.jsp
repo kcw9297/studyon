@@ -467,3 +467,5 @@
         </div>
     </section>
 </div>
+
+<script src="<c:url value='/js/page/lecture/lecture_detail.js'/>"></script>

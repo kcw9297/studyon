@@ -248,4 +248,14 @@ public class TestBoardController {
         cacheManager.removeCacheAndBackup(Entity.LECTURE_QUESTION.name(), Action.EDIT.name(), session.getId());
         return RestUtils.ok(Rest.Message.of("글 수정 성공"), URL.INDEX);
     }
+
+    @GetMapping("/join")
+    public String joinView() {
+        return "page/member/join";
+    }
+
+    @GetMapping("/auth_mail")
+    public String authMailView() {
+        return "page/member/auth_mail";
+    }
 }

@@ -138,8 +138,4 @@ public class TeacherController {
         log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", memberId, profile.getNickname());
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture");
     }
-
-
-
-
 }
