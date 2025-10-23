@@ -2,22 +2,21 @@
 <%@ page contentType ="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-<link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/lecture_statistics.css'/>">
 <div id="empty-box"></div>
 
 <jsp:include page="/WEB-INF/views/page/admin/navbar.jsp">
-    <jsp:param name="active" value="statistics"/>
+    <jsp:param name="active" value="sales"/>
 </jsp:include>
 
 <div class="admin-content-container">
+    <div class="test">
+    </div>
 </div>
 
 <style>
     .admin-content-container {
-        border:2px solid black;
-        min-height: 600px;
-        height:auto;
+
     }
 </style>
 
-<script src="<c:url value='/js/page/admin/lecture_statistics.js'/>"></script>
+<script src="<c:url value='/js/page/admin/sales_management.js'/>"></script>

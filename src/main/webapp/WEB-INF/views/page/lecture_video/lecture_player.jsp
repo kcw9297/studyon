@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>기본 레이아웃 | Oneday OneClass</title>
-  <link rel="stylesheet" href="LecturePlayer.css">
-  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
-</head>
-<body>
   <div class="player-wrapper">
     <div class="player-section">
       <video id="lectureVideo" controls preload="auto" style="width:100%; height:100%; object-fit:cover;">
@@ -40,13 +30,6 @@
           <span class="curriculum-item">3.오리엔테이션 및 강의 소개</span><br>
           <label class="curriculum-time">10:00</label>
         </div>
-
-
-
-
-
       </div>
     </div>
   </div>
-</body>
-</html>

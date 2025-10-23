@@ -3,9 +3,7 @@
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%-- Local CSS --%>
-<link rel="stylesheet" type="text/css" href="<c:url value='/css/layer/teacher/management/lecture_register.css'/>">
-
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture_register.css'/>">
 
 <div class="lecture-resister-wrapper">
 <div id="empty-box"></div>
