@@ -77,7 +77,7 @@ button{all:unset;}
 .instructor-category{display:grid; grid-template-columns:repeat(2,auto); grid-template-rows:repeat(2,auto); gap:20px; padding:20px 0; font-size:16px; font-weight:var(--bold);}
 .instructor-item{display:flex; flex-direction:row; gap:10px;}
 .instructor-name{color:var(--deep-gray);}
-.instructor-word{line-height:1.5;}
+.instructor-word{line-height:1.5; white-space:pre-line;}
 /* 강사 소개 - 이력 */
 .instructor-history{display:flex; flex-direction:column; gap:10px; padding-top:20px;}
 .instructor-history p{all:unset; font-weight:var(--bold);}
@@ -126,12 +126,9 @@ button{all:unset;}
 .algorithm-deleteIcon img{width:25px; height:25px; position:absolute; top:10px; right:10px; z-index:2;}
 .algorithm-lecture{margin-bottom:8px; font-size:20px; font-weight:var(--bold);}
 .algorithm-teacher{margin-bottom:5px; font-size:18px;}
-.algorithm-price, .algorithm-report{display:flex; flex-direction:row; margin-bottom:5px;}
+.algorithm-price{font-size:18px; font-weight:var(--bold);}
+.algorithm-report{display:flex; flex-direction:row; margin-bottom:5px;}
 .algorithm-review, .algorithm-student{display:flex; flex-direction:row; margin-right:10px;}
-/* 강의 목록 - 금액 */
-.algorithm-present{margin-right:10px; color:var(--deep-gray); text-decoration:line-through;}
-.algorithm-discount{margin-right:5px; color:var(--deep-red);}
-.algorithm-special{font-weight:var(--bold);}
 /* 강의 목록 - 평점&수강생 */
 .algorithm-star{margin-right:5px; color:var(--star);}
 .algorithm-score{margin-right:5px; color:var(--deep-gray);}

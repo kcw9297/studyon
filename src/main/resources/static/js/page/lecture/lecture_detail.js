@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(res => res.json())
         .then(data => {
             liked = data.liked;
-            likeImg.src = liked ? "/lecture/images/like2.png" : "/lecture/images/like1.png";
+            likeImg.src = liked ? "/img/png/like2.png" : "/img/png/like1.png";
         });
      */
 
     likeButton.addEventListener("click", () => {
         liked = !liked; // 상태 토글
-        likeImg.src = liked ? "<c:url value='/img/png/like2.png'/>" : "<c:url value='/img/png/like1.png'/>";
+        likeImg.src = liked ? "/img/png/like2.png" : "/img/png/like1.png";
 
         //백앤드 없는 임시 사용js. 좋아요 숫자 증가
         let countText = likeButton.innerText.trim();
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(res => res.json())
             .then(data => {
                 // 서버 응답에 따라 좋아요 수 갱신
-                likeButton.innerHTML = `<img src="${liked ? '/lecture/images/like2.png' : '/lecture/images/like1.png'}">${data.likeCount}`;
+                likeButton.innerHTML = `<img src="${liked ? '/img/png/like2.png' : '/img/png/like1.png'}">${data.likeCount}`;
             })
             .catch(err => console.error("좋아요 오류:", err));
          */

@@ -1,5 +1,7 @@
 <%@ page contentType ="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,33 +88,31 @@
             <div class="instructor-teacher">
                 <img src="<c:url value='/img/png/teacher1.png'/>">
                 <div>
-                    <strong>전성홍</strong>
+                    <strong>${teacher.member.nickname}</strong>
                     <p>강사</p>
                 </div>
             </div>
             <div class="instructor-data">
                 <div class="instructor-category">
                     <div class="instructor-item">
-                        <p class="instructor-name">강의</p>
-                        <p>8개</p>
+                        <p class="instructor-name">과목</p>
+                        <p>${teacher.subject}</p>
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">수강생</p>
-                        <p>10,000명</p>
+                        <p><fmt:formatNumber value="${teacher.totalStudents}" type="number"/>명</p>
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">평점</p>
-                        <p>4.8점</p>
+                        <p>${teacher.averageRating}점</p>
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">수강평</p>
-                        <p>10,000개</p>
+                        <p><fmt:formatNumber value="${teacher.totalReview}" type="number"/>개</p>
                     </div>
                 </div>
                 <div class="instructor-word">
-                    <p>안녕하세요, 전성홍 강사입니다.</p>
-                    <p>고등학교 3학년 수학을 담당하고 있습니다.</p>
-                    <p>수학이 가장 쉬운 과목이 되도록 노력하겠습니다.</p>
+                    <p>${teacher.description}</p>
                 </div>
             </div>
             <div class="instructor-history">
