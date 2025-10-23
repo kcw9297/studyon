@@ -46,10 +46,14 @@ public class PortOnePaymentManager implements PaymentManager {
 
             // [3] 상태코드 확인 (code = -1 혹은 1인 경우, 비정상 결과)
             // 상태 코드는 정상인 경우, 결제액수 검증 후 결과 코드 반환
-            return List.of(-1, 1).contains(serverResult.getCode()) ?
-                    returnErrorCode(serverResult) :
-                    validatePaymentAmountAndReturnCode(serverResult, clientResult);
+            if (List.of(-1, 1).contains(serverResult.getCode())) {
+                log.warn(StrUtils.createLogStr(this.getClass(), "결제 검증 실패 - 오류 메세지 : %s".formatted(serverResult.getMessage())));
+                return returnErrorCode(serverResult);
 
+            } else {
+                log.warn(StrUtils.createLogStr(this.getClass(), "\n서버 응답 - %s\n클라이언트 응답 - %s".formatted(clientResult.toString(), serverResult.getResponse().toString())));
+                return validatePaymentAmountAndReturnCode(serverResult, clientResult);
+            }
 
         } catch (Exception e) {
             return PaymentCode.ERROR_INTERNAL;  // 예기치 않은 예외 발생 시, 내부 오류 코드 반환
@@ -67,7 +71,15 @@ public class PortOnePaymentManager implements PaymentManager {
 
             // [2] 환불 수행 후 결과 반환
             IamportResponse<Payment> serverResult = iamportClient.cancelPaymentByImpUid(cancelData);
-            return List.of(-1, 1).contains(serverResult.getCode()) ? returnErrorCode(serverResult) : PaymentCode.OK;
+
+            // [3] 결과 확인. 검증 실패 시, 오류 코드 반환
+            if (List.of(-1, 1).contains(serverResult.getCode())) {
+                log.warn(StrUtils.createLogStr(this.getClass(), "환불 요청 실패 - 오류 메세지 : %s".formatted(serverResult.getMessage())));
+                return returnErrorCode(serverResult);
+            }
+
+            // 검증 통과 시 성공 코드 반환
+            return PaymentCode.OK;
 
 
         } catch (Exception e) {
@@ -89,7 +101,6 @@ public class PortOnePaymentManager implements PaymentManager {
          */
 
         String message = serverResult.getMessage();
-        log.warn(StrUtils.createLogStr(this.getClass(), "요청 실패 - 오류 메세지 : %s".formatted(message)));
         if (message.contains("존재하지 않는")) return PaymentCode.ERROR_NOT_FOUND;
         if (message.contains("이미 취소된")) return PaymentCode.ERROR_ALREADY_REFUNDED;
         if (message.contains("취소할 수 없는")) return PaymentCode.ERROR_NOT_AVAILABLE;
@@ -100,13 +111,12 @@ public class PortOnePaymentManager implements PaymentManager {
     private int validatePaymentAmountAndReturnCode(IamportResponse<Payment> serverResult,
                                                    Map<String, String> clientResult) {
 
-        // [3] 결제 검증 (클라이언트에서 조작이 있었는지 확인)
+        // [1] 결제 검증 (클라이언트에서 조작이 있었는지 확인)
         BigDecimal serverAmount = serverResult.getResponse().getAmount();
         BigDecimal clientAmount = new BigDecimal(clientResult.getOrDefault(Param.PAID_AMOUNT, ""));
-        log.warn(StrUtils.createLogStr(this.getClass(), "\n서버 응답 - %s\n클라이언트 응답 - %s".formatted(clientResult.toString(), serverResult.getResponse().toString())));
         log.warn(StrUtils.createLogStr(this.getClass(), "결제액수 확인. serverAmount = %.2f, clientAmount = %.2f".formatted(serverAmount, clientAmount)));
 
-        // [4] 결제 액수 확인 후 검증
+        // [2] 결제 액수 확인 후 검증
         return Objects.equals(serverAmount, clientAmount) ? PaymentCode.OK : PaymentCode.ERROR_AMOUNT_NOT_CORRESPOND;
     }
 }
