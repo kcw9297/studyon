@@ -175,4 +175,9 @@ public final class StrUtils {
                 .toList();
     }
 
+
+    public static String removeHtmlTags(String htmlContent) {
+        return Objects.isNull(htmlContent) ? null : Jsoup.parse(htmlContent).text();
+    }
+
 }
