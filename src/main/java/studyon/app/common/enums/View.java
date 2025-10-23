@@ -22,7 +22,9 @@ public enum View {
     MYPAGE("mypage"),
     CHATBOT("chatbot"),
     USERSUPPORT("usersupport"),
-    ADMIN("admin");
+    ADMIN("admin"),
+    PLAYER("lecture_video"),
+    RESISTER("resister");
 
 
     private final String value;

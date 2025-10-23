@@ -17,7 +17,7 @@ body {
 }
 
 .player-section {
-  flex: 3;  /* 화면의 75% */
+  flex: 4;  /* 화면의 75% */
   background: #000;
 }
 

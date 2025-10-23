@@ -10,3 +10,5 @@
     <button id="support-button" class="support-start-button">상담 시작하기</button>
   </div>
 </div>
+
+<script src="<c:url value='/js/page/user_support/start_chat.js'/>"></script>
