@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.enums.Entity;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.file.FileManager;
-import studyon.app.layer.controller.test.TestCache;
+import studyon.app.layer.domain.test.TestCache;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
