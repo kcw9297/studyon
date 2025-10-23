@@ -27,6 +27,7 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
      * 특정 선생님 ID로 해당 선생님의 모든 강의 리뷰를 최신순으로 조회
      * @param teacherId 선생님 ID
      * @param pageable 정렬 조회용 변수
+     * @return 선생님별 리뷰 리스트
      */
     // FETCH JOIN 사용을 통해 지연 로딩으로 인한 단점 방지
     @Query(value = "SELECT r FROM LectureReview r " +  // 리뷰 엔티티를 조회 시작점으로
@@ -40,10 +41,27 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
     List<LectureReview> findRecentReviewsByTeacherId(Long teacherId, Pageable pageable);
 
     /**
-     * 과목별로 모든 강의 리뷰를 최신순으로 조회
+     * 과목별로 최근 강의 리뷰를 최신순으로 조회
      * @param pageable 정렬 조회용 변수
+     * @return 과목별 최근 리뷰 리스트
      */
 
-    @Query("SELECT r FROM LectureReview r WHERE r.lecture.teacher.subject = :subject ORDER BY r.createdAt DESC")
+    @Query("""
+        SELECT r 
+        FROM LectureReview r
+        JOIN FETCH r.lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH r.member m
+        WHERE t.subject = :subject
+        ORDER BY r.createdAt DESC
+    """)
     List<LectureReview> findRecentReviewsBySubject(@Param("subject") Subject subject, Pageable pageable);
+
+    /**
+     * 한 강의의 리뷰 조회(업데이트 전용)
+     * @param lectureId 강의 ID
+     * @return 해당 강의 리스트
+     */
+    List<LectureReview> findByLecture_LectureId(Long lectureId);
+
 }

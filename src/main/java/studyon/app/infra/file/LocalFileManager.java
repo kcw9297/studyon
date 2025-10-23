@@ -118,9 +118,10 @@ public class LocalFileManager implements FileManager {
         try {
             // [1] 파일 저장 경로
             String filePath = "%s/%s/%s".formatted(fileDir, entity.getName(), storeName);
+            Path path = Paths.get(filePath);
 
-            // [2] 파일 삭제
-            Files.delete(Paths.get(filePath));
+            // [2] 파일이 존재하는 경우 파일 삭제
+            if (Files.exists(path)) Files.delete(path);
 
         } catch (Exception e) {
             throw new ManagerException("로컬 스토리지 파일 삭제에 실패했습니다!", e);

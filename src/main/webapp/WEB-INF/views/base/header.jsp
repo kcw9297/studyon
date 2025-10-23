@@ -25,7 +25,8 @@
             </div>
         </c:if>
 
-        <a href="/teacher/management/profile"> 선생님 페이지 </a>
+        <a href="/teacher/management/profile"> 선생님 </a>
+        <a href="/admin/main"> 운영자 </a>
 
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">

@@ -129,4 +129,5 @@ public class AWSFileManager implements FileManager {
         // [2] 파일 삭제
         s3.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(key).build());
     }
+
 }

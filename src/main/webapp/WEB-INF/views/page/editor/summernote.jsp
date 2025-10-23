@@ -223,11 +223,12 @@
                         console.log('🔑 CSRF 토큰:', token);
                         console.log('🍪 전체 쿠키:', document.cookie);
                         formData.append("file", file);
+                        formData.append("action", urlParams.get('action'));
                         formData.append("content", $('#summernote').val());
                         formData.append("_csrf", token); // 인증 토큰 추가
 
                         $.ajax({
-                            url: '/testboard/editor_file',  // urlParams.get('fileUploadUrl')
+                            url: urlParams.get('fileUploadUrl'),
                             type: 'POST',
                             data: formData,
                             processData: false,

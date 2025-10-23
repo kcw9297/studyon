@@ -2,6 +2,7 @@ package studyon.app.infra.cache;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import studyon.app.common.constant.Param;
 import studyon.app.common.enums.Cache;
 
 
@@ -18,18 +19,22 @@ public final class CacheUtils {
     }
 
     public static String createBackupKey(String key) {
-        return "BACKUP:%s".formatted(key);
-    }
-
-    public static String createCacheKey(String entityName, Object id) {
-        return "CACHE:%s:%s".formatted(entityName, id);
+        return "%s:%s".formatted(Param.KEY_BACKUP, key);
     }
 
     public static String createCommonLoginValue(Long memberId) {
-        return "login:%s".formatted(memberId);
+        return "%s:%s".formatted(Param.KEY_LOGIN, memberId);
     }
 
-    public static String createCacheKeyPattern(String entityName, Object id) {
-        return "CACHE:%s:%s:*".formatted(entityName, id);
+    public static String createCacheKey(String entityName, String methodType, Object id) {
+        return "%s:%s:%s:%s".formatted(Param.KEY_CACHE, entityName, methodType, id);
+    }
+
+    public static String createCacheKey(String entityName, String methodType, Long entityId, Object id) {
+        return "%s:%s:%s:%s:%s".formatted(Param.KEY_CACHE, entityName, methodType, entityId, id);
+    }
+
+    public static String createAnyEntityIdPattern(String entityName, String methodType, Object id) {
+        return "%s:%s:%s:*:%s".formatted(Param.KEY_CACHE, entityName, methodType, id);
     }
 }

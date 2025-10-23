@@ -4,22 +4,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import studyon.app.common.constant.Param;
 import studyon.app.infra.cache.CacheUtils;
 import studyon.app.common.enums.Cache;
 import studyon.app.common.utils.StrUtils;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component("customRedisCacheManager")
 @RequiredArgsConstructor
 public class RedisCacheManager implements CacheManager {
-
-    private static final int MAX_RECENT_SEARCH_KEYWORD = 10; // 최대 최근 검색어 개수
-    private static final Duration EXPIRATION_CACHE = Duration.ofSeconds(30); // 캐시 만료시간
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -68,7 +68,7 @@ public class RedisCacheManager implements CacheManager {
         stringRedisTemplate.opsForList().leftPush(key, keyword); // 리스트 맨 처음에 삽입
 
         // [3] 최대 저장 검색어 개수를 초과하는 경우, 맨 마지막 검색어 제거
-        stringRedisTemplate.opsForList().trim(key, 0L, MAX_RECENT_SEARCH_KEYWORD-1L);
+        stringRedisTemplate.opsForList().trim(key, 0L, Param.MAX_RECENT_SEARCH_KEYWORD-1L);
     }
 
 
@@ -143,69 +143,137 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public <T> T getCache(String entityName, Object id, Class<T> clazz) {
+    public <T> T getCache(String entityName, String methodType, Object id, Class<T> clazz) {
 
         // [1] key
-        String key = CacheUtils.createCacheKey(entityName, id);
-
-        log.warn("[getCache] key - {}", key);
+        String key = CacheUtils.createCacheKey(entityName, methodType, id);
+        log.warn("key = {}", key);
 
         // [2] 캐시 조회 후 반환 (조회 성공 시, 만료시간 갱신)
-        String value = stringRedisTemplate.opsForValue().getAndExpire(key, EXPIRATION_CACHE);
+        return getCacheValue(clazz, key);
+    }
+
+
+    @Override
+    public <T> T getCache(String entityName, String methodType, Long entityId, Object id, Class<T> clazz) {
+
+        // [1] key
+        String key = CacheUtils.createCacheKey(entityName, methodType, entityId, id);
+        log.warn("key = {}", key);
+
+        // [2] 캐시 조회 후 반환 (조회 성공 시, 만료시간 갱신)
+        return getCacheValue(clazz, key);
+    }
+
+    private <T> T getCacheValue(Class<T> clazz, String key) {
+        String value = stringRedisTemplate.opsForValue().getAndExpire(key, Param.EXPIRATION_CACHE);
         return Objects.isNull(value) ? null : StrUtils.fromJson(value, clazz);
     }
 
 
     @Override
-    public <T> T getOrRecordCache(String entityName, Object id, Class<T> clazz) {
+    public <T> T getCacheAndDeleteOldCache(String entityName, String methodType, Long entityId, Object id, Class<T> clazz) {
+
+        // [1] key & key pattern (CACHE:LECTURE_QUESTION:EDIT:*:sessionId)
+        String findKey = CacheUtils.createCacheKey(entityName, methodType, entityId, id);
+        String pattern = CacheUtils.createAnyEntityIdPattern(entityName, methodType, entityId);
+        log.warn("key = {}, pattern = {}", findKey, pattern);
+
+        // [2] 기존 키 조회
+        Set<String> keys = stringRedisTemplate.keys(pattern);
+        if (keys.isEmpty()) return null; // 아무것도 존재하지 않으면 return
+
+        // [3] 현재 캐시를 제외한 모든 캐시 삭제
+        // 매칭되는 키, 매칭되지 않는 키를 나눔
+        Map<Boolean, List<String>> partitioned = keys.stream()
+                .collect(Collectors.partitioningBy(key -> Objects.equals(key, findKey)));
+
+        // 매칭되는 키는 반환, 매칭되지 않는(과거 키)는 삭제
+        List<String> matched = partitioned.get(true);
+        List<String> unmatched = partitioned.get(false);
+
+        unmatched.forEach(stringRedisTemplate::delete);
+        return matched.isEmpty() ? null : StrUtils.fromJson(matched.get(0), clazz);
+    }
+
+
+
+    @Override
+    public <T> T getOrRecordCache(String entityName, String methodType, Object id, Class<T> clazz) {
 
         // [1] key
-        String key = CacheUtils.createCacheKey(entityName, id);
+        String key = CacheUtils.createCacheKey(entityName, methodType, id);
         String backupKey = CacheUtils.createBackupKey(key);
 
         // [2] 캐시가 이미 존재하는지 확인
         // 만약 존재하는 경우 데이터를 그대로 반환
-        String value = stringRedisTemplate.opsForValue().getAndExpire(key, EXPIRATION_CACHE);
+        String value = stringRedisTemplate.opsForValue().getAndExpire(key, Param.EXPIRATION_CACHE);
         if (Objects.nonNull(value)) return StrUtils.fromJson(value, clazz);
 
         // [3] 새롭게 생성해야 하는 경우
         // 이전의 같은 엔티티의 다른 캐시데이터는 모두 삭제
-        createCache(key, backupKey, entityName, id);
+        stringRedisTemplate.opsForValue().set(key, "{}", Param.EXPIRATION_CACHE);
+        stringRedisTemplate.opsForValue().set(backupKey, "{}");
         return null; // 캐시 데이터는 없으므로 null 반환
     }
 
 
-    // 캐시 데이터 생성
-    private void createCache(String key, String backupKey, String entityName, Object id) {
-
-        // [1] 다른 백업키 유무 확인. 존재 시 삭제
-        String prevKeyPattern = CacheUtils.createCacheKeyPattern(entityName, id);
-        Set<String> keys = stringRedisTemplate.keys(prevKeyPattern);
-        if (!keys.isEmpty()) stringRedisTemplate.delete(keys);
-
-        // [2] Redis Value 자료형으로 저장 (백업데이터 함께 저장)
-        stringRedisTemplate.opsForValue().set(key, "{}", EXPIRATION_CACHE);
-        stringRedisTemplate.opsForValue().set(backupKey, "{}");
-    }
-
-
     @Override
-    public void updateCache(String entityName, Object id, Object cacheData) {
+    public void updateCache(String entityName, String actionType, Object id, Object cacheData) {
 
         // [1] key
-        String key = CacheUtils.createCacheKey(entityName, id);
+        String key = CacheUtils.createCacheKey(entityName, actionType, id);
+        String backupKey = CacheUtils.createBackupKey(key);
 
         // [2] 캐시 데이터 확인 및 갱신 수행
         // 존재하지 않는 경우 갱신을 수행하지 않음 (캐시가 없으면 유효하지 않은 접근으로 판단)
-        stringRedisTemplate.opsForValue().set(key, StrUtils.toJson(cacheData), EXPIRATION_CACHE);
+        stringRedisTemplate.opsForValue().set(key, StrUtils.toJson(cacheData), Param.EXPIRATION_CACHE);
+        stringRedisTemplate.opsForValue().set(backupKey, StrUtils.toJson(cacheData));
+    }
+
+    @Override
+    public void updateCache(String entityName, String actionType, Long entityId, Object id, Object cacheData) {
+
+        // [1] key
+        String key = CacheUtils.createCacheKey(entityName, actionType, entityId, id);
+        String backupKey = CacheUtils.createBackupKey(key);
+
+        // [2] 캐시 데이터 확인 및 갱신 수행
+        // 존재하지 않는 경우 갱신을 수행하지 않음 (캐시가 없으면 유효하지 않은 접근으로 판단)
+        stringRedisTemplate.opsForValue().set(key, StrUtils.toJson(cacheData), Param.EXPIRATION_CACHE);
+        stringRedisTemplate.opsForValue().set(backupKey, StrUtils.toJson(cacheData));
     }
 
 
     @Override
-    public void removeCache(String entityName, Object id) {
+    public void removeCache(String entityName, String actionType, Object id) {
+        stringRedisTemplate.delete(CacheUtils.createCacheKey(entityName, actionType, id));
+    }
+
+
+    @Override
+    public void removeCache(String entityName, String actionType, Long entityId, Object id) {
+        stringRedisTemplate.delete(CacheUtils.createCacheKey(entityName, actionType, entityId, id));
+    }
+
+
+    @Override
+    public void removeCacheAndBackup(String entityName, String actionType, Object id) {
 
         // [1] key
-        String key = CacheUtils.createCacheKey(entityName, id);
+        String key = CacheUtils.createCacheKey(entityName, actionType, id);
+        String backupKey = CacheUtils.createBackupKey(key);
+
+        // [2] 현재 캐시와, 백업 데이터 함께 삭제
+        stringRedisTemplate.delete(key);
+        stringRedisTemplate.delete(backupKey);
+    }
+
+    @Override
+    public void removeCacheAndBackup(String entityName, String actionType, Long entityId, Object id) {
+
+        // [1] key
+        String key = CacheUtils.createCacheKey(entityName, actionType, id);
         String backupKey = CacheUtils.createBackupKey(key);
 
         // [2] 현재 캐시와, 백업 데이터 함께 삭제
@@ -215,22 +283,26 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public <T> List<T> getAllBackupValue(String entityName, Class<T> clazz) {
+    public <T> List<T> getAndRemoveAllBackup(String entityName, Class<T> clazz) {
 
         // [1] key pattern 생성
-        String keyPattern = "BACK:%s:*".formatted(entityName);
+        // ex. BACKUP:CACHE:LECTURE_QUESTION:*
+        String keyPattern = "%s:%s:%s:*".formatted(Param.KEY_BACKUP, Param.KEY_CACHE, entityName);
 
-        // [2] 일괄 조회 수행
-        Set<String> keys = stringRedisTemplate.keys(keyPattern); // 패턴으로 조회된 모든 key
-        List<String> values = stringRedisTemplate.opsForValue().multiGet(keys);
+        // [2] 백업 key 전체 조회
+        Set<String> backupKeys = stringRedisTemplate.keys(keyPattern);
+        if (backupKeys.isEmpty()) return List.of();
 
-        // [3] 일괄 역직렬화 후 반환
-        return Objects.isNull(values) ? List.of() : values.stream().map(value -> StrUtils.fromJson(value, clazz)).toList();
-    }
-
-    @Override
-    public void removeBackupKey(String key) {
-        stringRedisTemplate.delete(CacheUtils.createBackupKey(key));
+        // [3] 고아 상태만 필터링 후 반환
+        return backupKeys.stream()
+                .filter(backupKey -> {
+                    String originalKey = backupKey.replaceFirst("^%s:".formatted(Param.KEY_BACKUP), "");
+                    return !stringRedisTemplate.hasKey(originalKey); // 키가 존재하는 경우
+                })
+                .map(stringRedisTemplate.opsForValue()::getAndDelete) // 조회 후 삭제
+                .filter(Objects::nonNull)
+                .map(value -> StrUtils.fromJson(value, clazz))
+                .toList();
     }
 
 }

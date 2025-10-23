@@ -47,4 +47,78 @@ public class AdminViewController {
         model.addAttribute("profile", profile);
         return ViewUtils.returnView(model, View.ADMIN, "teacher_management");
     }
+
+    @GetMapping("/admin/member_management")
+    public String adminMemberManagement(Model model, HttpServletRequest request) {
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 비로그인 사용자의 관리자 접근 → redirect:/login");
+            return "redirect:/login";
+        }
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.ADMIN, "member_management");
+    }
+
+    @GetMapping("/admin/notice_management")
+    public String adminNoticeManagement(Model model, HttpServletRequest request) {
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 비로그인 사용자의 관리자 접근 → redirect:/login");
+            return "redirect:/login";
+        }
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.ADMIN, "notice_management");
+    }
+
+    @GetMapping("/admin/banner_management")
+    public String adminBannerManagement(Model model, HttpServletRequest request) {
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 비로그인 사용자의 관리자 접근 → redirect:/login");
+            return "redirect:/login";
+        }
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.ADMIN, "banner_management");
+    }
+
+    @GetMapping("/admin/lecture_management")
+    public String adminLectureManagement(Model model, HttpServletRequest request) {
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 비로그인 사용자의 관리자 접근 → redirect:/login");
+            return "redirect:/login";
+        }
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.ADMIN, "leture_management"); // 오타 그대로 있으면 leture로
+    }
+
+    @GetMapping("/admin/lecture_statistics")
+    public String adminLectureStatistics(Model model, HttpServletRequest request) {
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 비로그인 사용자의 관리자 접근 → redirect:/login");
+            return "redirect:/login";
+        }
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.ADMIN, "lecture_statistics");
+    }
+
+    @GetMapping("/admin/report_management")
+    public String adminReportManagement(Model model, HttpServletRequest request) {
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 비로그인 사용자의 관리자 접근 → redirect:/login");
+            return "redirect:/login";
+        }
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.ADMIN, "report_management");
+    }
+
+
 }

@@ -115,7 +115,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     // 테스트용 데이터 정렬
     Page<Lecture> findByOrderByPublishDateDesc(Pageable pageable);
 
-    // 강의 리뷰 정렬
-    List<LectureReview> findByLectureId(Long lectureId);
 
 }
