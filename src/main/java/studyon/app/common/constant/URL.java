@@ -39,8 +39,13 @@ public final class URL {
     public static final String MEMBER_ADMIN = ADMIN + MEMBER;
 
     /* TEACHER */
-    public static final String TEACHERS_API = API + TEACHERS;
+    public static final String TEACHERS_API = API + TEACHERS;   //  "/api/teachers"
 
+    /* LECTURE */
+    public static final String LECTURES_API = API + LECTURES;   //  "/api/lecture"
+
+    /* HOME */
+    public static final String HOME_API = API + HOME;    //  "/api/home"
 
     // 정적 상수 모음
     public static final String[] STATIC_RESOURCE_PATHS = {

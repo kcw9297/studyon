@@ -1,12 +1,14 @@
+// 작성중
+
 document.addEventListener("DOMContentLoaded", () => {
-    const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
+    const homeJSP = document.getElementById("homePage").dataset.subject;
     const count = 4;
 
     const params = new URLSearchParams();
-    params.append("subject", subjectFromJSP);
+    params.append("subject", homeJSP);
     params.append("count", count.toString());
 
-    fetch("/api/lecture/best", {
+    fetch("/api/home/best", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params
@@ -16,11 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(err => console.error("인기 강의 로딩 실패 ㅜㅜ : " , err));
 
     function renderBestLectures(lectures) {
-        const titles = document.querySelectorAll(".recomment-lecture-title");
+        const titles = document.querySelector(".recent-lecture-container");
         let container = null;
-        
+
         titles.forEach(title => {
-            if (title.textContent.trim().includes("주간 인기/추천 강의")) {
+            if (title.textContent.trim().includes("최근 인기 강의")) {
                 container = title.nextElementSibling;  // 현재 요소의 바로 다음 형제 요소를 반환
             }
         });
@@ -32,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         container.innerHTML = "";
 
-        if (!lectures || lectures.length === 0) {
-            container.innerHTML = `<p>인기 강의가 없습니다.</p>`
+        if (!bestLectures || bestLectures.length === 0) {
+            container.innerHTML = `<p>최근 인기 강의가 없습니다.</p>`
             return;
         }
 
