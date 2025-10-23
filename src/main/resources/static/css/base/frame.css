@@ -11,7 +11,7 @@ html, body {
   width: 100%;
   height: 100%;
   background: #f4f4f4;
-  overflow-x: auto; /* ✅ 스크롤 허용 */
+/* overflow-x: auto; ✅ 스크롤 허용 +lecture_detail.js 일부 기능이 먹히지 않아 주석 처리 -phj  */
 }
 
 /* 전체 감싸는 wrap (네이버 구조처럼) */
