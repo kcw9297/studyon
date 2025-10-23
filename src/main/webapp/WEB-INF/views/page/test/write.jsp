@@ -60,6 +60,7 @@
             const formData = new FormData();
             const token = $('meta[name="_csrf"]').attr('content');
             formData.append("content", $("#content").val());
+            formData.append("action", "WRITE");
             formData.append("_csrf", token); // 인증 토큰 추가
 
             // 데이터 전송 (캐시 동기화)
@@ -108,6 +109,7 @@
                 console.log('🔑 CSRF 토큰:', token);
                 console.log('🍪 전체 쿠키:', document.cookie);
                 formData.append("_csrf", token); // 인증 토큰 추가
+                formData.append("action", "WRITE");
 
                 $.ajax({
                     url: '/testboard',
@@ -144,10 +146,10 @@
     <form id="writeForm" method="post" action="<c:url value="/testboard/write"/>">
 
         <!-- 숨겨진 content -->
-        <textarea id="content" name="content" class="write" hidden>${not empty cache.content ? cache.content : ''}</textarea>
+        <textarea id="content" name="content" class="write" hidden>${not empty data.content ? data.content : ''}</textarea>
 
         <!-- iframe 에디터 -->
-        <iframe src="<c:url value="/editor?width=1000&height=500"/>"></iframe>
+        <iframe src="<c:url value="/editor?width=1000&height=500&action=WRITE&fileUploadUrl=/testboard/editor_file"/>"></iframe>
 
         <!-- 하단 버튼 -->
         <div style="margin-top: 20px;">

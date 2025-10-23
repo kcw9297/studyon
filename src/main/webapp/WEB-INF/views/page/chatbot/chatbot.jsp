@@ -1,7 +1,7 @@
 <%@ page contentType ="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/page/chatbot/chatbot.css'/>">
 <div id="empty-box"></div>
 <div class="chatbot-container">
     <div class="chatbot-wrapper">

@@ -153,12 +153,16 @@ public final class StrUtils {
 
         return Objects.isNull(htmlContent) || htmlContent.isBlank() ?
                 "" :
-                Jsoup.clean(htmlContent, "https://example.com", SAFELIST,
-                new Document.OutputSettings().prettyPrint(false));
+                Jsoup.clean(
+                        htmlContent,
+                        "https://example.com", // 상대경로 허용을 위한 더미 주소
+                        SAFELIST, // custom safelist
+                        new Document.OutputSettings().prettyPrint(false) // 개행문자 허용
+                );
     }
 
 
-    public static List<String> purifyAndExtractImgSrcFromHtml(String htmlContent) {
+    public static List<String> purifyAndExtractFileNameFromHtml(String htmlContent) {
 
         // [1] HTML 내 위험 코드 정화
         String purified = purifyHtml(htmlContent);
@@ -168,6 +172,7 @@ public final class StrUtils {
         return purifiedDoc.select("img").stream()
                 .map(img -> img.attr("src"))
                 .filter(src -> !src.isBlank())
+                .map(src -> src.substring(src.lastIndexOf('/') + 1))
                 .toList();
     }
 

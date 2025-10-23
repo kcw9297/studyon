@@ -10,6 +10,7 @@ import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
+import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class LectureServiceImpl implements LectureService {
     private final LectureRepository lectureRepository;
+    private final LectureReviewRepository lectureReviewRepository;
 
     /** 강의 평점 업데이트 로직
      * @param lectureId 선생님 ID
@@ -38,7 +40,7 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public Double updateAverageRatings(Long lectureId) {
         // [1] 리뷰 DTO 리스트 조회
-        List<LectureReviewDTO.Read> reviews = lectureRepository.findByLectureId(lectureId)
+        List<LectureReviewDTO.Read> reviews = lectureReviewRepository.findByLecture_LectureId(lectureId)
                 .stream()
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
@@ -112,6 +114,20 @@ public class LectureServiceImpl implements LectureService {
         Pageable pageable = PageRequest.of(0, count);
         // [2] 모든 강의 중 카운트만큼 인기순 정렬
         return lectureRepository.findAllByOrderByTotalStudentsDesc(pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .collect(Collectors.toList());
+    }
+    /** 과목별 강의 리뷰 목록 조회 로직(추천 강의 화면)
+     * @param count 정렬용 변수
+     * @return 과목별 최근 강의 리뷰 목록
+     */
+    @Override
+    public List<LectureReviewDTO.Read> readRecentLectureReviews(Subject subject, int count) {
+        // [1] 리스팅 카운트용 변수
+        Pageable pageable = PageRequest.of(0, count);
+        // [2] 과목별 최근 강의 리뷰 카운트만큼 인기순 정렬
+        return lectureReviewRepository.findRecentReviewsBySubject(subject, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());

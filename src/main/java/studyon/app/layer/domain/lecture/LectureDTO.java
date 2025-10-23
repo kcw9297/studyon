@@ -4,6 +4,7 @@ package studyon.app.layer.domain.lecture;
 import lombok.*;
 
 import studyon.app.common.enums.Difficulty;
+import studyon.app.common.enums.Subject;
 import studyon.app.infra.aop.LogInfo;
 
 import java.time.LocalDateTime;
@@ -74,7 +75,8 @@ public class LectureDTO {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Search {
-        private String filter; // "title", "difficulty", "teacher"
+        private String filter; // "title", "difficulty", "controller"
         private String keyword;
+        private Subject subject;
     }
 }
