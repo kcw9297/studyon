@@ -32,7 +32,7 @@ public class CacheSchedulingService {
         List<TestCache> allBackUp =
                 cacheManager.getAndRemoveAllBackup(Entity.LECTURE_QUESTION.name(), TestCache.class);
 
-        log.info("[SchedulingService] - allBackUp = {}", allBackUp);
+        //log.info("[SchedulingService] - allBackUp = {}", allBackUp);
 
         // [2] 백업 캐시 & 고아(orphan) 파일 삭제
         allBackUp.stream()

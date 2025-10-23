@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.member.Member;
@@ -32,8 +34,11 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
+    @Column(nullable = false, updatable = false)
+    private String paymentUid; // 결제 대행사에서 제공한 결제 고유번호
+
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
-    private Double paidPrice;
+    private Double paidAmount;
 
     @Column(nullable = false, updatable = false, columnDefinition = "TEXT")
     private String paymentApiResult;
@@ -45,18 +50,21 @@ public class Payment extends BaseEntity {
     @CreationTimestamp
     private LocalDateTime refundedAt;
 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", nullable = false)
     private Lecture lecture;
 
 
     @Builder
-    public Payment(Double paidPrice, Member member, Lecture lecture, String paymentApiResult) {
-        this.paidPrice = paidPrice;
+    public Payment(String paymentUid, Double paidAmount, Member member, Lecture lecture, String paymentApiResult) {
+        this.paymentUid = paymentUid;
+        this.paidAmount = paidAmount;
         this.paymentApiResult = paymentApiResult;
         this.member = member;
         this.lecture = lecture;

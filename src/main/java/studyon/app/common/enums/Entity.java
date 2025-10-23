@@ -25,6 +25,7 @@ public enum Entity {
     LECTURE_ANSWER("lecture_answer"),
     PURCHASE("purchase"),
     REFUND("refund"),
+    PAYMENT("payment"),
     TEMP("temp"),
     UNKNOWN("unknown");
 

@@ -12,6 +12,11 @@ file:
   dir: ${FILE_DIR:}
   handler: ${FILE_HANDLER:}
 
+payment:
+  portone:
+    api-key: ${PORTONE_API_KEY:}
+    api-secret: ${PORTONE_API_SECRET:}
+    id-code: ${PORTONE_ID_CODE:}
 
 aws:
   cloudfront:

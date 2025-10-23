@@ -54,12 +54,6 @@
 
     <%-- 공용 Script --%>
     <script src="<c:url value='/js/base/header.js'/>"></script>
-    <script src="<c:url value='/js/mypage/account.js'/>"></script>
-    <script src="<c:url value='/js/mypage/coupons.js'/>"></script>
-    <script src="<c:url value='/js/page/lecture/lecture_detail.js'/>"></script>
-    <script src="<c:url value='/js/page/chatbot/chatbot.js'/>"></script>
-    <script src="<c:url value='/js/page/user_support/start_chat.js'/>"></script>
-
 </html>
 
 

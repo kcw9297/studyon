@@ -57,7 +57,7 @@ public class Member extends BaseEntity {
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false, updatable = false)
-    private Provider provider; // 소셜 로그인 provider (GOOGLE, NAVER, KAKAO, ...)
+    private Provider provider; // 소셜 로그인 provider (NORMAL, GOOGLE, NAVER, KAKAO, ...)
 
     @Column(updatable = false)
     private String providerId;  // 소셜 로그인 번호

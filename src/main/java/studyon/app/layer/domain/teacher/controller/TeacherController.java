@@ -43,7 +43,6 @@ import java.util.List;
 public class TeacherController {
 
     private final TeacherService teacherService;
-    private final LectureService lectureService;
     private final CacheManager cacheManager;
 
     /**
@@ -63,7 +62,6 @@ public class TeacherController {
     public String teacherListView(@PathVariable Subject subject, Model model) {
         // [1] 과목별 데이터 조회
         List<TeacherDTO.Read> teachers = teacherService.readTeachersBySubject(subject);
-
         // [2] JSP에 전달할 데이터 추가
         model.addAttribute("subject", subject);
         model.addAttribute("teachers", teachers);
@@ -84,16 +82,17 @@ public class TeacherController {
     public String showProfile(@PathVariable Long teacherId, Model model, @RequestParam(defaultValue = "5") int count) {
         // [1] 프로필 불러오기
         TeacherDTO.Read profile = teacherService.read(teacherId);
-        List<LectureDTO.Read> bestLectures = teacherService.readBestLectures(teacherId, count);
-        List<LectureDTO.Read> recentLectures = teacherService.readRecentLectures(teacherId, count);
-        List<LectureReviewDTO.Read> comment = teacherService.readRecentReview(teacherId, count);
+//        List<LectureDTO.Read> bestLectures = teacherService.readBestLectures(teacherId, count);
+        //List<LectureDTO.Read> recentLectures = teacherService.readRecentLectures(teacherId, count);
+        //List<LectureReviewDTO.Read> comment = teacherService.readRecentReview(teacherId, count);
         // [2] 모델 속성 설정
-        model.addAttribute("bestLectures", bestLectures);
-        model.addAttribute("recentLectures", recentLectures);
-        model.addAttribute("comment", comment);
-        model.addAttribute("profile", profile);
+        model.addAttribute("teacherId", teacherId);
+//        model.addAttribute("bestLectures", bestLectures);
+        //model.addAttribute("recentLectures", recentLectures);
+        //model.addAttribute("comment", comment);
+        model.addAttribute("teacherProfile", profile);
 
-        return ViewUtils.returnView(model, View.TEACHER, "management_profile");
+        return ViewUtils.returnView(model, View.TEACHER, "teacher_profile");
     }
 
     @GetMapping("/management/profile")
@@ -138,8 +137,4 @@ public class TeacherController {
         log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", memberId, profile.getNickname());
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture");
     }
-
-
-
-
 }

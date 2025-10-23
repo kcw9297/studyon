@@ -19,3 +19,5 @@
         </div>
     </div>
 </div>
+
+<script src="<c:url value='/js/page/chatbot/chatbot.js'/>"></script>

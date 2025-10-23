@@ -8,8 +8,8 @@
     background-color: rgb(255, 255, 255);
     display: flex;
     flex-direction: column;
-    padding-left:600px;
-    padding-right:600px;
+    padding-left:1000px;
+    padding-right:1000px;
 }
 
 .resister-contatiner{

@@ -9,7 +9,6 @@ import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.member.Member;
-import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 import studyon.app.layer.domain.payment.Payment;
 import studyon.app.layer.domain.payment.PaymentDTO;
@@ -33,7 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final LectureRepository lectureRepository;
 
     @Override
-    public PaymentDTO.Read createPayment(PaymentDTO.Write rq) {
+    public PaymentDTO.Read createPayment(PaymentDTO.Pay rq) {
         // 필요 엔티티들 조회
         Member member = memberRepository.findById(rq.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
