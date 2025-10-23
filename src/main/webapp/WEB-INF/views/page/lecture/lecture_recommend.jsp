@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/lecture/lecture_recommend.css'/>">
 
 <div id="content">
-    <div id="empty-box"></div>
     <div class="main-container">
       <div class="sidebar-container">
         <div class="recommend-nav">
