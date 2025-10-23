@@ -41,7 +41,8 @@ public class RedisCacheManager implements CacheManager {
 
     @Override
     public void removeLogout(Long memberId) {
-        stringRedisTemplate.opsForSet().remove(Cache.CURRENT_LOGIN.getBaseKey(), memberId);
+        String value = CacheUtils.createCommonLoginValue(memberId);
+        stringRedisTemplate.opsForSet().remove(Cache.CURRENT_LOGIN.getBaseKey(), value);
     }
 
 

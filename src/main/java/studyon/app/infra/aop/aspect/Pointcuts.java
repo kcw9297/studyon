@@ -46,7 +46,7 @@ class Pointcuts {
      */
 
     // @RedissonLock 적용 메소드
-    @Pointcut("@annotation(studyon.app.common.annotation.aspect.RedissonLock)")
+    @Pointcut("@annotation(studyon.app.infra.aop.annotation.RedissonLock)")
     public void redissonLockAnno() {}
 
     /*
