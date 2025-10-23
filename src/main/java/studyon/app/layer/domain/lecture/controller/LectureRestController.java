@@ -3,7 +3,10 @@ package studyon.app.layer.domain.lecture.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
@@ -33,9 +36,13 @@ public class LectureRestController {
      */
     @PostMapping("/recent")
     public ResponseEntity<?> readRecentLectures(@ModelAttribute LectureDTO.Search rq) {
+        // [1] 최신 강의 조회 로그
         log.info("최신 강의 POST 요청: 과목 [{}]의 최신 강의 조회", rq.getSubject());
+        // [2] 4개씩 보여줄 예정(하드코딩)
         int count = 4;
+        // [3] 최신 강의 조회
         List<LectureDTO.Read> result = lectureService.readRecentLectures(rq.getSubject(), count);
+        // [4] 성공 응답 반환
         return RestUtils.ok(result);
     }
 
