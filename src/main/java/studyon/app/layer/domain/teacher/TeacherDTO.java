@@ -57,4 +57,14 @@ public class TeacherDTO {
 
         private String nickname;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Search {
+        // private String filter; // "subject"
+        private String keyword;
+        private Subject subject;
+    }
 }

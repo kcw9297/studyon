@@ -1,11 +1,9 @@
 package studyon.app.layer.domain.teacher.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.URL;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.dto.Rest;
@@ -26,7 +24,7 @@ import java.util.List;
  * @author khj00
  */
 
-
+@Slf4j
 @RestController
 @RequestMapping(URL.TEACHERS_API)
 @RequiredArgsConstructor
@@ -36,12 +34,13 @@ public class TeacherRestController {
     private final TeacherService teacherService;
 
     /**
-     * [GET] 모든 선생님 정보 가져오기
+     * [POST] 모든 선생님 정보 가져오기
      * @return 모든 선생님 정보
      */
 
-    @GetMapping
-    public ResponseEntity<?> getAllTeachers() {
+    @PostMapping
+    public ResponseEntity<?> getAllTeachers(@ModelAttribute TeacherDTO.Search rq) {
+        log.info("선생님 전체 정보 POST 요청: 모든 선생님 조회");
         // [1] 모든 선생님 정보 가져와서 리스팅
         List<TeacherDTO.Read> teachers = teacherService.readAllTeachers();
         // [2] 리스팅한 정보 리턴하기
@@ -49,14 +48,13 @@ public class TeacherRestController {
     }
 
     /**
-     * [GET] 과목별 선생님 정보 가져오기
-     * @param subject 과목
+     * [POST] 과목별 선생님 정보 가져오기
      * @return 해당 과목 선생님들 정보
      */
-    @GetMapping( "/subject/{subject}")
-    public ResponseEntity<?> getTeachersBySubject(@PathVariable Subject subject) {
+    @PostMapping( "/subject/{subject}")
+    public ResponseEntity<?> getTeachersBySubject(@ModelAttribute TeacherDTO.Search rq) {
         // [1] 과목별로 선생님 정보 가져와서 리스팅
-        List<TeacherDTO.Read> teachersBySubject = teacherService.readTeachersBySubject(subject);
+        List<TeacherDTO.Read> teachersBySubject = teacherService.readTeachersBySubject(rq.getSubject());
         // [2] 리스팅한 정보 리턴하기
         return RestUtils.ok(Rest.Message.of("해당 과목 선생님들을 불러왔습니다."), teachersBySubject);
     }

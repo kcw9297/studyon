@@ -63,7 +63,6 @@ public class TeacherController {
     public String teacherListView(@PathVariable Subject subject, Model model) {
         // [1] 과목별 데이터 조회
         List<TeacherDTO.Read> teachers = teacherService.readTeachersBySubject(subject);
-
         // [2] JSP에 전달할 데이터 추가
         model.addAttribute("subject", subject);
         model.addAttribute("teachers", teachers);
@@ -93,7 +92,7 @@ public class TeacherController {
         model.addAttribute("comment", comment);
         model.addAttribute("profile", profile);
 
-        return ViewUtils.returnView(model, View.TEACHER, "management_profile");
+        return ViewUtils.returnView(model, View.TEACHER, "teacher_profile");
     }
 
     @GetMapping("/management/profile")

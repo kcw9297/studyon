@@ -2,21 +2,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = 4;
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
 
-    const formData = new FormData();
-    formData.append("subject", subjectFromJSP);
-    formData.append("count", count.toString());
+    const params = new URLSearchParams();
+    params.append("subject", subjectFromJSP);
+    params.append("count", count.toString());
 
     fetch("/api/lecture/recent", {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
     })
         .then(res => {
             if (!res.ok) throw new Error("HTTP " + res.status);
             return res.json();
         })
-        .then(data => {
-            console.log("✅ 최근 강의 데이터:", data);
-            renderRecentLectures(data);
+        .then(json => {
+            console.log("✅ 최근 강의 데이터:", json.data);
+            renderRecentLectures(json.data);
         })
         .catch(err => console.error("최근 강의 데이터 요청 실패:", err));
 
@@ -56,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <p class="lecture-info-text">${recentLecture.nickname}</p>
           <p class="lecture-info-text">₩${Number(recentLecture.price).toLocaleString()}</p>
           <p class="lecture-info-text">
-            ⭐<c:out value="${recentLecture.averageRate}" />
+            ⭐ ${recentLecture.averageRate ?? "0.0"}
             🧸 ${recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents}
           </p>
         </div>

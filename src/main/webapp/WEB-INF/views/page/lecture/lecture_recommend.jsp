@@ -19,28 +19,30 @@
       </div>
     </div>
     <div class="main-content-container">
-      <div class="recomment-lecture-title">
-        ${subject.value} 주간 인기/추천 강의
-      </div>
-        <div class="recent-lecture-container"></div>
-        <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
-
-            <div class="recomment-lecture-title">
-                최근 수강평
-            </div>
-            <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
-            <div class="lecture-comment-box"></div>
-
-            <div class="recomment-lecture-title">
-                요새 뜨는 강의
-            </div>
+        <div id="lecturePage" data-subject="${subject.name()}">
+          <div class="recomment-lecture-title">
+            ${subject.value} 주간 인기/추천 강의
+          </div>
             <div class="recent-lecture-container"></div>
             <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
+
+                <div class="recomment-lecture-title">
+                    최근 수강평
+                </div>
+                <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
+                <div class="lecture-comment-box"></div>
+
+                <div class="recomment-lecture-title">
+                    요새 뜨는 강의
+                </div>
+                <div class="recent-lecture-container"></div>
+                <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
+            </div>
         </div>
     </div>
 </div>
 
-<div id="lecturePage" data-subject="${subject.name()}"></div>
+
 
 <script src="<c:url value='/js/page/lecture/recent_lecture.js'/>"></script>
 <script src="<c:url value='/js/page/lecture/best_lecture.js'/>"></script>
