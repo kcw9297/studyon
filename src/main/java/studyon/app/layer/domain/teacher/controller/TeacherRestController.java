@@ -37,6 +37,7 @@ public class TeacherRestController {
 
     /**
      * [GET] 모든 선생님 정보 가져오기
+     * @return 모든 선생님 정보
      */
 
     @GetMapping
@@ -50,6 +51,7 @@ public class TeacherRestController {
     /**
      * [GET] 과목별 선생님 정보 가져오기
      * @param subject 과목
+     * @return 해당 과목 선생님들 정보
      */
     @GetMapping( "/subject/{subject}")
     public ResponseEntity<?> getTeachersBySubject(@PathVariable Subject subject) {
