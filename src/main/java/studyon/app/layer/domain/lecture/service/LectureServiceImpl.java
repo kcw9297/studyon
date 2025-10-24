@@ -125,10 +125,4 @@ public class LectureServiceImpl implements LectureService {
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public Long readAllLectureCount() {
-        // [1] 총 강의 수 리턴
-        return lectureRepository.count();
-    }
 }

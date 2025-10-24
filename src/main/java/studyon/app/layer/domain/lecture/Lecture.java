@@ -41,7 +41,7 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private Difficulty difficulty;
 
-    @Column(nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    @Column(nullable = false)
     private Long videoCount;
 
     @Column(nullable = false, columnDefinition = "BIGINT UNSIGNED")

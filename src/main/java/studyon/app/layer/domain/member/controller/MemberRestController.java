@@ -41,14 +41,5 @@ public class MemberRestController {
         return RestUtils.ok(Rest.Message.of("비밀번호 초기화 성공!"), password);
     }
 
-    /**
-     * [GET] 회원 수 조회
-     */
-    @GetMapping("/countAll")
-    public ResponseEntity<?> countAllMembers() {
-        // [1] 회원 수 가져오기
-        Long totalMembers = memberService.readAllMemberCount();
-        // [2] 성공 응답 반환
-        return RestUtils.ok(Rest.Message.of("총 멤버 수 불러오기 성공!"), totalMembers);
-    }
+
 }

@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management/teacher_profile.css'/>">
 
     <div id="content">
-        <%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
+        <jsp:include page="/WEB-INF/views/page/teacher/navbar.jsp" />
         <div class="teacher-img-area">
             <img src="<c:url value='/img/png/teacher_profile_img.png'/>" alt="강사이미지" class="teacher-img">
         </div>

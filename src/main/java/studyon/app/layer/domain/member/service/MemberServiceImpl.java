@@ -16,6 +16,8 @@ import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 import studyon.app.layer.domain.member.mapper.MemberMapper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -107,8 +109,5 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-    @Override
-    public Long readAllMemberCount() {
-        return memberRepository.count();
-    }
+
 }
