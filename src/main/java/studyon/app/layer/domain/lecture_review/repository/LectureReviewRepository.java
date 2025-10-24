@@ -64,4 +64,13 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
      */
     List<LectureReview> findByLecture_LectureId(Long lectureId);
 
+    /* 특정 강의에 대한 리뷰 */
+    @Query("""
+        SELECT r
+        FROM LectureReview r
+        JOIN FETCH r.member
+        WHERE r.lecture.lectureId = :lectureId
+        ORDER BY r.createdAt DESC
+    """)
+    List<LectureReview> findAllByLectureId(@Param("lectureId") Long lectureId);
 }
