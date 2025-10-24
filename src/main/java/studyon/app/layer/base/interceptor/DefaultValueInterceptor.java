@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import studyon.app.common.constant.Env;
+import studyon.app.common.constant.Param;
 import studyon.app.common.utils.EnvUtils;
 import studyon.app.common.utils.SecurityUtils;
 import studyon.app.common.utils.StrUtils;
@@ -22,9 +23,6 @@ import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.service.MemberService;
 
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Objects;
 
 /*
@@ -106,9 +104,9 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
             profile = memberService.readProfile(memberId);
             log.warn("newProfile = {}", profile);
             cacheManager.saveProfile(memberId, profile);
+            SessionUtils.setAttribute(request, Param.PROFILE, profile);
         }
 
-        request.setAttribute("memberProfile", profile);
         request.setAttribute("loginMemberEmail", profile.getEmail());
     }
 

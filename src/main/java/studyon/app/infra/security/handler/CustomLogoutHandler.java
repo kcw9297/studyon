@@ -8,12 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 import studyon.app.common.utils.SecurityUtils;
-import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.security.dto.CustomUserDetails;
-import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
 
 import java.io.IOException;
@@ -52,6 +50,6 @@ public class CustomLogoutHandler implements LogoutSuccessHandler {
             cacheManager.removeLogout(userDetails.getMemberId());
 
         // [2] 로그아웃 응답 반환
-        RestUtils.jsonOK(response, URL.INDEX);
+        RestUtils.jsonOK(response, Url.INDEX);
     }
 }

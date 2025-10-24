@@ -16,7 +16,9 @@ import studyon.app.layer.domain.payment.repository.PaymentRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 결제 서비스 인터페이스 구현체
@@ -70,11 +72,5 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
-    @Override
-    public void calculateMonthlySales() {
-        LocalDateTime start = LocalDate.now().withDayOfMonth(1).atStartOfDay();
-        LocalDateTime end = start.plusMonths(1).minusNanos(1);
 
-        List<Payment> result = paymentRepository.findTeacherSalesBetween(start, end);
-    }
 }

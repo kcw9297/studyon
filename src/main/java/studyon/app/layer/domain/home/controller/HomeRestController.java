@@ -16,8 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import studyon.app.common.constant.URL;
-import studyon.app.layer.base.dto.Rest;
+import studyon.app.common.constant.Url;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
@@ -32,7 +31,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(URL.HOME_API)
+@RequestMapping(Url.HOME_API)
 @RequiredArgsConstructor
 public class HomeRestController {
     private final LectureService lectureService;

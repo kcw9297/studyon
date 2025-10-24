@@ -13,7 +13,7 @@
     <div class="summary-top">
         <div class="summary-text">
             <div class="summary-lecture">
-                <div class="summary-tag">${teacher.subject}</div>
+                <div class="summary-tag" data-en="<c:out value='${teacher.subject}'/>"><c:out value="${teacher.subject}"/></div>
                 <div class="summary-name">${lecture.title}</div>
                 <div class="summary-explain">
                     <p>${lecture.description}</p>
@@ -49,7 +49,7 @@
                 <p>${teacher.member.nickname}</p>
                 <p>${lecture.videoCount}강</p>
                 <p>${lecture.totalDuration}시간</p>
-                <p>${lecture.difficulty}</p>
+                <p data-en="<c:out value='${lecture.difficulty}'/>"><c:out value="${lecture.difficulty}" /></p>
             </div>
         </div>
         <div class="summary-pay">

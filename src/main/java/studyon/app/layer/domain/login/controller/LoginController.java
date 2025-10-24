@@ -2,7 +2,7 @@ package studyon.app.layer.domain.login.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 
 /*
  * [수정 이력]
@@ -18,7 +18,7 @@ import studyon.app.common.constant.URL;
 @Controller
 public class LoginController {
 
-    @GetMapping(URL.LOGIN)
+    @GetMapping(Url.LOGIN)
     public String loginView() {
         return "page/login/login";
     }

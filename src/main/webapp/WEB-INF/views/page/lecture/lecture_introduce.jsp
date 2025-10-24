@@ -96,7 +96,7 @@
                 <div class="instructor-category">
                     <div class="instructor-item">
                         <p class="instructor-name">과목</p>
-                        <p data-en="<c:out value='${teacher.subject}'/>"><c:out value="${teacher.subject}" /></p>
+                        <p data-en="<c:out value='${teacher.subject}'/>"><c:out value="${teacher.subject}"/></p>
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">수강생</p>
@@ -140,7 +140,7 @@
             </div>
             <div class="reviews-situation">
                 <div class="reviews-total">
-                    <strong>${lecture.averageRate}</strong>
+                    <strong>4.8</strong>
                     <p>853개의 수강평</p>
                 </div>
                 <div class="reviews-statistics">
@@ -167,24 +167,28 @@
                 </div>
             </div>
             <ul class="reviews-list">
+
+            <c:if test="${not empty reviews}">
+            <c:forEach var="review" items="${reviews}">
                 <li class="reviews-comment">
                     <div class="reviews-user">
-                        <img src="<c:url value='/img/png/user.png'/>">푸들
+                        <img src="<c:url value='/img/png/user.png'/>">${review.member.nickname}
                     </div>
                     <div class="reviews-content">
                         <div class="reviews-top">
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-day">2025.10.20.</div>
+                            <c:forEach var="i" begin="1" end="5">
+                                <div class="reviews-god">★</div>
+                            </c:forEach>
+                            <div class="reviews-day">${review.createdAt}</div>
                         </div>
                         <div class="reviews-bottom">
-                            <p>쌤 덕분에 10모 1등급 받았어요</p>
+                            <p>${review.content}</p>
                         </div>
                     </div>
                 </li>
+            </c:forEach>
+            </c:if>
+
             </ul>
             <button class="reviews-more">더보기</button>
         </div>
