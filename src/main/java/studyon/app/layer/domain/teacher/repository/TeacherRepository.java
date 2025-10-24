@@ -30,4 +30,11 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     WHERE t.subject = :subject ORDER BY t.teacherId ASC
     """)
     List<Teacher> findBySubject(Subject subject);
+
+    @Query("""
+    SELECT t FROM Teacher t
+    JOIN FETCH t.member m
+    WHERE m.memberId = :memberId
+    """)
+    Teacher findByMemberId(Long memberId);
 }
