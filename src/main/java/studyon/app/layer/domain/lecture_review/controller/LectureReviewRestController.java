@@ -33,7 +33,7 @@ public class LectureReviewRestController {
         // [2] 최근 강의 수강평 조회
         List<LectureReviewDTO.Read> result = lectureReviewService.readRecentLectureReviews(rq.getSubject(), count);
         // [3] 성공 응답 반환
-        return RestUtils.ok(Rest.Message.of("해당 과목의 최근 리뷰를 불러왔습니다."), result);
+        return RestUtils.ok(result);
     }
     /**
      * [GET] 특정 선생님의 수강평 조회

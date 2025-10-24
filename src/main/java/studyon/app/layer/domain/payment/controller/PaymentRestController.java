@@ -49,6 +49,6 @@ public class PaymentRestController {
         memberLectureService.enrollLecture(memberId, lectureId);
         log.info("✅ 결제 완료 - memberId={}, lectureId={}", memberId, lectureId);
 
-        return RestUtils.ok(Rest.Message.of("결제 및 등록 완료"));
+        return RestUtils.ok();
     }
 }

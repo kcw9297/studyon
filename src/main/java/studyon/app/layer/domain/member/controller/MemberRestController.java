@@ -40,15 +40,4 @@ public class MemberRestController {
         // [2] 성공 응답 반환
         return RestUtils.ok(password);
     }
-
-    /**
-     * [GET] 회원 수 조회
-     */
-    @GetMapping("/countAll")
-    public ResponseEntity<?> countAllMembers() {
-        // [1] 회원 수 가져오기
-        Long totalMembers = memberService.readAllMemberCount();
-        // [2] 성공 응답 반환
-        return RestUtils.ok(totalMembers);
-    }
 }
