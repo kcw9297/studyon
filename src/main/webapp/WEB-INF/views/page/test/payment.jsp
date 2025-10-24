@@ -14,6 +14,9 @@
     <script>
         function payment() {
 
+
+
+
             // 가맹점 식별코드
             IMP.init("${idCode}");
 

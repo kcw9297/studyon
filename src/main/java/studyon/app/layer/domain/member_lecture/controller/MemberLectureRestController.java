@@ -46,4 +46,6 @@ public class MemberLectureRestController {
 
         return ResponseEntity.ok(lectures);
     }
+
+
 }
