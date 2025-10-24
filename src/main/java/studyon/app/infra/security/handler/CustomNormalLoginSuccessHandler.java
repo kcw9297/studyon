@@ -56,6 +56,6 @@ public class CustomNormalLoginSuccessHandler extends SimpleUrlAuthenticationSucc
 
         // [4] 만일 이전에 접근한 주소가 있으면, 그 주소로 Redirect
         String redirectUrl = Objects.isNull(savedRequest) ? URL.INDEX : savedRequest.getRedirectUrl();
-        RestUtils.jsonOK(response, StrUtils.toJson(Rest.Response.ok(redirectUrl)));
+        RestUtils.jsonOK(response, redirectUrl);
     }
 }

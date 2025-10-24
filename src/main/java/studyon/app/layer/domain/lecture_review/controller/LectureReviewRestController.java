@@ -46,7 +46,6 @@ public class LectureReviewRestController {
         int count = 10;
         List<LectureReviewDTO.Read> reviews = lectureReviewService.readRecentReview(rq.getTeacherId(), count);
         // [2] 리스팅한 정보 리턴하기
-        return RestUtils.ok(Rest.Message.of("해당 선생님의 최근 리뷰를 불러왔습니다.", reviews.toString()), reviews);
-        //return RestUtils.ok(reviews);
+        return RestUtils.ok(reviews);
     }
 }

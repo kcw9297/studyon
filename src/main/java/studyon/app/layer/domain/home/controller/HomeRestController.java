@@ -47,7 +47,7 @@ public class HomeRestController {
         // [2] 전체 최신 강의 조회
         List<LectureDTO.Read> result = lectureService.readAllRecentLectures(count);
         // [3] 성공 응답 반환
-        return RestUtils.ok(Rest.Message.of("전체 기준 최신 강의를 불러왔습니다.", result.toString()), result);
+        return RestUtils.ok(result);
     }
 
     /**
@@ -60,6 +60,6 @@ public class HomeRestController {
         // [2] 전체 인기 강의 조회
         List<LectureDTO.Read> result = lectureService.readAllPopularLectures(count);
         // [3Z] 성공 응답 반환
-        return RestUtils.ok(Rest.Message.of("전체 기준 인기 강의를 불러왔습니다.", result.toString()), result);
+        return RestUtils.ok(result);
     }
 }

@@ -15,12 +15,13 @@ import java.util.List;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-22) : khj00 생성
+ *  ▶ ver 1.1 (2025-10-24) : kcw97 응답 형식 변경
  */
 
 /**
  * 강의(일단 추천 강의 페이지 중심) 비동기(REST API) 컨트롤러 클래스
- * @version 1.0
- * @author khj
+ * @version 1.1
+ * @author khj00
  */
 
 @Slf4j
@@ -67,7 +68,7 @@ public class LectureRestController {
         // [1] 선생님 정보 가져와서 최근 등록된 강의 리스팅
         List<LectureDTO.Read> recentLectures = lectureService.readRecentLectures(rq.getTeacherId(), count);
         // [2] 리스팅한 정보 리턴하기
-        return RestUtils.ok(Rest.Message.of("해당 선생님 최근 강의를 불러왔습니다.", recentLectures.toString()), recentLectures);
+        return RestUtils.ok(recentLectures);
     }
 
     /**
@@ -81,12 +82,6 @@ public class LectureRestController {
         int count = 5;
         List<LectureDTO.Read> bestLectures = lectureService.readBestLectures(rq.getTeacherId(), count);
         // [2] 리스팅한 정보 리턴하기
-        return RestUtils.ok(Rest.Message.of("해당 선생님 인기 강의를 불러왔습니다.", bestLectures.toString()), bestLectures);
-    }
-
-    @GetMapping("/countAll")
-    public ResponseEntity<?> readAllLectureCount() {
-        log.info(" GET 요청: 모든 강의 수 조회");
-        return RestUtils.ok(Rest.Message.of("모든 강의 수를 불러왔습니다."));
+        return RestUtils.ok(bestLectures);
     }
 }

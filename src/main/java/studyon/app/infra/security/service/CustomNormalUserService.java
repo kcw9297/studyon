@@ -37,7 +37,7 @@ public class CustomNormalUserService implements UserDetailsService {
         Member member = memberRepository
                 .findByEmail(username)
                 .map(UserServiceUtils::checkWithdrawal) // 탈퇴회원 검증
-                .orElseThrow(() -> new UsernameNotFoundException(Msg.INCORRECT_EMAIL_PASSWORD));
+                .orElseThrow(() -> new UsernameNotFoundException(""));
 
         // [2] 일반회원 UserDetails 객체 생성 및 반환
         return UserServiceUtils.createUserDetails(member);

@@ -38,7 +38,7 @@ public class MemberRestController {
         String password = memberService.initPassword(memberId);
 
         // [2] 성공 응답 반환
-        return RestUtils.ok(Rest.Message.of("비밀번호 초기화 성공!"), password);
+        return RestUtils.ok(password);
     }
 
     /**
@@ -49,6 +49,6 @@ public class MemberRestController {
         // [1] 회원 수 가져오기
         Long totalMembers = memberService.readAllMemberCount();
         // [2] 성공 응답 반환
-        return RestUtils.ok(Rest.Message.of("총 멤버 수 불러오기 성공!"), totalMembers);
+        return RestUtils.ok(totalMembers);
     }
 }

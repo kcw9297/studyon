@@ -1,14 +1,12 @@
 package studyon.app.layer.domain.teacher.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.constant.Msg;
-import studyon.app.common.constant.StatusCode;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.Subject;
-import studyon.app.layer.base.exception.BusinessException;
+import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
@@ -72,7 +70,7 @@ public class TeacherServiceImpl implements TeacherService {
         // [1] 해당되는 ID에 따른 선생님 프로필 불러오기
         return teacherRepository.findById(teacherId)
                 .map(DTOMapper::toReadDTO)
-                .orElseThrow(() -> new BusinessException(Msg.NOT_FOUND_TEACHER, StatusCode.TEACHER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
     }
 
     /**
@@ -86,7 +84,7 @@ public class TeacherServiceImpl implements TeacherService {
         teacherRepository.findById(teacherId)
                 .ifPresentOrElse(
                         teacher -> teacher.updateInfo(dto.getSubject(), dto.getDescription()),
-                        () -> { throw new BusinessException(Msg.NOT_FOUND_TEACHER, StatusCode.TEACHER_NOT_FOUND); }
+                        () -> { throw new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND); }
                 );
     }
 

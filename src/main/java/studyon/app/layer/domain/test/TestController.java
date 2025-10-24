@@ -173,7 +173,7 @@ public class TestController {
     @ResponseBody
     @PostMapping("/chatbot")
     public Object chatbot(String question) {
-        return Rest.Response.ok(Rest.Message.of("요청 성공", chatService.getAnswer(question)));
+        return Rest.Response.ok(chatService.getAnswer(question));
     }
 
 
