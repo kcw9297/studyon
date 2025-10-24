@@ -133,6 +133,6 @@
 </style>
 
 <%-- Local Script --%>
-<script src="<c:url value='/js/page/home/home_lectures.js'/>"></script>
+<script src="<c:url value='/js/page/home/home_lectures_view.js'/>"></script>
 
 

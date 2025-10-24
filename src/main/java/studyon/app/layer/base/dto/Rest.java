@@ -2,7 +2,6 @@ package studyon.app.layer.base.dto;
 
 import lombok.*;
 import studyon.app.common.enums.AppStatus;
-import studyon.app.common.utils.StrUtils;
 
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class Rest {
             return ok(appStatus, "");
         }
 
-        public static Response ok(AppStatus appStatus, Object data) {
+        public static Response ok(Object data, AppStatus appStatus) {
             return ok(appStatus, "", data);
         }
 

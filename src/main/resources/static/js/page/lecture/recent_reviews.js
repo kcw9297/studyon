@@ -2,10 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = 4;
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
 
-    const params = new URLSearchParams();
-    params.append("subject", subjectFromJSP);
-    params.append("count", count.toString());
-
     fetch(`/api/lecture/reviews/recent/${subjectFromJSP}?count=${count}`, {
         method: "GET"
     })
@@ -14,7 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return res.json();
             })
             .then(json => {
-                renderRecentReviews(json.data);
+                // ⚠️ 문자열을 실제 배열로 변환
+                const parsedData = JSON.parse(json.data);
+                console.log("✅ 최근 수강평 데이터:", parsedData);
+                renderRecentReviews(parsedData);
             })
             .catch(err => console.error("최근 수강평 조회 실패 : ", err));
 

@@ -91,20 +91,16 @@ public class RestUtils {
         return ResponseEntity.ok().build();
     }
 
-    public static ResponseEntity<?> ok(String redirect) {
-        return ok(AppStatus.OK, redirect);
-    }
-
     public static ResponseEntity<?> ok(AppStatus appStatus) {
         return ok(appStatus, "");
     }
 
     public static ResponseEntity<?> ok(Object data) {
-        return ok(AppStatus.OK, data);
+        return ok(data, AppStatus.OK);
     }
 
-    public static ResponseEntity<?> ok(AppStatus appStatus, Object data) {
-        return new ResponseEntity<>(Rest.Response.ok(appStatus, StrUtils.toJson(data)), HttpStatus.OK);
+    public static ResponseEntity<?> ok(Object data, AppStatus appStatus) {
+        return new ResponseEntity<>(Rest.Response.ok(StrUtils.toJson(data), appStatus), HttpStatus.OK);
     }
 
     public static ResponseEntity<?> ok(AppStatus appStatus, String redirect) {
