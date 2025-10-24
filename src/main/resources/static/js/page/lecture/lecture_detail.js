@@ -1,3 +1,28 @@
+// 영어 → 한국어 매핑
+document.addEventListener("DOMContentLoaded", () => {
+    const translations = {
+        "KOREAN": "국어",
+        "ENGLISH": "영어",
+        "MATH": "수학",
+        "SCIENCE": "과학탐구",
+        "SOCIAL": "사회탐구",
+        "BASIC": "초급",
+        "STANDARD": "중급",
+        "ADVANCED": "고급",
+        "EXPERT": "전문가",
+        "MASTER": "마스터",
+    };
+
+    document.querySelectorAll("[data-en]").forEach(el => {
+        const enText = el.getAttribute("data-en");
+        if(translations[enText]) {
+            el.innerHTML = translations[enText].replace(/\n/g, "<br/>");
+        }
+    });
+});
+
+
+
 // 좋아요 버튼
 document.addEventListener("DOMContentLoaded", function () {
     const likeButton = document.querySelector(".summary-like");

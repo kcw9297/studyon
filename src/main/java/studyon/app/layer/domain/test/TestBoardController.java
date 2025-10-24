@@ -10,10 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.URL;
-import studyon.app.common.enums.Action;
-import studyon.app.common.enums.Entity;
-import studyon.app.common.enums.FileType;
-import studyon.app.common.enums.View;
+import studyon.app.common.enums.*;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.file.FileManager;
@@ -83,8 +80,7 @@ public class TestBoardController {
 
         // 캐시가 없으면 실패 응답
         if (Objects.isNull(cache))
-            return RestUtils.fail400(Rest.Message.of("세션이 만료되었습니다\n다시 시도해 주세요"), URL.INDEX);
-
+            return RestUtils.fail(AppStatus.CACHE_EXPIRED, URL.INDEX);
 
         // 갱신
         log.warn("[TestBoardController][updateCache] - image count = {}, action = {}", cache.getUploadedImages().size(), action);
@@ -104,7 +100,7 @@ public class TestBoardController {
 
         // 캐시가 없으면 실패 응답
         if (Objects.isNull(cache))
-            return RestUtils.fail400(Rest.Message.of("세션이 만료되었습니다\n다시 시도해 주세요"), URL.INDEX);
+            return RestUtils.fail(AppStatus.CACHE_EXPIRED, URL.INDEX);
 
         // 갱신
         log.warn("[TestBoardController][updateCache] - image count = {}, action = {}", cache.getUploadedImages().size(), action);
@@ -134,7 +130,7 @@ public class TestBoardController {
 
         // 캐시가 없으면 실패 응답
         if (Objects.isNull(cache))
-            return RestUtils.fail400(Rest.Message.of("세션이 만료되었습니다\n다시 시도해 주세요"), URL.INDEX);
+            return RestUtils.fail(AppStatus.CACHE_EXPIRED, URL.INDEX);
 
         // [2] 파일 업로드
         FileDTO.Upload fileUpload = fileManager.upload(file, id, Entity.LECTURE_QUESTION, FileType.EDITOR);
@@ -161,7 +157,7 @@ public class TestBoardController {
 
         // 캐시가 없으면 실패 응답
         if (Objects.isNull(cache))
-            return RestUtils.fail400(Rest.Message.of("세션이 만료되었습니다\n다시 시도해 주세요"), URL.INDEX);
+            return RestUtils.fail(AppStatus.CACHE_EXPIRED, URL.INDEX);
 
         // [2] HTML Content 정화 후, 게시글 저장
         TestBoard testBoard = TestBoard.builder().content(StrUtils.purifyHtml(content)).build();
@@ -189,7 +185,7 @@ public class TestBoardController {
 
         // [5] 캐시 삭제 후 성공 처리
         cacheManager.removeCacheAndBackup(Entity.LECTURE_QUESTION.name(), Action.WRITE.name(), session.getId());
-        return RestUtils.ok(Rest.Message.of("글 작성 성공"), URL.INDEX);
+        return RestUtils.ok(URL.INDEX);
     }
 
 
@@ -209,7 +205,7 @@ public class TestBoardController {
 
         // 캐시가 없으면 실패 응답
         if (Objects.isNull(cache))
-            return RestUtils.fail400(Rest.Message.of("세션이 만료되었습니다\n다시 시도해 주세요"), URL.INDEX);
+            return RestUtils.fail(AppStatus.CACHE_EXPIRED, URL.INDEX);
 
         // [2] HTML Content 정화 후, 게시글 저장
         TestBoard testBoard = repository.findById(id).orElse(new TestBoard());
@@ -246,7 +242,7 @@ public class TestBoardController {
 
         // [5] 캐시 삭제 후 성공 처리
         cacheManager.removeCacheAndBackup(Entity.LECTURE_QUESTION.name(), Action.EDIT.name(), session.getId());
-        return RestUtils.ok(Rest.Message.of("글 수정 성공"), URL.INDEX);
+        return RestUtils.ok(URL.INDEX);
     }
 
     @GetMapping("/join")

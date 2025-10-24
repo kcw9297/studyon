@@ -1,11 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <div class="category">
-    <a href="/mypage/lecture_management?subject=all" class="subject">전체</a>
-    <a href="/mypage/lecture_management?subject=korean" class="subject">국어</a>
-    <a href="/mypage/lecture_management?subject=math" class="subject">수학</a>
-    <a href="/mypage/lecture_management?subject=english" class="subject">영어</a>
-    <a href="/mypage/lecture_management?subject=social" class="subject">사회탐구</a>
-    <a href="/mypage/lecture_management?subject=science" class="subject">과학탐구</a>
+    <a href="/mypage/lecture_management?subject=all" class="subject" id="all">전체</a>
+    <a href="/mypage/lecture_management?subject=korean" class="subject" id="korean">국어</a>
+    <a href="/mypage/lecture_management?subject=math" class="subject" id="math">수학</a>
+    <a href="/mypage/lecture_management?subject=english" class="subject" id="english">영어</a>
+    <a href="/mypage/lecture_management?subject=social" class="subject" id="social">사회탐구</a>
+    <a href="/mypage/lecture_management?subject=science" class="subject" id="science">과학탐구</a>
 </div>
 
 

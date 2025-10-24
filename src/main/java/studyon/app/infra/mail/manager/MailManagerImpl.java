@@ -9,14 +9,19 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import studyon.app.infra.mail.exception.VerifyCodeException;
-import studyon.app.infra.mail.exception.VerifyException;
-import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.common.enums.AppStatus;
+import studyon.app.common.exception.ManagerException;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.mail.dto.MailVerifyRequest;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
+
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-15) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-24) : cacheManager 사용 부분 역할 분리 (여기서 사용하지 않음)
+ */
 
 /**
  * 메일 발송 구현체 클래스
@@ -30,7 +35,6 @@ import java.time.Duration;
 public class MailManagerImpl implements MailManager {
 
     private final JavaMailSender mailSender;
-    private final CacheManager cacheManager;
 
     public static final String FROM_USERNAME = "STUDYON";
     public static final String VERIFY_SUBJECT = "[STUDYON] 이메일 인증 요청입니다.";
@@ -58,34 +62,17 @@ public class MailManagerImpl implements MailManager {
             setHelper(from, to, helper, content);
 
             // [4] 발송 정보를 담은 메일 요청 객체 생성
-            MailVerifyRequest request = createRequest(to, expiration, verifyCode, sessionId);
+            MailVerifyRequest request = MailVerifyRequest.createVerifyRequest(to, verifyCode, expiration);
             mailSender.send(message);
 
             // [5] 요청 객체 반환
             return request;
 
-        } catch (VerifyCodeException | VerifyException e) {
-            throw e;
-
         } catch (Exception e) {
-            throw new VerifyException("이메일 전송 실패! 잠시 후 다시 시도해 주세요", e);
+            log.error("이메일 전송 실패! 오류 : {}", e.getMessage());
+            throw new ManagerException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
-
-
-    // 인증 요청을 담은 메일 요청객체 생성
-    private MailVerifyRequest createRequest(String to, Duration expiration, String verifyCode, String sessionId) {
-
-        // [1] 요청 객체 생성
-        MailVerifyRequest request = MailVerifyRequest.createVerifyRequest(to, verifyCode, expiration);
-
-        // [2] 만일 다른 인증 회원과 코드가 중복된 경우, 예외 반환 (다시 인증을 요청하도록 유도)
-        if (!cacheManager.recordVerifyMail(sessionId, request))
-            throw new VerifyException("메일 전송에 실패했습니다! 다시 시도해 주세요");
-
-        return request;
-    }
-
 
 
     @Override
@@ -103,7 +90,8 @@ public class MailManagerImpl implements MailManager {
             mailSender.send(message);
 
         } catch (Exception e) {
-            throw new VerifyException("이메일 전송 실패! 잠시 후 다시 시도해 주세요", e);
+            log.error("이메일 전송 실패! 오류 : {}", e.getMessage());
+            throw new ManagerException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
 

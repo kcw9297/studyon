@@ -37,8 +37,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
         context.disableDefaultConstraintViolation();
 
         // [3] 검증 수행
-        if (Objects.isNull(value) || value.isBlank() ||
-                !value.matches("^[a-zA-Z0-9][a-zA-Z0-9._-]*@[a-zA-Z0-9][a-zA-Z0-9.-]*\\.[a-zA-Z]{2,}$")) {
+        if (Objects.isNull(value) || !value.matches(pattern)) {
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return false;
         }

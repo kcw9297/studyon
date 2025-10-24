@@ -20,22 +20,11 @@ public class HomeController {
     public String index() {
         return "redirect:/";
     }
-
-    /*
-    @GetMapping
-    public String home(Model model) {
-        return ViewUtils.returnView(model, View.HOME, "home");
-    }
-    */
-
-    // 혹시 몰라서 기존 코드 남겨놓음
-
     /**
      * [GET] 해당하는 과목 추천 페이지
      */
     @GetMapping
     public String viewHome(Model model) {
-        // [1] 뷰 리턴
         return ViewUtils.returnView(model, View.HOME, "home");
     }
 }

@@ -3,50 +3,81 @@ package studyon.app.layer.base.utils;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import studyon.app.common.constant.Param;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.UtilsException;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.base.dto.Rest;
 
 import java.io.IOException;
 import java.util.Map;
+
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RestUtils {
 
 
-    /**
-     * response 사용하여 직접 JSON 응답 반환
-     * @param response HttpServletResponse
-     * @param message 응답 문자열 (JSON)
-     * @throws UtilsException 응답 전달 실패 시
-     */
-    public static void jsonOK(HttpServletResponse response, String message) {
+    public static void jsonOK(HttpServletResponse response, String redirect) {
 
         try {
-            writeJson(response, HttpServletResponse.SC_OK, message);
+            writeJson(response, HttpServletResponse.SC_OK, StrUtils.toJson(Rest.Response.ok(redirect)));
 
         } catch (Exception e) {
-            throw new UtilsException("JSON 응답 생성에 실패했습니다!", e);
+            log.error("JSON 200 OK 응답처리 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
 
-    /**
-     * response 사용하여 직접 JSON 응답 반환
-     * @param response HttpServletResponse
-     * @param message 응답 문자열 (JSON)
-     * @param status 응답 상태 (HttpServletResponse 상수 값)
-     * @throws UtilsException 응답 전달 실패 시
-     */
-    public static void jsonFail(HttpServletResponse response, String message, int status) {
+
+    public static void jsonOK(HttpServletResponse response, AppStatus appStatus) {
 
         try {
-            writeJson(response, status, message);
+            writeJson(response, HttpServletResponse.SC_OK, StrUtils.toJson(Rest.Response.ok(appStatus)));
 
         } catch (Exception e) {
-            throw new UtilsException("JSON 응답 생성에 실패했습니다!", e);
+            log.error("JSON 200 OK 응답처리 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
+
+    public static void jsonOK(HttpServletResponse response, AppStatus appStatus, String redirect) {
+
+        try {
+            writeJson(response, HttpServletResponse.SC_OK, StrUtils.toJson(Rest.Response.ok(appStatus, redirect)));
+
+        } catch (Exception e) {
+            log.error("JSON 200 OK 응답처리 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
+        }
+    }
+
+
+    public static void jsonFail(HttpServletResponse response, AppStatus appStatus) {
+
+        try {
+            writeJson(response, appStatus.getHttpCode(), StrUtils.toJson(Rest.Response.fail(appStatus)));
+
+        } catch (Exception e) {
+            log.error("JSON 오류 응답처리 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
+        }
+    }
+
+    public static void jsonFail(HttpServletResponse response, AppStatus appStatus, String redirect) {
+
+        try {
+            writeJson(response, appStatus.getHttpCode(), StrUtils.toJson(Rest.Response.fail(appStatus, redirect)));
+
+        } catch (Exception e) {
+            log.error("JSON 오류 응답처리 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
+        }
+    }
+
+
 
     // JSON write
     private static void writeJson(HttpServletResponse response, int status, String message) throws IOException {
@@ -60,44 +91,55 @@ public class RestUtils {
         return ResponseEntity.ok().build();
     }
 
+    public static ResponseEntity<?> ok(String redirect) {
+        return ok(AppStatus.OK, redirect);
+    }
+
+    public static ResponseEntity<?> ok(AppStatus appStatus) {
+        return ok(appStatus, "");
+    }
+
     public static ResponseEntity<?> ok(Object data) {
-        return new ResponseEntity<>(Rest.Response.ok(data), HttpStatus.OK);
+        return ok(AppStatus.OK, data);
     }
 
-    public static ResponseEntity<?> ok(Rest.Message message) {
-        return new ResponseEntity<>(Rest.Response.ok(message), HttpStatus.OK);
+    public static ResponseEntity<?> ok(AppStatus appStatus, Object data) {
+        return new ResponseEntity<>(Rest.Response.ok(appStatus, StrUtils.toJson(data)), HttpStatus.OK);
     }
 
-    public static ResponseEntity<?> ok(Rest.Message message, Object data) {
-        return new ResponseEntity<>(Rest.Response.ok(message, data), HttpStatus.OK);
+    public static ResponseEntity<?> ok(AppStatus appStatus, String redirect) {
+        return new ResponseEntity<>(Rest.Response.ok(appStatus, redirect), HttpStatus.OK);
     }
 
-    public static ResponseEntity<?> ok(Rest.Message message, String redirect) {
-        return new ResponseEntity<>(Rest.Response.ok(message, redirect), HttpStatus.OK);
+    public static ResponseEntity<?> fail(AppStatus appStatus) {
+        return fail(appStatus, "");
     }
 
-    public static ResponseEntity<?> fail400(Rest.Message message) {
-        return new ResponseEntity<>(Rest.Response.fail(1, message), HttpStatus.BAD_REQUEST);
+    public static ResponseEntity<?> fail(AppStatus appStatus, String redirect) {
+        return new ResponseEntity<>(Rest.Response.fail(appStatus, redirect), getStatus(appStatus));
     }
 
-    public static ResponseEntity<?> fail400(Rest.Message message, String redirect) {
-        return new ResponseEntity<>(Rest.Response.fail(1, message, redirect), HttpStatus.BAD_REQUEST);
+    public static ResponseEntity<?> fail(AppStatus appStatus, Map<String, String> fieldErrors) {
+        return new ResponseEntity<>(Rest.Response.fail(appStatus, fieldErrors), getStatus(appStatus));
     }
 
-    public static ResponseEntity<?> fail400(Map<String, String> fieldErrors) {
-        return new ResponseEntity<>(Rest.Response.fail(fieldErrors), HttpStatus.BAD_REQUEST);
+    public static ResponseEntity<?> fail(AppStatus appStatus, String errorField, String errorMessage) {
+        return new ResponseEntity<>(Rest.Response.fail(appStatus, Map.of(errorField, errorMessage)), getStatus(appStatus));
     }
 
-    public static ResponseEntity<?> fail400(String errorField, String errorMessage) {
-        return new ResponseEntity<>(Rest.Response.fail(Map.of(errorField, errorMessage)), HttpStatus.BAD_REQUEST);
-    }
 
-    public static ResponseEntity<?> fail500(Rest.Message message) {
-        return new ResponseEntity<>(Rest.Response.fail(-1, message), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    // AppStatus 내 상태코드 확인 후 대응하는 HttpStatus 반환
+    private static HttpStatus getStatus(AppStatus appStatus) {
 
-    public static ResponseEntity<?> fail500(Rest.Message message, String redirect) {
-        return new ResponseEntity<>(Rest.Response.fail(-1, message, redirect), HttpStatus.INTERNAL_SERVER_ERROR);
+        return switch (appStatus.getHttpCode()) {
+            case 200 -> HttpStatus.OK;
+            case 400 -> HttpStatus.BAD_REQUEST;
+            case 401 -> HttpStatus.UNAUTHORIZED;
+            case 403 -> HttpStatus.FORBIDDEN;
+            case 404 -> HttpStatus.NOT_FOUND;
+            case 500 -> HttpStatus.INTERNAL_SERVER_ERROR;
+            default -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
     }
 
 }

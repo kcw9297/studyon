@@ -6,7 +6,7 @@
 <div class="player-wrapper">
     <div class="player-section">
         <video width="100%" height="auto" controls>
-            <source src="<c:url value='/video/1강 - 수학의정석.mp4'/>" type="video/mp4">
+            <source src="" type="video/mp4">
         </video>
     </div>
     <div class="curriculum-section">
@@ -23,18 +23,12 @@
       </div>
 
       <div class="curriculum-list">
-        <div class="curriculum-item-box">
+        <%--
+          <div class="curriculum-item-box">
           <span class="curriculum-item">1.오리엔테이션 및 강의 소개</span><br>
           <label class="curriculum-time">10:00</label>
         </div>
-        <div class="curriculum-item-box">
-          <span class="curriculum-item">2.오리엔테이션 및 강의 소개</span><br>
-          <label class="curriculum-time">10:00</label>
-        </div>
-        <div class="curriculum-item-box">
-          <span class="curriculum-item">3.오리엔테이션 및 강의 소개</span><br>
-          <label class="curriculum-time">10:00</label>
-        </div>
+        --%>
       </div>
     </div>
 </div>
@@ -49,4 +43,70 @@
         justify-content: center;
 
     }
+    .curriculum-item {
+        color: white;
+        font-size: 16px;
+        margin: 8px 0;
+    }
+
 </style>
+
+<script>
+    async function loadVideos() {
+        try {
+            //const response = await fetch("/api/lecture/video/list?lectureId=63");
+            const urlParams = new URLSearchParams(window.location.search);
+            const lectureId = urlParams.get("lectureId");
+
+            const response = await fetch("/api/lecture/video/list?lectureId=" +lectureId);
+            if (!response.ok) throw new Error("강의를 불러올 수 없습니다");
+            const lectures = await response.json();
+            console.log("강의데이터", lectures);
+
+            const list = document.querySelector(".curriculum-list");
+            const video = document.querySelector("video");
+            const source = video.querySelector("source");
+            list.innerHTML = "";
+
+
+            if (lectures.length > 0) {
+                source.src = lectures[0].videoUrl;
+                video.load(); // <video> 로드
+                console.log("🎬 첫 영상 자동 재생:", lectures[0].videoUrl);
+            }
+
+            lectures.forEach(lecture => {
+                const itemBox = document.createElement("div");
+                itemBox.classList.add("curriculum-item-box");
+
+                const titleSpan = document.createElement("span");
+                titleSpan.classList.add("curriculum-item");
+                titleSpan.textContent = lecture.seq +"강" + lecture.title;
+                console.log(lecture.title);
+                // ✅ 영상 시간 (초 → mm:ss 형식으로 변환)
+                const timeLabel = document.createElement("label");
+                timeLabel.classList.add("curriculum-time");
+                const minutes = Math.floor(lecture.duration / 60);
+                const seconds = String(lecture.duration % 60).padStart(2, "0");
+                timeLabel.textContent = minutes+":" + seconds;
+
+                itemBox.appendChild(titleSpan);
+                itemBox.appendChild(document.createElement("br"));
+                itemBox.appendChild(timeLabel);
+
+                itemBox.addEventListener("click", () => {
+                    const video = document.querySelector("video source");
+                    video.src = lecture.videoUrl;
+                    video.parentElement.load(); // <video> 다시 로드
+                    console.log("🎬 영상 변경: " + lecture.videoUrl);
+                });
+
+                list.appendChild(itemBox);
+            });
+        } catch (err) {
+            console.error("❌ 강의를 불러올 수 없습니다:", err);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadVideos);
+</script>

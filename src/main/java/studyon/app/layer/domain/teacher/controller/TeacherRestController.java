@@ -43,7 +43,7 @@ public class TeacherRestController {
         // [1] 모든 선생님 정보 가져와서 리스팅
         List<TeacherDTO.Read> teachers = teacherService.readAllTeachers();
         // [2] 리스팅한 정보 리턴하기
-        return RestUtils.ok(Rest.Message.of("모든 선생님을 불러왔습니다."), teachers);
+        return RestUtils.ok(teachers);
     }
 
     /**
@@ -56,7 +56,7 @@ public class TeacherRestController {
         // [1] 과목별로 선생님 정보 가져와서 리스팅
         List<TeacherDTO.Read> teachersBySubject = teacherService.readTeachersBySubject(rq.getSubject());
         // [2] 리스팅한 정보 리턴하기
-        return RestUtils.ok(Rest.Message.of("해당 과목 선생님들을 불러왔습니다."), teachersBySubject);
+        return RestUtils.ok(teachersBySubject);
     }
 
 }

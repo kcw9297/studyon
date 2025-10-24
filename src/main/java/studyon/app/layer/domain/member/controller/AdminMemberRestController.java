@@ -40,6 +40,6 @@ public class AdminMemberRestController {
         String password = memberService.initPassword(memberId);
         
         // [2] 성공 응답 반환
-        return RestUtils.ok(Rest.Message.of("비밀번호 초기화 성공!"), password);
+        return RestUtils.ok(password);
     }
 }
