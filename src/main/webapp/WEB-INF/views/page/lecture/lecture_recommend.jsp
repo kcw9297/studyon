@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/lecture/lecture_recommend.css'/>">
 
 <div id="content">
-    <div id="empty-box"></div>
     <div class="main-container">
       <div class="sidebar-container">
         <div class="recommend-nav">
@@ -23,26 +22,28 @@
           <div class="recomment-lecture-title">
             ${subject.value} 주간 인기/추천 강의
           </div>
-            <div class="recent-lecture-container"></div>
-            <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
-
+                <div class="recent-lecture-container">
+                    <!-- best_reviews.js -->
+                </div>
                 <div class="recomment-lecture-title">
                     최근 수강평
                 </div>
-                <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
-                <div class="lecture-comment-box"></div>
+
+                <div class="lecture-comment-box">
+                    <!-- ✅ 비동기로 강의를 채울 빈 컨테이너
+                    recent_reviews.js-->
+                </div>
 
                 <div class="recomment-lecture-title">
                     요새 뜨는 강의
                 </div>
-                <div class="recent-lecture-container"></div>
-                <!-- ✅ 비동기로 강의를 채울 빈 컨테이너 -->
+                <div class="recent-lecture-container">
+                    <!-- recent_lecture.js -->
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-
 
 <script src="<c:url value='/js/page/lecture/recent_lecture.js'/>"></script>
 <script src="<c:url value='/js/page/lecture/best_lecture.js'/>"></script>

@@ -137,4 +137,19 @@ public class TeacherController {
         log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", memberId, profile.getNickname());
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture");
     }
+
+    @GetMapping("/management/lectureinfo")
+    public String lectureinfo(Model model, HttpServletRequest request) {
+
+        Long memberId = SessionUtils.getMemberId(request);
+        if (memberId == null) {
+            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /login");
+            return "redirect:/login";
+        }
+
+        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        model.addAttribute("profile", profile);
+        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", memberId, profile.getNickname());
+        return ViewUtils.returnView(model, View.TEACHER, "management_lecture_info");
+    }
 }

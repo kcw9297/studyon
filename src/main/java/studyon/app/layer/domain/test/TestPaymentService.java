@@ -24,7 +24,7 @@ public class TestPaymentService {
 
         // [1] 환불 수행
         int code = paymentManager.checkPayment(rq.getPaymentApiResult());
-        if (!Objects.equals(code, 0)) throw new BusinessException("결제에 실패했습니다. 다시 시도해 주세요");
+        if (!Objects.equals(code, 0)) throw new BusinessException("결제에 실패했습니다. 다시 시도해 주세요", code);
 
         // [2] 결제정보 저장 (추후 수행)
     }
@@ -32,6 +32,6 @@ public class TestPaymentService {
 
     public void refund(String paymentUid) {
         int code = paymentManager.refundAll(paymentUid, "고객 요청");
-        if (!Objects.equals(code, 0)) throw new BusinessException("환불에 실패했습니다. 다시 시도해 주세요");
+        if (!Objects.equals(code, 0)) throw new BusinessException("환불에 실패했습니다. 다시 시도해 주세요", code);
     }
 }

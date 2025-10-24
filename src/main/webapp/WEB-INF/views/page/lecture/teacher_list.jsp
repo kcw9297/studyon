@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/lecture/teacher_list.css'/>">
 
 <div id="content">
-    <div id="empty-box"></div>
         <div class="nav-box">
             <a class="nav-item" href="<c:url value='/teacher/find/MATH'/>">수학</a>
             <a class="nav-item" href="<c:url value='/teacher/find/ENGLISH'/>">영어</a>

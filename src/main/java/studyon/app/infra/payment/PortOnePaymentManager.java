@@ -6,12 +6,11 @@ import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.Param;
-import studyon.app.common.constant.PaymentCode;
+import studyon.app.common.constant.StatusCode;
 import studyon.app.common.utils.StrUtils;
 
 import java.math.BigDecimal;
@@ -56,7 +55,7 @@ public class PortOnePaymentManager implements PaymentManager {
             }
 
         } catch (Exception e) {
-            return PaymentCode.ERROR_INTERNAL;  // 예기치 않은 예외 발생 시, 내부 오류 코드 반환
+            return StatusCode.INTERNAL_ERROR;  // 예기치 않은 예외 발생 시, 내부 오류 코드 반환
         }
     }
 
@@ -79,11 +78,11 @@ public class PortOnePaymentManager implements PaymentManager {
             }
 
             // 검증 통과 시 성공 코드 반환
-            return PaymentCode.OK;
+            return StatusCode.OK;
 
 
         } catch (Exception e) {
-            return PaymentCode.ERROR_INTERNAL; // 예기치 않은 예외 발생 시, 내부 오류 코드 반환
+            return StatusCode.INTERNAL_ERROR; // 예기치 않은 예외 발생 시, 내부 오류 코드 반환
         }
     }
 
@@ -101,10 +100,12 @@ public class PortOnePaymentManager implements PaymentManager {
          */
 
         String message = serverResult.getMessage();
-        if (message.contains("존재하지 않는")) return PaymentCode.ERROR_NOT_FOUND;
-        if (message.contains("이미 취소된")) return PaymentCode.ERROR_ALREADY_REFUNDED;
-        if (message.contains("취소할 수 없는")) return PaymentCode.ERROR_NOT_AVAILABLE;
-        return PaymentCode.ERROR_INTERNAL;
+        if (message.contains("존재하지 않는")) return StatusCode.PAYMENT_INVALID_PAYMENT_UID;
+        if (message.contains("이미 취소된")) return StatusCode.PAYMENT_ALREADY_REFUNDED;
+        if (message.contains("PG사 통신")) return StatusCode.PAYMENT_PG_REQUEST_FAILED;
+        if (message.contains("취소할 수 없는")) return StatusCode.PAYMENT_NOT_AVAILABLE;
+        if (message.contains("필수 파라미터")) return StatusCode.PAYMENT_MISSING_REQUIRED_PARAMETER;
+        return StatusCode.PAYMENT_REQUEST_FAILED;
     }
 
     // 결제액수 검증
@@ -117,6 +118,6 @@ public class PortOnePaymentManager implements PaymentManager {
         log.warn(StrUtils.createLogStr(this.getClass(), "결제액수 확인. serverAmount = %.2f, clientAmount = %.2f".formatted(serverAmount, clientAmount)));
 
         // [2] 결제 액수 확인 후 검증
-        return Objects.equals(serverAmount, clientAmount) ? PaymentCode.OK : PaymentCode.ERROR_AMOUNT_NOT_CORRESPOND;
+        return Objects.equals(serverAmount, clientAmount) ? StatusCode.OK : StatusCode.PAYMENT_INVALID_AMOUNT;
     }
 }

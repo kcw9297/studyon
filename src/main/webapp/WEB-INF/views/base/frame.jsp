@@ -19,7 +19,6 @@
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
         <%-- 공용 CSS --%>
-        <link rel="stylesheet" type="text/css" href="<c:url value='/css/base/home.css'/>">
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/base/frame.css'/>">
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/mypage/mypage.css'/>">
 
