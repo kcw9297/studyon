@@ -21,12 +21,16 @@
     <div class="header-info">
         <c:if test="${isLogin}">
             <div style="margin-right: 20px">
-                    ${memberProfile.nickname}님 안녕하세요
+                    ${memberProfile.nickname}
             </div>
         </c:if>
+        <div style="gap:10px;">
+            <a style="border:2px solid black;" href="/teacher/management/profile"> 선생님 </a>
+            <a style="border:2px solid black;" href="/admin/main"> 운영자 </a>
+            <a style="border:2px solid black;" href="/mypage/account"> 마이페이지 </a>
+            <a style="border:2px solid black;" href="/testboard/join"> 회원가입</a>
+        </div>
 
-        <a href="/teacher/management/profile"> 선생님 </a>
-        <a href="/admin/main"> 운영자 </a>
 
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">

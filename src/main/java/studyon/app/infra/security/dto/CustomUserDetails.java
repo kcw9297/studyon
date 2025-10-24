@@ -19,6 +19,7 @@ import java.util.Objects;
 
 @Builder
 @Getter
+@ToString
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails, OAuth2User, Serializable {
 

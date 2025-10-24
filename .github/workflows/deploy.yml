@@ -159,6 +159,9 @@ jobs:
             -DOAUTH2_NAVER_REDIRECT_URL="${{ secrets.OAUTH2_NAVER_REDIRECT_URL }}" \
             -DOPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
             -DOPENAI_CHAT_MODEL="${{ secrets.OPENAI_CHAT_MODEL }}" \
+            -DPORTONE_API_KEY="${{ secrets.PORTONE_API_KEY }}" \
+            -DPORTONE_API_SECRET="${{ secrets.PORTONE_API_SECRET }}" \
+            -DPORTONE_ID_CODE="${{ secrets.PORTONE_ID_CODE }}" \
             "$WAR_FILE" > logs/app.log 2>&1 &
             
             # PID 저장 (다음 배포를 위해)

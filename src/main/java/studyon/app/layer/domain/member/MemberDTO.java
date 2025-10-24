@@ -29,12 +29,10 @@ public class MemberDTO {
     }
 
     @Data
-    @SuperBuilder
-    @ToString(callSuper = true)
-    @EqualsAndHashCode(callSuper = true)
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Read extends LogInfo {
+    public static class Read {
 
         @JsonFormat(pattern = "#,###")
         private Long memberId;
@@ -61,7 +59,7 @@ public class MemberDTO {
 
 
     @Data
-    @SuperBuilder
+    @Builder
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
     @AllArgsConstructor

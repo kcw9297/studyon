@@ -2,10 +2,13 @@ package studyon.app.layer.domain.lecture.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import studyon.app.layer.base.dto.Rest;
+import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
-import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
+import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.List;
 
@@ -26,31 +29,64 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LectureRestController {
     private final LectureService lectureService;
-
     /**
      * [POST] 과목별 최신 강의 목록 조회
      */
     @PostMapping("/recent")
-    public List<LectureDTO.Read> readRecentLectures(@ModelAttribute LectureDTO.Search rq) {
+    public ResponseEntity<?> readRecentLectures(@ModelAttribute LectureDTO.Search rq,
+                                                @RequestParam(defaultValue = "4") int count) {
+        // [1] 최신 강의 조회 로그
         log.info("최신 강의 POST 요청: 과목 [{}]의 최신 강의 조회", rq.getSubject());
-        int count = 4;
-        return lectureService.readRecentLectures(rq.getSubject(), count);
+        // [2] 최신 강의 조회
+        List<LectureDTO.Read> result = lectureService.readRecentLectures(rq.getSubject(), count);
+        // [3] 성공 응답 반환
+        return RestUtils.ok(result);
     }
 
     /**
      * [POST] 과목별 인기 강의(수강생 수 순) 목록 조회
      */
     @PostMapping("/best")
-    public List<LectureDTO.Read> readBestLectures(@ModelAttribute LectureDTO.Search rq) {
+    public ResponseEntity<?> readBestLectures(@ModelAttribute LectureDTO.Search rq,
+                                              @RequestParam(defaultValue = "4") int count) {
+        // [1] 인기 강의 조회 로그
         log.info("인기 강의 POST 요청: 과목 [{}]의 인기 강의 조회", rq.getSubject());
-        int count = 4;
-        return lectureService.readBestLectures(rq.getSubject(), count);
+        // [2] 인기 강의 조회
+        List<LectureDTO.Read> result = lectureService.readBestLectures(rq.getSubject(), count);
+        // [3] 성공 응답 반환
+        return RestUtils.ok(result);
     }
 
-    @PostMapping("/recent/reviews")
-    public List<LectureReviewDTO.Read> readRecentReviews(@ModelAttribute LectureDTO.Search rq) {
-        log.info("최근 수강평 POST 요청: 과목 [{}]의 최근 수강평 조회", rq.getSubject());
-        int count = 4;
-        return lectureService.readRecentLectureReviews(rq.getSubject(), count);
+    /**
+     * [POST] 과목별 선생님 정보 가져오기
+     * @return 해당 과목 선생님들 정보
+     */
+    @PostMapping( "/profile/recentLecture")
+    public ResponseEntity<?> getRecentLecture(@ModelAttribute TeacherDTO.Search rq, @RequestParam(defaultValue = "5") int count) {
+        log.info(" POST 요청: 선생님 ID [{}]의 최근 등록된 강의 조회", rq.getTeacherId());
+        // [1] 선생님 정보 가져와서 최근 등록된 강의 리스팅
+        List<LectureDTO.Read> recentLectures = lectureService.readRecentLectures(rq.getTeacherId(), count);
+        // [2] 리스팅한 정보 리턴하기
+        return RestUtils.ok(Rest.Message.of("해당 선생님 최근 강의를 불러왔습니다.", recentLectures.toString()), recentLectures);
+    }
+
+    /**
+     * [POST] 과목별 선생님 정보 가져오기
+     * @return 해당 과목 선생님들 정보
+     */
+    @PostMapping( "/profile/bestLecture")
+    public ResponseEntity<?> getBestLecture(@ModelAttribute TeacherDTO.Search rq) {
+        log.info(" POST 요청: 선생님 ID [{}]의 인기 강의(수강생 순) 조회", rq.getTeacherId());
+        // [1] 선생님 정보 가져와서 인기 강의 리스팅
+        int count = 5;
+        List<LectureDTO.Read> bestLectures = lectureService.readBestLectures(rq.getTeacherId(), count);
+        // [2] 리스팅한 정보 리턴하기
+        return RestUtils.ok(Rest.Message.of("해당 선생님 인기 강의를 불러왔습니다.", bestLectures.toString()), bestLectures);
+    }
+
+    @GetMapping("/countAll")
+    public ResponseEntity<?> readAllLectureCount() {
+        log.info(" GET 요청: 모든 강의 수 조회");
+        return RestUtils.ok(Rest.Message.of("모든 강의 수를 불러왔습니다."));
     }
 }

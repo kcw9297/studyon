@@ -26,8 +26,6 @@ import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.payment.Payment;
 import studyon.app.layer.domain.payment.PaymentDTO;
-import studyon.app.layer.domain.payment_refund.PaymentRefund;
-import studyon.app.layer.domain.payment_refund.PaymentRefundDTO;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
@@ -37,11 +35,12 @@ import studyon.app.layer.domain.teacher.TeacherDTO;
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
  *  ▶ ver 1.1 (2025-10-17) : khj00 추가 작성(LogDTO toReadDTO() 이후)
  *  ▶ ver 1.2 (2025-10-22) : kcw97 fileDTO 매핑 방식 수정 및 PaymentDetails 삭제
+ *  ▶ ver 1.3 (2025-10-23) : kcw97 PaymentRefund 삭제
  */
 
 /**
  * 특정 객체를 DTO 혹은 Entity 으로의 매핑 로직 처리
- * @version 1.0
+ * @version 1.3
  * @author kcw97
  */
 
@@ -151,22 +150,16 @@ public class DTOMapper {
                 .build();
     }
 
-    public static Payment toEntity(PaymentDTO.Write dto, Member member, Lecture lecture) {
+    public static Payment toEntity(PaymentDTO.Pay dto, Member member, Lecture lecture) {
         return Payment.builder()
-                .paidPrice(dto.getPaidPrice())
+                .paymentUid(dto.getPaymentUid())
+                .paidAmount(dto.getPaidAmount())
                 .paymentApiResult(dto.getPaymentApiResult())
                 .member(member)
                 .lecture(lecture)
                 .build();
     }
 
-    public static PaymentRefund toEntity(PaymentRefundDTO.Write dto, Payment payment) {
-        return PaymentRefund.builder()
-                .refundReason(dto.getRefundReason())
-                .refundPrice(dto.getRefundPrice())
-                .payment(payment)
-                .build();
-    }
 
     /**
      *  !! toReadDTO() 메소드
@@ -174,8 +167,6 @@ public class DTOMapper {
     
     public static MemberDTO.Read toReadDTO(Member entity) {
         return MemberDTO.Read.builder()
-                .targetId(entity.getMemberId())
-                .targetEntity(Entity.MEMBER)
                 .memberId(entity.getMemberId())
                 .email(entity.getEmail())
                 .nickname(entity.getNickname())
@@ -188,8 +179,6 @@ public class DTOMapper {
     public static FileDTO.Read toReadDTO(File entity) {
 
         return FileDTO.Read.builder()
-                .targetId(entity.getFileId())
-                .targetEntity(Entity.MEMBER)
                 .fileId(entity.getFileId())
                 .originalName(entity.getOriginalName())
                 .storeName(entity.getStoreName())
@@ -309,27 +298,18 @@ public class DTOMapper {
     // TODO 패치조인 필요
     public static PaymentDTO.Read toReadDTO(Payment entity) {
         return PaymentDTO.Read.builder()
+                .paymentUid(entity.getPaymentUid())
                 .lectureId(entity.getLecture().getLectureId())
                 .lectureTitle(entity.getLecture().getTitle())
                 .nickname(entity.getMember().getNickname())
                 .paymentId(entity.getPaymentId())
-                .paidPrice(entity.getPaidPrice())
+                .paidAmount(entity.getPaidAmount())
                 .cdate(entity.getCdate())
                 .isRefunded(entity.getIsRefunded())
                 .refundedAt(entity.getRefundedAt())
                 .build();
     }
 
-
-    public static PaymentRefundDTO.Read toReadDTO(PaymentRefund entity) {
-        return PaymentRefundDTO.Read.builder()
-                .orderRefundId(entity.getOrderRefundId())
-                .refundReason(entity.getRefundReason())
-                .refundPrice(entity.getRefundPrice())
-                .isRefunded(entity.isRefunded())
-                .paymentId(entity.getPayment().getPaymentId())
-                .build();
-    }
 
     public static MemberDTO.Read toReadDto(Member member) {
         return MemberDTO.Read.builder()

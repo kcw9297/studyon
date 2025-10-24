@@ -1,8 +1,13 @@
-  <div class="player-wrapper">
+<%@ page contentType ="text/html;charset=utf-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/page/lecture_video/lecture_player.css'/>">
+
+<div class="player-wrapper">
     <div class="player-section">
-      <video id="lectureVideo" controls preload="auto" style="width:100%; height:100%; object-fit:cover;">
-        <source src="resources/video1.mp4" type="video/mp4">
-      </video>
+        <video width="100%" height="auto" controls>
+            <source src="<c:url value='/video/1강 - 수학의정석.mp4'/>" type="video/mp4">
+        </video>
     </div>
     <div class="curriculum-section">
       <div class="curriculum-title">커리큘럼</div>
@@ -32,4 +37,16 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
+
+<style>
+    .player-section {
+        flex: 4;  /* 화면의 75% */
+        display:flex;
+        background: black;
+        text-align:center;
+        align-items:center;
+        justify-content: center;
+
+    }
+</style>

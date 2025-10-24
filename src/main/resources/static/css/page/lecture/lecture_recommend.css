@@ -15,7 +15,8 @@
 .main-content-container{
   width: 80%;
   height:100%;
-  padding:20px;
+    padding-top:0px;
+  padding-left:20px;
   background-color: rgb(255, 255, 255);
 
 }
@@ -29,7 +30,7 @@
   padding: 15px;
   border-bottom: 1px solid #ccc;
   text-decoration: none;
-  color: white;
+  color: black;
   display: block; /* ✅ 클릭영역 확장 */
   transition: all 0.2s ease; /* ✅ 부드럽게 */
 }
@@ -46,6 +47,7 @@
 
 .recent-lecture-container {
   display: grid;
+    height:auto;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   width: 100%;             /* ✅ 1420px 고정 대신 부모에 맞춤 */
@@ -56,7 +58,7 @@
 
 .recent-lecture-item {
   width: 260px;            /* 고정 폭 (5등분용) */
-  height: 300px;           /* 고정 높이 */
+  height: auto;           /* 고정 높이 */
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 10px;

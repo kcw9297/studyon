@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import studyon.app.common.enums.View;
+import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.ViewUtils;
 
 @Slf4j
@@ -14,6 +15,8 @@ import studyon.app.layer.base.utils.ViewUtils;
 @RequestMapping("/mypage")
 @RequiredArgsConstructor
 public class MypageController {
+
+    private final CacheManager cacheManager;
 
     @GetMapping
     public String mypage(Model model) {
@@ -26,9 +29,21 @@ public class MypageController {
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }
 
-    @GetMapping("/coupons")
-    public String coupons(Model model) {
-        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/coupons.jsp");
+    @GetMapping("/likes")
+    public String likes(Model model) {
+        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/likes.jsp");
+        return ViewUtils.returnView(model, View.MYPAGE, "template");
+    }
+
+    @GetMapping("/lecture_management")
+    public String lecture_management(Model model) {
+        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/lecture_management.jsp");
+        return ViewUtils.returnView(model, View.MYPAGE, "template");
+    }
+
+    @GetMapping("/payment")
+    public String payment(Model model) {
+        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/payment.jsp");
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }
 }

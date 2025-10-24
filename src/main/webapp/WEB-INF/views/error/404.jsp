@@ -22,7 +22,6 @@
     <main id="container">
         <div class="center-box">
             <div id="content">
-                <div id="empty-box"></div>
                 <div class="error-container">
                   <div class="error-box">
                     <img src="<c:url value='/img/png/logo_login.png'/>" class="error-logo">

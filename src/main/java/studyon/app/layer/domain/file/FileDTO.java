@@ -19,12 +19,10 @@ import java.io.Serializable;
 public class FileDTO {
 
     @Data
-    @SuperBuilder
-    @ToString(callSuper = true)
-    @EqualsAndHashCode(callSuper = true)
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Read extends LogInfo {
+    public static class Read {
 
         private Long fileId;
         private String originalName;

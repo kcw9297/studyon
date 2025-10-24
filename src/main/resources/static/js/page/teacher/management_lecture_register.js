@@ -13,10 +13,6 @@ addBtn.addEventListener('click', () => {
     div.innerHTML = `
       <label class="fuckinglabel">제 ${lectureIndex}강 제목:</label>
       <input type="text" class="lecture-input" name="lecture-title-${lectureIndex}" placeholder="예: ${lectureIndex}강 제목 입력" required>
-
-      <label class="fuckinglabel">강의영상파일:</label>
-      <input type="file" class="lecture-input-file" name="lecture-file-${lectureIndex}" accept="video/*" required>
-
       <button type="button" class="remove-lecture-btn">❌</button>
       <hr>
     `;
@@ -34,11 +30,12 @@ addBtn.addEventListener('click', () => {
 // 🔹 삭제 후 번호 갱신
 function updateLectureNumbers() {
     const items = document.querySelectorAll('.lecture-item');
-    lectureIndex = 0;
+    lectureIndex = items.length; // 현재 개수 기준으로 갱신
+
     items.forEach((item, i) => {
-        lectureIndex = i + 1;
-        item.querySelector('label').textContent = `제 ${lectureIndex}강 제목:`;
-        item.querySelector('input[type="text"]').setAttribute('name', `lecture-title-${lectureIndex}`);
-        item.querySelector('input[type="file"]').setAttribute('name', `lecture-file-${lectureIndex}`);
+        const num = i + 1;
+        item.querySelector('label').textContent = `제 ${num}강 제목:`;
+        item.querySelector('input[type="text"]').setAttribute('name', `lecture-title-${num}`);
+        item.querySelector('input[type="text"]').setAttribute('placeholder', `예: ${num}강 제목 입력`);
     });
 }

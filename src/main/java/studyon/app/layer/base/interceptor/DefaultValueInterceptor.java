@@ -77,7 +77,6 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
             else if (isProd) doProd(request, response);
         }
 
-
         // 컨트롤러에 정상 접근하도록 true 반환 (false 반환 시 접근 실패)
         return true;
     }
@@ -91,6 +90,7 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         request.setAttribute("fileDomain", fileDomain);
         request.setAttribute("ipAddress", getClientIp(request));
         if (isLogin) checkMemberProfile(request);
+        else request.setAttribute("loginMemberEmail", "GUEST");
     }
 
     // 회원 프로필 조회
@@ -109,46 +109,23 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
         }
 
         request.setAttribute("memberProfile", profile);
+        request.setAttribute("loginMemberEmail", profile.getEmail());
     }
 
     // 사용자의 실제 IP 추출
     private String getClientIp(HttpServletRequest request){
         String forwarded = request.getHeader("X-Forwarded-For");
         String clientIp = (Objects.nonNull(forwarded)) ? forwarded.split(",")[0].trim() : request.getRemoteAddr();
-        return getIPv4ClientIp(clientIp);
+        return StrUtils.getIPv4ClientIp(clientIp);
     }
 
-    // IPv6 -> IPv4 변환
-    private String getIPv4ClientIp (String clientIp){
-        try {
-
-            // [1] ip 형태 구분을 위한 객체 생성
-            InetAddress inet = InetAddress.getByName(clientIp);
-
-            // [2] 유형 구분 후 변환 및 반환
-            // Local 환경에서 IPv6 주소 변환
-            if ("0:0:0:0:0:0:0:1".equals(clientIp) || "::1".equals(clientIp)) return "127.0.0.1";
-
-            // IPv4-mapped IPv6 주소 (::ffff:x.x.x.x) -> x.x.x.x
-            if (clientIp.startsWith("::ffff:")) return clientIp.substring(7);
-
-            // [순수 IPv6 는 변환 불가 -> ex. UNKNOWN_IPv6(2404:6800:4001::200e)
-            if (inet instanceof Inet6Address) return "UNKNOWN_IPv6(%s)".formatted(clientIp);
-
-            // IPv4 형태는 처리하지 않고 그대로 반환
-            return inet.getHostAddress();
-
-        } catch (UnknownHostException e) {
-            return clientIp;
-        }
-    }
 
     // "local" 프로필 수행
-    private void doLocal (HttpServletRequest request, HttpServletResponse response){
+    private void doLocal(HttpServletRequest request, HttpServletResponse response){
     }
 
     // "prod" 프로필 수행
-    private void doProd (HttpServletRequest request, HttpServletResponse response){
+    private void doProd(HttpServletRequest request, HttpServletResponse response){
 
         // [1] cloudFrontProvider 빈 추출
         AWSCloudFrontProvider cloudFrontProvider =

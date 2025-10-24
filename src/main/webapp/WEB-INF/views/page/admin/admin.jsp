@@ -3,7 +3,6 @@
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/admin.css'/>">
 
-<div id="empty-box"></div>
 <jsp:include page="/WEB-INF/views/page/admin/navbar.jsp">
     <jsp:param name="active" value="dashboard"/>
 </jsp:include>
@@ -88,3 +87,5 @@
         </div>
     </div>
 </div>
+
+<script src="<c:url value='/js/page/admin/admin_statistics.js'/>"></script>

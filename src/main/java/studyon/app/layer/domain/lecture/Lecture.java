@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Difficulty;
 import studyon.app.layer.domain.teacher.Teacher;
@@ -12,8 +13,9 @@ import java.time.LocalDateTime;
 
 /**
  * 강의 엔티티 클래스
- * @version 1.0
+ * @version 1.1
  * @author khj00
+ * 20251023 Subject추가
  */
 
 @Entity
@@ -64,6 +66,10 @@ public class Lecture extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private Subject subject;
 
     @Builder
     public Lecture(String title, String description, Double price,

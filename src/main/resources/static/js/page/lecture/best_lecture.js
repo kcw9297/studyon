@@ -1,19 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const subject = document.getElementById("lecturePage").dataset.subject;
+    const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
     const count = 4;
+
+    const params = new URLSearchParams();
+    params.append("subject", subjectFromJSP);
+    params.append("count", count.toString());
 
     fetch("/api/lecture/best", {
         method: "POST",
-        body: (() => {
-            const formData = new FormData();
-            formData.append("subject", subject);
-            formData.append("count", count.toString());
-            return formData;
-            }) ()
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
     })
         .then(res => res.json())
-        .then(data => renderBestLectures(data))
-        .catch(err => console.error("인기 강의 로딩 실패 ㅜㅜ : " , err));
+        .then(json => renderBestLectures(json.data))
+        .catch(err => console.error("강의 추천 페이지 주간 인기 강의 조회 실패 : " , err));
 
     function renderBestLectures(lectures) {
         const titles = document.querySelectorAll(".recomment-lecture-title");
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!container) {
-            console.error("인기 강의 컨테이너 조회 실패")
+            console.error("강의 추천 페이지 인기 강의 컨테이너 조회 실패")
             return;
         }
 

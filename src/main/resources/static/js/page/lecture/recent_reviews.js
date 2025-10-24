@@ -2,20 +2,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = 4;
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
 
-    const formData = new FormData();
-    formData.append("subject", subjectFromJSP);
-    formData.append("count", count.toString());
+    const params = new URLSearchParams();
+    params.append("subject", subjectFromJSP);
+    params.append("count", count.toString());
 
-    fetch("/api/lecture/recent/reviews", {
+    fetch("/api/lecture/reviews/recent/{subject}", {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
     })
             .then(res => {
                 if (!res.ok) throw new Error("HTTP " + res.status);
                 return res.json();
             })
-            .then(data => {
-                renderRecentReviews(data);
+            .then(json => {
+                renderRecentReviews(json.data);
             })
             .catch(err => console.error("최근 수강평 조회 실패 : ", err));
 

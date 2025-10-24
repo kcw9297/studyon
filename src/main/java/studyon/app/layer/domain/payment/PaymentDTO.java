@@ -2,8 +2,12 @@ package studyon.app.layer.domain.payment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import studyon.app.common.enums.Entity;
+import studyon.app.infra.aop.LogInfo;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /*
  * [수정 이력]
@@ -25,16 +29,18 @@ public class PaymentDTO {
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Read {
 
+        private Long paymentId;
+
+        private String paymentUid;
+
         private Long lectureId;
 
         private String lectureTitle;
 
         private String nickname;
 
-        private Long paymentId;
-
         @JsonFormat(pattern = "#,###")
-        private Double paidPrice;
+        private Double paidAmount;
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime cdate;
@@ -49,13 +55,34 @@ public class PaymentDTO {
 
     @Data
     @Builder
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Write {
+    public static class Pay extends LogInfo {
 
-        private Double paidPrice;
+        private String paymentUid;
+        private Double paidAmount;
+        private String paymentMethod;
         private String paymentApiResult;
         private Long memberId;
         private Long lectureId;
+    }
+
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Refund extends LogInfo {
+
+        private Long paymentId;
+        private String refundReason;
+
+        @Builder
+        public Refund(Long paymentId, String refundReason) {
+            super(paymentId, Entity.PAYMENT);
+            this.paymentId = paymentId;
+            this.refundReason = refundReason;
+        }
     }
 }

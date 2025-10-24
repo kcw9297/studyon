@@ -1,5 +1,7 @@
 package studyon.app.layer.domain.teacher.repository;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import studyon.app.common.enums.Subject;
@@ -25,7 +27,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     @Query("""
     SELECT t FROM Teacher t
     JOIN FETCH t.member
-    WHERE t.subject = :subject
+    WHERE t.subject = :subject ORDER BY t.teacherId ASC
     """)
     List<Teacher> findBySubject(Subject subject);
 }

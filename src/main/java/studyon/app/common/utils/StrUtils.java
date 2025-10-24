@@ -11,6 +11,9 @@ import org.jsoup.safety.Safelist;
 import org.springframework.web.util.UriUtils;
 import studyon.app.common.exception.UtilsException;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -138,14 +141,13 @@ public final class StrUtils {
 
 
     public static String createLogStr(Class<?> clazz, String message) {
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 
-        // [0] : Thread.getStackTrace
-        // [1] : TraceUtils.getMethodLocation
-        // [2] : 실제 호출한 메소드
-        return stack.length > 2 ?
-                "[%s::%s] %s".formatted(clazz.getSimpleName(), stack[2].getMethodName(), message) :
-                "[%s::%s] %s".formatted(clazz.getSimpleName(), "UNKNOWN_METHOD", message);
+        String caller = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+                .walk(frames ->
+                        frames.skip(1).findFirst().map(StackWalker.StackFrame::getMethodName).orElse("UNKNOWN")
+                );
+
+        return "[%s::%s] %s".formatted(clazz.getSimpleName(), caller, message);
     }
 
 
@@ -176,4 +178,33 @@ public final class StrUtils {
                 .toList();
     }
 
+
+    public static String removeHtmlTags(String htmlContent) {
+        return Objects.isNull(htmlContent) ? null : Jsoup.parse(htmlContent).text();
+    }
+
+    // IPv6 -> IPv4 변환
+    public static String getIPv4ClientIp(String clientIp){
+        try {
+
+            // [1] ip 형태 구분을 위한 객체 생성
+            InetAddress inet = InetAddress.getByName(clientIp);
+
+            // [2] 유형 구분 후 변환 및 반환
+            // Local 환경에서 IPv6 주소 변환
+            if ("0:0:0:0:0:0:0:1".equals(clientIp) || "::1".equals(clientIp)) return "127.0.0.1";
+
+            // IPv4-mapped IPv6 주소 (::ffff:x.x.x.x) -> x.x.x.x
+            if (clientIp.startsWith("::ffff:")) return clientIp.substring(7);
+
+            // [순수 IPv6 는 변환 불가 -> ex. UNKNOWN_IPv6(2404:6800:4001::200e)
+            if (inet instanceof Inet6Address) return "UNKNOWN_IPv6(%s)".formatted(clientIp);
+
+            // IPv4 형태는 처리하지 않고 그대로 반환
+            return inet.getHostAddress();
+
+        } catch (UnknownHostException e) {
+            return clientIp;
+        }
+    }
 }

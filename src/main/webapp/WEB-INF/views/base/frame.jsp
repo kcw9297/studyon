@@ -19,7 +19,6 @@
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
         <%-- 공용 CSS --%>
-        <link rel="stylesheet" type="text/css" href="<c:url value='/css/base/home.css'/>">
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/base/frame.css'/>">
         <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/mypage/mypage.css'/>">
 
@@ -54,12 +53,6 @@
 
     <%-- 공용 Script --%>
     <script src="<c:url value='/js/base/header.js'/>"></script>
-    <script src="<c:url value='/js/mypage/account.js'/>"></script>
-    <script src="<c:url value='/js/mypage/coupons.js'/>"></script>
-    <script src="<c:url value='/js/page/lecture/lecture_detail.js'/>"></script>
-    <script src="<c:url value='/js/page/chatbot/chatbot.js'/>"></script>
-    <script src="<c:url value='/js/page/user_support/start_chat.js'/>"></script>
-
 </html>
 
 
