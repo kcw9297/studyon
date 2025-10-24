@@ -88,3 +88,5 @@
         </div>
     </div>
 </div>
+
+<script src="<c:url value='/js/page/admin/admin_statistics.js'/>"></script>

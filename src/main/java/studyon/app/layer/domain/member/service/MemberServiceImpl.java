@@ -105,4 +105,9 @@ public class MemberServiceImpl implements MemberService {
                 .recover();
     }
 
+
+    @Override
+    public Long readAllMemberCount() {
+        return memberRepository.count();
+    }
 }
