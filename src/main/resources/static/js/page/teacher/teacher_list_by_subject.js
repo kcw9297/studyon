@@ -5,9 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     params.append("subject", teacherJSP);
 
     fetch(`/api/teachers/subject/${teacherJSP}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
+        method: "GET"
     })
         .then(res => res.json())
         .then(json => {

@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture_register.css'/>">
-<%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
+<jsp:include page="/WEB-INF/views/page/teacher/navbar.jsp" />
 <div class="lecture-resister-wrapper">
 <div class="resister-title">
   강의등록

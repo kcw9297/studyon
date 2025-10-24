@@ -55,9 +55,5 @@ public interface MemberService {
      */
     void recover(Long memberId);
 
-    /**
-     * (관리자 통계용) 총 회원 수 반환
-     * @return 총 회원 수
-     */
-    Long readAllMemberCount();
+
 }

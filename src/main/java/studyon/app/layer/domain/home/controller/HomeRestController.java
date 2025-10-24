@@ -38,12 +38,12 @@ public class HomeRestController {
     private final LectureService lectureService;
 
     /**
-     * [POST] 홈화면 최신 강의 목록 조회
+     * [GET] 홈화면 최신 강의 목록 조회
      */
-    @PostMapping("/recent")
+    @GetMapping("/recent")
     public ResponseEntity<?> readAllRecentLectures(@ModelAttribute LectureDTO.Search rq, @RequestParam(defaultValue = "5") int count) {
         // [1] 최신 강의 조회 로그
-        log.info("전체 최신 강의 POST 요청: 전체 최신 강의 조회");
+        log.info("전체 최신 강의 GET 요청: 전체 최신 강의 조회");
         // [2] 전체 최신 강의 조회
         List<LectureDTO.Read> result = lectureService.readAllRecentLectures(count);
         // [3] 성공 응답 반환
@@ -51,12 +51,12 @@ public class HomeRestController {
     }
 
     /**
-     * [POST] 홈화면 인기 강의 목록 조회(수강생 순)
+     * [GET] 홈화면 인기 강의 목록 조회(수강생 순)
      */
-    @PostMapping("/best")
+    @GetMapping("/best")
     public ResponseEntity<?> readAllBestLectures(@ModelAttribute LectureDTO.Search rq, @RequestParam(defaultValue = "5") int count) {
         // [1] 인기 강의 조회 로그 (수강생 순)
-        log.info("전체 인기 강의 POST 요청: 전체 인기 강의 조회");
+        log.info("전체 인기 강의 GET 요청: 전체 인기 강의 조회");
         // [2] 전체 인기 강의 조회
         List<LectureDTO.Read> result = lectureService.readAllPopularLectures(count);
         // [3Z] 성공 응답 반환

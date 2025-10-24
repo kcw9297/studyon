@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_profile.css'/>">
 
 <div id="content">
-    <%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
+    <jsp:include page="/WEB-INF/views/page/teacher/navbar.jsp" />
 
     <div class="teacher-profile-container">
         <!-- 프로필 왼쪽 이미지 -->

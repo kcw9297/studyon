@@ -58,9 +58,5 @@ public interface LectureService {
      */
     List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
 
-    /**
-     * (관리자 통계용) 총 강의 수 반환
-     * @return 총 강의 수
-     */
-    Long readAllLectureCount();
+
 }
