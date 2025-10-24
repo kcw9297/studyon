@@ -15,55 +15,16 @@
 </div>
 
 
+<!-- ✅ 최근 등록된 강의 -->
 <label class="lecture-section-title">최근 등록된 강의</label>
-    <div class ="recent-lecture-container">
-        <c:forEach var="recentLecture" items="${recentLecture}">
-          <div class="recent-lecture-item">
-            <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
-            <div class="lecture-info">
-              <p class="lecture-title">${recentLecture.title}</p>
-              <p class="lecture-info-text">${recentLecture.nickname}</p>
-              <p class="lecture-info-text">₩<fmt:formatNumber value="${recentLecture.price}" type="number"/></p>
-                <p class="lecture-info-text"><!--⭐<c:out value="${recentLecture.averageRate}" />-->
-                    &#x1F9F8;
-                    <c:choose>
-                        <c:when test="${recentLecture.totalStudents >= 10}">
-                            10+
-                        </c:when>
-                        <c:otherwise>
-                            <c:out value="${recentLecture.totalStudents}" />
-                        </c:otherwise>
-                    </c:choose>
-                </p>
-            <!--🧸 띄어쓰기 없이 출력 안돼서 &#x1F9F8; html 엔티티로 교체 -->
-            </div>
-          </div>
-        </c:forEach>
-    </div>
+<div class="recent-lecture-container" id="recentLectureContainer">
+    <!-- JS에서 렌더링될 영역 -->
+</div>
+
+<!-- ✅ 최근 인기 강의 -->
 <label class="lecture-section-title">최근 인기 강의</label>
-<div class ="recent-lecture-container">
-    <c:forEach var="popularLecture" items="${popularLecture}">
-        <div class="recent-lecture-item">
-            <img src="<c:url value='/img/png/sample1.png'/>" alt="강의이미지">
-            <div class="lecture-info">
-                <p class="lecture-title">${popularLecture.title}</p>
-                <p class="lecture-info-text">${popularLecture.nickname}</p>
-                <p class="lecture-info-text">₩<fmt:formatNumber value="${popularLecture.price}" type="number"/></p>
-                <p class="lecture-info-text"><!--⭐<c:out value="${popularLecture.averageRate}" />-->
-                    &#x1F9F8;
-                    <c:choose>
-                        <c:when test="${popularLecture.totalStudents >= 10}">
-                            10+
-                        </c:when>
-                        <c:otherwise>
-                            <c:out value="${popularLecture.totalStudents}" />
-                        </c:otherwise>
-                    </c:choose>
-                </p>
-                <!--🧸 띄어쓰기 없이 출력 안돼서 &#x1F9F8; html 엔티티로 교체 -->
-            </div>
-        </div>
-    </c:forEach>
+<div class="recent-lecture-container" id="popularLectureContainer">
+    <!-- JS에서 렌더링될 영역 -->
 </div>
 
 <style>
@@ -170,4 +131,8 @@
         margin-bottom: 20px;
     }
 </style>
+
+<%-- Local Script --%>
+<script src="<c:url value='/js/page/home/home_lectures.js'/>"></script>
+
 

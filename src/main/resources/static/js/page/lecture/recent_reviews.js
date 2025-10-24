@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     params.append("subject", subjectFromJSP);
     params.append("count", count.toString());
 
-    fetch("/api/lecture/recent/reviews", {
+    fetch("/api/lecture/reviews/recent/{subject}", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params

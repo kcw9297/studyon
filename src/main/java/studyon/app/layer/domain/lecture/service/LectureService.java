@@ -18,12 +18,6 @@ import java.util.List;
  */
 
 public interface LectureService {
-    /** 강의 평점 업데이트 로직
-     * @param lectureId
-     * @return 평점 계산 결과
-     */
-    Double updateAverageRatings(Long lectureId);
-
     /** 과목별 최근 강의 목록 조회 로직
      * @param subject 해당 과목
      * @param count 정렬용 변수
@@ -52,9 +46,21 @@ public interface LectureService {
      */
     List<LectureDTO.Read> readAllPopularLectures(int count);
 
-    /** 과목별 강의 리뷰 목록 조회 로직(추천 강의 화면)
-     * @param count 정렬용 변수
-     * @return 과목별 최근 강의 리뷰 목록
+    /**
+     * 선생님 담당 강의 조회
+     * @return 해당 선생님 강의 리스트
      */
-    List<LectureReviewDTO.Read> readRecentLectureReviews(Subject subject, int count);
+    List<LectureDTO.Read> readBestLectures(Long teacherId, int count);
+
+    /**
+     * 선생님 최신 강의 조회
+     * @return 해당 선생님 최신 강의 리스트
+     */
+    List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
+
+    /**
+     * (관리자 통계용) 총 강의 수 반환
+     * @return 총 강의 수
+     */
+    Long readAllLectureCount();
 }

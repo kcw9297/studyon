@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
         .then(res => res.json())
         .then(json => renderBestLectures(json.data))
-        .catch(err => console.error("인기 강의 로딩 실패 ㅜㅜ : " , err));
+        .catch(err => console.error("강의 추천 페이지 주간 인기 강의 조회 실패 : " , err));
 
     function renderBestLectures(lectures) {
         const titles = document.querySelectorAll(".recomment-lecture-title");
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!container) {
-            console.error("인기 강의 컨테이너 조회 실패")
+            console.error("강의 추천 페이지 인기 강의 컨테이너 조회 실패")
             return;
         }
 
