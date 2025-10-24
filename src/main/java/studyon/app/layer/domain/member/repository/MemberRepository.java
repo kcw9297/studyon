@@ -11,6 +11,14 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
+    @Query("""
+        SELECT m
+        FROM Member m
+        LEFT JOIN FETCH m.profileImage
+        WHERE m.memberId = :memberId
+    """)
+    Optional<Member> findByIdWithProfileImage(Long memberId);
+
     Optional<Member> findByEmail(String email);
 
     Optional<Member> findByEmailAndProvider(String email, Provider provider);

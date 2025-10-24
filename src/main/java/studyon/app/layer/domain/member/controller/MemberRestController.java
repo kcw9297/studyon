@@ -1,36 +1,75 @@
 package studyon.app.layer.domain.member.controller;
 
-
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import studyon.app.common.constant.URL;
-import studyon.app.layer.base.dto.Rest;
+import org.springframework.web.multipart.MultipartFile;
+import studyon.app.common.constant.Url;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.service.MemberService;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-24) : kcw97 프로필 관련 로직 추가
+ */
 
 /**
  * 회원 REST API 클래스
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 
 @Slf4j
 @RestController
-@RequestMapping(URL.MEMBER_API)
+@RequestMapping(Url.MEMBER_API)
 @RequiredArgsConstructor
 public class MemberRestController {
 
     private final MemberService memberService;
 
     /**
+     * [GET] 회원 프로필 조회
+     */
+    @GetMapping("/profile")
+    public ResponseEntity<?> readProfile(HttpSession session) {
+
+        // [1] 현재 로그인 회원정보 조회
+        Long memberId = SessionUtils.getMemberId(session);
+
+        // [2] 회원 프로필 조회
+        MemberProfile profile = memberService.readProfile(memberId);
+
+        // [3] 데이터 반환
+        return RestUtils.ok(profile);
+    }
+
+    /**
+     * [PATCH] 회원 프로필 이미지 변경
+     */
+    @PatchMapping("/profile_image")
+    public ResponseEntity<?> editProfileImage(HttpSession session, MultipartFile profileImage) {
+
+        // [1] 현재 로그인 회원정보 조회
+        Long memberId = SessionUtils.getMemberId(session);
+
+        // [2] 회원 프로필 이미지 갱신
+        memberService.editProfileImage(memberId, profileImage);
+
+        // [3] 성공 상태만 반환
+        return RestUtils.ok();
+    }
+
+
+    /**
      * [POST] 회원 비밀번호 초기화
      */
-    @PostMapping("/password/init")
+    @PatchMapping("/password/init")
     public ResponseEntity<?> initPassword(HttpServletRequest request) {
 
         // [1] 회원 프로필 조회

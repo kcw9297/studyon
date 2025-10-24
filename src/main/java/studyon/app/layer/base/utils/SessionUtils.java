@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import studyon.app.common.constant.Param;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 
 import java.util.Objects;
 
@@ -74,6 +74,13 @@ public class SessionUtils {
     }
 
 
+
+    public static Long getMemberId(HttpSession session) {
+        Object attrMemberId = session.getAttribute(Param.MEMBER_ID);
+        return Objects.isNull(attrMemberId) ? null : (Long) attrMemberId;
+    }
+
+
     public static <T> T getValue(HttpServletRequest request, String paramName) {
 
         // [1] 세션 조회
@@ -88,7 +95,7 @@ public class SessionUtils {
     }
 
 
-    public static void setSession(HttpServletRequest request, String paramName, Object paramValue) {
+    public static void setAttribute(HttpServletRequest request, String paramName, Object paramValue) {
 
         // [1] 세션 조회
         HttpSession session = getSession(request);
@@ -114,10 +121,10 @@ public class SessionUtils {
         HttpSession session = getSession(request, false);
 
         // [2] 세션이 조회되지 않으면 HOME 주소 반환
-        if (Objects.isNull(session)) return URL.INDEX;
+        if (Objects.isNull(session)) return Url.INDEX;
         Object attr = session.getAttribute(Param.REDIRECT_URL);
 
-        return Objects.isNull(attr) ? URL.INDEX : (String) attr;
+        return Objects.isNull(attr) ? Url.INDEX : (String) attr;
     }
 
 }

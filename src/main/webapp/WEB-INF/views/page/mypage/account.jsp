@@ -132,7 +132,7 @@
             console.log("✅ account.js 로드됨");
 
             // ✅ REST API 요청
-            const res = await fetch("/api/mypage/account");
+            const res = await fetch("/api/members/profile");
 
             if (!res.ok) {
                 if (res.status === 401) {

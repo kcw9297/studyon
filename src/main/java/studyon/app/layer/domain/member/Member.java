@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import studyon.app.common.enums.Provider;
 import studyon.app.common.enums.Role;
 import studyon.app.layer.base.entity.BaseEntity;
+import studyon.app.layer.domain.file.File;
 
 import java.time.LocalDateTime;
 
@@ -33,6 +36,11 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
+
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_image")
+    private File profileImage;
 
     @Column(length = 100)
     private String email; // 이메일 (일반회원은 로그인 용도 사용)
@@ -175,6 +183,10 @@ public class Member extends BaseEntity {
 
     public void recover() {
         this.withdrawAt = null;
+    }
+
+    public void updateProfileImage(File profileImage) {
+        this.profileImage = profileImage;
     }
 
     public void login() {
