@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
+import studyon.app.common.enums.LectureRegisterStatus;
+import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture.Lecture;
@@ -78,7 +80,7 @@ public class TeacherRestController {
     public ResponseEntity<?> getTeacherManagement(Model model, HttpServletRequest request) {
         log.info("티쳐 api");
         Long memberId = SessionUtils.getMemberId(request);
-        Teacher teacher = teacherRepository.findByMemberId(memberId);
+        Teacher teacher = teacherRepository.findByMemberMemberId(memberId).get();
         Long teacherId = teacher.getTeacherId();
         log.info(teacherId.toString());
         List<Lecture> pendingLectures = lectureRepository.findByLectureRegisterStatus(LectureRegisterStatus.PENDING);
