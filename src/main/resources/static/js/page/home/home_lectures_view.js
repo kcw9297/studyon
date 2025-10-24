@@ -11,7 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "GET"
     })
         .then(res => res.json())
-        .then(json => renderRecentLectures(json.data))
+        .then(json => {
+            // ⚠️ 문자열을 실제 배열로 변환
+            const parsedData = JSON.parse(json.data);
+            renderRecentLectures(parsedData);
+        })
         .catch(err => console.error("홈화면 최근 강의 조회 실패 : ", err));
 
     // ✅ [2] 인기 강의 조회
@@ -19,7 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "GET"
     })
         .then(res => res.json())
-        .then(json => renderBestLectures(json.data))
+        .then(json => {
+            // ⚠️ 문자열을 실제 배열로 변환
+            const parsedData = JSON.parse(json.data);
+            renderBestLectures(parsedData);
+        })
         .catch(err => console.error("홈화면 인기 강의 조회 실패:", err));
 
     /* -- 렌더 함수 -- */

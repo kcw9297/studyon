@@ -2,7 +2,6 @@ package studyon.app.layer.base.dto;
 
 import lombok.*;
 import studyon.app.common.enums.AppStatus;
-import studyon.app.common.utils.StrUtils;
 
 import java.util.Map;
 

@@ -3,6 +3,8 @@ package studyon.app.layer.domain.payment.service;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.payment.PaymentDTO;
 
+import java.util.List;
+
 /**
  * 결제 서비스 인터페이스
  * @version 1.0
@@ -32,8 +34,4 @@ public interface PaymentService {
      */
     PaymentDTO.Read getPaymentDetail(Long paymentId);
 
-    /**
-     * 이번 달 매출 통계 계산
-     */
-    void calculateMonthlySales();
 }

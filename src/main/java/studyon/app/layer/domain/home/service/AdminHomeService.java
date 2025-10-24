@@ -1,5 +1,10 @@
 package studyon.app.layer.domain.home.service;
 
+import studyon.app.layer.domain.payment.PaymentDTO;
+
+import java.util.List;
+import java.util.Optional;
+
 public interface AdminHomeService {
     /**
      * (관리자 통계용) 총 회원 수
@@ -27,8 +32,15 @@ public interface AdminHomeService {
     Long readAllLectureCount();
 
     /**
-     * (관리자 통계용) 총 매출
-     * @return 총 매출액수
+     * (관리자 통계용) 한 달 총 매출
+     * @return 한 달 총 매출액수
      */
-    Long readAllSales();
+    Long readMonthSales();
+
+    /**
+     * (관리자 통계용) 선생님 별 매출 액수
+     * @return 선생님 별 매출액수
+     */
+    List<PaymentDTO.Read> calculateMonthlySales();
+
 }

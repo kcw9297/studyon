@@ -27,7 +27,7 @@ public class AdminHomeRestController {
         // [1] 회원 수 가져오기
         Long totalMembers = adminHomeService.readAllMemberCount();
         // [2] 성공 응답 반환
-        return RestUtils.ok(totalMembers);
+        return RestUtils.ok(totalMembers, AppStatus.OK);
     }
 
     /**
@@ -38,24 +38,24 @@ public class AdminHomeRestController {
     public ResponseEntity<?> readAllLectureCount() {
         log.info(" GET 요청: 모든 강의 수 조회");
         Long countAll = adminHomeService.readAllLectureCount();
-        return RestUtils.ok(countAll);
+        return RestUtils.ok(countAll, AppStatus.OK);
     }
 
     @GetMapping("/countNewMembers")
     public ResponseEntity<?> countNewMembers() {
         Long newMembers = adminHomeService.readTodayNewMemberCount();
-        return RestUtils.ok(newMembers);
+        return RestUtils.ok(newMembers, AppStatus.OK);
     }
 
     @GetMapping("/activeMembers")
     public ResponseEntity<?> countActiveMembers() {
         Long activeMembers = adminHomeService.readActiveMemberCount();
-        return RestUtils.ok(activeMembers);
+        return RestUtils.ok(activeMembers, AppStatus.OK);
     }
 
     @GetMapping("/totalSales")
-    public ResponseEntity<?> readAllSales() {
-        Long totalSales = adminHomeService.readAllSales();
-        return RestUtils.ok(totalSales);
+    public ResponseEntity<?> readMonthSales() {
+        Long totalSales = adminHomeService.readMonthSales();
+        return RestUtils.ok(totalSales, AppStatus.OK);
     }
 }
