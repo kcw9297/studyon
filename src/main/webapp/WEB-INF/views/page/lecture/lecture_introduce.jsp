@@ -96,7 +96,7 @@
                 <div class="instructor-category">
                     <div class="instructor-item">
                         <p class="instructor-name">과목</p>
-                        <p>${teacher.subject}</p>
+                        <p data-en="<c:out value='${teacher.subject}'/>"><c:out value="${teacher.subject}" /></p>
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">수강생</p>
@@ -140,7 +140,7 @@
             </div>
             <div class="reviews-situation">
                 <div class="reviews-total">
-                    <strong>4.8</strong>
+                    <strong>${lecture.averageRate}</strong>
                     <p>853개의 수강평</p>
                 </div>
                 <div class="reviews-statistics">
@@ -182,99 +182,6 @@
                         </div>
                         <div class="reviews-bottom">
                             <p>쌤 덕분에 10모 1등급 받았어요</p>
-                            <p>따라가기만 하면 어케든 됨ㅇㅇ</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="reviews-comment">
-                    <div class="reviews-user">
-                        <img src="<c:url value='/img/png/user.png'/>">치와와
-                    </div>
-                    <div class="reviews-content">
-                        <div class="reviews-top">
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-day">2025.10.20.</div>
-                        </div>
-                        <div class="reviews-bottom">
-                            <p>주말이 없다</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="reviews-comment">
-                    <div class="reviews-user">
-                        <img src="<c:url value='/img/png/user.png'/>">말티즈
-                    </div>
-                    <div class="reviews-content">
-                        <div class="reviews-top">
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-day">2025.10.20.</div>
-                        </div>
-                        <div class="reviews-bottom">
-                            <p>어렵다</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="reviews-comment">
-                    <div class="reviews-user">
-                        <img src="<c:url value='/img/png/user.png'/>">콜리
-                    </div>
-                    <div class="reviews-content">
-                        <div class="reviews-top">
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-day">2025.10.20.</div>
-                        </div>
-                        <div class="reviews-bottom">
-                            <p>하나도 모르겠다.</p>
-                            <p>밤밤밤</p>
-                            <p>밤</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="reviews-comment">
-                    <div class="reviews-user">
-                        <img src="<c:url value='/img/png/user.png'/>">리트리버
-                    </div>
-                    <div class="reviews-content">
-                        <div class="reviews-top">
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-bad">★</div>
-                            <div class="reviews-day">2025.10.20.</div>
-                        </div>
-                        <div class="reviews-bottom">
-                            <p>왕복4시간은 죄악이다</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="reviews-comment">
-                    <div class="reviews-user">
-                        <img src="<c:url value='/img/png/user.png'/>">셰퍼드
-                    </div>
-                    <div class="reviews-content">
-                        <div class="reviews-top">
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-god">★</div>
-                            <div class="reviews-day">2025.10.20.</div>
-                        </div>
-                        <div class="reviews-bottom">
-                            <p>배고파</p>
                         </div>
                     </div>
                 </li>
