@@ -4,7 +4,6 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/admin_support.css'/>">
 
 <div id="content">
-    <div id="empty-box"></div>
     <jsp:include page="/WEB-INF/views/page/admin/navbar.jsp">
         <jsp:param name="active" value="support"/>
     </jsp:include>

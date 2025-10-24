@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management/teacher_profile.css'/>">
 
     <div id="content">
-        <div id="empty-box"></div>
+        <%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
         <div class="teacher-img-area">
             <img src="<c:url value='/img/png/teacher_profile_img.png'/>" alt="강사이미지" class="teacher-img">
         </div>
@@ -28,8 +28,24 @@
     </div>
 
 
-<%-- Local Script --%>
+<style>
 
+    .TeacherManagement nav-item{
+        font-size: 18px;
+        color:white;
+        text-decoration: none;
+    }
+
+    .teacher-img{
+        border:10px solid rgb(46, 214, 82);
+        width:400px;
+        height:400px;
+        border-radius:180px;
+    }
+</style>
+
+
+<%-- Local Script --%>
 <script src="<c:url value='/js/page/teacher_profile/best_lectures.js'/>"></script>
 <script src="<c:url value='/js/page/teacher_profile/recent_lectures.js'/>"></script>
 <script src="<c:url value='/js/page/teacher_profile/profile_reviews.js'/>"></script>

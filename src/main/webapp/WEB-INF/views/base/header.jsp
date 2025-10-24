@@ -21,7 +21,7 @@
     <div class="header-info">
         <c:if test="${isLogin}">
             <div style="margin-right: 20px">
-                    ${memberProfile.nickname}님 ㅎㅇ
+                    ${memberProfile.nickname}
             </div>
         </c:if>
         <div style="gap:10px;">

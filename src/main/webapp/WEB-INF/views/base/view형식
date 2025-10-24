@@ -1,1 +1,4 @@
 <img src="<c:url value='/img/png/upload.png'/>" class="svg-upload">
+
+navbar
+<%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
