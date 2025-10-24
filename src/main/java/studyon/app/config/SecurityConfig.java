@@ -16,10 +16,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import studyon.app.common.constant.Env;
 import studyon.app.common.constant.Param;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 import studyon.app.infra.security.handler.*;
 import studyon.app.infra.security.provider.CustomDaoAuthenticationProvider;
 import studyon.app.infra.security.service.CustomNormalUserService;
@@ -55,23 +54,23 @@ public class SecurityConfig {
 
     // Spring Security url pattern
     private static final String PATTERN_ALL = "/**";
-    private static final String TEACHER_ALL = URL.TEACHER + PATTERN_ALL; // 선생님 관리 페이지
-    private static final String TEACHERS_ALL = URL.TEACHERS + PATTERN_ALL;
-    private static final String ADMIN_ALL = URL.ADMIN + PATTERN_ALL;
-    private static final String LECTURES_ALL = URL.LECTURES + PATTERN_ALL;
+    private static final String TEACHER_ALL = Url.TEACHER + PATTERN_ALL; // 선생님 관리 페이지
+    private static final String TEACHERS_ALL = Url.TEACHERS + PATTERN_ALL;
+    private static final String ADMIN_ALL = Url.ADMIN + PATTERN_ALL;
+    private static final String LECTURES_ALL = Url.LECTURES + PATTERN_ALL;
     private static final String WEBSOCKET_ALL = "/ws" + PATTERN_ALL;
 
     // 접근을 모두 허용할 주소 (정적 자원 제외)
     public static final String[] PERMIT_ALL =
             {
-                    URL.INDEX,
-                    URL.MEMBERS, URL.MEMBER_API,
+                    Url.INDEX,
+                    Url.MEMBERS, Url.MEMBER_API,
                     LECTURES_ALL, TEACHERS_ALL, WEBSOCKET_ALL
             };
 
     // Spring Security CSRF ignore URL (로그인, 로그아웃은 검증 제외)
     public static final String[] CSRF_IGNORE_URLS = {
-            URL.LOGIN_PROCESS, URL.LOGOUT, "/test/**"
+            Url.LOGIN_PROCESS, Url.LOGOUT, "/test/**"
     };
 
     // 로그아웃 시 삭제할 쿠키 이름 (세션 쿠키)
@@ -144,10 +143,10 @@ public class SecurityConfig {
 
                 // 일반 로그인 설정
                 .formLogin(form -> form
-                        .loginPage(URL.LOGIN) // 로그인 페이지
+                        .loginPage(Url.LOGIN) // 로그인 페이지
                         .usernameParameter(Param.EMAIL) // 일반 로그인 아이디에 해당하는 필드명
                         .passwordParameter(Param.PASSWORD) // 일반 로그인 패스워드에 해당하는 필드명
-                        .loginProcessingUrl(URL.LOGIN_PROCESS) // 로그인 처리 페이지
+                        .loginProcessingUrl(Url.LOGIN_PROCESS) // 로그인 처리 페이지
                         .successHandler(customNormalLoginSuccessHandler) // 로그인 성공처리 핸들러
                         .failureHandler(customNormalLoginFailedHandler) // 로그인 실패처리 핸들러
                         .permitAll() // 로그인 페이지는 모두 허용
@@ -163,7 +162,7 @@ public class SecurityConfig {
 
                 // 소셜 로그인 설정
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage(URL.LOGIN) // 일반 로그인페이지와 동일
+                        .loginPage(Url.LOGIN) // 일반 로그인페이지와 동일
                         .authorizationEndpoint(authorization -> authorization.baseUri(URL_OAUTH2_AUTHORIZATION))
                         .redirectionEndpoint(redirection -> redirection.baseUri(URL_OAUTH2_REDIRECT))
                         .userInfoEndpoint(endpoint -> endpoint.userService(customSocialUserService))
@@ -174,7 +173,7 @@ public class SecurityConfig {
 
                 // 로그아웃 설정
                 .logout(logout -> logout
-                        .logoutUrl(URL.LOGOUT) // 로그아웃 페이지
+                        .logoutUrl(Url.LOGOUT) // 로그아웃 페이지
                         .logoutSuccessHandler(customLogoutHandler) // 커스텀 처리 핸들러
                         .deleteCookies(LOGOUT_DELETE_COOKIES) // Cookie 삭제
                         .invalidateHttpSession(true) // HttpSession 무효화
@@ -188,7 +187,7 @@ public class SecurityConfig {
                         .sessionFixation().migrateSession() // Session Fixation Attack 방지 옵션
                         .maximumSessions(1) // 최대 로그인 세션 개수 1개 (한 사용자는 총 하나의 세션만 가능)
                         .maxSessionsPreventsLogin(false) // 최대 세션 초과 시, 로그인 불허 여부 (현재는 허용)
-                        .expiredUrl(URL.LOGIN)
+                        .expiredUrl(Url.LOGIN)
                 );
 
                 /*

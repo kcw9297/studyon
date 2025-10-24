@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 import studyon.app.common.enums.View;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.ViewUtils;
@@ -24,7 +24,7 @@ import studyon.app.layer.domain.member.service.MemberService;
 
 @Slf4j
 @Controller
-@RequestMapping(URL.MEMBER_ADMIN)
+@RequestMapping(Url.MEMBER_ADMIN)
 @RequiredArgsConstructor
 public class AdminMemberController {
 

@@ -6,15 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import studyon.app.common.constant.URL;
-import studyon.app.common.enums.AppStatus;
+import studyon.app.common.constant.Url;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.home.service.AdminHomeService;
 
 
 @Slf4j
 @RestController
-@RequestMapping(URL.ADMIN_HOME_API) // "/api/admin/home"
+@RequestMapping(Url.ADMIN_HOME_API) // "/api/admin/home"
 @RequiredArgsConstructor
 public class AdminHomeRestController {
 

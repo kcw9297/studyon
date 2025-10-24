@@ -38,7 +38,7 @@ public class CacheSchedulingService {
         allBackUp.stream()
                 .map(TestCache::getUploadedImages)
                 .flatMap(List::stream)
-                .forEach(dto -> fileManager.remove(dto.getStoreName(), dto.getEntity()));
+                .forEach(dto -> fileManager.remove(dto.getStoreName(), dto.getEntity().getName()));
     }
 
 

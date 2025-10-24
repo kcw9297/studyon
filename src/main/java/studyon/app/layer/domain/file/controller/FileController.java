@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.enums.FileType;
 import studyon.app.infra.file.FileManager;
@@ -23,7 +23,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping(URL.FILE)
+@RequestMapping(Url.FILE)
 @RequiredArgsConstructor
 public class FileController {
 
@@ -40,7 +40,7 @@ public class FileController {
         FileDTO.Read readDto = fileService.read(fileId);
 
         // [2] 다운로드를 위한 파일 byte array 추출
-        byte[] fileBytes = fileManager.download(readDto.getStoreName(), readDto.getEntity());
+        byte[] fileBytes = fileManager.download(readDto.getStoreName(), readDto.getEntity().getName());
         String contentDisposition = "attachment; filename=\"%s\"".formatted(StrUtils.encodeToUTF8(readDto.getOriginalName()));
 
         // [3] header, body 내 정보 삽입 후 HTTP 응답 반환
@@ -60,7 +60,7 @@ public class FileController {
 
 
 
-
+/*
 
 
     // 테스트 메소드
@@ -78,6 +78,9 @@ public class FileController {
     public String uploadView() {
         return "layer/files/upload";
     }
+
+
+
 
     @PostMapping("/upload.do")
     public String upload(MultipartFile file) {
@@ -114,5 +117,7 @@ public class FileController {
         fileManager.remove(readDto.getStoreName(), readDto.getEntity());
         return "OK";
     }
+
+     */
 
 }

@@ -15,6 +15,18 @@ import studyon.app.layer.base.dto.Rest;
 import java.io.IOException;
 import java.util.Map;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-24) : kcw97 정적 메소드 버그 수정 및 파라미터 변경
+ */
+
+/**
+ * REST API 응답 유틸 클래스
+ * @version 1.1
+ * @author kcw97
+ */
+
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RestUtils {

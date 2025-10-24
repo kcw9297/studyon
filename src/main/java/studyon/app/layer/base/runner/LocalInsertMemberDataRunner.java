@@ -58,8 +58,6 @@ public class LocalInsertMemberDataRunner implements ApplicationRunner {
             members.add(Member.createAdmin("admin@a.a", passwordEncoder.encode("admin"),"관리자"));
             memberRepository.saveAll(members);
         }
-
-
     }
 
 
