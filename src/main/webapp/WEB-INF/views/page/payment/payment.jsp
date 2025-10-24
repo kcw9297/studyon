@@ -26,8 +26,6 @@
                 </div>
             </header>
             <div id="content">
-                <div id="empty-box"></div>
-                <div id="empty-box"></div>
                 <div class="content-wrapper">
                   <div class="lecture-info-box">
                     <div class="lecture-thumbnail">
@@ -58,7 +56,6 @@
                     </div>
                   </div>
                   <button class="pay-button">결제하기</button>
-                  <div id="empty-box"></div>
                 
             </div>
             

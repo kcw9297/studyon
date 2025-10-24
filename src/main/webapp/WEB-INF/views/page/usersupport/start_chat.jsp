@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/user_support/start_chat.css'/>">
-<div id="empty-box"></div>
 <div class="user-support-container">
   <div class="support-inner">
     <h2 class="support-title">💬 고객 상담을 시작해보세요</h2>

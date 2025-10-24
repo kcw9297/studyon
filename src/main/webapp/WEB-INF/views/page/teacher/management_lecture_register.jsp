@@ -51,7 +51,6 @@
 <div class="submit-box">
 <button class="submit-button" type="submit">강의 등록하기</button>
 </div>
-<div id="empty-box"></div>
 
 <style>
     .TeacherManagement-navbar{

@@ -3,7 +3,6 @@
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/user_support/chat.css'/>">
 <div id="content">
-    <div id="empty-box"></div>
 
     <div class="user-support-chat-container">
         <div class="chat-box">
