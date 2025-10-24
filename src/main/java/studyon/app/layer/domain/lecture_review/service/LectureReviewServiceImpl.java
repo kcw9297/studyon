@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.utils.DTOMapper;
-import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 public class LectureReviewServiceImpl implements LectureReviewService {
 
     private final LectureReviewRepository lectureReviewRepository;
-    private final LectureRepository lectureRepository;
 
     /**
      * 특정 선생님의 모든 강의 리뷰를 최신순으로 조회
@@ -66,5 +64,60 @@ public class LectureReviewServiceImpl implements LectureReviewService {
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
+    }
+
+    /** 과목별 강의 리뷰 목록 조회 로직(추천 강의 화면)
+     * @param count 정렬용 변수
+     * @return 과목별 최근 강의 리뷰 목록
+     */
+    @Override
+    public List<LectureReviewDTO.Read> readRecentLectureReviews(Subject subject, int count) {
+        // [1] 리스팅 카운트용 변수
+        Pageable pageable = PageRequest.of(0, count);
+        // [2] 과목별 최근 강의 리뷰 카운트만큼 인기순 정렬
+        return lectureReviewRepository.findRecentReviewsBySubject(subject, pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .collect(Collectors.toList());
+    }
+    /**
+     * 선생님 최신 강의 수강평 조회
+     *
+     * @param teacherId 선생님 아이디
+     * @param count 리스트 카운트용 변수(보여지는 개수)
+     * @return 해당 선생님 최신 강의 수강평 리스트
+     */
+    @Override
+    public List<LectureReviewDTO.Read> readRecentReview(Long teacherId, int count) {
+        // [1] 정렬을 위해 필요한 변수 불러오기
+        Pageable pageable = PageRequest.of(0, count);
+        // [2] 해당하는 선생님 ID를 통해 최근 리뷰 조회 후 리스팅
+        return lectureReviewRepository.findRecentReviewsByTeacherId(teacherId, pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                .collect(Collectors.toList());
+    }
+
+    /** 강의 평점 업데이트 로직
+     * @param lectureId 선생님 ID
+     * @return 평점 계산 결과
+     */
+    @Override
+    public Double updateAverageRatings(Long lectureId) {
+        // [1] 리뷰 DTO 리스트 조회
+        List<LectureReviewDTO.Read> reviews = lectureReviewRepository.findByLecture_LectureId(lectureId)
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .collect(Collectors.toList());
+
+        // [2] 평균 평점 계산
+        Double avgRating = reviews.isEmpty()
+                ? 0.0
+                : reviews.stream().mapToInt(LectureReviewDTO.Read::getRating)
+                .average()
+                .orElse(0.0);
+
+        // [3] 소수점 둘째 자리 반올림 후 반환
+        return Math.round(avgRating * 100.0) / 100.0;
     }
 }

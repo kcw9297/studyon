@@ -36,17 +36,20 @@ public class HomeController {
 
     /**
      * [GET] 해당하는 과목 추천 페이지
-     * @param count 보여지는 개수 조정을 위한 카운트 변수
      */
     @GetMapping
-    public String viewHome(Model model, @RequestParam(defaultValue = "5") int count) {
-        // [1] 최신순 강의 목록/인기(수강 학생 수) 목록 생성
+    public String viewHome(Model model) {
+        /*
+         [1] 최신순 강의 목록/인기(수강 학생 수) 목록 생성
         List<LectureDTO.Read> recentLecture = lectureService.readAllRecentLectures(count);
         List<LectureDTO.Read> popularLecture = lectureService.readAllPopularLectures(count);
-        // [2] 모델에 변수 바인딩
+         [2] 모델에 변수 바인딩
         model.addAttribute("recentLecture", recentLecture);
         model.addAttribute("popularLecture", popularLecture);
-        // [3] 뷰 리턴
+         [3] 뷰 리턴
+        */
+
+        // [1] 뷰 리턴
         return ViewUtils.returnView(model, View.HOME, "home");
     }
 }
