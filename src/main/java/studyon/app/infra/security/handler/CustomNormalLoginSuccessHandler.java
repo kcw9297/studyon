@@ -11,11 +11,9 @@ import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.Param;
-import studyon.app.common.constant.URL;
-import studyon.app.common.utils.StrUtils;
+import studyon.app.common.constant.Url;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.security.dto.CustomUserDetails;
-import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 
@@ -49,13 +47,13 @@ public class CustomNormalLoginSuccessHandler extends SimpleUrlAuthenticationSucc
 
         // [2] 로그인 회원유저 기록
         cacheManager.recordLogin(memberId, sessionId);
-        SessionUtils.setSession(request, Param.MEMBER_ID, memberId);
+        SessionUtils.setAttribute(request, Param.MEMBER_ID, memberId);
 
         // [3] RequestCache 내 SavedRequest 조회
         SavedRequest savedRequest = requestCache.getRequest(request, response);
 
         // [4] 만일 이전에 접근한 주소가 있으면, 그 주소로 Redirect
-        String redirectUrl = Objects.isNull(savedRequest) ? URL.INDEX : savedRequest.getRedirectUrl();
+        String redirectUrl = Objects.isNull(savedRequest) ? Url.INDEX : savedRequest.getRedirectUrl();
         RestUtils.jsonOK(response, redirectUrl);
     }
 }

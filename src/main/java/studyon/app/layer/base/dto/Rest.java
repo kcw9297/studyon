@@ -6,9 +6,15 @@ import studyon.app.common.utils.StrUtils;
 
 import java.util.Map;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-24) : kcw97 정적 메소드 버그 수정 및 파라미터 변경
+ */
+
 /**
  * REST API 응답을 위한 DTO
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -39,7 +45,7 @@ public class Rest {
             return ok(appStatus, "");
         }
 
-        public static Response ok(AppStatus appStatus, Object data) {
+        public static Response ok(Object data, AppStatus appStatus) {
             return ok(appStatus, "", data);
         }
 
@@ -50,6 +56,7 @@ public class Rest {
         public static Response ok(AppStatus appStatus, String redirect, Object data) {
             return new Response(true, appStatus.getHttpCode(), appStatus.getMessage(), redirect, data, null);
         }
+
 
         public static Response fail(AppStatus appStatus) {
             return fail(appStatus, "");

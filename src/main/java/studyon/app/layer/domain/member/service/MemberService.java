@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.member.service;
 
 
+import org.springframework.web.multipart.MultipartFile;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
@@ -35,6 +36,13 @@ public interface MemberService {
      * @return 초기화된 비밀번호
      */
     String initPassword(Long memberId);
+
+    /**
+     * 프로필 이미지 변경
+     * @param memberId 대상 회원번호
+     * @param profileImageFile 변경 이미지
+     */
+    void editProfileImage(Long memberId, MultipartFile profileImageFile);
 
     /**
      * 닉네임 변경

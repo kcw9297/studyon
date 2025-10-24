@@ -9,15 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 import studyon.app.common.enums.Subject;
 import studyon.app.common.enums.View;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
-import studyon.app.layer.domain.lecture.LectureDTO;
-import studyon.app.layer.domain.lecture.service.LectureService;
-import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.service.TeacherService;
@@ -36,7 +33,7 @@ import java.util.List;
  * @author khj00
  */
 
-@RequestMapping(URL.TEACHER)
+@RequestMapping(Url.TEACHER)
 @Slf4j
 @Controller
 @RequiredArgsConstructor

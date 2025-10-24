@@ -1,8 +1,5 @@
 package studyon.app.infra.file;
 
-import org.springframework.web.multipart.MultipartFile;
-import studyon.app.common.enums.Entity;
-import studyon.app.common.enums.FileType;
 import studyon.app.layer.domain.file.FileDTO;
 
 /*
@@ -20,28 +17,25 @@ public interface FileManager {
 
     /**
      * 파일 업로드
-     * @param file     업로드 대상 파일
-     * @param entityId 업로드 파일이 속하는 엔티티 고유번호
-     * @param entity   업로드 파일이 속하는 엔티티 타입
-     * @param fileType 파일 유형 (썸네일, 직접업로드, 프로필 이미지, 에디터, ...)
-     * @return 업로드 요청 파일 정보
+     * @param rq 파일 업로드 요청 DTO
      */
-    FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity, FileType fileType);
+    void upload(FileDTO.Upload rq);
 
     /**
      * 파일 다운로드
-     * @param storeName 저장 파일명
-     * @param entity 저장된 파일이 속하는 엔티티 타입
+     *
+     * @param storeName  저장 파일명
+     * @param entityName 저장된 파일이 속하는 엔티티 타입명
      * @return 파일 바이트 문자열 반환
      */
-    byte[] download(String storeName, Entity entity);
+    byte[] download(String storeName, String entityName);
 
 
     /**
      * 파일 삭제
-     * @param storeName 저장 파일명
-     * @param entity 저장된 파일이 속하는 엔티티 타입
+     * @param storeName  저장 파일명
+     * @param entityName 저장된 파일이 속하는 엔티티 타입명
      */
-    void remove(String storeName, Entity entity);
+    void remove(String storeName, String entityName);
 
 }

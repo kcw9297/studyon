@@ -215,4 +215,13 @@ public final class StrUtils {
             return clientIp;
         }
     }
+
+    public static String extractFileExt(String originalFilename) {
+        return Objects.isNull(originalFilename) || originalFilename.isBlank() ?
+                "" : originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+    }
+
+    public static Object getUUID() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
 }

@@ -23,6 +23,7 @@ public class Param {
     public static final String MSG = "msg";
     public static final String IMP_UID = "imp_uid";
     public static final String PAID_AMOUNT = "paid_amount";
+    public static final String PROFILE = "profile";
 
     // redis key
     public static final String KEY_BACKUP = "BACKUP";
