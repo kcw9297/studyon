@@ -7,9 +7,12 @@ import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Difficulty;
+import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.teacher.Teacher;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 강의 엔티티 클래스
@@ -66,6 +69,10 @@ public class Lecture extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
+
+    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("rating DESC")
+    private List<LectureReview> lectureReviews = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)

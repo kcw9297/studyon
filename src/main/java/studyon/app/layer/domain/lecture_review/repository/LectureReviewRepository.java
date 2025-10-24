@@ -14,12 +14,13 @@ import java.util.List;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-20) : khj00 수정
+ * ▶ ver 1.1 (2025-10-24) : phj : 강의 정보 조회 - 강의소개 페이지
  */
 
 /**
  * 강의 리뷰 레포지토리 인터페이스
- * @version 1.0
- * @author khj00
+ * @version 1.1
+ * @author phj
  */
 
 public interface LectureReviewRepository extends JpaRepository<LectureReview, Long> {
@@ -64,13 +65,8 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
      */
     List<LectureReview> findByLecture_LectureId(Long lectureId);
 
-    /* 특정 강의에 대한 리뷰 */
-    @Query("""
-        SELECT r
-        FROM LectureReview r
-        JOIN FETCH r.member
-        WHERE r.lecture.lectureId = :lectureId
-        ORDER BY r.createdAt DESC
-    """)
-    List<LectureReview> findAllByLectureId(@Param("lectureId") Long lectureId);
+    /* 강의 정보 조회 - 강의소개 페이지 */
+    @Query("SELECT r FROM LectureReview r JOIN FETCH r.member WHERE r.lecture.lectureId = :lectureId ORDER BY r.rating DESC")
+    List<LectureReview> findByLectureIdWithMemberOrderByRatingDesc(@Param("lectureId") Long lectureId);
+
 }
