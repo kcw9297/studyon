@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <div class="dashboard-card mvp">
+    <div class="dashboard-card mvp" data-type="topTeacher">
         <div class="card-icon">🏆</div>
         <div class="card-info">
             <div class="card-title">이번달 MVP 강사</div>

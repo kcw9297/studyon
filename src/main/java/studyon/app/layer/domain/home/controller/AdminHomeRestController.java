@@ -10,11 +10,12 @@ import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.home.service.AdminHomeService;
+import studyon.app.layer.domain.payment.PaymentDTO;
 
 
 @Slf4j
 @RestController
-@RequestMapping(Url.ADMIN_HOME_API) // "/api/admin/home"
+@RequestMapping(Url.ADMIN_HOME_API) // "/admin/api/home"
 @RequiredArgsConstructor
 public class AdminHomeRestController {
 
@@ -58,5 +59,11 @@ public class AdminHomeRestController {
     public ResponseEntity<?> readMonthSales() {
         Long totalSales = adminHomeService.readMonthSales();
         return RestUtils.ok(totalSales, AppStatus.OK);
+    }
+
+    @GetMapping("/topTeacher")
+    public ResponseEntity<?> readTopTeacher() {
+        PaymentDTO.TeacherSales teacher = adminHomeService.selectTopTeacher();
+        return RestUtils.ok(teacher, AppStatus.OK);
     }
 }

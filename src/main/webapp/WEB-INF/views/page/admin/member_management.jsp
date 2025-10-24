@@ -43,6 +43,10 @@
                 <th>관리</th>
             </tr>
             </thead>
+            <tbody id="memberTableBody">
+                <!-- JS가 여기에 회원 목록을 렌더링합니다 -->
+            </tbody>
+            <!--
             <tbody>
             <tr>
                 <td>1</td>
@@ -75,6 +79,7 @@
                 <td><a class="management-button" href="#">관리</a></td>
             </tr>
             </tbody>
+            -->
             <tbody>
             <c:forEach var="member" items="${memberList}" varStatus="loop">
                 <tr>

@@ -13,9 +13,7 @@ import studyon.app.layer.domain.teacher.Teacher;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /*
@@ -57,7 +55,7 @@ public class AdminHomeServiceImpl implements AdminHomeService {
         // [1] 현재 시각
         LocalDateTime now = LocalDateTime.now();
         // [2] 일주일 전 현재 시각
-        LocalDateTime sevenDaysAgo = now.minusDays(7); 
+        LocalDateTime sevenDaysAgo = now.minusDays(7);
         // [3] 일주일 시간 계산 후 리턴
         return memberRepository.countByLastLoginAtBetween(sevenDaysAgo, now);
     }
@@ -75,22 +73,65 @@ public class AdminHomeServiceImpl implements AdminHomeService {
     }
 
     @Override
-    public List<PaymentDTO.Read> calculateMonthlySales() {
+    public List<PaymentDTO.TeacherSales> calculateMonthlySales() {
         LocalDateTime start = LocalDate.now().withDayOfMonth(1).atStartOfDay();
         LocalDateTime end = start.plusMonths(1).minusNanos(1);
 
-        List<Payment> teacherSales = paymentRepository.findTeacherSalesBetween(start, end);
-        List<PaymentDTO.Read> dtoList = teacherSales.stream()
-                .map(DTOMapper::toReadDTO)
-                .collect(Collectors.toList());
+        // [1] 이번 달 결제 내역 조회
+        List<Payment> payments = paymentRepository.findTeacherSalesBetween(start, end);
+        if (payments.isEmpty()) return List.of();
 
-        return dtoList;
+        // [2] 강사별 매출 합계 계산
+        Map<Long, PaymentDTO.TeacherSales> salesMap = new HashMap<>();
+        // [3] 이번 달 결제 내역 전체 반복
+        for (Payment p : payments) {
+            // [3-1] 결제 하나당 관련된 강사 정보 및 결제 금액을 추출
+            Long teacherId = p.getLecture().getTeacher().getTeacherId();
+            String nickname = p.getLecture().getTeacher().getMember().getNickname();
+            Double amount = p.getPaidAmount().doubleValue();
+
+            // [4] salesMap에 강사별로 매출 누적
+            // compute()는 key가 없으면 새로 등록하고, 있으면 갱신함.
+            salesMap.compute(teacherId, (id, existing) -> {
+                if (existing == null) {
+                    // 아직 이 강사의 첫 결제라면 새 DTO 생성
+                    return PaymentDTO.TeacherSales.builder()
+                            .teacherId(id)
+                            .nickname(nickname)
+                            .totalSales(amount)
+                            .build();
+                }
+                // 이미 존재하면 기존 매출 + 이번 금액을 더해 누적
+                else {
+                    existing.setTotalSales(existing.getTotalSales() + amount);
+                    return existing;
+                }
+            });
+        }
+        // [5] Map → List로 변환하여 반환
+        // (각 강사별 매출 DTO를 리스트 형태로 변환)
+        return new ArrayList<>(salesMap.values());
     }
+
+
+    @Override
+    public PaymentDTO.TeacherSales selectTopTeacher() {
+        // [1] 기록 불러와서
+        List<PaymentDTO.TeacherSales> list = calculateMonthlySales();
+        // [2] 비어있는지 체크하고
+        if (list.isEmpty()) return null;
+        // [3] TOP 데이터 불러오기
+        return list.stream()
+                // 내부적으로 전달받은 getTotalSales()로 값을 추출 비교
+                // Comparator.comparing() : 조건을 부여하여 정렬하는 메소드 -> 여기서는 TotalSales 기준으로 정렬함
+                .max(Comparator.comparing(PaymentDTO.TeacherSales::getTotalSales))
+                .orElse(null);
+    }
+
 
     @Override
     public Long readAllLectureCount() {
         // [1] 총 강의 수 리턴
         return lectureRepository.count();
     }
-
 }
