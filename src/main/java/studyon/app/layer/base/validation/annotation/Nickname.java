@@ -1,6 +1,7 @@
 package studyon.app.layer.base.validation.annotation;
 
 import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import studyon.app.layer.base.validation.validator.NicknameValidator;
 
 import java.lang.annotation.*;
@@ -16,5 +17,6 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = NicknameValidator.class)  // Validator 클래스 지정
 @Documented
 public @interface Nickname {
-    String message() default "올바른 형식의 닉네임을 작성해 주세요";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 }

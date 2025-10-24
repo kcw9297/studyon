@@ -15,6 +15,11 @@ public class Msg {
     public static final String NOT_FOUND_MEMBER = "존재하지 않은 회원이거나, 이미 탈퇴한 회원입니다";
     public static final String NOT_FOUND_TEACHER = "존재하지 않는 선생님입니다. \n 선생님 ID를 확인해주세요";
 
+    // validator message
+    public static final String VALIDATOR_LONG_RANGE = "%d-%d 사이 값 입력";
+    public static final String VALIDATOR_DOUBLE_RANGE = "%.2f-%.2f 사이 값 입력";
+
+
     // Rest Message
     public static final Rest.Message REST_OAUTH2_AUTHENTICATION_ERROR =
             Rest.Message.of("로그인 실패", "소셜로그인 정보를 얻어오지 못했습니다.\n잠시 후에 다시 사도해 주세요");

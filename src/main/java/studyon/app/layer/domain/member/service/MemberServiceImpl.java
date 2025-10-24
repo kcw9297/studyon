@@ -6,9 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.constant.Msg;
+import studyon.app.common.constant.StatusCode;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.base.dto.Page;
-import studyon.app.layer.base.exception.NotFoundException;
+import studyon.app.layer.base.exception.BusinessException;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
@@ -33,7 +34,7 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository
                 .findById(memberId)
                 .map(DTOMapper::toReadDto)
-                .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new BusinessException(Msg.NOT_FOUND_MEMBER, StatusCode.MEMBER_NOT_FOUND));
     }
 
 
@@ -58,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository
                 .findById(memberId)
                 .map(DTOMapper::toMemberProfileDTO)
-                .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new BusinessException(Msg.NOT_FOUND_MEMBER, StatusCode.MEMBER_NOT_FOUND));
     }
 
 
@@ -71,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
         // [2] 회원 조회 후 초기화 수행
         memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER))
+                .orElseThrow(() -> new BusinessException(Msg.NOT_FOUND_MEMBER, StatusCode.MEMBER_NOT_FOUND))
                 .updatePassword(passwordEncoder.encode(newPassword)); // 암호화 후 초기화 수행
 
         // [3] 초기화에 성공한 비밀번호 반환
@@ -83,7 +84,7 @@ public class MemberServiceImpl implements MemberService {
     public void editNickname(Long memberId, String nickname) {
         memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER))
+                .orElseThrow(() -> new BusinessException(Msg.NOT_FOUND_MEMBER, StatusCode.MEMBER_NOT_FOUND))
                 .updateNickname(nickname);
     }
 
@@ -92,7 +93,7 @@ public class MemberServiceImpl implements MemberService {
     public void withdraw(Long memberId) {
         memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER))
+                .orElseThrow(() -> new BusinessException(Msg.NOT_FOUND_MEMBER, StatusCode.MEMBER_NOT_FOUND))
                 .withdraw();
     }
 
@@ -101,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
     public void recover(Long memberId) {
         memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new NotFoundException(Msg.NOT_FOUND_MEMBER))
+                .orElseThrow(() -> new BusinessException(Msg.NOT_FOUND_MEMBER, StatusCode.MEMBER_NOT_FOUND))
                 .recover();
     }
 
