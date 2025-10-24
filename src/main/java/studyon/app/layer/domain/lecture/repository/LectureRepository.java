@@ -10,6 +10,7 @@ import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture_review.LectureReview;
 
 import java.util.List;
+import java.util.Optional;
 
 /*
  * [수정 이력]
@@ -114,6 +115,15 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     /* 테스트용 코드 */
     // 테스트용 데이터 정렬
     Page<Lecture> findByOrderByPublishDateDesc(Pageable pageable);
+
+    /* 강의 정보 조회 - 강의소개 페이지 */
+    @Query("""
+        SELECT l FROM Lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH t.member m
+        WHERE l.lectureId = :id
+        """)
+    Optional<Lecture> findWithTeacherById(@Param("id") Long lectureId);
 
 
 }
