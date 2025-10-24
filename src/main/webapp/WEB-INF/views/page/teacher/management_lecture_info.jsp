@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
+<jsp:include page="/WEB-INF/views/page/teacher/navbar.jsp" />
 <div class="lecture-register-wrapper">
     <div class="register-content">
         <div class="register-title">강의 등록</div>

@@ -14,6 +14,8 @@ import studyon.app.layer.domain.payment.Payment;
 import studyon.app.layer.domain.payment.PaymentDTO;
 import studyon.app.layer.domain.payment.repository.PaymentRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -65,5 +67,14 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentDTO.Read getPaymentDetail(Long paymentId) {
         return null;
+    }
+
+
+    @Override
+    public void calculateMonthlySales() {
+        LocalDateTime start = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime end = start.plusMonths(1).minusNanos(1);
+
+        List<Payment> result = paymentRepository.findTeacherSalesBetween(start, end);
     }
 }

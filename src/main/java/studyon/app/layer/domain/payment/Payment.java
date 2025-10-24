@@ -17,10 +17,11 @@ import java.time.LocalDateTime;
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-15) : khj00 최초 작성
  *  ▶ ver 1.1 (2025-10-22) : kcw97 PaymentDetails 통합
+ *  ▶ ver 1.2 (2025-10-24) : khj00 환불 정보 업데이트 로직 작성
  */
 /**
  * 결제 엔티티 클래스
- * @version 1.1
+ * @version 1.2
  * @author khj00
  */
 
@@ -46,18 +47,17 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private Boolean isRefunded;
 
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
+    @Column
     private LocalDateTime refundedAt;
 
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")  // @OnDelete (nullable=false면 불가능)
     private Member member;
 
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id", nullable = false)
+    @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 
 
@@ -72,4 +72,12 @@ public class Payment extends BaseEntity {
         this.refundedAt = null;
     }
 
+    /**
+     * 환불 정보 업데이트 로직
+     */
+
+    public void markRefunded() {
+        this.isRefunded = true;
+        this.refundedAt = LocalDateTime.now(); // 환불 시각을 수동으로 저장
+    }
 }

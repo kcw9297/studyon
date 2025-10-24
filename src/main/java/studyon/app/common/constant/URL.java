@@ -47,6 +47,9 @@ public final class URL {
     /* HOME */
     public static final String HOME_API = API + HOME;    //  "/api/home"
 
+    /* ADMIN */
+    public static final String ADMIN_HOME_API = API + ADMIN + HOME;  // "/api/admin/home"
+
     // 정적 상수 모음
     public static final String[] STATIC_RESOURCE_PATHS = {
             "/WEB-INF/**", "/css/**", "/js/**", "/img/**",

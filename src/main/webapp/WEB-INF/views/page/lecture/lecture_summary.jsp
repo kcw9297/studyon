@@ -58,9 +58,10 @@
                 <button class="summary-like">
                     <img src="<c:url value='/img/png/like1.png'/>" alt="좋아요">${lecture.likeCount}
                 </button>
-                <a href="">
-                    <button class="summary-purchase">바로 구매하기</button>
-                </a>
+                <button onclick="location.href='/payment/${lecture.lectureId}'" class="summary-purchase">
+                    바로 구매하기
+                </button>
+                d
             </div>
         </div>
     </div>

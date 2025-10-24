@@ -31,4 +31,9 @@ public interface PaymentService {
      * @return Payment 객체
      */
     PaymentDTO.Read getPaymentDetail(Long paymentId);
+
+    /**
+     * 이번 달 매출 통계 계산
+     */
+    void calculateMonthlySales();
 }

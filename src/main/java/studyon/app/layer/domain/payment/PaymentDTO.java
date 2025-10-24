@@ -85,4 +85,13 @@ public class PaymentDTO {
             this.refundReason = refundReason;
         }
     }
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TeacherSales {
+        private Long teacherId;
+        private String nickname;
+        private Double totalSales;
+    }
 }

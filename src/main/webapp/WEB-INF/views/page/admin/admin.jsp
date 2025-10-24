@@ -7,22 +7,25 @@
     <jsp:param name="active" value="dashboard"/>
 </jsp:include>
 <div class="admin-content-container">
+
+    <%-- status-value, card-number 숫자는 자동으로 업데이트되게 해놓음 --%>
+
     <!-- 신규 회원 수 카드 -->
-    <div class="dashboard-card">
+    <div class="dashboard-card" data-type="newMember">
         <div class="card-icon">👤</div>
         <div class="card-info">
             <div class="card-title">신규 회원 수</div>
-            <div class="card-number">52명</div>
+            <div class="card-number">-명</div>
             <div class="card-sub">오늘 가입</div>
         </div>
     </div>
 
     <!-- 이번달 매출 카드 -->
-    <div class="dashboard-card sales">
+    <div class="dashboard-card sales" data-type="totalSales">
         <div class="card-icon">💰</div>
         <div class="card-info">
             <div class="card-title">이번달 매출</div>
-            <div class="card-number">₩3,280,000</div>
+            <div class="card-number">₩0</div>
             <div class="card-sub">10월 기준</div>
         </div>
     </div>
@@ -54,27 +57,27 @@
         </div>
     </div>
 
-    <div class="status-card">
+    <div class="status-card" data-type="totalMember">
         <div class="status-icon">👥</div>
         <div class="status-info">
             <div class="status-title">총 회원 수</div>
-            <div class="status-value">1,284명</div>
+            <div class="status-value">0명</div>
         </div>
     </div>
 
-    <div class="status-card">
+    <div class="status-card" data-type="lecture">
         <div class="status-icon">🎓</div>
         <div class="status-info">
             <div class="status-title">전체 강의 수</div>
-            <div class="status-value">86개</div>
+            <div class="status-value">0개</div>
         </div>
     </div>
 
-    <div class="status-card">
+    <div class="status-card" data-type="activeMember">
         <div class="status-icon">💡</div>
         <div class="status-info">
             <div class="status-title">활성 사용자 수</div>
-            <div class="status-value">312명</div>
+            <div class="status-value">-명</div>
             <div class="status-sub">(최근 7일 로그인)</div>
         </div>
     </div>

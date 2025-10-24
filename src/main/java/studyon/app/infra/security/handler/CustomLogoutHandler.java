@@ -52,9 +52,6 @@ public class CustomLogoutHandler implements LogoutSuccessHandler {
             cacheManager.removeLogout(userDetails.getMemberId());
 
         // [2] 로그아웃 응답 반환
-        RestUtils.jsonOK(
-                response,
-                StrUtils.toJson(Rest.Response.ok(Rest.Message.of("로그아웃 성공"), URL.INDEX)
-        ));
+        RestUtils.jsonOK(response, URL.INDEX);
     }
 }

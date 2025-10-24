@@ -16,12 +16,13 @@ import java.util.Optional;
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-16) : khj00 최초 작성
  *  ▶ ver 1.1 (2025-10-22) : khj00 : 지연 로직 방지 @Query 추가
+ *  ▶ ver 1.2 (2025-10-23) : phj: 강의 정보 조회 - 강의소개 페이지 추가
  */
 
 /**
  * 강의 레포지토리 인터페이스
- * @version 1.1
- * @author khj00
+ * @version 1.2
+ * @author phj
  */
 
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
@@ -121,9 +122,9 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
         SELECT l FROM Lecture l
         JOIN FETCH l.teacher t
         JOIN FETCH t.member m
-        WHERE l.lectureId = :id
+        WHERE l.lectureId = :lectureId
         """)
-    Optional<Lecture> findWithTeacherById(@Param("id") Long lectureId);
+    Optional<Lecture> findWithTeacherById(@Param("lectureId") Long lectureId);
 
 
 }

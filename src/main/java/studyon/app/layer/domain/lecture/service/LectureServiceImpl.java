@@ -9,6 +9,8 @@ import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
+import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
+import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +53,6 @@ public class LectureServiceImpl implements LectureService {
      * @param count 카운트용 변수
      * @return BEST 강의 리스트
      */
-
     @Override
     public List<LectureDTO.Read> readBestLectures(Subject subject, int count) {
         // [1] 리스팅 카운트용 변수
@@ -77,6 +78,7 @@ public class LectureServiceImpl implements LectureService {
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
     }
+
     /** 인기순(수강생수 기준) 강의 목록 조회 로직 (홈화면)
      * @param count 정렬용 변수
      * @return 전체 인기순 강의 목록
@@ -108,6 +110,7 @@ public class LectureServiceImpl implements LectureService {
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
+
     /**
      * 선생님 최신 강의 조회
      *
@@ -124,11 +127,5 @@ public class LectureServiceImpl implements LectureService {
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public Long readAllLectureCount() {
-        // [1] 총 강의 수 리턴
-        return lectureRepository.count();
     }
 }

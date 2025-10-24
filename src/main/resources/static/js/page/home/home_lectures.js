@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const count = 4;
+    const count = 5;
 
     const params = new URLSearchParams();
     // 변수 바인딩 추가
@@ -7,20 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ✅ [1] 최근 등록된 강의 조회
-    fetch("/api/home/recent", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
+    fetch(`/api/home/recent?count=${count}`, {
+        method: "GET"
     })
         .then(res => res.json())
         .then(json => renderRecentLectures(json.data))
-        .catch(err => console.error("홈화면 인기 강의 조회 실패 : ", err));
+        .catch(err => console.error("홈화면 최근 강의 조회 실패 : ", err));
 
     // ✅ [2] 인기 강의 조회
-    fetch("/api/home/best", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
+    fetch(`/api/home/best?count=${count}`, {
+        method: "GET"
     })
         .then(res => res.json())
         .then(json => renderBestLectures(json.data))

@@ -1,6 +1,7 @@
 package studyon.app.infra.file;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -10,9 +11,11 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import studyon.app.common.constant.Env;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.enums.FileType;
 import studyon.app.common.exception.ManagerException;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.domain.file.FileDTO;
 
 import java.io.File;
@@ -20,13 +23,22 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
+
+
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-24) : kcw97 예외 처리방식 변경
+ */
+
 /**
  * AWS S3 스토리지 조작 메소드 처리 클래스
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 
 @Profile(Env.PROFILE_PROD)
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AWSFileManager implements FileManager {
@@ -64,7 +76,8 @@ public class AWSFileManager implements FileManager {
             return dto;
 
         } catch (Exception e) {
-            throw new ManagerException("AWS S3 파일 업로드에 실패했습니다!", e);
+            log.error(StrUtils.createLogStr(this.getClass(), "AWS S3 파일 업로드에 실패! 원인 : %s".formatted(e.getMessage())));
+            throw new ManagerException(AppStatus.SERVER_ERROR, e);
         }
     }
 
@@ -93,9 +106,6 @@ public class AWSFileManager implements FileManager {
     }
 
 
-
-
-
     @Override
     public byte[] download(String storeName, Entity entity) {
 
@@ -115,7 +125,8 @@ public class AWSFileManager implements FileManager {
             return getRes.readAllBytes();
 
         } catch (Exception e) {
-            throw new ManagerException("AWS S3 파일 다운로드에 실패했습니다!", e);
+            log.error(StrUtils.createLogStr(this.getClass(), "AWS S3 파일 다운로드 실패! 원인 : %s".formatted(e.getMessage())));
+            throw new ManagerException(AppStatus.SERVER_ERROR, e);
         }
     }
 

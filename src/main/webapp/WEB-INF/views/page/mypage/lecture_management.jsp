@@ -7,10 +7,11 @@
     <div>
         <jsp:include page="/WEB-INF/views/page/mypage/lecture_management_navbar.jsp" />
         <div class="courses-list">
+            <%--
             <div class="courses-item">
                 <div class="courses-thumbnail">
-                    <a href="">
-                        <img src="<c:url value='/img/png/menhera.png'/>" class="mypage-profile" alt="프로필 사진">
+                    <a class="mypage-lecture-thumbnail" href="">
+                        <img src="">
                     </a>
                 </div>
                 <div class="courses-lecture"></div>
@@ -19,72 +20,75 @@
                     <progress class="courses-progress" value="50" min="0" max="100"></progress>
                 </div>
                 <div class="courses-class">
-                    <div class="courses-text1">15강</div>
-                    <div class="courses-text2">&nbsp;/ 30강 </div>
-                    <div class="courses-text2">&nbsp;(50%)</div>
+                    <div class="courses-text1"></div>
+                    <div class="courses-text2"></div>
+                    <div class="courses-text2"></div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-
-<section class="courses">
-    <div class="mypage-title">강의 관리</div>
-    <div>
-        <jsp:include page="/WEB-INF/views/page/mypage/lecture_management_navbar.jsp" />
-        <div class="courses-list">
-            <!-- 여기에 렌더링될 리스트 -->
+            --%>
         </div>
     </div>
 </section>
 
 <script>
-    let lectures;
     document.addEventListener("DOMContentLoaded", async () => {
-        let lectures;
-
         try {
-            const response = await fetch("/api/mypage/lectures?subject=all");
+            //const subject = window.location.pathname.split("/").pop();
+            //const response = await fetch("/api/mypage/lectures?subject="+subject);
+            //const response = await fetch("/api/mypage/lectures?subject=all")
+
+            const params = new URLSearchParams(window.location.search);
+            let subject = params.get("subject") || "all";
+            console.log(subject);
+
+
+            const response = await fetch("/api/mypage/lectures?subject="+subject);
+
             if (!response.ok) throw new Error("강의 목록 요청 실패");
             const lectures = await response.json();
             console.log("✅ 강의 데이터:", lectures);
 
-
-            document.querySelector(".courses-lecture").textContent = lectures[0].lectureTitle;
-            document.querySelector(".courses-teacher").textContent = lectures[0].teacherName;
-
             const list = document.querySelector(".courses-list");
-            list.innerHTML ="";
+            list.innerHTML = "";
 
             lectures.forEach(lecture => {
                 const item = document.createElement("div");
                 item.classList.add("courses-item");
+                console.log("foreach 안의 lecture data:", JSON.stringify(lecture, null, 2)); // 보기 좋게 JSON으로 출력
 
+                // ✅ 썸네일
+                const thumbnail = document.createElement("a");
+                thumbnail.classList.add("mypage-lecture-thumbnail");
+                //thumbnail.href = `/player?lectureId=69`;
+                thumbnail.href = "/player?lectureId="+lecture.lectureId;
+
+                console.log("👉 썸네일 href:", thumbnail.href);
+
+                const img = document.createElement("img");
+                img.src = "http://localhost:8080/img/png/menhera.png"; // 하드코딩 썸네일
+                img.alt = lecture.lectureTitle;
+                img.classList.add("mypage-profile");
+                thumbnail.appendChild(img);
+
+                // ✅ 제목
                 const titleDiv = document.createElement("div");
                 titleDiv.classList.add("courses-lecture");
                 titleDiv.textContent = lecture.lectureTitle;
 
+                // ✅ 강사명
                 const teacherDiv = document.createElement("div");
                 teacherDiv.classList.add("courses-teacher");
                 teacherDiv.textContent = lecture.teacherName;
 
+                item.appendChild(thumbnail);
                 item.appendChild(titleDiv);
                 item.appendChild(teacherDiv);
                 list.appendChild(item);
             });
 
-
-
-
-
-
-
-
-
-
-        } catch (err) { // ✅ 괄호 추가
+        } catch (err) {
             console.error("❌ 오류 발생:", err);
         }
-    }
-    );
+    });
+
 </script>

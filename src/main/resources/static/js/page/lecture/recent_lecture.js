@@ -7,9 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     params.append("count", count.toString());
 
     fetch("/api/lecture/recent", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
+        method: "GET"
     })
         .then(res => {
             if (!res.ok) throw new Error("HTTP " + res.status);

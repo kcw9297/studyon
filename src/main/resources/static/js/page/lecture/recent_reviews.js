@@ -6,10 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     params.append("subject", subjectFromJSP);
     params.append("count", count.toString());
 
-    fetch("/api/lecture/reviews/recent/{subject}", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
+    fetch(`/api/lecture/reviews/recent/${subjectFromJSP}?count=${count}`, {
+        method: "GET"
     })
             .then(res => {
                 if (!res.ok) throw new Error("HTTP " + res.status);

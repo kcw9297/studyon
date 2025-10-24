@@ -35,14 +35,14 @@ public class TestPayment {
 
         log.warn("rq = {}", rq);
         testPaymentService.pay(rq);
-        return RestUtils.ok(Rest.Message.of("주문 성공!!"));
+        return RestUtils.ok();
     }
 
     @ResponseBody
     @PostMapping("/{paymentUid}/refund")
     public ResponseEntity<?> refund(@PathVariable String paymentUid) {
         testPaymentService.refund(paymentUid);
-        return RestUtils.ok(Rest.Message.of("환불 성공!!"));
+        return RestUtils.ok();
     }
 
 }

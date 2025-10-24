@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import studyon.app.common.enums.Role;
 import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Provider;
+import studyon.app.layer.base.validation.annotation.Email;
 
 import java.time.LocalDateTime;
 
