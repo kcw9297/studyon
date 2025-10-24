@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
+<jsp:include page="/WEB-INF/views/page/teacher/navbar.jsp" />
 
 <div class="resisted-lecture-label">
   미등록 강의
@@ -92,3 +92,19 @@
         cursor: pointer;
     }
 </style>
+<script>
+    document.addEventListener("DOMContentLoaded", async() => {
+        try{
+            const res = await fetch("/api/teachers/management/lecturelist");
+            const data = await res.json();
+
+            console.log("강사 ID:", data.teacherId);
+            console.log("등록대기 강의:", data.pending);
+            console.log("등록완료 강의:", data.registered);
+            console.log("미등록 강의:", data.unregistered);
+        }catch{
+
+        }
+
+    });
+</script>

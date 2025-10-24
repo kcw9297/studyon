@@ -7,8 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 import studyon.app.common.enums.View;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture.Lecture;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping(URL.LECTURE)
+@RequestMapping(Url.LECTURE)
 @RequiredArgsConstructor
 public class LectureDetailController {
     private final LectureRepository lectureRepository;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Difficulty;
@@ -19,6 +20,7 @@ import java.util.List;
  * @version 1.1
  * @author khj00
  * 20251023 Subject추가
+ * 202251024 LectureRegisterStatus
  */
 
 @Entity
@@ -44,7 +46,7 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private Difficulty difficulty;
 
-    @Column(nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    @Column(nullable = false)
     private Long videoCount;
 
     @Column(nullable = false, columnDefinition = "BIGINT UNSIGNED")
@@ -75,8 +77,12 @@ public class Lecture extends BaseEntity {
     private List<LectureReview> lectureReviews = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false)
     private Subject subject;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LectureRegisterStatus lectureRegisterStatus;
 
     @Builder
     public Lecture(String title, String description, Double price,
@@ -95,6 +101,18 @@ public class Lecture extends BaseEntity {
         this.onSale = false;
 
         this.teacher = teacher;
+        this.lectureRegisterStatus = LectureRegisterStatus.UNREGISTERED;
+    }
+
+    @Override
+    public String toString() {
+        return "Lecture{" +
+                "lectureId=" + lectureId +
+                ", title='" + title + '\'' +
+                ", registerStatus=" + lectureRegisterStatus +
+                ", difficulty=" + difficulty +
+                ", onSale=" + onSale +
+                '}';
     }
 
     /*

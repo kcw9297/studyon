@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
 import org.springframework.web.util.UriUtils;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.UtilsException;
 
 import java.net.Inet6Address;
@@ -17,6 +19,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StrUtils {
 
@@ -67,7 +70,8 @@ public final class StrUtils {
         try {
             return objectMapper.writeValueAsString(data);
         } catch (Exception e) {
-            throw new UtilsException("-> JSON String 직렬화에 실패했습니다!", e);
+            log.error("JSON 직렬화 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
 
@@ -76,7 +80,8 @@ public final class StrUtils {
         try {
             return objectMapper.readValue(json, typeReference);
         } catch (Exception e) {
-            throw new UtilsException("-> DTO Object 역직렬화에 실패했습니다!", e);
+            log.error("JSON 역직렬화 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
 
@@ -84,7 +89,8 @@ public final class StrUtils {
         try {
             return objectMapper.readValue(json, type);
         } catch (Exception e) {
-            throw new UtilsException("-> DTO Object 역직렬화에 실패했습니다!", e);
+            log.error("JSON 역직렬화 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
 
@@ -95,7 +101,8 @@ public final class StrUtils {
         try {
             return UriUtils.encode(text, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new UtilsException("-> UTF8 인코딩에 실패했습니다!", e);
+            log.error("UTF8 인코딩 실패. 오류 : {}", e.getMessage());
+            throw new UtilsException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
 
@@ -204,7 +211,17 @@ public final class StrUtils {
             return inet.getHostAddress();
 
         } catch (UnknownHostException e) {
+            log.error("아이피 조회 실패. 오류 : {}", e.getMessage());
             return clientIp;
         }
+    }
+
+    public static String extractFileExt(String originalFilename) {
+        return Objects.isNull(originalFilename) || originalFilename.isBlank() ?
+                "" : originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+    }
+
+    public static Object getUUID() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

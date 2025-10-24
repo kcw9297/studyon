@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  */
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class URL {
+public final class Url {
 
     // base url (entity)
     public static final String INDEX = "/";
@@ -29,6 +29,7 @@ public final class URL {
     public static final String REGISTER = "/register";
     public static final String EDITOR = "/editor";
     public static final String FILE = "/file";
+    public static final String MYPAGE = "/mypage";
 
     // Security
     public static final String LOGIN_PROCESS = LOGIN + "/process";
@@ -44,8 +45,14 @@ public final class URL {
     /* LECTURE */
     public static final String LECTURES_API = API + LECTURES;   //  "/api/lecture"
 
+    /* MYPAGE */
+    public static final String MYPAGE_API = API + MYPAGE;
+
     /* HOME */
     public static final String HOME_API = API + HOME;    //  "/api/home"
+
+    /* ADMIN */
+    public static final String ADMIN_HOME_API = API + ADMIN + HOME;  // "/api/admin/home"
 
     // 정적 상수 모음
     public static final String[] STATIC_RESOURCE_PATHS = {

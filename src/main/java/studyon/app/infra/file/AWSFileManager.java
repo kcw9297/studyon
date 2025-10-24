@@ -1,6 +1,7 @@
 package studyon.app.infra.file;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -10,23 +11,27 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import studyon.app.common.constant.Env;
-import studyon.app.common.enums.Entity;
-import studyon.app.common.enums.FileType;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.ManagerException;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.domain.file.FileDTO;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.UUID;
+
+
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-24) : kcw97 예외 처리방식 변경
+ */
 
 /**
  * AWS S3 스토리지 조작 메소드 처리 클래스
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 
 @Profile(Env.PROFILE_PROD)
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AWSFileManager implements FileManager {
@@ -41,15 +46,14 @@ public class AWSFileManager implements FileManager {
 
 
     @Override
-    public FileDTO.Upload upload(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
+    public void upload(FileDTO.Upload rq) {
 
         try {
 
-            // [1] 업로드 파일 DTO 생성 및 저장 경로 생성
-            FileDTO.Upload dto = mapToDto(file, entityId, entity, fileType);
-
+            // [1] 저장 경로 생성
+            MultipartFile file = rq.getFile();
             String key = // 저장 경로 (key : 저장 경로 + 파일명)
-                    "%s/%s".formatted(entity.getName(), dto.getStoreName());
+                    "%s/%s".formatted(rq.getEntity().getName(), rq.getStoreName());
 
             // [2] S3 업로드 요청 객체 생성
             PutObjectRequest request = PutObjectRequest.builder()
@@ -61,47 +65,22 @@ public class AWSFileManager implements FileManager {
 
             // [3] S3 업로드
             s3.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-            return dto;
+
 
         } catch (Exception e) {
-            throw new ManagerException("AWS S3 파일 업로드에 실패했습니다!", e);
+            log.error(StrUtils.createLogStr(this.getClass(), "AWS S3 파일 업로드에 실패! 원인 : %s".formatted(e.getMessage())));
+            throw new ManagerException(AppStatus.SERVER_ERROR, e);
         }
     }
-
-    // 파일 업로드정보 DTO 매핑
-    private FileDTO.Upload mapToDto(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
-
-        // [1] 업로드에 필요한 파일 정보 생성
-        String originalName = file.getOriginalFilename();
-        String ext = Objects.isNull(originalName) || originalName.isBlank() ?
-                "" : originalName.substring(originalName.lastIndexOf(".") + 1);
-        String storeName = "%s.%s".formatted(UUID.randomUUID().toString(), ext);
-        String filePath = "%s/%s/%s".formatted(cloudFrontDomain, entity.getName(), storeName);
-
-
-        // [2] 업로드 정보 DTO 생성 및 반환
-        return FileDTO.Upload.builder()
-                .originalName(originalName)
-                .storeName(storeName)
-                .ext(ext)
-                .size(file.getSize())
-                .entityId(entityId)
-                .entity(entity)
-                .fileType(fileType)
-                .filePath(filePath)
-                .build();
-    }
-
-
 
 
 
     @Override
-    public byte[] download(String storeName, Entity entity) {
+    public byte[] download(String storeName, String entityName) {
 
         try {
             // [1] 파일 경로 (key : 저장 경로 + 파일명)
-            String key = "%s/%s".formatted(entity.getName(), storeName);
+            String key = "%s/%s".formatted(entityName, storeName);
 
             // [2] S3 스토리지에 저장된 파일 다운로드 요청 (InputStream)
             ResponseInputStream<GetObjectResponse> getRes = s3.getObject(
@@ -115,16 +94,17 @@ public class AWSFileManager implements FileManager {
             return getRes.readAllBytes();
 
         } catch (Exception e) {
-            throw new ManagerException("AWS S3 파일 다운로드에 실패했습니다!", e);
+            log.error(StrUtils.createLogStr(this.getClass(), "AWS S3 파일 다운로드 실패! 원인 : %s".formatted(e.getMessage())));
+            throw new ManagerException(AppStatus.SERVER_ERROR, e);
         }
     }
 
 
     @Override
-    public void remove(String storeName, Entity entity) {
+    public void remove(String storeName, String entityName) {
 
         // [1] 파일 경로 (key : 저장 경로 + 파일명)
-        String key = "%s/%s".formatted(entity.getName(), storeName);
+        String key = "%s/%s".formatted(entityName, storeName);
 
         // [2] 파일 삭제
         s3.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(key).build());

@@ -1,7 +1,9 @@
 package studyon.app.layer.domain.file;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.FileType;
 import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Entity;
@@ -43,14 +45,17 @@ public class FileDTO {
         @Serial
         private static final long serialVersionUID = 1L;
 
+        @JsonIgnore // JSON 직렬화 제외
+        private transient MultipartFile file;
+
         private String originalName;
         private String storeName;
         private String ext;
         private Long size;
-        private Long entityId;
-        private Entity entity;
-        private FileType fileType;
-        private String filePath;
+        private Long entityId; //  업로드 파일이 속하는 엔티티 고유번호
+        private Entity entity; //  업로드 파일이 속하는 엔티티 타입
+        private FileType fileType; // 파일 유형 (썸네일, 직접업로드, 프로필 이미지, 에디터, ...)
+        private String filePath; // 현재 파일이 저장된 경로
     }
 
 

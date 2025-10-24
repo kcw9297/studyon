@@ -4,53 +4,101 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture_register.css'/>">
-<%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
+<jsp:include page="/WEB-INF/views/page/teacher/navbar.jsp" />
 <div class="lecture-resister-wrapper">
 <div class="resister-title">
   강의등록
 </div>
 <form>
   <label class="resister-description" for="lecture-title">강의 제목</label>
-
   <div class="resister-description">
     <input class="resister-lecture-title" type="text" id="lecture-title" name="lecture-title" required>
   </div>
-  <div class="line-dividebox-10px"></div>
     <label class="resister-description">강의 소개</label>
   <div>
     <textarea class="resister-lecture-description" id="lecture-description" name="lecture-description" required></textarea>
   </div>
-  <div class="line-dividebox-10px"></div>
   <label class="resister-description">강의 대상</label>
   <div>
-    <select class="resister-lecture-target" id="lecture-category" name="lecture-category" required>
+      <select class="resister-lecture-target" id="lecture-category" name="lecture-category" required>
       <option value="">선택하세요</option>
       <option value="programming">고1</option>
       <option value="design">고2</option>
       <option value="marketing">고3</option>
     </select>
   </div>
-  <div class="line-dividebox-10px"></div>
   <label class="resister-description">판매 가격</label>
   <div>
     <input class="resister-lecture-price" type="number" id="lecture-price" name="lecture-price" min="0" required>원
   </div>
-  <div class="line-dividebox-10px"></div>
+
+    <%--
   <label class="resister-description">썸네일 이미지 등록</label>
   <div>
     <input type="file" id="lecture-thumbnail" name="lecture-thumbnail" accept="image/*" required>
   </div>
-  <div class="line-dividebox-10px"></div>
+  --%>
+
   <div>
+
     <label class="resister-description">목차</label>
   </div>
   <button type="button" id="add-lecture-btn">+ 강의 추가</button>
   <div id="lecture-list-box"></div>
+    <div class="submit-box">
+        <button class="submit-button" type="submit">강의 등록하기</button>
+    </div>
 </form>
 </div>
-<div class="submit-box">
-<button class="submit-button" type="submit">강의 등록하기</button>
-</div>
+
+
+<%-- Local Script --%>
+<script src="<c:url value='/js/page/teacher/management_lecture_register.js'/>"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const submitBtn = document.querySelector(".submit-button");
+
+        submitBtn.addEventListener("click", async (e) => {
+            e.preventDefault(); // 폼 기본 제출 막기
+
+            const lecturetitle = document.getElementById("lecture-title").value.trim();
+            const lecturedescription = document.getElementById("lecture-description").value.trim();
+            const lecturecategory = document.getElementById("lecture-category").value;
+            const lectureprice = document.getElementById("lecture-price").value;
+
+            if (!lecturetitle || !lecturedescription || !lecturecategory || !lectureprice) {
+                alert("모든 항목을 입력해주세요.");
+                return;
+            }
+
+            // ✅ form 데이터를 x-www-form-urlencoded 형식으로 인코딩
+            const params = new URLSearchParams();
+            params.append("lectureTitle", lecturetitle);
+            params.append("lectureDescription", lecturedescription);
+            params.append("lectureCategory", lecturecategory);
+            params.append("lecturePrice", lectureprice);
+
+            try {
+                const response = await fetch("/api/teacher/lecture/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: params
+                });
+
+                if (!response.ok) throw new Error("등록 실패");
+
+                const json = await response.json();
+                console.log("✅ 서버 응답:", json);
+                alert("강의 등록이 완료되었습니다!");
+            } catch (err) {
+                console.error("❌ 등록 오류:", err);
+                alert("서버 오류가 발생했습니다.");
+            }
+        });
+    });
+
+</script>
+
 
 <style>
     .TeacherManagement-navbar{
@@ -246,9 +294,4 @@
         box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         transform: translateY(-2px);
     }
-
 </style>
-
-
-<%-- Local Script --%>
-<script src="<c:url value='/js/page/teacher/management_lecture_register.js'/>"></script>

@@ -2,22 +2,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = 4;
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
 
-    const params = new URLSearchParams();
-    params.append("subject", subjectFromJSP);
-    params.append("count", count.toString());
-
-    fetch("/api/lecture/recent", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
+    fetch(`/api/lecture/recent?subject=${subjectFromJSP}&count=${count}`, {
+        method: "GET"
     })
         .then(res => {
             if (!res.ok) throw new Error("HTTP " + res.status);
             return res.json();
         })
         .then(json => {
-            console.log("✅ 최근 강의 데이터:", json.data);
-            renderRecentLectures(json.data);
+            // ⚠️ 문자열을 실제 배열로 변환
+            const parsedData = JSON.parse(json.data);
+            console.log("✅ 최근 강의 데이터:", parsedData);
+            renderRecentLectures(parsedData);
         })
         .catch(err => console.error("최근 강의 데이터 요청 실패:", err));
 

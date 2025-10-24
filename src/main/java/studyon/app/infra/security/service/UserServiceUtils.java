@@ -77,9 +77,9 @@ class UserServiceUtils {
         if (isInactive) {
 
             if (isWithdrawal && isWithdrawalOver)
-                throw new BeforeWithdrawalException("탈퇴전 회원"); // 테스트 메세지 (실제로는 탈퇴복구 로직으로 해야함)
+                throw new BeforeWithdrawalException("탈퇴 전 회원"); // 테스트 메세지 (실제로는 탈퇴복구 로직으로 해야함)
             else if (isWithdrawal)
-                throw new WithdrawalException(Msg.WITHDRAWAL);
+                throw new WithdrawalException("");
         }
 
         // [3] 검증에 성공한 회원 엔티티객체 그대로 반환 (메소드 체이닝)

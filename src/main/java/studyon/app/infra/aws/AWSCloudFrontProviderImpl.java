@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.Env;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.ManagerException;
+import studyon.app.common.utils.StrUtils;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -54,7 +56,8 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
                     .generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyPEM)));
 
         } catch (Exception e) {
-            throw new ManagerException("AWSManager 초기화 실패!", e);
+            log.error(StrUtils.createLogStr(this.getClass(), "AWSManager 초기화 실패! 원인 : %s".formatted(e.getMessage())));
+            throw new ManagerException(AppStatus.SERVER_ERROR, e);
         }
     }
 

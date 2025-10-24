@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture_review.LectureReview;
@@ -125,6 +126,8 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
         WHERE l.lectureId = :id
         """)
     Optional<Lecture> findWithTeacherById(@Param("id") Long lectureId);
+
+    List<Lecture> findByLectureRegisterStatus(LectureRegisterStatus status);
 
 
 }

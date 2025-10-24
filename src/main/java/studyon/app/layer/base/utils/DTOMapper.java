@@ -2,7 +2,10 @@ package studyon.app.layer.base.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
+import studyon.app.common.enums.FileType;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.domain.category.Category;
 import studyon.app.layer.domain.category.CategoryDTO;
 import studyon.app.layer.domain.file.File;
@@ -36,11 +39,12 @@ import studyon.app.layer.domain.teacher.TeacherDTO;
  *  ▶ ver 1.1 (2025-10-17) : khj00 추가 작성(LogDTO toReadDTO() 이후)
  *  ▶ ver 1.2 (2025-10-22) : kcw97 fileDTO 매핑 방식 수정 및 PaymentDetails 삭제
  *  ▶ ver 1.3 (2025-10-23) : kcw97 PaymentRefund 삭제
+ *  ▶ ver 1.4 (2025-10-24) : kcw97 File 엔티티 UploadDTO 매핑로직 추가
  */
 
 /**
  * 특정 객체를 DTO 혹은 Entity 으로의 매핑 로직 처리
- * @version 1.3
+ * @version 1.4
  * @author kcw97
  */
 
@@ -325,13 +329,62 @@ public class DTOMapper {
                 .build();
     }
 
-    public static MemberProfile toMemberProfileDTO(Member member) {
+    public static MemberProfile toMemberProfile(Member member) {
         return MemberProfile.builder()
                 .memberId(member.getMemberId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .provider(member.getProvider())
                 .role(member.getRole())
+                .profileImage(toReadDTO(member.getProfileImage()))
+                .build();
+    }
+
+    public static MemberProfile toMemberProfile(Member member, Teacher teacher) {
+        return MemberProfile.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .provider(member.getProvider())
+                .role(member.getRole())
+                .profileImage(toReadDTO(member.getProfileImage()))
+                .teacherId(teacher.getTeacherId())
+                .build();
+    }
+
+
+    // 파일 업로드 정보 DTO 생성 (파일 저장 전)
+    public static FileDTO.Upload toUploadDTO(MultipartFile file, Long entityId, Entity entity, FileType fileType) {
+
+        // 파일 정보 추출
+        String originalName = file.getOriginalFilename();
+        String ext = StrUtils.extractFileExt(originalName);
+        String storeName = "%s.%s".formatted(StrUtils.getUUID(), ext);
+
+        // 업로드 정보 DTO 생성 및 반환
+        return FileDTO.Upload.builder()
+                .file(file)
+                .originalName(originalName)
+                .storeName(storeName)
+                .ext(ext)
+                .size(file.getSize())
+                .entityId(entityId)
+                .entity(entity)
+                .fileType(fileType)
+                .build();
+    }
+
+
+    public static FileDTO.Upload toUploadDTO(File entity, MultipartFile profileImageFile) {
+        return FileDTO.Upload.builder()
+                .file(profileImageFile)
+                .originalName(entity.getOriginalName())
+                .storeName(entity.getStoreName())
+                .ext(entity.getExt())
+                .size(entity.getSize())
+                .entityId(entity.getEntityId())
+                .entity(entity.getEntity())
+                .fileType(entity.getFileType())
                 .build();
     }
 }

@@ -10,7 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.Param;
-import studyon.app.common.constant.StatusCode;
+import studyon.app.common.enums.AppStatus;
+import studyon.app.common.exception.ManagerException;
 import studyon.app.common.utils.StrUtils;
 
 import java.math.BigDecimal;
@@ -32,7 +33,7 @@ public class PortOnePaymentManager implements PaymentManager {
     private final IamportClient iamportClient;
 
     @Override
-    public int checkPayment(String paymentApiResult) {
+    public void checkPayment(String paymentApiResult) {
 
         try {
             // [1] 클라이언트 결제 결과 JSON 문자열 역직렬화
@@ -43,24 +44,26 @@ public class PortOnePaymentManager implements PaymentManager {
             String impUid = clientResult.getOrDefault(Param.IMP_UID, "");
             IamportResponse<Payment> serverResult = iamportClient.paymentByImpUid(impUid);
 
-            // [3] 상태코드 확인 (code = -1 혹은 1인 경우, 비정상 결과)
+            // [3] 상태코드 확인 (code 값이 0이 아니면 실패)
             // 상태 코드는 정상인 경우, 결제액수 검증 후 결과 코드 반환
-            if (List.of(-1, 1).contains(serverResult.getCode())) {
-                log.warn(StrUtils.createLogStr(this.getClass(), "결제 검증 실패 - 오류 메세지 : %s".formatted(serverResult.getMessage())));
-                return returnErrorCode(serverResult);
+            if (!Objects.equals(serverResult.getCode(), 0)) throwFailException(serverResult);
+            else validatePaymentAmountAndReturnCode(serverResult, clientResult);
 
-            } else {
-                log.warn(StrUtils.createLogStr(this.getClass(), "\n서버 응답 - %s\n클라이언트 응답 - %s".formatted(clientResult.toString(), serverResult.getResponse().toString())));
-                return validatePaymentAmountAndReturnCode(serverResult, clientResult);
-            }
 
-        } catch (Exception e) {
-            return StatusCode.INTERNAL_ERROR;  // 예기치 않은 예외 발생 시, 내부 오류 코드 반환
+        } catch (ManagerException e) {
+            log.error(StrUtils.createLogStr(this.getClass(), "결제 처리 실패! 오류 : %s".formatted(e.getMessage())));
+            throw e;
+        }
+
+        catch (Exception e) {
+            log.error(StrUtils.createLogStr(this.getClass(), "예기치 않은 사유로 결제 처리 실패! 오류 : %s".formatted(e.getMessage())));
+            throw new ManagerException(AppStatus.SERVER_ERROR, e);
         }
     }
 
+
     @Override
-    public int refundAll(String paymentUid, String refundReason) {
+    public void refundAll(String paymentUid, String refundReason) {
 
         try {
 
@@ -71,24 +74,25 @@ public class PortOnePaymentManager implements PaymentManager {
             // [2] 환불 수행 후 결과 반환
             IamportResponse<Payment> serverResult = iamportClient.cancelPaymentByImpUid(cancelData);
 
-            // [3] 결과 확인. 검증 실패 시, 오류 코드 반환
-            if (List.of(-1, 1).contains(serverResult.getCode())) {
-                log.warn(StrUtils.createLogStr(this.getClass(), "환불 요청 실패 - 오류 메세지 : %s".formatted(serverResult.getMessage())));
-                return returnErrorCode(serverResult);
-            }
-
-            // 검증 통과 시 성공 코드 반환
-            return StatusCode.OK;
+            // [3] 상태코드 확인 (code 값이 0이 아니면 실패)
+            // 상태 코드는 정상인 경우, 결제액수 검증 후 결과 코드 반환
+            if (!Objects.equals(serverResult.getCode(), 0)) throwFailException(serverResult);
 
 
-        } catch (Exception e) {
-            return StatusCode.INTERNAL_ERROR; // 예기치 않은 예외 발생 시, 내부 오류 코드 반환
+        } catch (ManagerException e) {
+            log.error(StrUtils.createLogStr(this.getClass(), "환불 처리 실패! 오류 : %s".formatted(e.getMessage())));
+            throw e;
+        }
+
+        catch (Exception e) {
+            log.error(StrUtils.createLogStr(this.getClass(), "예기치 않은 사유로 환불 처리 실패! 오류 : %s".formatted(e.getMessage())));
+            throw new ManagerException(AppStatus.SERVER_ERROR, e);
         }
     }
 
 
-    // 에러 코드 반환
-    private int returnErrorCode(IamportResponse<Payment> serverResult) {
+    // 처리 실패로 인한 예외 반환
+    private void throwFailException(IamportResponse<Payment> serverResult) {
 
         /*
             Iamport 결제는 실패 시 응답 메세지가 정해져 있음 (코드는 실패 시 항상 -1)
@@ -99,17 +103,22 @@ public class PortOnePaymentManager implements PaymentManager {
             5) 필수 파라미터 누락 : "필수 파라미터 누락"
          */
 
+
+        // [1] 오류 메세지 분석
         String message = serverResult.getMessage();
-        if (message.contains("존재하지 않는")) return StatusCode.PAYMENT_INVALID_PAYMENT_UID;
-        if (message.contains("이미 취소된")) return StatusCode.PAYMENT_ALREADY_REFUNDED;
-        if (message.contains("PG사 통신")) return StatusCode.PAYMENT_PG_REQUEST_FAILED;
-        if (message.contains("취소할 수 없는")) return StatusCode.PAYMENT_NOT_AVAILABLE;
-        if (message.contains("필수 파라미터")) return StatusCode.PAYMENT_MISSING_REQUIRED_PARAMETER;
-        return StatusCode.PAYMENT_REQUEST_FAILED;
+        AppStatus appStatus;
+
+        // 오류 메세지별 AppStatus 매칭 수행
+        if (message.contains("존재하지 않는")) appStatus = AppStatus.PAYMENT_INVALID_PAYMENT_UID;
+        else if (message.contains("이미 취소된")) appStatus = AppStatus.PAYMENT_ALREADY_REFUNDED;
+        else appStatus = AppStatus.PAYMENT_LOGIC_FAILED;
+
+        // [2] 예외 던지기
+        throw new ManagerException(appStatus);
     }
 
     // 결제액수 검증
-    private int validatePaymentAmountAndReturnCode(IamportResponse<Payment> serverResult,
+    private void validatePaymentAmountAndReturnCode(IamportResponse<Payment> serverResult,
                                                    Map<String, String> clientResult) {
 
         // [1] 결제 검증 (클라이언트에서 조작이 있었는지 확인)
@@ -117,7 +126,8 @@ public class PortOnePaymentManager implements PaymentManager {
         BigDecimal clientAmount = new BigDecimal(clientResult.getOrDefault(Param.PAID_AMOUNT, ""));
         log.warn(StrUtils.createLogStr(this.getClass(), "결제액수 확인. serverAmount = %.2f, clientAmount = %.2f".formatted(serverAmount, clientAmount)));
 
-        // [2] 결제 액수 확인 후 검증
-        return Objects.equals(serverAmount, clientAmount) ? StatusCode.OK : StatusCode.PAYMENT_INVALID_AMOUNT;
+        // [2] 결제 액수 확인 후 검증. 실패 시 예외 던지기
+        if (!Objects.equals(serverAmount, clientAmount))
+            throw new ManagerException(AppStatus.PAYMENT_INVALID_AMOUNT);
     }
 }

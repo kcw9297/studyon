@@ -2,17 +2,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
     const count = 4;
 
-    const params = new URLSearchParams();
-    params.append("subject", subjectFromJSP);
-    params.append("count", count.toString());
-
-    fetch("/api/lecture/best", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
+    fetch(`/api/lecture/best?subject=${subjectFromJSP}&count=${count}`, {
+        method: "GET",
     })
         .then(res => res.json())
-        .then(json => renderBestLectures(json.data))
+        .then(json => {
+            // ⚠️ 문자열을 실제 배열로 변환
+            const parsedData = JSON.parse(json.data);
+            console.log("✅ 최근 인기 강의 데이터:", parsedData);
+            renderBestLectures(parsedData);
+        })
         .catch(err => console.error("강의 추천 페이지 주간 인기 강의 조회 실패 : " , err));
 
     function renderBestLectures(lectures) {

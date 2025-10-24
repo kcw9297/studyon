@@ -4,15 +4,13 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.web.filter.FormContentFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import studyon.app.common.constant.Env;
-import studyon.app.common.constant.URL;
+import studyon.app.common.constant.Url;
 import studyon.app.common.utils.EnvUtils;
 import studyon.app.layer.base.interceptor.DefaultValueInterceptor;
 
@@ -59,7 +57,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(defaultValueInterceptor).order(1)
-                .excludePathPatterns(URL.STATIC_RESOURCE_PATHS)
+                .excludePathPatterns(Url.STATIC_RESOURCE_PATHS)
                 .excludePathPatterns(allFilePath);
     }
 

@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import studyon.app.common.constant.URL;
-import studyon.app.layer.base.dto.Rest;
+import studyon.app.common.constant.Url;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.member.service.MemberService;
 
@@ -23,7 +22,7 @@ import studyon.app.layer.domain.member.service.MemberService;
 
 @Slf4j
 @RestController
-@RequestMapping(URL.MEMBER_ADMIN_API)
+@RequestMapping(Url.MEMBER_ADMIN_API)
 @RequiredArgsConstructor
 public class AdminMemberRestController {
 
@@ -40,6 +39,6 @@ public class AdminMemberRestController {
         String password = memberService.initPassword(memberId);
         
         // [2] 성공 응답 반환
-        return RestUtils.ok(Rest.Message.of("비밀번호 초기화 성공!"), password);
+        return RestUtils.ok(password);
     }
 }

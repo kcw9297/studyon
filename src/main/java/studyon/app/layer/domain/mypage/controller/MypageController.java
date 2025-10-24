@@ -6,13 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import studyon.app.common.constant.Url;
 import studyon.app.common.enums.View;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.ViewUtils;
 
 @Slf4j
 @Controller
-@RequestMapping("/mypage")
+@RequestMapping(Url.MYPAGE)
 @RequiredArgsConstructor
 public class MypageController {
 
@@ -24,7 +25,7 @@ public class MypageController {
     }
 
     @GetMapping("/account")
-    public String account(Model model) {
+    public String readAccount(Model model) {
         model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/account.jsp");
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }

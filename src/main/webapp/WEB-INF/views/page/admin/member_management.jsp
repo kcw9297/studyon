@@ -67,7 +67,7 @@
             <tr>
                 <td>3</td>
                 <td>김한재</td>
-                <td>pjm@studyon.com</td>
+                <td>khj@studyon.com</td>
                 <td>학생</td>
                 <td>비활성</td>
                 <td>2025-10-15</td>

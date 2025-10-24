@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.member.service;
 
 
+import org.springframework.web.multipart.MultipartFile;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
@@ -37,6 +38,13 @@ public interface MemberService {
     String initPassword(Long memberId);
 
     /**
+     * 프로필 이미지 변경
+     * @param memberId 대상 회원번호
+     * @param profileImageFile 변경 이미지
+     */
+    void editProfileImage(Long memberId, MultipartFile profileImageFile);
+
+    /**
      * 닉네임 변경
      * @param memberId 대상 회원번호
      * @param nickname 변경 닉네임
@@ -55,9 +63,5 @@ public interface MemberService {
      */
     void recover(Long memberId);
 
-    /**
-     * (관리자 통계용) 총 회원 수 반환
-     * @return 총 회원 수
-     */
-    Long readAllMemberCount();
+
 }
