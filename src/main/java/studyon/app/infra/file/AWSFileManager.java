@@ -14,7 +14,6 @@ import studyon.app.common.constant.Env;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.ManagerException;
 import studyon.app.common.utils.StrUtils;
-import studyon.app.layer.domain.file.FileDTO;
 
 
 
@@ -46,14 +45,13 @@ public class AWSFileManager implements FileManager {
 
 
     @Override
-    public void upload(FileDTO.Upload rq) {
+    public String upload(MultipartFile file, String storeName, String entityName) {
 
         try {
 
             // [1] 저장 경로 생성
-            MultipartFile file = rq.getFile();
             String key = // 저장 경로 (key : 저장 경로 + 파일명)
-                    "%s/%s".formatted(rq.getEntity().getName(), rq.getStoreName());
+                    "%s/%s".formatted(entityName, storeName);
 
             // [2] S3 업로드 요청 객체 생성
             PutObjectRequest request = PutObjectRequest.builder()
@@ -63,9 +61,9 @@ public class AWSFileManager implements FileManager {
                     .contentLength(file.getSize())
                     .build();
 
-            // [3] S3 업로드
+            // [3] S3 업로드 후 저장 경로 반환
             s3.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-
+            return "%s/%s".formatted(cloudFrontDomain, key);
 
         } catch (Exception e) {
             log.error(StrUtils.createLogStr(this.getClass(), "AWS S3 파일 업로드에 실패! 원인 : %s".formatted(e.getMessage())));

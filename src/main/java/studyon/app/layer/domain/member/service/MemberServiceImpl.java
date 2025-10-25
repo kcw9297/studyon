@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.*;
 import studyon.app.common.utils.StrUtils;
-import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.file.FileManager;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.common.exception.BusinessLogicException;
@@ -55,7 +54,6 @@ public class MemberServiceImpl implements MemberService {
 
     // 기타 필요 의존성
     private final PasswordEncoder passwordEncoder;
-    private final CacheManager cacheManager;
     private final FileManager fileManager;
 
 
@@ -85,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    @Cacheable(value = "member:profile", key = "#memberId")
+    @Cacheable(value = "member:profile", key = "#memberId") // 캐시 등록
     @Transactional(readOnly = true)
     public MemberProfile readProfile(Long memberId) {
 
@@ -113,6 +111,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @CacheEvict(value = "member:profile" , key = "#memberId") // 캐시 삭제
     public String initPassword(Long memberId) {
 
         // [1] 초기화할 패스워드 문자열 생성
@@ -149,10 +148,10 @@ public class MemberServiceImpl implements MemberService {
                     DTOMapper.toUploadDTO(profileImageFile, memberId, Entity.MEMBER, FileType.PROFILE);
 
             // DB 내 파일정보 생성
-            fileRepository.save(DTOMapper.toEntity(uploadDTO));
+            member.updateProfileImage(fileRepository.save(DTOMapper.toEntity(uploadDTO)));
 
             // 물리적 저장 수행
-            fileManager.upload(uploadDTO);
+            fileManager.upload(profileImageFile, uploadDTO.getStoreName(), uploadDTO.getEntity().getName());
 
 
             // [2-2] 새롭게 존재하면 파일 정보만 갱신
@@ -166,13 +165,14 @@ public class MemberServiceImpl implements MemberService {
             );
 
             // 물리적 파일 덮어쓰기 수행 (같은 파일명으로 재업로드)
-            fileManager.upload(DTOMapper.toUploadDTO(profileImage, profileImageFile));
+            fileManager.upload(profileImageFile, profileImage.getStoreName(), profileImage.getEntity().getName());
         }
     }
 
 
 
     @Override
+    @CacheEvict(value = "member:profile" , key = "#memberId") // 캐시 삭제
     public void editNickname(Long memberId, String nickname) {
         memberRepository
                 .findById(memberId)
@@ -182,6 +182,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @CacheEvict(value = "member:profile" , key = "#memberId") // 캐시 삭제
     public void withdraw(Long memberId) {
         memberRepository
                 .findById(memberId)
@@ -191,6 +192,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @CacheEvict(value = "member:profile" , key = "#memberId") // 캐시 삭제
     public void recover(Long memberId) {
         memberRepository
                 .findById(memberId)

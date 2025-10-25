@@ -52,7 +52,9 @@ public class MemberRestController {
     @PatchMapping("/profile_image")
     public ResponseEntity<?> editProfileImage(HttpSession session, MultipartFile profileImage) {
 
-        // [1] 현재 로그인 회원정보 조회
+        log.warn("editProfileImage 수행");
+
+        // [1] 현재 로그인 회원번호 조회
         Long memberId = SessionUtils.getMemberId(session);
 
         // [2] 회원 프로필 이미지 갱신

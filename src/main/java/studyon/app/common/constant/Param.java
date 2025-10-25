@@ -25,7 +25,6 @@ public class Param {
     public static final String IMP_UID = "imp_uid";
     public static final String PAID_AMOUNT = "paid_amount";
     public static final String PROFILE = "profile";
-    public static final String TEACHER_ID = "teacherId";
 
     // redis key
     public static final String KEY_BACKUP = "BACKUP";

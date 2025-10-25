@@ -7,9 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Env;
 import studyon.app.common.enums.AppStatus;
-import studyon.app.common.enums.Entity;
 import studyon.app.common.exception.ManagerException;
-import studyon.app.layer.domain.file.FileDTO;
+import studyon.app.common.utils.StrUtils;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -45,36 +44,30 @@ public class LocalFileManager implements FileManager {
 
     // TODO 여기 고쳐야함
     @Override
-    public void upload(FileDTO.Upload rq) {
+    public String upload(MultipartFile file, String storeName, String entityName) {
 
         try {
-            // [1] 파일 정보 추출
-            MultipartFile file = rq.getFile();
-            Entity entity = rq.getEntity();
-            String storeName = rq.getStoreName();
 
-
-            // [2] 저장 파일 디렉토리 확인 (없을 시 생성)
-            String uploadPath = "%s/%s/".formatted(fileDir, entity.getName());
+            // [1] 저장 파일 디렉토리 확인 (없을 시 생성)
+            String uploadPath = "%s/%s/".formatted(fileDir, entityName);
             File dir = new File(uploadPath);
             if (!dir.exists()) dir.mkdirs();
 
-            // [3] 파일 검증
+            // [2] 파일 검증
             if (Objects.isNull(file) || file.isEmpty()) {
+                log.error(StrUtils.createLogStr(this.getClass(), "파일이 존재하지 않아 업로드 실패!"));
                 throw new ManagerException(AppStatus.FILE_NOT_FOUND); // 파일이 존재하지 않으면 예외 발생
             }
 
-            // [4] 파일 업로드 & 파일 업로드 정보 DTO 생성 후 반환
+            // [3] 파일 업로드 & 파일 업로드 정보 DTO 생성 후 반환
             file.transferTo(new File("%s/%s".formatted(uploadPath, storeName))); // 파일 업로드
-            rq.setFilePath("%s/%s/%s".formatted(fileDomain, entity.getName(), storeName)); // 파일 경로정보 추가
-
+            return "%s/%s/%s".formatted(fileDomain, entityName, storeName); // 저장한 파일 경로 반환
 
         } catch (ManagerException e) {
-            log.error("파일 업로드 실패! 오류 : {}", e.getMessage());
             throw e;
 
         } catch (Exception e) {
-            log.error("로컬 스토리지 파일 업로드에 실패! 오류 : {}", e.getMessage());
+            log.error(StrUtils.createLogStr(this.getClass(), "로컬 스토리지 파일 업로드에 실패! 오류 : %s".formatted(e.getMessage())));
             throw new ManagerException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
@@ -94,7 +87,7 @@ public class LocalFileManager implements FileManager {
             return Files.readAllBytes(path);
 
         } catch (Exception e) {
-            log.error("로컬 스토리지 파일 업로드에 실패! 오류 : {}", e.getMessage());
+            log.error(StrUtils.createLogStr(this.getClass(), "로컬 스토리지 파일 업로드에 실패! 오류 : %s".formatted(e.getMessage())));
             throw new ManagerException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }
@@ -112,7 +105,7 @@ public class LocalFileManager implements FileManager {
             if (Files.exists(path)) Files.delete(path);
 
         } catch (Exception e) {
-            log.error("로컬 스토리지 파일 업로드에 실패! 오류 : {}", e.getMessage());
+            log.error(StrUtils.createLogStr(this.getClass(), "로컬 스토리지 파일 업로드에 실패! 오류 : %s".formatted(e.getMessage())));
             throw new ManagerException(AppStatus.UTILS_LOGIC_FAILED, e);
         }
     }

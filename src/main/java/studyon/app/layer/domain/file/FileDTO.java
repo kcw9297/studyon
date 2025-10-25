@@ -24,7 +24,10 @@ public class FileDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Read {
+    public static class Read implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
 
         private Long fileId;
         private String originalName;
@@ -33,6 +36,7 @@ public class FileDTO {
         private Long size;
         private Entity entity;
         private FileType fileType;
+        private String filePath; // 현재 파일이 저장된 경로 (도메인 제외)
     }
 
 
@@ -55,7 +59,7 @@ public class FileDTO {
         private Long entityId; //  업로드 파일이 속하는 엔티티 고유번호
         private Entity entity; //  업로드 파일이 속하는 엔티티 타입
         private FileType fileType; // 파일 유형 (썸네일, 직접업로드, 프로필 이미지, 에디터, ...)
-        private String filePath; // 현재 파일이 저장된 경로
+        private String filePath; // 현재 파일이 저장된 경로 (도메인 제외)
     }
 
 

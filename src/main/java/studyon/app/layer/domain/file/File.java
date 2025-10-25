@@ -55,8 +55,11 @@ public class File extends BaseEntity {
     @Column(nullable = false, updatable = false)
     private FileType fileType;
 
+    @Column(nullable = false)
+    private String filePath;
+
     @Builder
-    public File(String originalName, String storeName, String ext, Long size, Long entityId, Entity entity, FileType fileType) {
+    public File(String originalName, String storeName, String ext, Long size, Long entityId, Entity entity, FileType fileType, String filePath) {
         this.originalName = originalName;
         this.storeName = storeName;
         this.ext = ext;
@@ -64,6 +67,7 @@ public class File extends BaseEntity {
         this.entityId = entityId;
         this.entity = entity;
         this.fileType = fileType;
+        this.filePath = filePath;
     }
 
     /* JPA 연관관계 메소드 */
