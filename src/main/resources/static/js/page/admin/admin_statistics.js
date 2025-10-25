@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // [1] 총 회원 수 가져오기
-    fetch(`/api/admin/home/countAllMembers`)
+    fetch(`/admin/api/home/countAllMembers`)
         .then(res => res.json())
         .then(json => {
             //  RestUtils.ok() 구조 고려 필요
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(err => console.error("전체 회원 수 조회 실패:", err));
 
     // [2] 총 강의 수 가져오기
-    fetch(`/api/admin/home/countAllLectures`)
+    fetch(`/admin/api/home/countAllLectures`)
         .then(res => res.json())
         .then(json => {
             if (!json.success) {
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(err => console.error("전체 강의 수 조회 실패:", err));
 
     // [3] 오늘 신규 회원 수 가져오기
-    fetch(`/api/admin/home/countNewMembers`)
+    fetch(`/admin/api/home/countNewMembers`)
         .then(res => res.json())
         .then(json => {
             if (!json.success) {
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(err => console.error("오늘 신규 회원 수 조회 실패:", err));
 
     // [4] 활성 사용자 수 가져오기
-    fetch(`/0api/admin/home/activeMembers`)
+    fetch(`/admin/api/home/activeMembers`)
         .then(res => res.json())
         .then(json => {
             const count = json?.data ?? 0; // data 없으면 json 자체를 숫자로 처리
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // [5] 이번 달 매출 가져오기
-    fetch(`/api/admin/home/totalSales`)
+    fetch(`/admin/api/home/totalSales`)
         .then(res => res.json())
         .then(json => {
             if (!json.success) {
@@ -65,6 +65,40 @@ document.addEventListener("DOMContentLoaded", () => {
             // ".dashboard-card.sales" == <div class="dashboard-card sales" ...>
         })
         .catch(err => console.error("이번달 총 매출액 수 조회 실패:", err));
+
+
+    // [6] TOP 선생님
+    fetch(`/admin/api/home/topTeacher`)
+        .then(res => res.json())
+        .then(json => {
+            if (!json.success) {
+                console.error("이번달 MVP 강사 조회 실패:", json?.message);
+                return;
+            }
+            
+            // 넘어오는 JSON 문자열 -> 실제 객체 전환
+            const teacher = JSON.parse(json.data);
+            // 데이터 없을 경우 예외 처리
+            if (!teacher) {
+                renderCardNumber(".dashboard-card", "topTeacher", "데이터 없음");
+                return;
+            }
+
+            const name = teacher.nickname ?? "(이름 없음)";
+            const sales = teacher.totalSales ?? 0;
+            const month = new Date().getMonth() + 1;
+
+            // [1] 이름 출력
+            renderCardNumber(".dashboard-card", "topTeacher", `${name} 강사`);
+
+            // [2] 매출 정보는 card-sub 수동 갱신
+            const card = document.querySelector('.dashboard-card[data-type="topTeacher"]');
+            const sub = card.querySelector(".card-sub");
+            if (sub) {
+                sub.textContent = `매출 ₩${Number(sales).toLocaleString()} (${month}월 기준)`;
+            }
+        })
+        .catch(err => console.error("이번달 MVP 강사 조회 실패:", err));
 
 
 

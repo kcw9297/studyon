@@ -52,7 +52,8 @@ public final class Url {
     public static final String HOME_API = API + HOME;    //  "/api/home"
 
     /* ADMIN */
-    public static final String ADMIN_HOME_API = API + ADMIN + HOME;  // "/api/admin/home"
+    public static final String ADMIN_API = ADMIN + API;  // "/admin/api/home"
+    public static final String ADMIN_HOME_API = ADMIN_API + HOME;
 
     // 정적 상수 모음
     public static final String[] STATIC_RESOURCE_PATHS = {

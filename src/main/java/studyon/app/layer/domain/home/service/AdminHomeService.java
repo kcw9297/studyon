@@ -41,6 +41,11 @@ public interface AdminHomeService {
      * (관리자 통계용) 선생님 별 매출 액수
      * @return 선생님 별 매출액수
      */
-    List<PaymentDTO.Read> calculateMonthlySales();
+    List<PaymentDTO.TeacherSales> calculateMonthlySales();
 
+    /**
+     * (관리자 통계용) TOP 선생님
+     * @return 해당 선생님 정보
+     */
+    PaymentDTO.TeacherSales selectTopTeacher();
 }
