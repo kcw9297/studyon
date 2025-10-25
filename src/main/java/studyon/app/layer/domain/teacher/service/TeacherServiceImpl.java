@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.enums.AppStatus;
+import studyon.app.common.enums.Difficulty;
 import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
@@ -98,29 +100,24 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @Transactional(readOnly = true)
-    public TeacherDTO.LectureListResponse getLectureListByTeacher(Long teacherId, Long memberId) {
+    public TeacherDTO.LectureListResponse getLectureListByTeacher(Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
-        // 강의 조회
-        List<Lecture> pending = lectureRepository.findByLectureRegisterStatus(LectureRegisterStatus.PENDING);
-        List<Lecture> registered = lectureRepository.findByLectureRegisterStatus(LectureRegisterStatus.REGISTERED);
-        List<Lecture> unregistered = lectureRepository.findByLectureRegisterStatus(LectureRegisterStatus.UNREGISTERED);
-
-        // ✅ 엔티티 → DTO 변환 (직렬화 안전)
-        List<TeacherDTO.LectureListResponse.LectureSimple> pendingDto = mapToLectureSimpleList(pending);
-        List<TeacherDTO.LectureListResponse.LectureSimple> registeredDto = mapToLectureSimpleList(registered);
-        List<TeacherDTO.LectureListResponse.LectureSimple> unregisteredDto = mapToLectureSimpleList(unregistered);
+        List<Lecture> pending = lectureRepository.findByTeacherAndLectureRegisterStatus(teacher, LectureRegisterStatus.PENDING);
+        List<Lecture> registered = lectureRepository.findByTeacherAndLectureRegisterStatus(teacher, LectureRegisterStatus.REGISTERED);
+        List<Lecture> unregistered = lectureRepository.findByTeacherAndLectureRegisterStatus(teacher, LectureRegisterStatus.UNREGISTERED);
 
 
         return TeacherDTO.LectureListResponse.builder()
                 .teacherId(teacherId)
                 .nickname(teacher.getMember().getNickname())
-                .pending(pendingDto)
-                .registered(registeredDto)
-                .unregistered(unregisteredDto)
+                .pending(mapToLectureSimpleList(pending))
+                .registered(mapToLectureSimpleList(registered))
+                .unregistered(mapToLectureSimpleList(unregistered))
                 .build();
     }
+
 
     private List<TeacherDTO.LectureListResponse.LectureSimple> mapToLectureSimpleList(List<Lecture> lectures) {
         return lectures.stream()
@@ -131,6 +128,35 @@ public class TeacherServiceImpl implements TeacherService {
                         .build())
                 .toList();
     }
+
+    @Override
+    public LectureDTO.Register registerLecture(LectureDTO.Register dto){
+        Teacher teacher = teacherRepository.findById(dto.getTeacherId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
+
+        Lecture lecture = Lecture.builder()
+                .teacher(teacher)
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .price(dto.getPrice().doubleValue())
+                .subject(Subject.valueOf(dto.getCategory().toUpperCase()))
+                .difficulty(Difficulty.STANDARD)
+                .build();
+
+        lectureRepository.save(lecture);
+
+        return LectureDTO.Register.builder()
+                .teacherId(teacher.getTeacherId())
+                .title(lecture.getTitle())
+                .description(lecture.getDescription())
+                .category(dto.getCategory())
+                .price(dto.getPrice())
+                .build();
+    }
+
+
+
+
 
 
 }

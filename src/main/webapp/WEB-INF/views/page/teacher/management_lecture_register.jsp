@@ -79,7 +79,7 @@
             params.append("lecturePrice", lectureprice);
 
             try {
-                const response = await fetch("/api/teacher/lecture/register", {
+                const response = await fetch("/api/teachers/lecture/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: params

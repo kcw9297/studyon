@@ -79,4 +79,16 @@ public class LectureDTO {
         private String keyword;
         private Subject subject;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Register {
+        private Long teacherId;
+        private String title;
+        private String description;
+        private String category;
+        private Integer price;
+    }
 }

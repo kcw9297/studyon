@@ -57,6 +57,6 @@ public interface LectureService {
      * @return 해당 선생님 최신 강의 리스트
      */
     List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
-
+    LectureDTO.Register registerLecture(LectureDTO.Register dto);
 
 }

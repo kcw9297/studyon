@@ -5,10 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import studyon.app.common.enums.AppStatus;
+import studyon.app.common.enums.Difficulty;
 import studyon.app.common.enums.Subject;
+import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.utils.DTOMapper;
+import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
+import studyon.app.layer.domain.teacher.Teacher;
+import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +35,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class LectureServiceImpl implements LectureService {
     private final LectureRepository lectureRepository;
+    private final TeacherRepository teacherRepository;
 
     /** 최근 강의 리스트 불러오는 메소드
      * @param subject 과목
@@ -125,4 +132,30 @@ public class LectureServiceImpl implements LectureService {
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public LectureDTO.Register registerLecture(LectureDTO.Register dto) {
+        Teacher teacher = teacherRepository.findById(dto.getTeacherId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
+
+        Lecture lecture = Lecture.builder()
+                .teacher(teacher)
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .price(dto.getPrice().doubleValue())
+                .subject(Subject.valueOf(dto.getCategory().toUpperCase())) // ENUM 매핑
+                .difficulty(Difficulty.STANDARD)
+                .build();
+
+        lectureRepository.save(lecture);
+
+        return LectureDTO.Register.builder()
+                .teacherId(teacher.getTeacherId())
+                .title(lecture.getTitle())
+                .description(lecture.getDescription())
+                .category(dto.getCategory())
+                .price(dto.getPrice())
+                .build();
+    }
+
 }
