@@ -32,6 +32,7 @@ public final class Url {
     public static final String MYPAGE = "/mypage";
 
     // Security, auth, account
+    public static final String OAUTH2 = "/oauth2";
     public static final String LOGIN = "/login";
     public static final String LOGIN_PROCESS = LOGIN + "/process";
     public static final String LOGOUT = "/logout";

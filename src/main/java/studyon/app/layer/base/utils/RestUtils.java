@@ -19,11 +19,12 @@ import java.util.Map;
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
  *  ▶ ver 1.1 (2025-10-24) : kcw97 정적 메소드 버그 수정 및 파라미터 변경
+ *  ▶ ver 1.2 (2025-10-25) : kcw97 jsonOK, jsonFail 메소드명 변경
  */
 
 /**
  * REST API 응답 유틸 클래스
- * @version 1.1
+ * @version 1.2
  * @author kcw97
  */
 
@@ -32,7 +33,7 @@ import java.util.Map;
 public class RestUtils {
 
 
-    public static void jsonOK(HttpServletResponse response, String redirect) {
+    public static void writeJsonOK(HttpServletResponse response, String redirect) {
 
         try {
             writeJson(response, HttpServletResponse.SC_OK, StrUtils.toJson(Rest.Response.ok(redirect)));
@@ -44,7 +45,7 @@ public class RestUtils {
     }
 
 
-    public static void jsonOK(HttpServletResponse response, AppStatus appStatus) {
+    public static void writeJsonOK(HttpServletResponse response, AppStatus appStatus) {
 
         try {
             writeJson(response, HttpServletResponse.SC_OK, StrUtils.toJson(Rest.Response.ok(appStatus)));
@@ -55,7 +56,7 @@ public class RestUtils {
         }
     }
 
-    public static void jsonOK(HttpServletResponse response, AppStatus appStatus, String redirect) {
+    public static void writeJsonOK(HttpServletResponse response, AppStatus appStatus, String redirect) {
 
         try {
             writeJson(response, HttpServletResponse.SC_OK, StrUtils.toJson(Rest.Response.ok(appStatus, redirect)));
@@ -67,7 +68,7 @@ public class RestUtils {
     }
 
 
-    public static void jsonFail(HttpServletResponse response, AppStatus appStatus) {
+    public static void writeJsonFail(HttpServletResponse response, AppStatus appStatus) {
 
         try {
             writeJson(response, appStatus.getHttpCode(), StrUtils.toJson(Rest.Response.fail(appStatus)));
@@ -78,7 +79,7 @@ public class RestUtils {
         }
     }
 
-    public static void jsonFail(HttpServletResponse response, AppStatus appStatus, String redirect) {
+    public static void writeJsonFail(HttpServletResponse response, AppStatus appStatus, String redirect) {
 
         try {
             writeJson(response, appStatus.getHttpCode(), StrUtils.toJson(Rest.Response.fail(appStatus, redirect)));
@@ -112,7 +113,7 @@ public class RestUtils {
     }
 
     public static ResponseEntity<?> ok(Object data, AppStatus appStatus) {
-        return new ResponseEntity<>(Rest.Response.ok(StrUtils.toJson(data), appStatus), HttpStatus.OK);
+        return new ResponseEntity<>(Rest.Response.ok(data, appStatus), HttpStatus.OK);
     }
 
     public static ResponseEntity<?> ok(AppStatus appStatus, String redirect) {
@@ -127,8 +128,8 @@ public class RestUtils {
         return new ResponseEntity<>(Rest.Response.fail(appStatus, redirect), getStatus(appStatus));
     }
 
-    public static ResponseEntity<?> fail(AppStatus appStatus, Map<String, String> fieldErrors) {
-        return new ResponseEntity<>(Rest.Response.fail(appStatus, fieldErrors), getStatus(appStatus));
+    public static ResponseEntity<?> fail(AppStatus appStatus, Map<String, String> inputErrors) {
+        return new ResponseEntity<>(Rest.Response.fail(appStatus, inputErrors), getStatus(appStatus));
     }
 
     public static ResponseEntity<?> fail(AppStatus appStatus, String errorField, String errorMessage) {

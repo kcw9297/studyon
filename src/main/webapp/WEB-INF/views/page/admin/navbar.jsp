@@ -4,7 +4,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/navbar.css'/>">
 
 <div class="nav-bar">
-    <div class="nav-item ${param.active == 'dashboard' ? 'active' : ''}" onclick="location.href='/admin/main'">대시보드</div>
+    <div class="nav-item ${param.active == 'dashboard' ? 'active' : ''}" onclick="location.href='/admin'">대시보드</div>
     <div class="nav-item ${param.active == 'member' ? 'active' : ''}" onclick="location.href='/admin/member_management'">회원관리</div>
     <div class="nav-item ${param.active == 'teacher' ? 'active' : ''}" onclick="location.href='/admin/teacher_management'">강사관리</div>
     <div class="nav-item ${param.active == 'support' ? 'active' : ''}" onclick="location.href='/admin/support'">고객상담</div>

@@ -133,7 +133,7 @@ public class SessionUtils {
 
         // [2] 세션이 조회되지 않으면 HOME 주소 반환
         if (Objects.isNull(session)) return Url.INDEX;
-        Object attr = session.getAttribute(Param.REDIRECT_URL);
+        Object attr = session.getAttribute(Param.REDIRECT);
 
         return Objects.isNull(attr) ? Url.INDEX : (String) attr;
     }
