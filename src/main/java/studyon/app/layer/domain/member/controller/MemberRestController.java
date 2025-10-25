@@ -39,13 +39,10 @@ public class MemberRestController {
     @GetMapping("/profile")
     public ResponseEntity<?> readProfile(HttpSession session) {
 
-        // [1] 현재 로그인 회원정보 조회
-        Long memberId = SessionUtils.getMemberId(session);
+        // [1] 회원 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
 
-        // [2] 회원 프로필 조회
-        MemberProfile profile = memberService.readProfile(memberId);
-
-        // [3] 데이터 반환
+        // [2] 데이터 반환
         return RestUtils.ok(profile);
     }
 

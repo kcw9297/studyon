@@ -2,14 +2,13 @@ package studyon.app.layer.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import studyon.app.common.enums.AppStatus;
-import studyon.app.common.enums.Entity;
-import studyon.app.common.enums.FileType;
-import studyon.app.common.enums.Role;
+import studyon.app.common.enums.*;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.file.FileManager;
@@ -59,6 +58,7 @@ public class MemberServiceImpl implements MemberService {
     private final CacheManager cacheManager;
     private final FileManager fileManager;
 
+
     @Override
     @Transactional(readOnly = true)
     public MemberDTO.Read read(Long memberId) {
@@ -85,6 +85,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Cacheable(value = "member:profile", key = "#memberId")
     @Transactional(readOnly = true)
     public MemberProfile readProfile(Long memberId) {
 
@@ -129,6 +130,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @CacheEvict(value = "member:profile" , key = "#memberId") // 캐시 삭제
     public void editProfileImage(Long memberId, MultipartFile profileImageFile) {
 
         // [1] 회원 데이터 조회

@@ -47,18 +47,6 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public void saveProfile(Long memberId, Object profile) {
-        setJsonValue(Cache.MEMBER_PROFILE, memberId, profile);
-    }
-
-
-    @Override
-    public void removeProfile(Long memberId) {
-        deleteValue(Cache.MEMBER_PROFILE, memberId);
-    }
-
-
-    @Override
     public void recordLatestSearch(Long memberId, String keyword) {
 
         // [1] Key

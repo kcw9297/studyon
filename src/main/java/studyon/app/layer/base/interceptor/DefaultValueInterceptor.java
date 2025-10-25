@@ -18,7 +18,6 @@ import studyon.app.common.utils.EnvUtils;
 import studyon.app.common.utils.SecurityUtils;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.aws.AWSCloudFrontProvider;
-import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.service.MemberService;
@@ -43,7 +42,6 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
 
     private final Environment env;
     private final ObjectProvider<AWSCloudFrontProvider> awsCloudFrontProviderProvider;
-    private final CacheManager cacheManager;
     private final MemberService memberService;
 
     @Value("${file.domain}")
@@ -96,17 +94,10 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
 
         // [1] 프로필 조회
         Long memberId = SessionUtils.getMemberId(request);
-        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        MemberProfile profile = memberService.readProfile(memberId);
         log.warn("profile = {}", profile);
 
-        // [2] 프로필이 없는 경우, 회원정보 조회 후 새로운 회원 프로필 정보 삽입
-        if (Objects.isNull(profile)) {
-            profile = memberService.readProfile(memberId);
-            log.warn("newProfile = {}", profile);
-            cacheManager.saveProfile(memberId, profile);
-            SessionUtils.setAttribute(request, Param.PROFILE, profile);
-        }
-        SessionUtils.setAttribute(request, Param.TEACHER_ID, profile.getTeacherId());
+        SessionUtils.setAttribute(request, Param.PROFILE, profile);
         request.setAttribute("loginMemberEmail", profile.getEmail());
     }
 

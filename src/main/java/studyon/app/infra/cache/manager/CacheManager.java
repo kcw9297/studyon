@@ -29,18 +29,6 @@ public interface CacheManager {
      */
     void removeLogout(Long memberId);
 
-    /**
-     * 회원의 프로필 정보 저장
-     * @param memberId 대상 회원번호
-     * @param profile 회원 프로필 정보 객체
-     */
-    void saveProfile(Long memberId, Object profile);
-
-    /**
-     * 프로필 정보 제거 (회원탈퇴, 회원정보 수정 등의 사유)
-     * @param memberId 삭제 대상 회원번호
-     */
-    void removeProfile(Long memberId);
 
     /**
      * 최근에 검색한 강의 검색어 기록
