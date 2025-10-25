@@ -39,7 +39,7 @@ public class Member extends BaseEntity {
 
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_image")
+    @JoinColumn(name = "profile_image_id")
     private File profileImage;
 
     @Column(length = 100)

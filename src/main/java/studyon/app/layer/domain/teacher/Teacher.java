@@ -3,8 +3,11 @@ package studyon.app.layer.domain.teacher;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.entity.BaseEntity;
+import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.member.Member;
 
 /*
@@ -28,6 +31,16 @@ public class Teacher extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teacherId;
 
+    @OnDelete(action = OnDeleteAction.CASCADE) // 회원 삭제될 시 함께 삭제
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_image_id")
+    private File profileImage;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -45,15 +58,9 @@ public class Teacher extends BaseEntity {
     private Double averageRating;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
-
-
     @Builder
-    public Teacher(Subject subject, String description, Long teacherId, Member member) {
+    private Teacher(Member member, Subject subject, String description) {
         this.member = member;
-        this.teacherId = teacherId;
         this.subject = subject;
         this.description = description;
 
@@ -62,11 +69,14 @@ public class Teacher extends BaseEntity {
         this.totalStudents = 0L;
     }
 
-    /**
-     * 갱신 로직 - 선생님 전용 페이지
-     * @param subject 과목
-     * @param description 소개
-     */
+    // 선생님 생성 (초기엔 아무 값도 없음)
+    public static Teacher create(Subject subject, Member member) {
+        return new Teacher(member, subject, "");
+    }
+
+
+
+    /* JPA 연관관계 매서드 */
     public void updateInfo(Subject subject, String description) {
         this.subject = subject;
         this.description = description;
