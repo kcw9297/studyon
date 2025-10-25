@@ -1,5 +1,6 @@
 package studyon.app.layer.domain.teacher.repository;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import studyon.app.common.enums.Subject;
@@ -37,6 +38,9 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
         WHERE t.member.memberId = :memberId
     """)
     Optional<Teacher> findByMemberIdWithMemberAndProfileImage(Long memberId);
+
+    @Query("SELECT t FROM Teacher t JOIN FETCH t.member WHERE t.member.memberId = :memberId")
+    Optional<Teacher> findByMember_MemberId(@Param("memberId") Long memberId);
 
 
 }

@@ -5,10 +5,11 @@
 <div id="nicknameModal" class="nickname-modal">
     <div class="nickname-modal-content">
         <h2>닉네임 수정</h2>
-        <input type="text" id="nicknameInput" placeholder="새 닉네임을 입력하세요">
+        <input type="text" id="nicknameInput" name="nickname" placeholder="변경할 닉네임을 입력하세요">
+        <div id="nicknameError" style="color: red;"></div>
         <div class="modal-buttons">
-            <button id="saveNicknameBtn">저장</button>
-            <button id="closeNicknameBtn">취소</button>
+            <button id="saveNicknameBtn" onclick="editNickname()">저장</button>
+            <button id="closeNicknameBtn" onclick="closeNicknameModal()">취소</button>
         </div>
     </div>
 </div>
@@ -109,3 +110,74 @@
 
 
 </style>
+
+<script>
+
+    // 닉네임 수정 함수
+    async function editNickname() {
+
+        try {
+
+            // REST API 요청
+            const nickname = document.getElementById("nicknameInput").value;
+            const form = new FormData();
+            form.append("nickname", nickname);
+
+            const res = await fetch("/api/members/nickname", {
+                headers: {'X-Requested-From': window.location.pathname + window.location.search},
+                method: "PATCH",
+                body: form
+            });
+
+            // JSON 데이터 파싱
+            const rp = await res.json();
+            console.log("서버 응답:", rp);
+
+            // 요청 실패 처리
+            if (!res.ok || !rp.success) {
+
+                // 로그인이 필요한 경우
+                if (rp.statusCode === 401) {
+
+                    // 로그인 필요 안내 전달
+                    if (confirm(rp.message || "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+                        window.location.href = rp.redirect || "/login";
+                    }
+
+                    // 로직 중단
+                    return;
+                }
+
+                // 권한이 부족한 경우
+                if (rp.statusCode === 403) {
+                    alert(rp.message || "접근 권한이 없습니다.");
+                    return;
+                }
+
+                // 유효성 검사에 실패한 경우
+                if (rp.inputErrors) {
+                    Object.entries(rp.inputErrors).forEach(([field, message]) => {
+                        const errorElem = document.getElementById(`\${field}Error`);
+                        if (errorElem) errorElem.textContent = message;
+                    });
+                    return;
+                }
+
+                // 기타 예기치 않은 오류가 발생한 경우
+                alert(rp.message || "서버 오류가 발생했습니다. 잠시 후에 시도해 주세요.");
+                return;
+            }
+
+            // 닉네임 변경
+            alert(rp.message || "닉네임을 변경했습니다.")
+            const nicknameElem = document.querySelector(".mypage-info-nickname");
+            if (nicknameElem) nicknameElem.textContent = nickname || "닉네임";
+            closeNicknameModal();
+
+        } catch (error) {
+            console.error("닉네임 변경 실패:", error);
+        }
+    }
+
+
+</script>

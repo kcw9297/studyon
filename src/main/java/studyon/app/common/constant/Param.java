@@ -12,7 +12,7 @@ public class Param {
     public static final String APPLICATION_JSON = "application/json";
     public static final String UTF_8 = "UTF-8";
     public static final String OAUTH2 = "oauth2";
-    public static final String REDIRECT_URL = "redirectUrl";
+    public static final String REDIRECT = "redirect";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String JSESSIONID = "JSESSIONID";

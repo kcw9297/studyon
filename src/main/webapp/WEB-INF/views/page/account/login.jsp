@@ -21,6 +21,7 @@
     <input type="text" name="email" placeholder="이메일">
     <div class="password-box">
         <input type="password" name="password" placeholder="비밀번호">
+        <input type="hidden" name="redirect" value="${param.redirect}"> <%-- 쿼리스트링 중, "rediect" 주소를 담아 보냄 --%>
         <span class="toggle">
             <img src="<c:url value='/img/png/eyeoff.png'/>" alt="비밀번호 보기" />
         </span>

@@ -45,12 +45,13 @@ public enum AppStatus {
     SECURITY_INACTIVATED(403, "현재 정지된 상태입니다. 관리자에게 문의하세요."),
     SECURITY_WITHDRAWAL(403, "이미 탈퇴처리된 회원입니다."),
     SECURITY_LOGIN_REQUIRED(401, "로그인이 필요한 서비스입니다. 로그인 하시겠습니까?"),
-    SECURITY_INVALID_REQUEST(403, "잘못된 요청입니다."),
+    SECURITY_ACCESS_DENIED(403, "잘못된 요청입니다."),
 
     /* 회원 상태 */
     MEMBER_NOT_FOUND(500, "이미 탈퇴했거나 존재하지 않는 회원 정보입니다"),
     MEMBER_DUPLICATE_NICKNAME(500, "이미 가입한 닉네임입니다."),
     MEMBER_DUPLICATE_EMAIL(500, "이미 가입한 이메일입니다."),
+    MEMBER_OK_EDIT_NICKNAME(200, "닉네임을 변경했습니다."),
 
 
     /* 선생님 상태 */

@@ -6,12 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.Param;
 import studyon.app.common.constant.Url;
+import studyon.app.common.enums.AppStatus;
+import studyon.app.common.enums.Role;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.security.dto.CustomUserDetails;
 import studyon.app.layer.base.utils.RestUtils;
@@ -31,9 +30,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CustomNormalLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    // 이전 요청을 저장하고 있는 Cache
-    private final RequestCache requestCache = new HttpSessionRequestCache();
-
     // 회원 정보를 기반으로 프로필 정보 저장
     private final CacheManager cacheManager;
 
@@ -49,11 +45,15 @@ public class CustomNormalLoginSuccessHandler extends SimpleUrlAuthenticationSucc
         cacheManager.recordLogin(memberId, sessionId);
         SessionUtils.setAttribute(request, Param.MEMBER_ID, memberId);
 
-        // [3] RequestCache 내 SavedRequest 조회
-        SavedRequest savedRequest = requestCache.getRequest(request, response);
+        // [3] URL 내 redirect 파라미터 조회
+        String redirect = request.getParameter(Param.REDIRECT);
 
-        // [4] 만일 이전에 접근한 주소가 있으면, 그 주소로 Redirect
-        String redirectUrl = Objects.isNull(savedRequest) ? Url.INDEX : savedRequest.getRedirectUrl();
-        RestUtils.jsonOK(response, redirectUrl);
+        // [4] redirect 여부, 관리자 여부 판단 후 응답 반환
+        if (userDetails.getAuthorities().stream().anyMatch(authority -> Objects.equals(authority.getAuthority(), Role.ROLE_ADMIN.name())))
+            RestUtils.writeJsonOK(response, Url.ADMIN); // 관리자는 어드민 홈으로 이동
+
+        else if (Objects.nonNull(redirect)) RestUtils.writeJsonOK(response, redirect); // 돌아갈 url이 있는 경우
+        else RestUtils.writeJsonOK(response, Url.INDEX); // 돌아갈 곳이 없는 경우, 기본 홈으로 이동
     }
+
 }

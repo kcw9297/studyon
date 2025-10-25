@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.infra.security.exception.WithdrawalException;
-import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
 
 import java.io.IOException;
@@ -50,19 +49,19 @@ public class CustomNormalLoginFailedHandler implements AuthenticationFailureHand
         // [2] 오류 상황 전달
         // 일반 회원의 이메일이 존재하지 않거나, 이메일과 비밀번호가 일치하지 않은 경우
         if (rootCause instanceof UsernameNotFoundException || rootCause instanceof BadCredentialsException)
-            RestUtils.jsonFail(response, AppStatus.SECURITY_INCORRECT_USERNAME_PASSWORD);
+            RestUtils.writeJsonFail(response, AppStatus.SECURITY_INCORRECT_USERNAME_PASSWORD);
 
         // 회원 탈퇴가 완료된 회원인 경우
         else if (rootCause instanceof WithdrawalException)
-            RestUtils.jsonFail(response, AppStatus.SECURITY_WITHDRAWAL);
+            RestUtils.writeJsonFail(response, AppStatus.SECURITY_WITHDRAWAL);
 
         // 정지된 회원인 경우
         else if (rootCause instanceof DisabledException)
-            RestUtils.jsonFail(response, AppStatus.SECURITY_INACTIVATED);
+            RestUtils.writeJsonFail(response, AppStatus.SECURITY_INACTIVATED);
 
         // 그 밖의 기타 예기치 않은 오류로 실패한 경우
         else
-            RestUtils.jsonFail(response, AppStatus.SECURITY_INACTIVATED);
+            RestUtils.writeJsonFail(response, AppStatus.SECURITY_INACTIVATED);
 
     }
 
