@@ -101,7 +101,7 @@ public class RestUtils {
     }
 
     public static ResponseEntity<?> ok() {
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(Rest.Response.ok(), HttpStatus.OK);
     }
 
     public static ResponseEntity<?> ok(AppStatus appStatus) {

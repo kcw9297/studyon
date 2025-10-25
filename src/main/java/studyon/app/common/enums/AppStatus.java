@@ -40,7 +40,7 @@ public enum AppStatus {
     PAYMENT_LOGIC_FAILED(500, "결제에 실패했습니다. 잠시 후에 다시 시도해 주세요."),
 
     /* Spring Security 처리 상태 */
-    SECURITY_INCORRECT_USERNAME_PASSWORD(403, "아이디와 비밀번호가 일치하지 않습니다"),
+    SECURITY_INCORRECT_USERNAME_PASSWORD(400, "이메일과 비밀번호가 일치하지 않습니다"),
     SECURITY_OATH2_AUTHENTICATION_FAILED(500, "소셜로그인 정보조회에 실패했습니다. 잠시 후에 시도해 주세요"),
     SECURITY_INACTIVATED(403, "현재 정지된 상태입니다. 관리자에게 문의하세요."),
     SECURITY_WITHDRAWAL(403, "이미 탈퇴처리된 회원입니다."),

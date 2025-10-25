@@ -18,14 +18,15 @@
     <img class="login-logo" src="<c:url value='/img/png/logo_login.png'/>" alt="로그인로고" />
 
 <form class="login-form" action="<c:url value='/login/process'/>" method="post">
-    <input type="text" name="email" placeholder="이메일">
+    <input type="text" id="email" name="email" placeholder="이메일">
     <div class="password-box">
-        <input type="password" name="password" placeholder="비밀번호">
+        <input type="password" id="password" name="password" placeholder="비밀번호">
         <input type="hidden" name="redirect" value="${param.redirect}"> <%-- 쿼리스트링 중, "rediect" 주소를 담아 보냄 --%>
         <span class="toggle">
             <img src="<c:url value='/img/png/eyeoff.png'/>" alt="비밀번호 보기" />
         </span>
     </div>
+    <div id="loginError" style="color: red;"></div>
     <div class="divider-login"></div>
     <button type="submit">로그인</button>
 </form>
