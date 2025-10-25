@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.LectureRegisterStatus;
+import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
@@ -77,26 +79,18 @@ public class TeacherRestController {
     }
 
     @GetMapping("/management/lecturelist")
-    public ResponseEntity<?> getTeacherManagement(Model model, HttpServletRequest request) {
-        log.info("티쳐 api");
+    public ResponseEntity<?> getTeacherLectureList(HttpServletRequest request) {
         Long memberId = SessionUtils.getMemberId(request);
-        Teacher teacher = teacherRepository.findByMemberIdWithMemberAndProfileImage(memberId).get();
-        Long teacherId = teacher.getTeacherId();
-        log.info(teacherId.toString());
-        List<Lecture> pendingLectures = lectureRepository.findByLectureRegisterStatus(LectureRegisterStatus.PENDING);
-        List<Lecture> registeredLectures = lectureRepository.findByLectureRegisterStatus(LectureRegisterStatus.REGISTERED);
-        List<Lecture> unregisteredLectures = lectureRepository.findByLectureRegisterStatus(LectureRegisterStatus.UNREGISTERED);
-        log.info(registeredLectures.toString());
-        log.info(unregisteredLectures.toString());
-        log.info(pendingLectures.toString());
-        Map<String, Object> response = new HashMap<>();
-        response.put("teacherId", teacherId);
-        response.put("pending", pendingLectures);
-        response.put("registered", registeredLectures);
-        response.put("unregistered", unregisteredLectures);
+        Long teacherId = SessionUtils.getTeacherId(request.getSession());
 
-        return RestUtils.ok(response);
+        if (teacherId == null) {
+            return RestUtils.fail(AppStatus.SESSION_EXPIRED);
+        }
 
-
+        TeacherDTO.LectureListResponse response = teacherService.getLectureListByTeacher(teacherId, memberId);
+        return RestUtils.ok(response); // ✅ JSON 변환 안전함
     }
+
+
+
 }

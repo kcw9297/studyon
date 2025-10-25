@@ -2,6 +2,9 @@ package studyon.app.layer.domain.teacher;
 
 import lombok.*;
 import studyon.app.common.enums.Subject;
+import studyon.app.layer.domain.lecture.Lecture;
+
+import java.util.List;
 
 /*
  * [수정 이력]
@@ -68,5 +71,27 @@ public class TeacherDTO {
         // private String filter; // "subject"
         private String keyword;
         private Subject subject;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class LectureListResponse {
+        private Long teacherId;
+        private String nickname;
+        private List<LectureSimple> pending;
+        private List<LectureSimple> registered;
+        private List<LectureSimple> unregistered;
+
+        @Data
+        @Builder
+        @AllArgsConstructor
+        @NoArgsConstructor(access = AccessLevel.PACKAGE)
+        public static class LectureSimple {
+            private Long lectureId;
+            private String title;
+            private String status;
+        }
     }
 }

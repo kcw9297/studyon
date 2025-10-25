@@ -81,6 +81,11 @@ public class SessionUtils {
         return Objects.isNull(attr) ? null : (Long) attr;
     }
 
+    public static Long getTeacherId(HttpSession session) {
+        Object attrTeacherId = session.getAttribute(Param.TEACHER_ID);
+        return Objects.isNull(attrTeacherId) ? null : (Long) attrTeacherId;
+    }
+
 
     public static MemberProfile getProfile(HttpSession session) {
         Object attr = session.getAttribute(Param.PROFILE);

@@ -98,6 +98,8 @@
             const res = await fetch("/api/teachers/management/lecturelist");
             const data = await res.json();
 
+            console.log("서버응답", data);
+
             console.log("강사 ID:", data.teacherId);
             console.log("등록대기 강의:", data.pending);
             console.log("등록완료 강의:", data.registered);

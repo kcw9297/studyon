@@ -151,21 +151,21 @@
             const profile = JSON.parse(response.data);
             console.log("📥 사용자 프로필:", profile);
 
-            // ✅ 닉네임
+            // 닉네임
             const nicknameElem = document.querySelector(".mypage-info-nickname");
             if (nicknameElem) nicknameElem.textContent = profile.nickname || "닉네임 없음";
 
-            // ✅ 프로필 이미지
+            // 프로필 이미지
             const imgElem = document.querySelector(".mypage-profile");
             if (imgElem) {
                 imgElem.src = profile.imageUrl || "<c:url value='/img/png/menhera.png'/>";
             }
 
-            // ✅ 이메일 (첫 번째 account-chapter 안의 p)
+            // 이메일 (첫 번째 account-chapter 안의 p)
             const emailElem = document.querySelector(".account-report .account-chapter:nth-child(1) .account-text p");
             if (emailElem) emailElem.textContent = profile.email || "이메일 없음";
 
-            // ✅ 비밀번호 (보안상 실제 비밀번호는 안 주지만, 마스킹)
+            // 비밀번호 (보안상 실제 비밀번호는 안 주지만, 마스킹)
             const passwordElem = document.querySelector(".account-report .account-chapter:nth-child(2) .account-text p");
             if (passwordElem) passwordElem.textContent = "••••••••";
 
