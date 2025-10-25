@@ -12,13 +12,20 @@
                     <span>프로필 사진 변경</span>
                 </div>
             </div>
+
+            <!-- 파일 선택용 숨김 input -->
+            <input type="file" id="editProfileImage" accept="image/*" style="display:none;">
         </div>
+
         <div class="mypage-info-nickname-box">
             <div class="mypage-info-nickname">지후</div>
             <button class="mypage-nickname-edit-button">✏️</button>
         </div>
     </div>
 </section>
+
+
+
 
 <section class="account-report">
     <div class="title">기본 정보</div>
@@ -46,6 +53,12 @@
 
 
 <style>
+
+    <%-- 추가된 부분 이후에 우리 스타일에 맞게 변경 요구 --%>
+
+
+    <%-- 추가된 부분 이후에 우리 스타일에 맞게 변경 요구 --%>
+
     .mypage-info-container {
         width: 100%;
         padding: 10px;
@@ -125,9 +138,12 @@
 
 
 
-<script src="<c:url value='/js/mypage/account.js'/>"></script>
+<script src="<c:url value='/js/page/mypage/account.js'/>"></script>
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
+
+        /* 프로필 정보 불러오기 */
+
         try {
             console.log("✅ account.js 로드됨");
 
@@ -158,7 +174,8 @@
             // 프로필 이미지
             const imgElem = document.querySelector(".mypage-profile");
             if (imgElem) {
-                imgElem.src = profile.imageUrl || "<c:url value='/img/png/menhera.png'/>";
+                imgElem.src = profile.profileImage ?
+                    `${fileDomain}/\${profile.profileImage.filePath}` : "<c:url value='/img/png/default_member_profile_image.png'/>";
             }
 
             // 이메일 (첫 번째 account-chapter 안의 p)
@@ -172,5 +189,95 @@
         } catch (error) {
             console.error("❌ 프로필 로드 실패:", error);
         }
+
+
+
+        /* 프로필 이미지 수정 */
+
+        // 프로필 이미지 변경
+        const profileWrapper = document.querySelector(".mypage-profile-wrapper");
+        const profileOverlay = document.querySelector(".mypage-profile-overlay");
+        const inputFile = document.getElementById("editProfileImage");
+        const allowedExt = ["png", "jpg", "jpeg", "webp"];
+
+        // 오버레이 클릭 시 파일 선택 창 열기
+        if (profileWrapper && inputFile) {
+            profileWrapper.addEventListener("click", () => {
+                inputFile.click();
+            });
+
+            // 파일 선택 시 이벤트
+            inputFile.addEventListener("change", (e) => {
+
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // meme 타입 검사
+                if (!file.type.startsWith("image/")) {
+                    alert("이미지 파일만 선택 가능합니다.");
+                    return;
+                }
+
+                // 파일 확장자 검사
+                const fileExt = file.name.split(".").pop().toLowerCase();
+                if (!allowedExt.includes(fileExt)) {
+                    alert("PNG, JPG, JPEG 형식의 정적 이미지 파일만 업로드 가능합니다.");
+                    inputFile.value = ""; // 선택 초기화
+                    return;
+                }
+
+                // 파일 크기 검사
+                const maxSize = 5 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    alert("파일 크기는 5MB 이하여야 합니다.");
+                    return;
+                }
+
+                editProfileImage(file);
+            });
+        }
+
+
     });
+
+
+
+    async function editProfileImage(file) {
+
+        try {
+
+            // REST API 요청
+            const form = new FormData();
+            form.append("profileImage", file);
+
+            const res = await fetch("/api/members/profile_image", {
+                method: "PATCH",
+                body: form
+            });
+
+            if (!res.ok) {
+
+                if (res.status === 401) {
+                    alert("로그인이 필요합니다.");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                throw new Error("서버 오류가 발생했습니다.");
+            }
+
+            // 프로필 이미지
+            const imgElem = document.querySelector(".mypage-profile");
+            if (imgElem) {
+                imgElem.src =
+                    URL.createObjectURL(file) || "<c:url value='/img/png/default_member_profile_image.png'/>";
+            }
+
+
+        } catch (error) {
+            console.error("프로필 로드 실패:", error);
+        }
+
+    }
+
 </script>

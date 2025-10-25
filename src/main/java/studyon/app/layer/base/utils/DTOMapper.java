@@ -76,6 +76,7 @@ public class DTOMapper {
                 .entityId(dto.getEntityId())
                 .entity(dto.getEntity())
                 .fileType(dto.getFileType())
+                .filePath(dto.getFilePath())
                 .build();
     }
 
@@ -179,18 +180,6 @@ public class DTOMapper {
                 .lastLoginAt(entity.getLastLoginAt())
                 .cdate(entity.getCdate())
                 .provider(entity.getProvider())
-                .build();
-    }
-
-    public static FileDTO.Read toReadDTO(File entity) {
-
-        return FileDTO.Read.builder()
-                .fileId(entity.getFileId())
-                .originalName(entity.getOriginalName())
-                .storeName(entity.getStoreName())
-                .ext(entity.getExt())
-                .size(entity.getSize())
-                .entity(entity.getEntity())
                 .build();
     }
 
@@ -365,6 +354,7 @@ public class DTOMapper {
         String originalName = file.getOriginalFilename();
         String ext = StrUtils.extractFileExt(originalName);
         String storeName = "%s.%s".formatted(StrUtils.getUUID(), ext);
+        String filePath = "%s/%s".formatted(entity.getName(), storeName);
 
         // 업로드 정보 DTO 생성 및 반환
         return FileDTO.Upload.builder()
@@ -376,20 +366,23 @@ public class DTOMapper {
                 .entityId(entityId)
                 .entity(entity)
                 .fileType(fileType)
+                .filePath(filePath)
                 .build();
     }
 
 
-    public static FileDTO.Upload toUploadDTO(File entity, MultipartFile profileImageFile) {
-        return FileDTO.Upload.builder()
-                .file(profileImageFile)
+    public static FileDTO.Read toReadDTO(File entity) {
+
+        return FileDTO.Read.builder()
+                .fileId(entity.getFileId())
                 .originalName(entity.getOriginalName())
                 .storeName(entity.getStoreName())
                 .ext(entity.getExt())
                 .size(entity.getSize())
-                .entityId(entity.getEntityId())
                 .entity(entity.getEntity())
                 .fileType(entity.getFileType())
+                .filePath(entity.getFilePath())
                 .build();
     }
+
 }

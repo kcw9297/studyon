@@ -40,12 +40,12 @@ spring:
     hibernate:
       ddl-auto: update #update
 
-    show-sql: true
+    show-sql: false
 
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
+        show_sql: false
+        format_sql: false
 
 # ===============================
 # profile - prod

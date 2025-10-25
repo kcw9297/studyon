@@ -86,7 +86,7 @@ public class Lecture extends BaseEntity {
 
     @Builder
     public Lecture(String title, String description, Double price,
-                   Difficulty difficulty, Teacher teacher) {
+                   Difficulty difficulty, Teacher teacher,Subject subject) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -99,9 +99,12 @@ public class Lecture extends BaseEntity {
         this.averageRate = 0.00;
         this.likeCount = 0L;
         this.onSale = false;
+        this.subject = subject;
 
         this.teacher = teacher;
-        this.lectureRegisterStatus = LectureRegisterStatus.UNREGISTERED;
+        this.lectureRegisterStatus = (lectureRegisterStatus != null)
+                ? lectureRegisterStatus
+                : LectureRegisterStatus.UNREGISTERED;
     }
 
     @Override
