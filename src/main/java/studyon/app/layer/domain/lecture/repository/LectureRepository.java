@@ -129,7 +129,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     Optional<Lecture> findWithTeacherById(@Param("id") Long lectureId);
 
     List<Lecture> findByTeacherAndLectureRegisterStatus(Teacher teacher, LectureRegisterStatus status);
-
+    Long countByTeacher_TeacherId(Long teacherId);
 
 
 }

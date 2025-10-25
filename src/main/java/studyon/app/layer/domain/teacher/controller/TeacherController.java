@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.teacher.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.service.TeacherService;
 
 import java.util.List;
+import java.util.Objects;
 
 
 /*
@@ -93,60 +95,52 @@ public class TeacherController {
     }
 
     @GetMapping("/management/profile")
-    public String teacherManagementProfile(Model model, HttpServletRequest request) {
-
-        Long memberId = SessionUtils.getMemberId(request);
-        if (memberId == null) {
-            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /login");
-            return "redirect:/login";
+    public String teacherManagementProfile(Model model, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        if (Objects.isNull(profile)) {
+            log.warn("⚠️ 비로그인 접근 → redirect to /");
+            return "redirect:%s".formatted(Url.INDEX);
         }
-        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        log.info("🎓 [강사 프로필 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
         model.addAttribute("profile", profile);
-        log.info(profile.toString());
         return ViewUtils.returnView(model, View.TEACHER, "management_profile");
     }
 
-    @GetMapping("/management/lectureregister")
-    public String lectureregister(Model model, HttpServletRequest request) {
 
-        Long memberId = SessionUtils.getMemberId(request);
-        if (memberId == null) {
-            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /login");
-            return "redirect:/login";
+    @GetMapping("/management/lectureregister")
+    public String lectureregister(Model model, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        if (Objects.isNull(profile)) {
+            log.warn("⚠️ 비로그인 접근 → redirect to /");
+            return "redirect:%s".formatted(Url.INDEX);
         }
-        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        log.info("🎓 [강의 등록 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
         model.addAttribute("profile", profile);
-        log.info(profile.toString());
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture_register");
     }
 
+
     @GetMapping("/management/lecturelist")
-    public String lectureList(Model model, HttpServletRequest request) {
-
-        Long memberId = SessionUtils.getMemberId(request);
-        if (memberId == null) {
-            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /login");
-            return "redirect:/login";
+    public String lectureList(Model model, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        if (Objects.isNull(profile)) {
+            log.warn("⚠️ 비로그인 접근 → redirect to /");
+            return "redirect:%s".formatted(Url.INDEX);
         }
-
-        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
         model.addAttribute("profile", profile);
-        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", memberId, profile.getNickname());
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture");
     }
 
     @GetMapping("/management/lectureinfo")
-    public String lectureinfo(Model model, HttpServletRequest request) {
-
-        Long memberId = SessionUtils.getMemberId(request);
-        if (memberId == null) {
-            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /login");
-            return "redirect:/login";
+    public String lectureinfo(Model model, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        if (Objects.isNull(profile)) {
+            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /");
+            return "redirect:%s".formatted(Url.INDEX);
         }
-
-        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
         model.addAttribute("profile", profile);
-        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", memberId, profile.getNickname());
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture_info");
     }
 }
