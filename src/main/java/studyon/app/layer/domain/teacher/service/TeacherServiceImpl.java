@@ -13,6 +13,7 @@ import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
+import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
@@ -154,9 +155,30 @@ public class TeacherServiceImpl implements TeacherService {
                 .build();
     }
 
+    @Override
+    public TeacherDTO.TeacherManagementProfile readProfile(Long memberId) {
+//        Teacher teacher = teacherRepository.findByMember_MemberId(memberId)
+//                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
+        Teacher teacher = teacherRepository.findByMemberIdWithMemberAndProfileImage(memberId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
+        Member member = teacher.getMember();
+        Long lectureCount = lectureRepository.countByTeacher_TeacherId(teacher.getTeacherId());
 
-
-
+        return TeacherDTO.TeacherManagementProfile.builder()
+                .teacherId(teacher.getTeacherId())
+                .memberId(member.getMemberId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .description(teacher.getDescription())
+                .subject(teacher.getSubject())
+                .lectureCount(lectureCount)
+                .totalStudent(teacher.getTotalStudents())
+                .averageRating(teacher.getAverageRating())
+                .profileImageUrl(
+                        teacher.getProfileImage() != null ? teacher.getProfileImage().getFilePath() : null
+                )
+                .build();
+    }
 
 
 }

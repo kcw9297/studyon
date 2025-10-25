@@ -1,8 +1,12 @@
 package studyon.app.layer.domain.teacher.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +27,9 @@ import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 import studyon.app.layer.domain.teacher.service.TeacherService;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,5 +122,49 @@ public class TeacherRestController {
         return RestUtils.ok("강의가 등록되었습니다.");
     }
 
+    @GetMapping("/management/profile")
+    public ResponseEntity<?> getTeacherProfile(HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherMemberId = profile.getMemberId();
+        TeacherDTO.TeacherManagementProfile response = teacherService.readProfile(teacherMemberId);
+        return RestUtils.ok(response);
+
+        //가져올 정보 : 강사명, 강사 이메일, 강사 프로필, 강의 수, 수강생 수, 평균 평점
+    }
+
+    @GetMapping("/management/profile/image")
+    public ResponseEntity<Resource> getTeacherProfileImage(HttpSession session) {
+        // [1] 세션에서 프로필 정보 가져오기
+        MemberProfile profile = SessionUtils.getProfile(session);
+
+        if (profile == null || profile.getProfileImage() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            // [2] 실제 파일 경로 (C:PROJECT_FILE/member/xxxx.jpg)
+            String filePath = "C:/PROJECT_FILE/" + profile.getProfileImage().getFilePath();
+            Path path = Paths.get(filePath);
+
+            if (!Files.exists(path)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // [3] 파일 리소스 생성
+            Resource resource = new UrlResource(path.toUri());
+
+            // [4] Content-Type 지정
+            String contentType = Files.probeContentType(path);
+            if (contentType == null) contentType = "image/jpeg";
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .body(resource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
 }

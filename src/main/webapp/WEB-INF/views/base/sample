@@ -1,0 +1,21 @@
+<img src="<c:url value='/img/png/upload.png'/>" class="svg-upload">
+
+navbar
+<%@ include file="/WEB-INF/views/page/teacher/navbar.jsp" %>
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+        try{
+           const res = await fetch("/api/teachers/management/profile");
+           const result = await res.json();
+           const data = JSON.parse(result.data);
+           console.log(data);
+
+           const teacherName = document.querySelector(".teacher-info-box .teacher-name")
+            teacherName.textContent = data.memberId;
+
+
+        }catch{
+
+        }
+    })

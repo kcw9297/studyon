@@ -94,4 +94,21 @@ public class TeacherDTO {
             private String status;
         }
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class TeacherManagementProfile{
+        private Long teacherId;
+        private Long memberId;
+        private String nickname;
+        private String email;
+        private String description;
+        private Subject subject;
+        private String profileImageUrl;
+        private Long lectureCount;
+        private Long totalStudent;
+        private Double averageRating;
+    }
 }
