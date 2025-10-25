@@ -143,8 +143,12 @@
                 throw new Error("서버 오류가 발생했습니다.");
             }
 
-            // ✅ JSON 데이터 파싱
-            const profile = await res.json();
+            // JSON 데이터 파싱
+            const response = await res.json();
+            console.log("📥 서버 응답:", response);
+
+            //  data 필드(문자열)를 다시 파싱
+            const profile = JSON.parse(response.data);
             console.log("📥 사용자 프로필:", profile);
 
             // ✅ 닉네임

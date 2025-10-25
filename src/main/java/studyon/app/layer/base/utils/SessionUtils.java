@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import studyon.app.common.constant.Param;
 import studyon.app.common.constant.Url;
+import studyon.app.layer.domain.member.MemberProfile;
 
 import java.util.Objects;
 
@@ -76,10 +77,15 @@ public class SessionUtils {
 
 
     public static Long getMemberId(HttpSession session) {
-        Object attrMemberId = session.getAttribute(Param.MEMBER_ID);
-        return Objects.isNull(attrMemberId) ? null : (Long) attrMemberId;
+        Object attr = session.getAttribute(Param.MEMBER_ID);
+        return Objects.isNull(attr) ? null : (Long) attr;
     }
 
+
+    public static MemberProfile getProfile(HttpSession session) {
+        Object attr = session.getAttribute(Param.PROFILE);
+        return Objects.isNull(attr) ? null : (MemberProfile) attr;
+    }
 
     public static <T> T getValue(HttpServletRequest request, String paramName) {
 

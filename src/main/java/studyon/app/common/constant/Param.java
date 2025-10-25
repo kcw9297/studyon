@@ -18,6 +18,7 @@ public class Param {
     public static final String JSESSIONID = "JSESSIONID";
     public static final String SESSION = "SESSION";
     public static final String MEMBER_ID = "memberId";
+    public static final String TEACHER_ID = "teacherId";
     public static final String ERROR = "error";
     public static final String ROLE = "role";
     public static final String MSG = "msg";
