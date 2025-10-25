@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import studyon.app.common.constant.Env;
 import studyon.app.common.constant.Param;
 import studyon.app.common.constant.Url;
+import studyon.app.common.enums.Role;
 import studyon.app.infra.security.handler.*;
 import studyon.app.infra.security.provider.CustomDaoAuthenticationProvider;
 import studyon.app.infra.security.service.CustomNormalUserService;
@@ -53,12 +54,13 @@ public class SecurityConfig {
     private static final String URL_OAUTH2_REDIRECT = "/login/oauth2/code/*"; // OAuth2 REDIRECT URL
 
     // Spring Security url pattern
-    private static final String PATTERN_ALL = "/**";
-    private static final String TEACHER_ALL = Url.TEACHER + PATTERN_ALL; // 선생님 관리 페이지
-    private static final String TEACHERS_ALL = Url.TEACHERS + PATTERN_ALL;
-    private static final String ADMIN_ALL = Url.ADMIN + PATTERN_ALL;
-    private static final String LECTURES_ALL = Url.LECTURES + PATTERN_ALL;
-    private static final String WEBSOCKET_ALL = "/ws" + PATTERN_ALL;
+    private static final String AUTH_ALL = Url.AUTH + "/**";
+    private static final String TEACHER_ALL = Url.TEACHER + "/**"; // 선생님 관리 페이지
+    private static final String TEACHERS_ALL = Url.TEACHERS + "/**";
+    private static final String ADMIN_ALL = Url.ADMIN + "/**";
+    private static final String LECTURES_ALL = Url.LECTURES + "/**";
+    private static final String WEBSOCKET_ALL = "/ws" + "/**";
+    private static final String LOGIN_ALL = Url.LOGIN + "/**";
 
     // 접근을 모두 허용할 주소 (정적 자원 제외)
     public static final String[] PERMIT_ALL =
@@ -67,6 +69,7 @@ public class SecurityConfig {
                     Url.MEMBERS, Url.MEMBER_API,
                     LECTURES_ALL, TEACHERS_ALL, WEBSOCKET_ALL
             };
+
 
     // Spring Security CSRF ignore URL (로그인, 로그아웃은 검증 제외)
     public static final String[] CSRF_IGNORE_URLS = {
@@ -91,7 +94,7 @@ public class SecurityConfig {
     // 초기화 메소드
     @PostConstruct
     public void init() {
-        this.fileAll = fileDomain + PATTERN_ALL;
+        this.fileAll = fileDomain + "/**";
     }
 
     /*
@@ -137,6 +140,16 @@ public class SecurityConfig {
                         //.requestMatchers("/test/**", "/file/**").permitAll() // 테스트 URL
                         //.requestMatchers(TEACHER_ALL).permitAll()//.hasRole(Role.ROLE_TEACHER.getRoleName()) // 선생님 페이지
                         //.requestMatchers(ADMIN_ALL).hasRole(Role.ROLE_ADMIN.getRoleName()) // 관리자 페이지
+
+                        // 관리자 페이지 - 관리자만 접근 가능
+                        .requestMatchers(ADMIN_ALL).hasAuthority(Role.ROLE_ADMIN.name())
+
+                        // 마이페이지 - 학생만 접근 가능
+                        .requestMatchers(Url.MYPAGE, Url.MYPAGE_API).hasAuthority(Role.ROLE_STUDENT.name())
+
+                        // 로그인, 회원가입 - 익명 사용자만 접근 가능 (로그아웃 사용자)
+                        .requestMatchers(LOGIN_ALL).anonymous()
+
                         //.anyRequest().authenticated() // 그 외의 요청은 인증된 사용자만 허용 (로그인 회원에게만)
                         .anyRequest().permitAll()
                 )
@@ -149,7 +162,6 @@ public class SecurityConfig {
                         .loginProcessingUrl(Url.LOGIN_PROCESS) // 로그인 처리 페이지
                         .successHandler(customNormalLoginSuccessHandler) // 로그인 성공처리 핸들러
                         .failureHandler(customNormalLoginFailedHandler) // 로그인 실패처리 핸들러
-                        .permitAll() // 로그인 페이지는 모두 허용
                 )
 
                 /*
@@ -168,7 +180,6 @@ public class SecurityConfig {
                         .userInfoEndpoint(endpoint -> endpoint.userService(customSocialUserService))
                         .successHandler(customSocialLoginSuccessHandler) // 로그인 성공처리 핸들러
                         .failureHandler(customSocialLoginFailedHandler) // 로그인 실패처리 핸들러
-                        .permitAll() // 로그인 페이지는 모두 허용
                 )
 
                 // 로그아웃 설정

@@ -17,8 +17,6 @@ public final class Url {
     public static final String HOME = "/home";
     public static final String API = "/api";
     public static final String ADMIN = "/admin";
-    public static final String LOGIN = "/login";
-    public static final String LOGOUT = "/logout";
     public static final String TEACHER = "/teacher";
     public static final String TEACHERS =  "/teachers";
     public static final String LECTURE = "/lecture";
@@ -27,12 +25,18 @@ public final class Url {
     public static final String MEMBERS = "/members";
     public static final String SUBJECT = "/subject";
     public static final String REGISTER = "/register";
+    public static final String JOIN = "/join";
+    public static final String AUTH = "/auth";
     public static final String EDITOR = "/editor";
     public static final String FILE = "/file";
     public static final String MYPAGE = "/mypage";
 
-    // Security
+    // Security, auth
+    public static final String LOGIN = "/login";
     public static final String LOGIN_PROCESS = LOGIN + "/process";
+    public static final String LOGOUT = "/logout";
+
+
 
     /* MEMBER */
     public static final String MEMBER_API = API + MEMBERS;
@@ -60,5 +64,4 @@ public final class Url {
             "/WEB-INF/**", "/css/**", "/js/**", "/img/**",
             "/favicon.ico", "/webjars/**", "/.well-known/**", "/error/**"
     };
-
 }
