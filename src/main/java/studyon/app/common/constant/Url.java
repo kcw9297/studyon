@@ -31,10 +31,11 @@ public final class Url {
     public static final String FILE = "/file";
     public static final String MYPAGE = "/mypage";
 
-    // Security, auth
+    // Security, auth, account
     public static final String LOGIN = "/login";
     public static final String LOGIN_PROCESS = LOGIN + "/process";
     public static final String LOGOUT = "/logout";
+    public static final String JOIN_MAIL = JOIN + "/mail";
 
 
 

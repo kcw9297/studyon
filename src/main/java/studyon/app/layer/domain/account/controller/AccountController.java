@@ -23,11 +23,16 @@ public class AccountController {
 
     @GetMapping(Url.LOGIN)
     public String login(Model model) {
-        return ViewUtils.returnView(model, View.ACCOUNT, "login");
+        return "page/account/login";
     }
 
     @GetMapping(Url.JOIN)
     public String join(Model model) {
-        return ViewUtils.returnView(model, View.ACCOUNT, "join");
+        return "page/account/join";
+    }
+
+    @GetMapping(Url.JOIN_MAIL)
+    public String joinMail(Model model) {
+        return "page/account/join_mail";
     }
 }
