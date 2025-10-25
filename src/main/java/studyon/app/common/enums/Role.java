@@ -23,11 +23,11 @@ public enum Role {
     ROLE_TEACHER("TEACHER", "선생님"),
     ROLE_ADMIN("ADMIN", "관리자");
 
-    private final String roleName;
+    private final String role;
     private final String value;
 
-    Role(String roleName, String value) {
-        this.roleName = roleName;
+    Role(String role, String value) {
+        this.role = role;
         this.value = value;
     }
 

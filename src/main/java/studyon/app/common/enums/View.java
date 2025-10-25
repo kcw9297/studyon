@@ -25,7 +25,8 @@ public enum View {
     ADMIN("admin"),
     PLAYER("lecture_video"),
     RESISTER("resister"),
-    PAYMENT("payment");
+    PAYMENT("payment"),
+    ACCOUNT("account");
 
 
     private final String value;

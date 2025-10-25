@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import studyon.app.common.constant.Param;
 import studyon.app.common.enums.Role;
 import studyon.app.layer.domain.chat.Chat;
 import studyon.app.layer.domain.chat.repository.ChatRepository;
@@ -37,7 +36,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         log.info("🔗 WebSocket 연결됨 / memberId={} / role={}", memberId, role);
 
-        if (Objects.equals(role, Role.ROLE_ADMIN.getRoleName())) {
+        if (Objects.equals(role, Role.ROLE_ADMIN.getRole())) {
             adminSession = session;
             log.info("✅ 관리자 연결 완료: {}", memberId);
         } else {
@@ -82,12 +81,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
 
         JSONObject data = new JSONObject();
-        data.put("type", Objects.equals(role, Role.ROLE_ADMIN.getRoleName()) ? "ADMIN" : "STUDENT");
+        data.put("type", Objects.equals(role, Role.ROLE_ADMIN.getRole()) ? "ADMIN" : "STUDENT");
         data.put("sender", memberId);
         data.put("msg", msg);
         data.put("roomId", roomId);
 
-        if (Objects.equals(role, Role.ROLE_STUDENT.getRoleName())) {
+        if (Objects.equals(role, Role.ROLE_STUDENT.getRole())) {
             if (adminSession != null && adminSession.isOpen()) {
                 Object currentRoom = adminSession.getAttributes().get("currentRoomId");
                 if (Objects.equals(currentRoom, roomId)) {
@@ -99,7 +98,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             }
         }
 
-        else if (Objects.equals(role, Role.ROLE_ADMIN.getRoleName())) {
+        else if (Objects.equals(role, Role.ROLE_ADMIN.getRole())) {
             chatRoomRepository.findById(roomId).ifPresent(room -> {
                 Long targetMemberId = room.getUserId(); // 🔹 ChatRoom이 Member를 FK로 가지고 있어야 함
                 WebSocketSession userSession = userSessions.get(targetMemberId);
