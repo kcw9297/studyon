@@ -98,7 +98,7 @@ public class MemberServiceImpl implements MemberService {
 
             // 선생님 정보 조회
             Teacher teacher = teacherRepository
-                    .findById(memberId)
+                    .findByMemberIdWithMemberAndProfileImage(memberId)
                     .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
             // 선생님 프로필 정보 반환

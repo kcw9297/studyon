@@ -80,7 +80,7 @@ public class TeacherRestController {
     public ResponseEntity<?> getTeacherManagement(Model model, HttpServletRequest request) {
         log.info("티쳐 api");
         Long memberId = SessionUtils.getMemberId(request);
-        Teacher teacher = teacherRepository.findByMemberMemberId(memberId).get();
+        Teacher teacher = teacherRepository.findByMemberIdWithMemberAndProfileImage(memberId).get();
         Long teacherId = teacher.getTeacherId();
         log.info(teacherId.toString());
         List<Lecture> pendingLectures = lectureRepository.findByLectureRegisterStatus(LectureRegisterStatus.PENDING);
