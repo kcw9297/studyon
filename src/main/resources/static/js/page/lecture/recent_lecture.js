@@ -44,20 +44,25 @@ document.addEventListener("DOMContentLoaded", () => {
         // 비동기 데이터 렌더링 단계
         lectures.forEach(recentLecture => {
             const item = document.createElement("div");
+
+            const detailUrl = `/lecture/detail/${recentLecture.lectureId}`;
+
             item.classList.add("recent-lecture-item");
 
             item.innerHTML = `
-        <img src="/img/png/sample1.png" alt="강의이미지">
-        <div class="lecture-info">
-          <p class="lecture-title">${recentLecture.title}</p>
-          <p class="lecture-info-text">${recentLecture.nickname}</p>
-          <p class="lecture-info-text">₩${Number(recentLecture.price).toLocaleString()}</p>
-          <p class="lecture-info-text">
-            ⭐ ${recentLecture.averageRate ?? "0.0"}
-            🧸 ${recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents}
-          </p>
-        </div>
-      `;
+            <a href="${detailUrl}">
+                <img src="/img/png/sample1.png" alt="강의이미지">
+                <div class="lecture-info">
+                  <p class="lecture-title">${recentLecture.title}</p>
+                  <p class="lecture-info-text">${recentLecture.nickname}</p>
+                  <p class="lecture-info-text">₩${Number(recentLecture.price).toLocaleString()}</p>
+                  <p class="lecture-info-text">
+                    ⭐ ${recentLecture.averageRate ?? "0.0"}
+                    🧸 ${recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents}
+                  </p>
+                </div>
+            </a>
+              `;
             container.appendChild(item);
         });
     }

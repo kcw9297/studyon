@@ -79,14 +79,8 @@ public class TeacherController {
     public String showProfile(@PathVariable Long teacherId, Model model, @RequestParam(defaultValue = "5") int count) {
         // [1] 프로필 불러오기
         TeacherDTO.Read profile = teacherService.read(teacherId);
-//        List<LectureDTO.Read> bestLectures = teacherService.readBestLectures(teacherId, count);
-        //List<LectureDTO.Read> recentLectures = teacherService.readRecentLectures(teacherId, count);
-        //List<LectureReviewDTO.Read> comment = teacherService.readRecentReview(teacherId, count);
         // [2] 모델 속성 설정
         model.addAttribute("teacherId", teacherId);
-//        model.addAttribute("bestLectures", bestLectures);
-        //model.addAttribute("recentLectures", recentLectures);
-        //model.addAttribute("comment", comment);
         model.addAttribute("teacherProfile", profile);
 
         return ViewUtils.returnView(model, View.TEACHER, "teacher_profile");

@@ -44,7 +44,7 @@
             </tr>
             </thead>
             <tbody id="memberTableBody">
-                <!-- JS가 여기에 회원 목록을 렌더링합니다 -->
+                <!-- JS 회원 목록 렌더링 -->
             </tbody>
             <!--
             <tbody>

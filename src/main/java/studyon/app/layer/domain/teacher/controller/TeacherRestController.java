@@ -48,11 +48,9 @@ public class TeacherRestController {
     private final TeacherService teacherService;
     private final LectureService lectureService;
     private final CacheManager cacheManager;
-    private final TeacherRepository teacherRepository;
-    private final LectureRepository lectureRepository;
 
     /**
-     * [POST] 모든 선생님 정보 가져오기
+     * [GET] 모든 선생님 정보 가져오기
      * @return 모든 선생님 정보
      */
 
@@ -66,7 +64,7 @@ public class TeacherRestController {
     }
 
     /**
-     * [POST] 과목별 선생님 정보 가져오기
+     * [GET] 과목별 선생님 정보 가져오기
      * @return 해당 과목 선생님들 정보
      */
     @GetMapping( "/subject/{subject}")
