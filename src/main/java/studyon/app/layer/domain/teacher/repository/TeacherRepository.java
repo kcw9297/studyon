@@ -38,4 +38,5 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     """)
     Optional<Teacher> findByMemberIdWithMemberAndProfileImage(Long memberId);
 
+
 }

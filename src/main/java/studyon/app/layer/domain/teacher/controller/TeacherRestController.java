@@ -80,17 +80,40 @@ public class TeacherRestController {
 
     @GetMapping("/management/lecturelist")
     public ResponseEntity<?> getTeacherLectureList(HttpServletRequest request) {
-        Long memberId = SessionUtils.getMemberId(request);
-        Long teacherId = SessionUtils.getTeacherId(request.getSession());
+        // ✅ 세션 프로필 꺼내기
+        MemberProfile profile = SessionUtils.getProfile(request.getSession());
 
-        if (teacherId == null) {
+        if (profile == null || profile.getTeacherId() == null) {
+            log.warn("⚠ 세션에 teacher 정보가 없습니다.");
             return RestUtils.fail(AppStatus.SESSION_EXPIRED);
         }
+        Long teacherId = profile.getTeacherId();
+        log.info("✅ 로그인한 강사 ID = {}", teacherId);
 
-        TeacherDTO.LectureListResponse response = teacherService.getLectureListByTeacher(teacherId, memberId);
-        return RestUtils.ok(response); // ✅ JSON 변환 안전함
+        TeacherDTO.LectureListResponse response = teacherService.getLectureListByTeacher(teacherId);
+        return RestUtils.ok(response);
     }
 
+    @PostMapping("lecture/register")
+    public ResponseEntity<?> registerLecture(String title,String description, String category,Integer price,HttpServletRequest request) {
+        MemberProfile profile = SessionUtils.getProfile(request.getSession());
+        if (profile == null || profile.getTeacherId() == null) {
+            log.warn("강사 정보가 없습니다.");
+        }
+        Long teacherId = profile.getTeacherId();
+
+        LectureDTO.Register dto = LectureDTO.Register.builder()
+                .teacherId(teacherId)
+                .title(title)
+                .description(description)
+                .category(category)
+                .price(price)
+                .build();
+
+        lectureService.registerLecture(dto);
+
+        return RestUtils.ok("강의가 등록되었습니다.");
+    }
 
 
 }

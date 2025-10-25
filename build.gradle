@@ -73,7 +73,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    // ...env file
+    // ....env file
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 
     // Spring AOP

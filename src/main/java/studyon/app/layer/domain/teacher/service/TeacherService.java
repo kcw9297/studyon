@@ -39,5 +39,6 @@ public interface TeacherService {
      * 선생님 프로필 업데이트(필요시)
      */
     void update(Long teacherId, TeacherDTO.Edit dto);
-    TeacherDTO.LectureListResponse getLectureListByTeacher(Long teacherId, Long memberId);
+    TeacherDTO.LectureListResponse getLectureListByTeacher(Long teacherId);
+    LectureDTO.Register registerLecture(LectureDTO.Register dto);
 }
