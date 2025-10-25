@@ -32,6 +32,8 @@ import studyon.app.layer.domain.payment.PaymentDTO;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
+import java.util.Objects;
+
 
 /*
  * [수정 이력]
@@ -330,26 +332,29 @@ public class DTOMapper {
     }
 
     public static MemberProfile toMemberProfile(Member member) {
-        return MemberProfile.builder()
+        MemberProfile.MemberProfileBuilder builder = MemberProfile.builder()
                 .memberId(member.getMemberId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .provider(member.getProvider())
-                .role(member.getRole())
-                .profileImage(toReadDTO(member.getProfileImage()))
-                .build();
+                .role(member.getRole());
+
+        return Objects.isNull(member.getProfileImage()) ?
+                builder.build() : builder.profileImage(toReadDTO(member.getProfileImage())).build();
+
     }
 
     public static MemberProfile toMemberProfile(Member member, Teacher teacher) {
-        return MemberProfile.builder()
+        MemberProfile.MemberProfileBuilder builder = MemberProfile.builder()
                 .memberId(member.getMemberId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .provider(member.getProvider())
                 .role(member.getRole())
-                .profileImage(toReadDTO(member.getProfileImage()))
-                .teacherId(teacher.getTeacherId())
-                .build();
+                .teacherId(teacher.getTeacherId());
+
+        return Objects.isNull(member.getProfileImage()) ?
+                builder.build() : builder.profileImage(toReadDTO(member.getProfileImage())).build();
     }
 
 
