@@ -144,7 +144,10 @@
             }
 
             // ✅ JSON 데이터 파싱
-            const profile = await res.json();
+            const response = await res.json();
+            console.log("📥 서버 응답:", response);
+// ✅ 2단계: data 필드(문자열)를 다시 파싱
+            const profile = JSON.parse(response.data);
             console.log("📥 사용자 프로필:", profile);
 
             // ✅ 닉네임

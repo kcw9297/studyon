@@ -80,6 +80,11 @@ public class SessionUtils {
         return Objects.isNull(attrMemberId) ? null : (Long) attrMemberId;
     }
 
+    public static Long getTeacherId(HttpSession session) {
+        Object attrTeacherId = session.getAttribute(Param.TEACHER_ID);
+        return Objects.isNull(attrTeacherId) ? null : (Long) attrTeacherId;
+    }
+
 
     public static <T> T getValue(HttpServletRequest request, String paramName) {
 

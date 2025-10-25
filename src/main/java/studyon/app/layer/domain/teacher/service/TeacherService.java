@@ -6,6 +6,7 @@ import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /*
  * [수정 이력]
@@ -38,5 +39,5 @@ public interface TeacherService {
      * 선생님 프로필 업데이트(필요시)
      */
     void update(Long teacherId, TeacherDTO.Edit dto);
-
+    TeacherDTO.LectureListResponse getLectureListByTeacher(Long teacherId, Long memberId);
 }

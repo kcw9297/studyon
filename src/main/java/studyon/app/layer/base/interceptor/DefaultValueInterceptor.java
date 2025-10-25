@@ -106,7 +106,7 @@ public class DefaultValueInterceptor implements HandlerInterceptor {
             cacheManager.saveProfile(memberId, profile);
             SessionUtils.setAttribute(request, Param.PROFILE, profile);
         }
-
+        SessionUtils.setAttribute(request, Param.TEACHER_ID, profile.getTeacherId());
         request.setAttribute("loginMemberEmail", profile.getEmail());
     }
 
