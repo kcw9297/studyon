@@ -2,19 +2,23 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
-<div id="nicknameModal" class="nickname-modal">
-    <div class="nickname-modal-content">
-        <h2>닉네임 수정</h2>
-        <input type="text" id="nicknameInput" placeholder="새 닉네임을 입력하세요">
+<div id="passwordResetModal" class="password-modal">
+    <div class="password-modal-content">
+        <h2>비밀번호 재설정</h2>
+        <p class="password-modal-desc">
+            가입하신 이메일 주소를 입력하시면<br>
+            비밀번호 재설정 링크를 보내드립니다.
+        </p>
+        <input type="email" id="passwordResetEmail" placeholder="이메일 주소 입력">
         <div class="modal-buttons">
-            <button id="saveNicknameBtn">저장</button>
-            <button id="closeNicknameBtn">취소</button>
+            <button id="sendResetEmailBtn">메일 보내기</button>
+            <button id="closePasswordModalBtn">취소</button>
         </div>
     </div>
 </div>
 
 <style>
-    .nickname-modal {
+    .password-modal {
         display: none;
         position: fixed;
         z-index: 1000;
@@ -27,7 +31,7 @@
         align-items: center;
     }
 
-    .nickname-modal-content {
+    .password-modal-content {
         background: white;
         border-radius: 12px;
         padding: 30px 40px;
@@ -37,14 +41,21 @@
         animation: fadeIn 0.3s ease;
     }
 
-
-    .modal-content h2 {
-        margin-bottom: 20px;
+    .password-modal-content h2 {
+        margin-bottom: 15px;
         font-size: 22px;
         font-weight: 600;
+        color: #333;
     }
 
-    .modal-content input {
+    .password-modal-desc {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+
+    .password-modal-content input {
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
@@ -68,12 +79,12 @@
         transition: background 0.2s ease;
     }
 
-    #saveNicknameBtn {
-        background-color: #28a745;
+    #sendResetEmailBtn {
+        background-color: #007bff;
         color: white;
     }
 
-    #closeNicknameBtn {
+    #closePasswordModalBtn {
         background-color: #ccc;
     }
 
@@ -81,31 +92,4 @@
         from { opacity: 0; transform: scale(0.95); }
         to { opacity: 1; transform: scale(1); }
     }
-
-    #nicknameInput {
-        width: 100%;
-        padding: 12px 15px;
-        margin-top: 10px;
-        border: 2px solid #e0e0e0;
-        border-radius: 10px;
-        font-size: 16px;
-        outline: none;
-        transition: all 0.2s ease;
-        background-color: #fafafa;
-    }
-
-    /* 포커스 시 효과 */
-    #nicknameInput:focus {
-        border-color: #28a745; /* 초록 포인트 */
-        background-color: #fff;
-        box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
-    }
-
-    /* placeholder 색상 */
-    #nicknameInput::placeholder {
-        color: #aaa;
-        font-size: 14px;
-    }
-
-
 </style>
