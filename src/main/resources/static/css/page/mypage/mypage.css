@@ -44,8 +44,10 @@ a{color:inherit; text-decoration:none}
 .account-item{width:150px; padding:10px;}
 .account-text, .account-image{width:790px; padding:10px;}
 .account-image img{width:150px; height:150px; border-radius:100px;}
-.account-button{width:80px; padding:10px; border:1px solid var(--light-gray); border-radius:10px; background-color:white;}
-.account-button:hover{background-color:var(--hover-gray); cursor:pointer;}
+.account-button,
+.password-edit-button{width:80px; padding:10px; border:1px solid var(--light-gray); border-radius:10px; background-color:white;}
+.account-button:hover,
+.password-edit-button:hover{background-color:var(--hover-gray); cursor:pointer;}
 
 
 /* ===== courses(강의 관리) ===== */

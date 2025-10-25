@@ -47,4 +47,10 @@ public class MypageController {
         model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/payment.jsp");
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }
+
+    @GetMapping("/passwordreset")
+    public String passwordreset(Model model) {
+        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/password_reset.jsp");
+        return ViewUtils.returnView(model, View.MYPAGE, "password_reset");
+    }
 }
