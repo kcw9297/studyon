@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.support;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,15 +24,9 @@ public class UserSupportApiController {
     private final CacheManager cacheManager;
 
     @PostMapping("/create-room")
-    public Map<String, Object> createChatRoom(HttpServletRequest request) {
+    public Map<String, Object> createChatRoom(HttpSession session) {
         // ✅ 세션에서 로그인한 Member 객체 가져오기
-        Long memberId = SessionUtils.getMemberId(request);
-        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
-
-        if (profile == null) {
-            log.warn("❌ 로그인 세션 없음 - 채팅방 생성 불가");
-            return Map.of("error", "로그인이 필요합니다");
-        }
+        MemberProfile profile = SessionUtils.getProfile(session);
 
         Long userId = profile.getMemberId(); // ✅ memberId 사용
         String nickname = profile.getNickname();

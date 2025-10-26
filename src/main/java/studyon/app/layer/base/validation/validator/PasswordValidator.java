@@ -14,11 +14,22 @@ import java.util.Objects;
 
 public class PasswordValidator implements ConstraintValidator<Password, String> {
 
+    // 사용자 오류 메세지
+    private String message;
+
+    @Override
+    public void initialize(Password annotation) {
+
+        // 사용자 입력 오류 메세지
+        String message = annotation.message();
+        this.message = Objects.isNull(message) || message.isBlank() ?
+                "8-20자 사이 공백제외 영문/숫자/특수문자 입력" : message;
+    }
+
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        // [1] 검증 메세지 & 패턴
-        String message = "8-20자 사이 공백제외 영문/숫자/특수문자 입력";
+        // [1] 검증 패턴
         String pattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=\\S+$)[a-zA-Z\\d@#$%^&+=!]{8,20}$";
 
         // [2] 기본 메세지 비활성화

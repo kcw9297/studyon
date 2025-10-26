@@ -32,10 +32,10 @@ public interface MemberService {
 
     /**
      * 비밀번호 초기화
-     * @param memberId 대상 회원번호
-     * @return 초기화된 비밀번호
+     * @param email 대상 이메일
+     * @param newPassword 새로 초기화하는 패스워드
      */
-    String initPassword(Long memberId);
+    void editPassword(String email, String newPassword);
 
     /**
      * 프로필 이미지 변경

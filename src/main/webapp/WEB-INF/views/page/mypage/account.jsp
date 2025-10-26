@@ -45,7 +45,9 @@
                 <div class="account-text">
                     <p>••••••••</p>
                 </div>
-                <button class="password-edit-button">수정</button>
+                <c:if test="${sessionScope.profile.provider.value eq 'NORMAL'}">
+                    <button class="password-edit-button">수정</button>
+                </c:if>
             </div>
         </div>
     </div>
@@ -53,8 +55,6 @@
 
 <%--nickname & password modal--%>
 <jsp:include page="/WEB-INF/views/page/mypage/nickname_edit_modal.jsp" />
-<jsp:include page="/WEB-INF/views/page/mypage/password_edit_modal.jsp" />
-<jsp:include page="/WEB-INF/views/page/mypage/mail_send_success_modal.jsp" />
 
 
 <style>
@@ -147,77 +147,29 @@
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
 
-        /* 프로필 정보 불러오기 */
-        try {
-            // REST API 요청
-            const res = await fetch("/api/members/profile");
+        /* 프로필 정보 출략 */
 
-            // 서버 JSON 응답 문자열 파싱
-            const rp = await res.json();
-            console.log("서버 응답:", rp);
+        //  data 필드(문자열)를 다시 파싱
 
-            // 요청 실패 처리
-            if (!res.ok || !rp.success) {
+        // 닉네임
+        const nicknameElem = document.querySelector(".mypage-info-nickname");
+        if (nicknameElem) nicknameElem.textContent = "${sessionScope.profile.nickname}" || "닉네임 없음";
 
-                // 로그인이 필요한 경우
-                if (rp.statusCode === 401) {
-
-                    // 로그인 필요 안내 전달
-                    if (confirm(rp.message || "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
-                        window.location.href = rp.redirect || "/login";
-                    }
-
-                    // 로직 중단
-                    return;
-                }
-
-                // 권한이 부족한 경우
-                if (rp.statusCode === 403) {
-                    alert(rp.message || "접근 권한이 없습니다.");
-                    return;
-                }
-
-                // 유효성 검사에 실패한 경우
-                if (rp.inputErrors) {
-                    Object.entries(rp.inputErrors).forEach(([field, message]) => {
-                        const errorElem = document.getElementById(`\${field}Error`);
-                        if (errorElem) errorElem.textContent = message;
-                    });
-                    return;
-                }
-
-                // 기타 예기치 않은 오류가 발생한 경우
-                alert(rp.message || "서버 오류가 발생했습니다. 잠시 후에 시도해 주세요.");
-                return;
-            }
-
-            //  data 필드(문자열)를 다시 파싱
-            const profile = rp.data;
-            console.log("사용자 프로필:", profile);
-
-            // 닉네임
-            const nicknameElem = document.querySelector(".mypage-info-nickname");
-            if (nicknameElem) nicknameElem.textContent = profile.nickname || "닉네임 없음";
-
-            // 프로필 이미지
-            const imgElem = document.querySelector(".mypage-profile");
-            if (imgElem) {
-                imgElem.src = profile.profileImage ?
-                    `${fileDomain}/\${profile.profileImage.filePath}` : "<c:url value='/img/png/default_member_profile_image.png'/>";
-            }
-
-            // 이메일 (첫 번째 account-chapter 안의 p)
-            const emailElem = document.querySelector(".account-report .account-chapter:nth-child(1) .account-text p");
-            if (emailElem) emailElem.textContent = profile.email || "이메일 없음";
-
-            // 비밀번호 (보안상 실제 비밀번호는 안 주지만, 마스킹)
-            const passwordElem = document.querySelector(".account-report .account-chapter:nth-child(2) .account-text p");
-            if (passwordElem) passwordElem.textContent = "••••••••";
-
-
-        } catch (error) {
-            console.error("❌ 프로필 로드 실패:", error);
+        // 프로필 이미지
+        const imgElem = document.querySelector(".mypage-profile");
+        if (imgElem) {
+            imgElem.src = ${not empty sessionScope.profile.profileImage} ?
+                `${fileDomain}/${sessionScope.profile.profileImage.filePath}` : "<c:url value='/img/png/default_member_profile_image.png'/>";
         }
+
+        // 이메일 (첫 번째 account-chapter 안의 p)
+        const emailElem = document.querySelector(".account-report .account-chapter:nth-child(1) .account-text p");
+        if (emailElem) emailElem.textContent = "${sessionScope.profile.email}" || "이메일 없음";
+
+        // 비밀번호 (보안상 실제 비밀번호는 안 주지만, 마스킹)
+        const passwordElem = document.querySelector(".account-report .account-chapter:nth-child(2) .account-text p");
+        if (passwordElem) passwordElem.textContent = "••••••••";
+
 
 
 

@@ -21,14 +21,33 @@
     <div class="header-info">
         <c:if test="${isLogin}">
             <div style="margin-right: 20px">
-                    ${memberProfile.nickname}
+                <c:if test="${sessionScope.profile.role.role eq 'TEACHER'}">
+                    ${sessionScope.profile.nickname} 선생님 환영합니다
+                </c:if>
+                <c:if test="${sessionScope.profile.role.role eq 'ADMIN'}">
+                    관리자님 환영합니다
+                </c:if>
+                <c:if test="${sessionScope.profile.role.role eq 'STUDENT'}">
+                    ${sessionScope.profile.nickname}님 환영합니다
+                </c:if>
             </div>
         </c:if>
         <div style="gap:10px;">
-            <a style="border:2px solid black;" href="/teacher/management/profile"> 선생님 </a>
-            <a style="border:2px solid black;" href="/admin"> 운영자 </a>
-            <a style="border:2px solid black;" href="/mypage/account"> 마이페이지 </a>
-            <a style="border:2px solid black;" href="/join"> 회원가입</a>
+            <c:if test="${isLogin}">
+                <c:if test="${sessionScope.profile.role.role eq 'TEACHER'}">
+                    <a style="border:2px solid black;" href="/teacher/management/profile"> 선생님 </a>
+                </c:if>
+                <c:if test="${sessionScope.profile.role.role eq 'ADMIN'}">
+                    <a style="border:2px solid black;" href="/admin"> 관리자 </a>
+                </c:if>
+                <c:if test="${sessionScope.profile.role.role eq 'STUDENT'}">
+                    <a style="border:2px solid black;" href="/mypage/account"> 마이페이지 </a>
+                </c:if>
+            </c:if>
+            <c:if test="${not isLogin}">
+                <a style="border:2px solid black;" href="/join"> 회원가입</a>
+                <a style="border:2px solid black;" href="/mypage/account"> 마이페이지 </a>
+            </c:if>
         </div>
 
 

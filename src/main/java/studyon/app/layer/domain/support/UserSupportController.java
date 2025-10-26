@@ -1,6 +1,6 @@
 package studyon.app.layer.domain.support;
 
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.enums.View;
-import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.chat.ChatDTO;
@@ -23,14 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserSupportController {
 
-    private final CacheManager cacheManager;
     private final ChatService chatService;
 
     @GetMapping("/startchat")
-    public String startchat(Model model, HttpServletRequest request) {
+    public String startchat(Model model, HttpSession session) {
         // ✅ 세션에서 로그인한 Member 객체 가져오기
-        Long memberId = SessionUtils.getMemberId(request);
-        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
+        MemberProfile profile = SessionUtils.getProfile(session);
         log.info(profile.toString());
         return ViewUtils.returnView(model, View.USERSUPPORT, "start_chat");
     }

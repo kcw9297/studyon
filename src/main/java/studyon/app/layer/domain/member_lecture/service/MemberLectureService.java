@@ -13,7 +13,6 @@ import studyon.app.layer.domain.member_lecture.MemberLectureDTO;
 import studyon.app.layer.domain.member_lecture.MemberLecture;
 import studyon.app.layer.domain.member_lecture.repository.MemberLectureRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +53,7 @@ public class MemberLectureService {
                 .collect(Collectors.toList());
     }
     @Transactional
-    public void enrollLecture(Long memberId, Long lectureId) {
+    public void enroll(Long memberId, Long lectureId) {
         // 1️⃣ 회원 & 강의 유효성 검증
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. id=" + memberId));

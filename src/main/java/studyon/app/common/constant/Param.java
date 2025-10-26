@@ -25,6 +25,7 @@ public class Param {
     public static final String IMP_UID = "imp_uid";
     public static final String PAID_AMOUNT = "paid_amount";
     public static final String PROFILE = "profile";
+    public static final String VERIFIED = "verified";
 
     // redis key
     public static final String KEY_BACKUP = "BACKUP";
@@ -37,7 +38,4 @@ public class Param {
     public static final int EXPIRATION_TIME = 3;
     public static final int MAX_RECENT_SEARCH_KEYWORD = 10; // 최대 최근 검색어 개수
     public static final Duration EXPIRATION_CACHE = Duration.ofSeconds(30); // 캐시 만료시간
-
-    // error field name
-    public static final String ERROR_GLOBAL = ERROR + "Global";
 }

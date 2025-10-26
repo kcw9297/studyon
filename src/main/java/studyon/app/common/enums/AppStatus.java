@@ -25,10 +25,12 @@ public enum AppStatus {
     CACHE_EXPIRED(403, "정보가 만료되었습니다."),
 
     /* 검증 및 인증 상태 */
-    VALIDATION_INVALID_PARAMETER(400, "입력하신 값을 다시 확인해 주세요"),
+    VALIDATION_INVALID_PARAMETER(400, "입력하신 값을 다시 확인해 주세요."),
+    AUTH_MAIL_NOT_FOUND(400, "탈퇴 혹은 정지 상태거나 존재하지 않는 이메일입니다."),
     AUTH_REQUEST_EXPIRED(400, "인증 요청이 만료되었습니다. 다시 시도해 주세요."),
     AUTH_INCORRECT_CODE(400, "인증 코드가 일치하지 않습니다."),
-    AUTH_INVALID_REQUEST(500, "이미 만료되었거나 유효하지 않은 요청입니다."),
+    AUTH_REQUEST_ALREADY_EXIST(400, "인증 요청이 이미 존재합니다. 잠시 후에 다시 시도해 주세요."),
+    AUTH_INVALID_REQUEST(400, "이미 만료되었거나 유효하지 않은 요청입니다."),
 
     /* 유틸 클래스 상태 (아직 구제적으로 케이스를 나누진 않음) */
     UTILS_LOGIC_FAILED(500, "처리 중 오류가 발생했습니다. 잠시 후에 다시 시도해 주세요."),
@@ -52,6 +54,7 @@ public enum AppStatus {
     MEMBER_DUPLICATE_NICKNAME(500, "이미 가입한 닉네임입니다."),
     MEMBER_DUPLICATE_EMAIL(500, "이미 가입한 이메일입니다."),
     MEMBER_OK_EDIT_NICKNAME(200, "닉네임을 변경했습니다."),
+    MEMBER_OK_EDIT_PASSWORD(200, "비밀번호를 변경했습니다."),
 
 
     /* 선생님 상태 */

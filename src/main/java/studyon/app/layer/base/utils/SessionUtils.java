@@ -77,9 +77,10 @@ public class SessionUtils {
 
 
     public static Long getMemberId(HttpSession session) {
-        Object attr = session.getAttribute(Param.MEMBER_ID);
-        return Objects.isNull(attr) ? null : (Long) attr;
+        Object attr = Objects.requireNonNull(session.getAttribute(Param.MEMBER_ID));
+        return (Long) attr;
     }
+
 
     public static Long getTeacherId(HttpSession session) {
         Object attrTeacherId = session.getAttribute(Param.TEACHER_ID);
@@ -88,8 +89,8 @@ public class SessionUtils {
 
 
     public static MemberProfile getProfile(HttpSession session) {
-        Object attr = session.getAttribute(Param.PROFILE);
-        return Objects.isNull(attr) ? null : (MemberProfile) attr;
+        Object attr = Objects.requireNonNull(session.getAttribute(Param.PROFILE), "프로필 정보가 존재하지 않습니다!");
+        return (MemberProfile) attr;
     }
 
     public static <T> T getValue(HttpServletRequest request, String paramName) {

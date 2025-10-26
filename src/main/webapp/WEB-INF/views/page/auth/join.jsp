@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입 | Oneday OneClass</title>
 
-    <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/member/join.css'/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/auth/join.css'/>">
     <link rel="icon" href="<c:url value='/img/favicon.ico'/>" type="image/x-icon">
 </head>
 

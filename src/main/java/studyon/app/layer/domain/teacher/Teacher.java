@@ -36,11 +36,6 @@ public class Teacher extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_image_id")
-    private File profileImage;
-
     @Column(columnDefinition = "TEXT")
     private String description;
 

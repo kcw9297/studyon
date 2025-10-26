@@ -18,9 +18,7 @@ import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /*
@@ -159,7 +157,7 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherDTO.TeacherManagementProfile readProfile(Long memberId) {
 //        Teacher teacher = teacherRepository.findByMember_MemberId(memberId)
 //                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
-        Teacher teacher = teacherRepository.findByMemberIdWithMemberAndProfileImage(memberId)
+        Teacher teacher = teacherRepository.findByMemberIdWithMember(memberId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
         Member member = teacher.getMember();
         Long lectureCount = lectureRepository.countByTeacher_TeacherId(teacher.getTeacherId());
@@ -174,9 +172,6 @@ public class TeacherServiceImpl implements TeacherService {
                 .lectureCount(lectureCount)
                 .totalStudent(teacher.getTotalStudents())
                 .averageRating(teacher.getAverageRating())
-                .profileImageUrl(
-                        teacher.getProfileImage() != null ? teacher.getProfileImage().getFilePath() : null
-                )
                 .build();
     }
 

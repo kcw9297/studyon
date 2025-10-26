@@ -1,11 +1,9 @@
 package studyon.app.layer.domain.member.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +12,7 @@ import studyon.app.common.enums.AppStatus;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.validation.annotation.Nickname;
+import studyon.app.layer.base.validation.annotation.Password;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.service.MemberService;
 
@@ -73,15 +72,17 @@ public class MemberRestController {
     /**
      * [POST] 회원 비밀번호 초기화
      */
-    @PatchMapping("/password/init")
-    public ResponseEntity<?> initPassword(HttpSession session) {
+    @PatchMapping("/password/edit")
+    public ResponseEntity<?> editPassword(HttpSession session, @Password String password) {
 
-        // [1] 회원번호 조회
-        Long memberId = SessionUtils.getMemberId(session);
-        String password = memberService.initPassword(memberId);
+        // [1] 회원 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
 
-        // [2] 성공 응답 반환
-        return RestUtils.ok(password);
+        // [2] 비밀번호 변경
+        memberService.editPassword(profile.getEmail(), password);
+
+        // [3] 성공 응답 반환
+        return RestUtils.ok(AppStatus.MEMBER_OK_EDIT_PASSWORD);
     }
 
 

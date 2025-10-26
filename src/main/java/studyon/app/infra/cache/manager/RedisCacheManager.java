@@ -57,23 +57,7 @@ public class RedisCacheManager implements CacheManager {
         stringRedisTemplate.opsForList().leftPush(key, keyword); // 리스트 맨 처음에 삽입
 
         // [3] 최대 저장 검색어 개수를 초과하는 경우, 맨 마지막 검색어 제거
-        stringRedisTemplate.opsForList().trim(key, 0L, Param.MAX_RECENT_SEARCH_KEYWORD-1L);
-    }
-
-
-    @Override
-    public boolean recordVerifyMail(String sessionId, Object mailRequest) {
-
-        // [1] Key
-        String key = CacheUtils.createIdKey(Cache.VERIFICATION_MAIL, sessionId);
-
-        // [2] 이미 중복되는 값이 있는지 확인
-        // 존재 시 false 반환 (다시 시도하도록 유도)
-        if (stringRedisTemplate.hasKey(key)) return false;
-
-        // [3] 인증 정보를 직렬화 후 저장
-        Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(key, StrUtils.toJson(mailRequest));
-        return Objects.equals(result, true);
+        stringRedisTemplate.opsForList().trim(key, 0, 9); // 최대 10개
     }
 
 
@@ -88,14 +72,59 @@ public class RedisCacheManager implements CacheManager {
     }
 
     @Override
-    public <T> T getProfile(Long memberId, Class<T> type) {
-        return getValue(Cache.MEMBER_PROFILE, memberId, type);
+    public boolean recordAuthRequest(String target, String token, Duration timeout) {
+
+        // [1] Key
+        String targetKey = CacheUtils.createIdKey(Cache.AUTH, target); // 중복 요청을 막기 위한 key
+        String tokenKey = CacheUtils.createIdKey(Cache.AUTH, token); // 실제로 인증 시 사용하는 key
+
+        // [2] 최근 인증 요청이 있는지 확인
+        Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(targetKey, "", Duration.ofMinutes(1));
+        if (Objects.isNull(result) || !result) return false; // 만약 실패 시, 이미 요청이 존재하는 경우이거나 오류 발생
+
+        // [3] 정상 처리된 경우, 실제 인증을 위한 key 생성 후 true 반환
+        stringRedisTemplate.opsForValue().set(tokenKey, "", Duration.ofMinutes(5)); // 5분 유효
+        return true;
     }
 
 
     @Override
-    public <T> T getMailRequest(String sessionId, Class<T> type) {
-        return getValue(Cache.VERIFICATION_MAIL, sessionId, type);
+    public boolean recordAuthRequest(String target, String token, Duration timeout, Object authRequest) {
+
+        // [1] Key
+        String targetKey = CacheUtils.createIdKey(Cache.AUTH, target); // 중복 요청을 막기 위한 key
+        String tokenKey = CacheUtils.createIdKey(Cache.AUTH, token); // 실제로 인증 시 사용하는 key
+
+        // [2] 최근 인증 요청이 있는지 확인
+        Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(targetKey, StrUtils.toJson(authRequest), Duration.ofMinutes(1));
+        if (Objects.isNull(result) || !result) return false; // 만약 실패 시, 이미 요청이 존재하는 경우이거나 오류 발생
+
+        // [3] 정상 처리된 경우, 실제 인증을 위한 key 생성 후 true 반환
+        stringRedisTemplate.opsForValue().set(tokenKey, StrUtils.toJson(authRequest), Duration.ofMinutes(5)); // 5분 유효
+        return true;
+    }
+
+
+    @Override
+    public boolean isAuthRequestValid(String token) {
+
+        // [1] Key
+        String key = CacheUtils.createIdKey(Cache.AUTH, token);
+
+        // [2] 데이터 조회 및 역직렬화 후 반환
+        return stringRedisTemplate.hasKey(key);
+    }
+
+
+    @Override
+    public <T> T getAuthRequest(String token, Class<T> type) {
+
+        // [1] Key
+        String key = CacheUtils.createIdKey(Cache.AUTH, token);
+
+        // [2] 데이터 조회 및 역직렬화 후 반환
+        String jsonCache = stringRedisTemplate.opsForValue().get(key);
+        return Objects.isNull(jsonCache) ? null : StrUtils.fromJson(jsonCache, type);
     }
 
     // Value 자료형으로 저장 시 공통적으로 처리하는 key 생성 & 저장 로직
