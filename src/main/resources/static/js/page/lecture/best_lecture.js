@@ -38,16 +38,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         lectures.forEach(bestLecture => {
             const item = document.createElement("div");
+
+            const detailUrl = `/lecture/detail/${bestLecture.lectureId}`;
+
             item.classList.add("recent-lecture-item");
             item.innerHTML = `
-            <img src="/img/png/sample1.png" alt="강의이미지">
-            <div class="lecture-info">
-              <p class="lecture-title">${bestLecture.title}</p>
-              <p class="lecture-info-text">${bestLecture.nickname}</p>
-              <p class="lecture-info-text">₩${Number(bestLecture.price).toLocaleString()}</p>
-              <!--⭐<c:out value="${bestLecture.averageRate}" />-->
-              <p class="lecture-info-text">🧸 ${bestLecture.totalStudents >= 10 ? "10+" : bestLecture.totalStudents}</p>
-            </div>`;
+            <a href="${detailUrl}">
+                <img src="/img/png/sample1.png" alt="강의이미지">
+                <div class="lecture-info">
+                    <p class="lecture-title">${bestLecture.title}</p>
+                    <p class="lecture-info-text">${bestLecture.nickname}</p>
+                    <p class="lecture-info-text">₩${Number(bestLecture.price).toLocaleString()}</p>
+                    <!--⭐<c:out value="${bestLecture.averageRate}" />-->
+                    <p class="lecture-info-text">🧸 ${bestLecture.totalStudents >= 10 ? "10+" : bestLecture.totalStudents}</p>
+                </div>
+            </a>`
+
             container.appendChild(item);
         })
     }

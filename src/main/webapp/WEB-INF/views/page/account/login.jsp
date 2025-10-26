@@ -8,8 +8,8 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
-    <link rel="stylesheet" href="<c:url value='/css/page/login/login.css'/>">
-    <script src="<c:url value='/js/page/login/login.js'/>"></script>
+    <link rel="stylesheet" href="<c:url value='/css/page/account/login.css'/>">
+    <script src="<c:url value='/js/page/account/login.js'/>"></script>
 </head>
 
 <body>
@@ -33,7 +33,7 @@
 
     <div class="login-links">
       <a href="#">비밀번호 찾기</a> |
-      <a href="#">회원가입</a> |
+      <a href="/join">회원가입</a> |
       <a href="#">아이디(이메일) 찾기</a>
     </div>
 
