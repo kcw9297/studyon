@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(json => {
             // ⚠️ 문자열을 실제 배열로 변환
-            const parsedData = JSON.parse(json.data);
+            const parsedData = json.data;
             renderRecentLectures(parsedData);
         })
         .catch(err => console.error("홈화면 최근 강의 조회 실패 : ", err));
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(json => {
             // ⚠️ 문자열을 실제 배열로 변환
-            const parsedData = JSON.parse(json.data);
+            const parsedData = json.data;
             renderBestLectures(parsedData);
         })
         .catch(err => console.error("홈화면 인기 강의 조회 실패:", err));

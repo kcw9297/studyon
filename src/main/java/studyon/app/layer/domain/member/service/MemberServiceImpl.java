@@ -174,10 +174,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @CacheEvict(value = "member:profile" , key = "#memberId") // 캐시 삭제
     public void editNickname(Long memberId, String nickname) {
-        memberRepository
+
+        // [1] 닉네임 변경 대상 회원조회
+        Member member = memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND))
-                .updateNickname(nickname);
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
+
+        // [2] 닉네임 중복 검증
+        if (Objects.equals(member.getNickname(), nickname))
+            throw new BusinessLogicException(AppStatus.MEMBER_DUPLICATE_NICKNAME);
+
+        // [3] 닉네임 갱신
+        member.updateNickname(nickname);
     }
 
 

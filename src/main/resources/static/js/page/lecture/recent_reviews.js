@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(json => {
                 // ⚠️ 문자열을 실제 배열로 변환
-                const parsedData = JSON.parse(json.data);
+                const parsedData = json.data;
                 console.log("✅ 최근 수강평 데이터:", parsedData);
                 renderRecentReviews(parsedData);
             })

@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class AdminHomeServiceImpl implements AdminHomeService {
+
     private final MemberRepository memberRepository;
     private final LectureRepository lectureRepository;
     private final PaymentRepository paymentRepository;

@@ -29,7 +29,7 @@ public class Rest {
         private String message;
         private String redirect;
         private Object data;
-        private Map<String, String> fieldErrors; // Bean Validation 실패 시 전달 정보
+        private Map<String, String> inputErrors; // Bean Validation 실패 시 전달 정보
 
 
         public static Response ok() {
@@ -65,8 +65,8 @@ public class Rest {
             return new Response(false, appStatus.getHttpCode(), appStatus.getMessage(), redirect, null, null);
         }
 
-        public static Response fail(AppStatus appStatus, Map<String, String> fieldErrors) {
-            return new Response(false, appStatus.getHttpCode(), appStatus.getMessage(), "", null, fieldErrors);
+        public static Response fail(AppStatus appStatus, Map<String, String> inputErrors) {
+            return new Response(false, appStatus.getHttpCode(), appStatus.getMessage(), "", null, inputErrors);
         }
 
         public static Response fail(AppStatus appStatus, String errorField, String errorMessage) {

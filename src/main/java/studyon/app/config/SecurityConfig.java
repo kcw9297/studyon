@@ -41,6 +41,8 @@ public class SecurityConfig {
     private final CustomSocialLoginFailedHandler customSocialLoginFailedHandler;
     private final CustomNormalLoginSuccessHandler customNormalLoginSuccessHandler;
     private final CustomNormalLoginFailedHandler customNormalLoginFailedHandler;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     // Custom UserService
     //private final CustomNormalUserService customNormalUserService;
@@ -55,25 +57,34 @@ public class SecurityConfig {
 
     // Spring Security url pattern
     private static final String AUTH_ALL = Url.AUTH + "/**";
+    private static final String JOIN_ALL = Url.JOIN + "/**";
+    private static final String LOGIN_ALL = Url.LOGIN + "/**";
+    private static final String OAUTH2_ALL = Url.OAUTH2 + "/**";
     private static final String TEACHER_ALL = Url.TEACHER + "/**"; // 선생님 관리 페이지
     private static final String TEACHERS_ALL = Url.TEACHERS + "/**";
     private static final String ADMIN_ALL = Url.ADMIN + "/**";
     private static final String LECTURES_ALL = Url.LECTURES + "/**";
     private static final String WEBSOCKET_ALL = "/ws" + "/**";
-    private static final String LOGIN_ALL = Url.LOGIN + "/**";
+    private static final String MYPAGE_ALL = Url.MYPAGE + "/**";
+    private static final String FILE_ALL = Url.FILE + "/**";
+    private static final String HOME_API_ALL = Url.HOME_API + "/**";
 
     // 접근을 모두 허용할 주소 (정적 자원 제외)
     public static final String[] PERMIT_ALL =
             {
-                    Url.INDEX,
-                    Url.MEMBERS, Url.MEMBER_API,
-                    LECTURES_ALL, TEACHERS_ALL, WEBSOCKET_ALL
+                    Url.INDEX, HOME_API_ALL,
+                    AUTH_ALL, LECTURES_ALL, TEACHERS_ALL, TEACHER_ALL, FILE_ALL, WEBSOCKET_ALL
+            };
+
+    public static final String[] ANONYMOUS =
+            {
+                    OAUTH2_ALL, JOIN_ALL, LOGIN_ALL
             };
 
 
     // Spring Security CSRF ignore URL (로그인, 로그아웃은 검증 제외)
     public static final String[] CSRF_IGNORE_URLS = {
-            Url.LOGIN_PROCESS, Url.LOGOUT, "/test/**"
+            Url.LOGIN_PROCESS, Url.LOGOUT
     };
 
     // 로그아웃 시 삭제할 쿠키 이름 (세션 쿠키)
@@ -97,16 +108,6 @@ public class SecurityConfig {
         this.fileAll = fileDomain + "/**";
     }
 
-    /*
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web ->
-                web.ignoring()
-                        .requestMatchers(URL.STATIC_RESOURCE_PATHS)
-                        .requestMatchers(fileAll);
-    }
-
-     */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -134,24 +135,27 @@ public class SecurityConfig {
 
                 // 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
-                        //.requestMatchers(URL.STATIC_RESOURCE_PATHS).permitAll() // 정적 자원 경로 허용
-                        //.requestMatchers(fileAll).permitAll() // 파일 도메인 허용
-                        //.requestMatchers(PERMIT_ALL).permitAll() // 모두 허용
-                        //.requestMatchers("/test/**", "/file/**").permitAll() // 테스트 URL
-                        //.requestMatchers(TEACHER_ALL).permitAll()//.hasRole(Role.ROLE_TEACHER.getRoleName()) // 선생님 페이지
-                        //.requestMatchers(ADMIN_ALL).hasRole(Role.ROLE_ADMIN.getRoleName()) // 관리자 페이지
+
+                        // 모두 허용하는 정적 자원 주소
+                        .requestMatchers(Url.STATIC_RESOURCE_PATHS).permitAll() // 정적 자원 경로 허용
+                        .requestMatchers(fileAll).permitAll() // 파일 도메인 허용
+
+                        // 공개 페이지 - 모두 접근 가능
+                        .requestMatchers(PERMIT_ALL).permitAll()
 
                         // 관리자 페이지 - 관리자만 접근 가능
                         .requestMatchers(ADMIN_ALL).hasAuthority(Role.ROLE_ADMIN.name())
 
                         // 마이페이지 - 학생만 접근 가능
-                        .requestMatchers(Url.MYPAGE, Url.MYPAGE_API).hasAuthority(Role.ROLE_STUDENT.name())
+                        .requestMatchers(MYPAGE_ALL).hasAuthority(Role.ROLE_STUDENT.name())
 
                         // 로그인, 회원가입 - 익명 사용자만 접근 가능 (로그아웃 사용자)
-                        .requestMatchers(LOGIN_ALL).anonymous()
+                        .requestMatchers(ANONYMOUS).anonymous()
 
-                        //.anyRequest().authenticated() // 그 외의 요청은 인증된 사용자만 허용 (로그인 회원에게만)
-                        .anyRequest().permitAll()
+                        // 그 외의 요청은 인증된 사용자만 허용 (로그인 회원에게만)
+                        .anyRequest().authenticated()
+
+                        //.anyRequest().permitAll()
                 )
 
                 // 일반 로그인 설정
@@ -199,16 +203,14 @@ public class SecurityConfig {
                         .maximumSessions(1) // 최대 로그인 세션 개수 1개 (한 사용자는 총 하나의 세션만 가능)
                         .maxSessionsPreventsLogin(false) // 최대 세션 초과 시, 로그인 불허 여부 (현재는 허용)
                         .expiredUrl(Url.LOGIN)
-                );
+                )
 
-                /*
-                // 로그인 후, 권한 부족으로 예외가 발생한 경우 처리하는 ENDPOINT
+
+                // 회원 권한이 부족하거나, 비로그인 사용자의 로그인 서비스 접근 예외 처리
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                        .accessDeniedHandler(new CustomAccessDeniedHandler())
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 );
-                 */
-
 
 
         // [2] 배포 환경 설정

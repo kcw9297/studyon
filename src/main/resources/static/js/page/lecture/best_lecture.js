@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(json => {
             // ⚠️ 문자열을 실제 배열로 변환
-            const parsedData = JSON.parse(json.data);
+            const parsedData = json.data;
             console.log("✅ 최근 인기 강의 데이터:", parsedData);
             renderBestLectures(parsedData);
         })

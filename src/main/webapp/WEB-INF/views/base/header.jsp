@@ -26,9 +26,9 @@
         </c:if>
         <div style="gap:10px;">
             <a style="border:2px solid black;" href="/teacher/management/profile"> 선생님 </a>
-            <a style="border:2px solid black;" href="/admin/main"> 운영자 </a>
+            <a style="border:2px solid black;" href="/admin"> 운영자 </a>
             <a style="border:2px solid black;" href="/mypage/account"> 마이페이지 </a>
-            <a style="border:2px solid black;" href="/testboard/join"> 회원가입</a>
+            <a style="border:2px solid black;" href="/join"> 회원가입</a>
         </div>
 
 
