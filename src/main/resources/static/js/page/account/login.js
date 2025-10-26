@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // REST API 요청
           const res = await fetch(form.action, {
               method: form.method,
-              body: form
+              body: new FormData(form)
           });
 
           // JSON 데이터 파싱

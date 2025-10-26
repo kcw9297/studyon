@@ -8,8 +8,8 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
-    <link rel="stylesheet" href="<c:url value='/css/page/login/login.css'/>">
-    <script src="<c:url value='/js/page/login/login.js'/>"></script>
+    <link rel="stylesheet" href="<c:url value='/css/page/account/login.css'/>">
+    <script src="<c:url value='/js/page/account/login.js'/>"></script>
 </head>
 
 <body>
