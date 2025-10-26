@@ -50,7 +50,7 @@ public class MypageController {
 
     @GetMapping("/passwordreset")
     public String passwordreset(Model model) {
-        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/password_reset.jsp");
+        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/edit_password.jsp");
         return ViewUtils.returnView(model, View.MYPAGE, "password_reset");
     }
 }

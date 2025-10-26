@@ -11,8 +11,6 @@ import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.service.MemberService;
 
-import java.util.List;
-
 
 /**
  * 관리자 전용 회원 REST API 클래스
@@ -27,20 +25,6 @@ import java.util.List;
 public class AdminMemberRestController {
 
     private final MemberService memberService;
-
-    /**
-     * [POST] 회원 비밀번호 초기화
-     * @param memberId 대상 회원번호
-     */
-    @PostMapping("/{memberId}/password/init")
-    public ResponseEntity<?> initPassword(@PathVariable Long memberId) {
-
-        // [1] 회원 프로필 조회
-        String password = memberService.initPassword(memberId);
-        
-        // [2] 성공 응답 반환
-        return RestUtils.ok(password);
-    }
 
     @GetMapping("/list")
     public ResponseEntity<?> readAllMembers(MemberDTO.Search rq, Page.Request prq) {

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.util.HtmlUtils;
+import studyon.app.common.constant.Url;
 import studyon.app.common.enums.View;
 
 @Slf4j
@@ -22,5 +23,9 @@ public final class ViewUtils {
 
     private static String resolvePageView(View view, String viewName) {
         return "/WEB-INF/views/page/%s/%s.jsp".formatted(view.getValue(), viewName);
+    }
+
+    public static String redirectHome() {
+        return "redirect:%s".formatted(Url.INDEX);
     }
 }

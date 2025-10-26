@@ -3,6 +3,7 @@ package studyon.app.layer.base.advice;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @author kcw97
  */
 
+@Order(1) // 우선순위 높음
 @Slf4j
 @RestControllerAdvice(annotations = RestController.class) // @RestController 만 처리
 public class BaseRestControllerAdvice {

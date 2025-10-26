@@ -57,23 +57,38 @@ public class SecurityConfig {
 
     // Spring Security url pattern
     private static final String AUTH_ALL = Url.AUTH + "/**";
+    private static final String AUTH_API_ALL = Url.AUTH_API + "/**";
     private static final String JOIN_ALL = Url.JOIN + "/**";
     private static final String LOGIN_ALL = Url.LOGIN + "/**";
     private static final String OAUTH2_ALL = Url.OAUTH2 + "/**";
     private static final String TEACHER_ALL = Url.TEACHER + "/**"; // 선생님 관리 페이지
     private static final String TEACHERS_ALL = Url.TEACHERS + "/**";
+    private static final String TEACHERS_API_ALL = Url.TEACHERS_API + "/**";
     private static final String ADMIN_ALL = Url.ADMIN + "/**";
     private static final String LECTURES_ALL = Url.LECTURES + "/**";
     private static final String WEBSOCKET_ALL = "/ws" + "/**";
     private static final String MYPAGE_ALL = Url.MYPAGE + "/**";
     private static final String FILE_ALL = Url.FILE + "/**";
     private static final String HOME_API_ALL = Url.HOME_API + "/**";
+    private static final String PAYMENT_ALL = Url.PAYMENT + "/**";
+    private static final String PAYMENTS_ALL = Url.PAYMENTS + "/**";
 
     // 접근을 모두 허용할 주소 (정적 자원 제외)
     public static final String[] PERMIT_ALL =
             {
                     Url.INDEX, HOME_API_ALL,
-                    AUTH_ALL, LECTURES_ALL, TEACHERS_ALL, TEACHER_ALL, FILE_ALL, WEBSOCKET_ALL
+                    AUTH_ALL, AUTH_API_ALL, LECTURES_ALL, TEACHERS_ALL, TEACHER_ALL, FILE_ALL, WEBSOCKET_ALL
+            };
+
+    public static final String[] STUDENT =
+            {
+                    MYPAGE_ALL, PAYMENT_ALL, PAYMENTS_ALL
+            };
+
+
+    public static final String[] TEACHER =
+            {
+                    TEACHER_ALL, TEACHERS_API_ALL
             };
 
     public static final String[] ANONYMOUS =
@@ -143,11 +158,14 @@ public class SecurityConfig {
                         // 공개 페이지 - 모두 접근 가능
                         .requestMatchers(PERMIT_ALL).permitAll()
 
-                        // 관리자 페이지 - 관리자만 접근 가능
+                        // 관리자만 접근 가능
                         .requestMatchers(ADMIN_ALL).hasAuthority(Role.ROLE_ADMIN.name())
 
-                        // 마이페이지 - 학생만 접근 가능
-                        .requestMatchers(MYPAGE_ALL).hasAuthority(Role.ROLE_STUDENT.name())
+                        // 선생님만 접근 가능
+                        .requestMatchers(TEACHER).hasAuthority(Role.ROLE_TEACHER.name())
+
+                        // 학생만 접근 가능
+                        .requestMatchers(STUDENT).hasAuthority(Role.ROLE_STUDENT.name())
 
                         // 로그인, 회원가입 - 익명 사용자만 접근 가능 (로그아웃 사용자)
                         .requestMatchers(ANONYMOUS).anonymous()

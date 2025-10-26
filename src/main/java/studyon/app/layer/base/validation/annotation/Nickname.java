@@ -17,7 +17,6 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = NicknameValidator.class)  // Validator 클래스 지정
 @Documented
 public @interface Nickname {
-
     String message() default "";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

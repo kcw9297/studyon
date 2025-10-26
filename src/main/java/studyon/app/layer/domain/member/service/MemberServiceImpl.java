@@ -97,7 +97,7 @@ public class MemberServiceImpl implements MemberService {
 
             // 선생님 정보 조회
             Teacher teacher = teacherRepository
-                    .findByMemberIdWithMemberAndProfileImage(memberId)
+                    .findByMemberIdWithMember(memberId)
                     .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
             // 선생님 프로필 정보 반환
@@ -109,22 +109,13 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-
     @Override
-    @CacheEvict(value = "member:profile" , key = "#memberId") // 캐시 삭제
-    public String initPassword(Long memberId) {
+    public void editPassword(String email, String newPassword) {
 
-        // [1] 초기화할 패스워드 문자열 생성
-        String newPassword = StrUtils.createShortUUID();
-
-        // [2] 회원 조회 후 초기화 수행
         memberRepository
-                .findById(memberId)
+                .findByEmailAndProvider(email, Provider.NORMAL)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND))
-                .updatePassword(passwordEncoder.encode(newPassword)); // 암호화 후 초기화 수행
-
-        // [3] 초기화에 성공한 비밀번호 반환
-        return newPassword;
+                .updatePassword(passwordEncoder.encode(newPassword)); // 정상 조회 시 비밀번호 갱신
     }
 
 

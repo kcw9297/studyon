@@ -17,7 +17,7 @@ public enum Cache {
     MEMBER_LATEST_SEARCH("member:search:latest"),
     MEMBER_LOGIN("member:login"),
     CURRENT_LOGIN("current:login"),
-    VERIFICATION_MAIL("verification:mail");
+    AUTH("auth");
 
     private final String baseKey;
 

@@ -1,4 +1,4 @@
-package studyon.app.layer.domain.account;
+package studyon.app.layer.domain.auth;
 
 import lombok.*;
 import studyon.app.common.enums.Provider;

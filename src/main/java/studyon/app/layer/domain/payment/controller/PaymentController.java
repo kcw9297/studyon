@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.payment.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -30,19 +31,14 @@ public class PaymentController {
      * URL: /payment/{lectureId}
      */
     @GetMapping("/{lectureId}")
-    public String paymentPage(@PathVariable Long lectureId, HttpServletRequest request, Model model) {
+    public String paymentPage(@PathVariable Long lectureId, HttpSession session, Model model) {
         // 1️⃣ 강의 조회
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다. id=" + lectureId));
 
         // 2️⃣ 로그인 확인
-        Long memberId = SessionUtils.getMemberId(request);
-        MemberProfile profile = cacheManager.getProfile(memberId, MemberProfile.class);
-
-        if (profile == null) {
-            log.warn("🚫 로그인하지 않은 사용자가 결제 페이지 접근 시도");
-            return "redirect:/login";
-        }
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long memberId = profile.getMemberId();
 
         // 3️⃣ 모델 추가
         model.addAttribute("lecture", lecture);

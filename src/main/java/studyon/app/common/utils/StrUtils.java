@@ -17,6 +17,8 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -221,7 +223,7 @@ public final class StrUtils {
                 "" : originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
     }
 
-    public static Object getUUID() {
+    public static String createUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
 }

@@ -40,4 +40,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         WHERE m.lastLoginAt BETWEEN :start AND :end
     """)
     Long countByLastLoginAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    boolean existsByEmailAndProviderAndIsActive(String email, Provider provider, Boolean isActive);
 }

@@ -53,7 +53,7 @@
         try{
            const res = await fetch("/api/teachers/management/profile");
            const result = await res.json();
-           const data = JSON.parse(result.data);
+           const data = result.data;
            console.log(data);
 
            const teacherName = document.querySelector(".teacher-info-box .teacher-name")
@@ -62,8 +62,6 @@
             const teacherRate = document.querySelector(".teacher-info-box .stat-rate")
             //const imgElem = document.querySelector("#teacher-img");
 
-
-
             teacherName.textContent = data.nickname;
             lectureCount.textContent = data.lectureCount;
             teacherEmail.textContent = data.email;
@@ -71,13 +69,13 @@
 
             const imgElem = document.querySelector("#teacher-img");
             if (imgElem) {
-                imgElem.src = "/api/teachers/management/profile/image";
+                imgElem.src = ${not empty sessionScope.profile.profileImage} ?
+                    `${fileDomain}/${sessionScope.profile.profileImage.filePath}` : "<c:url value='/img/png/default_member_profile_image.png'/>";
             }
 
-        }catch{
-
+        } catch (err) {
+            console.error("선생님 프로필 로드 실패:", err);
         }
-
         const photoWrapper = document.querySelector("#photo-wrapper");
         const inputFile = document.querySelector("#profile-upload");
         const allowedExt = ["png", "jpg", "jpeg", "webp"];

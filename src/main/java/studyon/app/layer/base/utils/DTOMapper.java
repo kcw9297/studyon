@@ -353,7 +353,7 @@ public class DTOMapper {
         // 파일 정보 추출
         String originalName = file.getOriginalFilename();
         String ext = StrUtils.extractFileExt(originalName);
-        String storeName = "%s.%s".formatted(StrUtils.getUUID(), ext);
+        String storeName = "%s.%s".formatted(StrUtils.createUUID(), ext);
         String filePath = "%s/%s".formatted(entity.getName(), storeName);
 
         // 업로드 정보 DTO 생성 및 반환
