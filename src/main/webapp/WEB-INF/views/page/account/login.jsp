@@ -33,7 +33,7 @@
 
     <div class="login-links">
       <a href="#">비밀번호 찾기</a> |
-      <a href="#">회원가입</a> |
+      <a href="/join">회원가입</a> |
       <a href="#">아이디(이메일) 찾기</a>
     </div>
 
