@@ -50,8 +50,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         lectures.forEach(bestLecture => {
             const item = document.createElement("div");
+
+            const detailUrl = `/lecture/detail/${bestLecture.lectureId}`;
+
             item.classList.add("recent-lecture-item");
             item.innerHTML = `
+            <a href="${detailUrl}">
                 <img src="/img/png/sample1.png" alt="강의이미지">
                 <div class="lecture-info">
                     <p class="lecture-title">${bestLecture.title}</p>
@@ -62,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
                          🧸 ${bestLecture.totalStudents >= 10 ? "10+" : bestLecture.totalStudents}
                     </p>
                 </div>
+            </a>
             `;
             container.appendChild(item);
         });
@@ -69,6 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderRecentLectures(lectures) {
         // ✅ 단일 요소 선택
         const container = document.querySelector("#recentLectureContainer");
+
+
 
         if (!container) {
             console.error("홈화면 최신 강의 컨테이너 조회 실패");
@@ -82,20 +89,27 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+
+
         lectures.forEach(recentLecture => {
             const item = document.createElement("div");
+
+            const detailUrl = `/lecture/detail/${recentLecture.lectureId}`;
+
             item.classList.add("recent-lecture-item");
             item.innerHTML = `
-                <img src="/img/png/sample1.png" alt="강의이미지">
-                <div class="lecture-info">
-                    <p class="lecture-title">${recentLecture.title}</p>
-                    <p class="lecture-info-text">${recentLecture.nickname}</p>
-                    <p class="lecture-info-text">₩${Number(recentLecture.price).toLocaleString()}</p>
-                    <p class="lecture-info-text">
-                         <!--⭐${recentLecture.averageRate}-->
-                         🧸 ${recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents}
-                    </p>
-                </div>
+                <a href="${detailUrl}">
+                    <img src="/img/png/sample1.png" alt="강의이미지">
+                        <div class="lecture-info">
+                            <p class="lecture-title">${recentLecture.title}</p>
+                            <p class="lecture-info-text">${recentLecture.nickname}</p>
+                            <p class="lecture-info-text">₩${Number(recentLecture.price).toLocaleString()}</p>
+                            <p class="lecture-info-text">
+                                 <!--⭐${recentLecture.averageRate}-->
+                                 🧸 ${recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents}
+                            </p>
+                        </div>
+                    </a>
             `;
             container.appendChild(item);
         });

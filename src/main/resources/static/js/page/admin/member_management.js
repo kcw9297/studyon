@@ -77,6 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
             tbody.appendChild(tr);
         });
 
+
+        // ✅ 여기서 이벤트 다시 연결
+        attachModalEvents();
+
+
         console.log(`[RENDER] ${members.length}명의 회원 렌더링 완료`);
 
         // ✅ 권한 변환 함수 추가
@@ -88,5 +93,49 @@ document.addEventListener("DOMContentLoaded", () => {
                 default: return "-";
             }
         }
+        // 모달 창 먹히는 함수 코드 그대로 가져옴
+        function attachModalEvents() {
+            const modal = document.getElementById("memberModal");
+            const closeBtn = document.querySelector(".close-btn");
+            const closeModalBtn = document.getElementById("closeModalBtn");
+
+            // 관리 버튼 클릭 이벤트 새로 연결
+            document.querySelectorAll(".management-button").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const row = e.target.closest("tr");
+                    if (!row) return;
+
+                    const name = row.children[1].innerText;
+                    const email = row.children[2].innerText;
+                    const role = row.children[3].innerText;
+                    const status = row.children[4].innerText;
+                    const date = row.children[5].innerText;
+
+                    document.getElementById("modalName").innerText = name;
+                    document.getElementById("modalEmail").innerText = email;
+                    document.getElementById("modalRole").innerText = role;
+                    document.getElementById("modalStatus").innerText = status;
+                    document.getElementById("modalDate").innerText = date;
+
+                    modal.style.display = "flex";
+                });
+            });
+
+            // 닫기 이벤트 한 번만 등록
+            if (closeBtn && !closeBtn.dataset.bound) {
+                closeBtn.dataset.bound = "true";
+                closeBtn.addEventListener("click", () => modal.style.display = "none");
+            }
+            if (closeModalBtn && !closeModalBtn.dataset.bound) {
+                closeModalBtn.dataset.bound = "true";
+                closeModalBtn.addEventListener("click", () => modal.style.display = "none");
+            }
+
+            window.addEventListener("click", (e) => {
+                if (e.target === modal) modal.style.display = "none";
+            });
+        }
+
     }
 });
