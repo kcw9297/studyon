@@ -26,6 +26,7 @@ import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,12 +35,13 @@ import java.util.stream.Collectors;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-17) : khj00 최초 작성
+ *  ▶ ver 1.1 (2025-10-27) : phj : 리뷰 퍼센트 계산 - 강의페이지 추가
  */
 
 /**
  * 강의 서비스 인터페이스 구현체
- * @version 1.0
- * @author khj00
+ * @version 1.1
+ * @author phj
  */
 
 @Service
@@ -180,6 +182,27 @@ public class LectureServiceImpl implements LectureService {
         return dto;
     }
 
+    /* 리뷰 퍼센트 계산 - 강의페이지 */
+    @Override
+    public Map<Integer, Double> getRatingPercentage(Long lectureId) {
+        // 1. 총 리뷰 수
+        long totalReviews = lectureReviewRepository.countByLecture_LectureId(lectureId);
+        if(totalReviews == 0) return Map.of(5,0.0,4,0.0,3,0.0,2,0.0,1,0.0);
+
+        // 2. 각 평점별 리뷰 개수
+        Map<Integer, Long> countMap = Map.of(
+                5, lectureReviewRepository.countByLecture_LectureIdAndRating(lectureId, 5),
+                4, lectureReviewRepository.countByLecture_LectureIdAndRating(lectureId, 4),
+                3, lectureReviewRepository.countByLecture_LectureIdAndRating(lectureId, 3),
+                2, lectureReviewRepository.countByLecture_LectureIdAndRating(lectureId, 2),
+                1, lectureReviewRepository.countByLecture_LectureIdAndRating(lectureId, 1)
+        );
+
+        // 3. 퍼센트 계산
+        Map<Integer, Double> percentMap = new HashMap<>();
+        countMap.forEach((star, count) -> percentMap.put(star, (count * 100.0) / totalReviews));
+        return percentMap;
+    }
     @Override
     public LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId, Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));

@@ -91,7 +91,7 @@ button{all:unset;}
 .reviews-total{display:flex; flex-direction:column; justify-content:center; align-items:center;}
 .reviews-total strong{font-size:40px;}
 .reviews-total p{color:var(--deep-gray); font-size:20px;}
-.reviews-statistics{display:flex; flex-direction:column; gap:2px;}
+.reviews-statistics{display:flex; flex-direction:column-reverse; gap:2px;}
 .reviews-item{display:grid; grid-template-columns:100px 50px; grid-template-rows:repeat(5,auto); font-size:16px;}
 .reviews-star{color:var(--star);}
 .reviews-percent{color:var(--deep-gray);}

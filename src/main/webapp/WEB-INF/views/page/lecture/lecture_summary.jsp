@@ -22,7 +22,7 @@
             <div class="summary-report">
                 <div class="summary-review">
                     <div class="summary-star">★</div>
-                    <div class="summary-score">&nbsp;(${lecture.averageRate})&nbsp;</div>
+                    <div class="summary-score">&nbsp;<fmt:formatNumber value="${lecture.averageRate}" pattern="#0.0"/>&nbsp;</div>
                     <div class="summary-count">수강평 <fmt:formatNumber value="${reviewCount}" type="number"/>개</div>
                 </div>
                 <div class="summary-student">
