@@ -45,8 +45,8 @@
                 <div class="account-text">
                     <p>••••••••</p>
                 </div>
-                <c:if test="${sessionScope.profile.provider.value eq 'NORMAL'}">
-                    <button class="password-edit-button">수정</button>
+                <c:if test="${sessionScope.profile.provider eq 'NORMAL'}">
+                    <button class="password-edit-button" id="editPasswordBtn">수정</button>
                 </c:if>
             </div>
         </div>
@@ -54,7 +54,11 @@
 </section>
 
 <%--nickname & password modal--%>
-<jsp:include page="/WEB-INF/views/page/mypage/nickname_edit_modal.jsp" />
+<jsp:include page="/WEB-INF/views/page/mypage/modal_edit_nickname.jsp" />
+
+<%--password edit modal --%>
+<jsp:include page="/WEB-INF/views/page/mypage/modal_edit_password.jsp" />
+
 
 
 <style>
@@ -63,6 +67,13 @@
 
 
     <%-- 추가된 부분 이후에 우리 스타일에 맞게 변경 요구 --%>
+
+    .password-edit-modal-button{
+        border : 2px solid green;
+        padding : 5px;
+        border-radius:15px;
+        font-weight: bold;
+    }
 
     .mypage-info-container {
         width: 100%;
@@ -147,9 +158,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
 
-        /* 프로필 정보 출략 */
-
-        //  data 필드(문자열)를 다시 파싱
+        /* 프로필 정보 출력 */
 
         // 닉네임
         const nicknameElem = document.querySelector(".mypage-info-nickname");
@@ -220,49 +229,22 @@
 
 
         const nicknameEditBtn = document.querySelector(".mypage-nickname-edit-button");
-        const closeBtn = document.getElementById("closeNicknameBtn");
+        const passwordEditBtn = document.querySelector(".password-edit-button");
+
         if (nicknameEditBtn) {
             nicknameEditBtn.addEventListener("click", () => {
                 // 닉네임 수정 모달 열기
                 openNicknameModal();
             });
         }
-        if (closeBtn) {
-            closeBtn.addEventListener("click", closeNicknameModal);
-        }
-
-        // ✅ 비밀번호 수정 버튼 클릭 → 모달 열기
-        const passwordEditBtn = document.querySelector(".password-edit-button");
-        const closePasswordBtn = document.getElementById("closePasswordModalBtn");
-        const sendResetEmailBtn = document.getElementById("sendResetEmailBtn");
-        const closeMailBtn = document.getElementById("closeMailSuccessBtn");
 
         if (passwordEditBtn) {
             passwordEditBtn.addEventListener("click", () => {
-                openPasswordModal();
+                openEditPasswordModal();
             });
         }
 
-        if (closePasswordBtn) {
-            closePasswordBtn.addEventListener("click", () => {
-                closePasswordModal();
-            });
-        }
-
-        if (sendResetEmailBtn) {
-            sendResetEmailBtn.addEventListener("click", async () => {
-                // 실제 이메일 발송 로직 (예: fetch("/api/auth/password-reset", {...}))
-                // 여기선 성공했다고 가정
-                openMailSendSuccessModal();
-            });
-        }
-
-        if (closeMailBtn) {
-            closeMailBtn.addEventListener("click", closeMailSendSuccessModal);
-        }
     });
-
-
 
     async function editProfileImage(file) {
 
@@ -273,6 +255,7 @@
             form.append("profileImage", file);
 
             const res = await fetch("/api/members/profile_image", {
+                headers: {'X-Requested-From': window.location.pathname + window.location.search},
                 method: "PATCH",
                 body: form
             });
@@ -330,38 +313,7 @@
 
     }
 
-
-    function openNicknameModal() {
-        const modal = document.getElementById("nicknameModal");
-        if (modal) {
-            modal.style.display = "flex"; // 모달 보이기
-        }
-    }
-
-    function closeNicknameModal() {
-        const modal = document.getElementById("nicknameModal");
-        if (modal) modal.style.display = "none";
-    }
-
-    function openPasswordModal() {
-        const modal = document.getElementById("passwordResetModal");
-        if (modal) modal.style.display = "flex";
-    }
-
-    function closePasswordModal() {
-        const modal = document.getElementById("passwordResetModal");
-        if (modal) modal.style.display = "none";
-    }
-
-    function openMailSendSuccessModal() {
-        const modal = document.getElementById("mailSendSuccessModal");
-        if (modal) modal.style.display = "flex";
-    }
-
-    function closeMailSendSuccessModal() {
-        const modal = document.getElementById("mailSendSuccessModal");
-        if (modal) modal.style.display = "none";
-    }
+    /* 비밀번호 수정 */
 
 
 

@@ -4,10 +4,12 @@ package studyon.app.layer.domain.lecture;
 import lombok.*;
 
 import studyon.app.common.enums.Difficulty;
+import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
 import studyon.app.infra.aop.LogInfo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 강의 기본 정보를 담은 DTO
@@ -88,7 +90,10 @@ public class LectureDTO {
         private Long teacherId;
         private String title;
         private String description;
-        private String category;
+        private LectureTarget target;
         private Integer price;
+        private Difficulty difficulty;
+        private Subject subject;
+        private List<String> curriculumTitles;
     }
 }

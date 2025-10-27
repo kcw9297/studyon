@@ -72,7 +72,7 @@ public class MemberRestController {
     /**
      * [POST] 회원 비밀번호 초기화
      */
-    @PatchMapping("/password/edit")
+    @PatchMapping("/password")
     public ResponseEntity<?> editPassword(HttpSession session, @Password String password) {
 
         // [1] 회원 프로필 조회

@@ -83,68 +83,52 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById("lectureForm");
         const addBtn = document.getElementById("add-lecture-btn");
         const listBox = document.getElementById("lecture-list-box");
 
-        // 🔹 강의 번호 재정렬
-        function updateNumbers() {
+        // ✅ 강의 항목 번호 재정렬 함수
+        function updateLectureNumbers() {
             const items = listBox.querySelectorAll(".lecture-item");
-            items.forEach((item, i) => {
-                item.querySelector(".lecture-number").textContent = "제 " + (i + 1) + "강 제목:";
+            items.forEach((item, index) => {
+                const label = item.querySelector(".lecture-number");
+                label.textContent = `제 ${index + 1}강 제목:`; // 1강, 2강, 3강
+                const input = item.querySelector("input");
+                input.placeholder = `예: ${index + 1}강 제목 입력`;
             });
         }
 
-        // 🔹 강의 추가
+        // ✅ 항목 추가
         addBtn.addEventListener("click", () => {
             const div = document.createElement("div");
             div.classList.add("lecture-item");
-            div.innerHTML = `
-            <label class="lecture-number"></label>
-            <input type="text" name="curriculumTitles" placeholder="강의 제목 입력" required>
-            <button type="button" class="remove-btn">✖</button>
-        `;
+
+            const label = document.createElement("label");
+            label.classList.add("lecture-number");
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.name = "curriculumTitles";
+            input.required = true;
+
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.classList.add("remove-btn");
+            removeBtn.textContent = "✖";
+
+            div.append(label, input, removeBtn);
             listBox.appendChild(div);
-            updateNumbers();
+
+            updateLectureNumbers(); // 번호 갱신
         });
 
-        // 🔹 삭제
+        // ✅ 삭제 시 번호 재정렬
         listBox.addEventListener("click", (e) => {
             if (e.target.classList.contains("remove-btn")) {
                 e.target.closest(".lecture-item").remove();
-                updateNumbers();
-            }
-        });
-
-        // 🔹 폼 제출
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
-
-            try {
-                const res = await fetch("/api/teachers/lecture/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: params
-                });
-
-                const json = await res.json();
-                if (res.ok) {
-                    alert(json.message || "강의 등록이 완료되었습니다!");
-                    form.reset();
-                    listBox.innerHTML = "";
-                } else {
-                    alert(json.message || "등록 실패");
-                }
-            } catch (err) {
-                console.error("❌ 오류:", err);
-                alert("서버 오류가 발생했습니다.");
+                updateLectureNumbers();
             }
         });
     });
-
 
 
 

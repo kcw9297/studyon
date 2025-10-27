@@ -13,9 +13,13 @@ import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
+import studyon.app.layer.domain.lecture_index.LectureIndex;
+import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +40,7 @@ import java.util.stream.Collectors;
 public class LectureServiceImpl implements LectureService {
     private final LectureRepository lectureRepository;
     private final TeacherRepository teacherRepository;
+    private final LectureIndexRepository lectureIndexRepository;
 
     /** 최근 강의 리스트 불러오는 메소드
      * @param subject 과목
@@ -134,28 +139,33 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public LectureDTO.Register registerLecture(LectureDTO.Register dto) {
-        Teacher teacher = teacherRepository.findById(dto.getTeacherId())
-                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
-
+    public LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile) {
+        Teacher teacher = teacherRepository.findById(profile.getTeacherId()).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
         Lecture lecture = Lecture.builder()
                 .teacher(teacher)
                 .title(dto.getTitle())
-                .description(dto.getDescription())
-                .price(dto.getPrice().doubleValue())
-                .subject(Subject.valueOf(dto.getCategory().toUpperCase())) // ENUM 매핑
-                .difficulty(Difficulty.STANDARD)
+                .price(Double.valueOf(dto.getPrice()))
+                .difficulty(dto.getDifficulty())
+                .subject(dto.getSubject())
                 .build();
 
         lectureRepository.save(lecture);
 
-        return LectureDTO.Register.builder()
-                .teacherId(teacher.getTeacherId())
-                .title(lecture.getTitle())
-                .description(lecture.getDescription())
-                .category(dto.getCategory())
-                .price(dto.getPrice())
-                .build();
-    }
+        if (dto.getCurriculumTitles() != null && !dto.getCurriculumTitles().isEmpty()) {
+            List<LectureIndex> indexes = new ArrayList<>();
+            Long index = 1L;
 
+            for (String title : dto.getCurriculumTitles()) {
+                indexes.add(LectureIndex.builder()
+                        .lecture(lecture)
+                        .indexNumber(index++)
+                        .indexTitle(title)
+                        .build());
+            }
+
+            lectureIndexRepository.saveAll(indexes);
+        }
+
+        return dto;
+    }
 }

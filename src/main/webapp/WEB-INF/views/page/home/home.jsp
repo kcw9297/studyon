@@ -9,6 +9,7 @@
     <a href="<c:url value='/lecture/recommend/KOREAN'/>">국어</a>
     <a href="<c:url value='/lecture/recommend/SCIENCE'/>">과학탐구</a>
     <a href="<c:url value='/lecture/recommend/SOCIAL'/>">사회탐구</a>
+    <a href="<c:url value='/teacher/find/MATH'/>">강사리스트</a>
 </div>
 <div class="main-banner-container">
   <img src="<c:url value='/img/png/teacher_profile_img.png'/>" alt="메인비주얼이미지" class="main-banner">
@@ -129,6 +130,15 @@
 
     .main-banner-container {
         margin-bottom: 20px;
+    }
+
+    .recent-lecture-thumbnail {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-bottom: 1px solid #ddd;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
     }
 </style>
 

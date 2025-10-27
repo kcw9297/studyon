@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetch(`/api/lecture/best?subject=${subjectFromJSP}&count=${count}`, {
         method: "GET",
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search }
     })
         .then(res => res.json())
         .then(json => {
@@ -44,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             item.classList.add("recent-lecture-item");
             item.innerHTML = `
             <a href="${detailUrl}">
-                <img src="/img/png/sample1.png" alt="강의이미지">
+                <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                 <div class="lecture-info">
                     <p class="lecture-title">${bestLecture.title}</p>
                     <p class="lecture-info-text">${bestLecture.nickname}</p>

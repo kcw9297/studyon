@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
 
     fetch(`/api/lecture/recent?subject=${subjectFromJSP}&count=${count}`, {
-        method: "GET"
+        method: "GET",
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search }
     })
         .then(res => {
             if (!res.ok) throw new Error("HTTP " + res.status);
@@ -51,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             item.innerHTML = `
             <a href="${detailUrl}">
-                <img src="/img/png/sample1.png" alt="강의이미지">
+                <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                 <div class="lecture-info">
                   <p class="lecture-title">${recentLecture.title}</p>
                   <p class="lecture-info-text">${recentLecture.nickname}</p>
