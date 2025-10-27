@@ -12,10 +12,14 @@ import studyon.app.common.enums.Cache;
  * @author kcw97
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CacheUtils {
+public final class RedisUtils {
 
     public static String createIdKey(Cache cache, Object id) {
         return "%s:%s".formatted(cache.getBaseKey(), id);
+    }
+
+    public static String createIdKey(Cache cache, Object id1, Object id2) {
+        return "%s:%s:%s".formatted(cache.getBaseKey(), id1, id2);
     }
 
     public static String createBackupKey(String key) {

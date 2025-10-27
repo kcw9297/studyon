@@ -91,23 +91,10 @@ public class TeacherRestController {
     }
 
     @PostMapping("lecture/register")
-    public ResponseEntity<?> registerLecture(String title,String description, String category,Integer price,HttpServletRequest request) {
-        MemberProfile profile = SessionUtils.getProfile(request.getSession());
-        if (profile == null || profile.getTeacherId() == null) {
-            log.warn("강사 정보가 없습니다.");
-        }
-        Long teacherId = profile.getTeacherId();
-
-        LectureDTO.Register dto = LectureDTO.Register.builder()
-                .teacherId(teacherId)
-                .title(title)
-                .description(description)
-                .category(category)
-                .price(price)
-                .build();
-
-        lectureService.registerLecture(dto);
-
+    public ResponseEntity<?> registerLecture(LectureDTO.Register dto,HttpSession session){
+        log.info("강의 등록 요청");
+        MemberProfile profile = SessionUtils.getProfile(session);
+        lectureService.registerLecture(dto,profile);
         return RestUtils.ok("강의가 등록되었습니다.");
     }
 

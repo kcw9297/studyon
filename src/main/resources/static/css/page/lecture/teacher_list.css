@@ -17,7 +17,7 @@
   border-radius:10px;
   font-size:20px;
   font-weight:bold;
-  color: rgba(0, 0, 0, 0.6); /* 검정색, 불투명도 50% */
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .nav-item:hover{
@@ -31,15 +31,15 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
-  width: 100%;             /* ✅ 1420px 고정 대신 부모에 맞춤 */
-  box-sizing: border-box;  /* ✅ padding/gap 계산 포함 */
+  width: 100%;
+  box-sizing: border-box;
   background-color: rgb(255, 255, 255);
 }
 
 
 .recent-lecture-item {
-  width: 260px;            /* 고정 폭 (5등분용) */
-  height: 300px;           /* 고정 높이 */
+  width: 260px;
+  height: auto;
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 10px;

@@ -107,6 +107,12 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
+    public void removeAuthRequest(String token) {
+        cacheManager.removeAuthRequest(token);
+    }
+
+
+    @Override
     public JoinCache getJoinCache() {
         return null;
     }
