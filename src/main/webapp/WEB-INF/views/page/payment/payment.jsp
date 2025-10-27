@@ -225,7 +225,7 @@
             alert(result.data?.content ?? "결제 완료되었습니다!");
 
             // ✅ 결제 완료 후 마이페이지로 이동
-            window.location.href = "/mypage/lectures";
+            window.location.href = "/mypage/lecture_management";
 
 
 
