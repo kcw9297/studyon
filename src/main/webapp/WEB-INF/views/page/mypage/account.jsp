@@ -46,7 +46,7 @@
                     <p>••••••••</p>
                 </div>
                 <c:if test="${sessionScope.profile.provider eq 'NORMAL'}">
-                    <button onclick="openPasswordeditModal()" class="password-edit-modal-button">수정</button>
+                    <button class="password-edit-button">수정</button>
                 </c:if>
             </div>
         </div>
