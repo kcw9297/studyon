@@ -19,8 +19,7 @@
 
         <label class="join-label">이메일</label>
         <input type="text" class="join-input" placeholder="이메일을 입력해주세요.">
-        <div class="asynchronous-message">6자 이상 20자 이하 영문/특수문자/숫자 입력</div>
-        <div class="asynchronous-message-wrong">6자 이상 20자 이하 영문/특수문자/숫자 입력</div>
+        <div class="asynchronous-message">30자 이내 이메일 입력</div>
 
         <label class="join-label">비밀번호</label>
         <input type="password" class="join-input" placeholder="비밀번호를 입력해주세요.">
@@ -28,14 +27,18 @@
 
         <label class="join-label">비밀번호 확인</label>
         <input type="password" class="join-input" placeholder="비밀번호를 다시 입력해주세요.">
-        <div class="asynchronous-message">비밀번호가 일치하지않습니다.</div>
+        <div class="asynchronous-message">비밀번호 다시 입력</div>
+        <div class="asynchronous-message-wrong">6자 이상 20자 이하 영문/특수문자/숫자 입력</div>
 
-        <button onclick="location.href='/testboard/auth_mail'" class="join-button">이메일 인증하기</button>
-
+        <button class="join-button" id="joinBtn">이메일 인증하기</button>
         <div class="social-label">간편 회원가입</div>
         <div class="social-icons">
-            <a href="#"><img src="<c:url value='/img/png/kakao.png'/>" class="카카오 로그인"></a>
-            <a href="#"><img src="<c:url value='/img/png/google.png'/>" alt="구글 로그인"></a>
+            <a href="/oauth2/authorization/google">
+                <img src="<c:url value='/img/png/google.png'/>" alt="구글 로그인">
+            </a>
+            <a href="/oauth2/authorization/naver">
+                <img src="<c:url value='/img/png/naver.png'/>" alt="구글 로그인">
+            </a>
         </div>
     </div>
 </div>

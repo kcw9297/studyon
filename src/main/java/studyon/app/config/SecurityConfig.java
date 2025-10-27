@@ -76,7 +76,7 @@ public class SecurityConfig {
     // 접근을 모두 허용할 주소 (정적 자원 제외)
     public static final String[] PERMIT_ALL =
             {
-                    Url.INDEX, HOME_API_ALL,
+                    Url.INDEX, HOME_API_ALL, TEACHERS_API_ALL, // 선생님 API는 컨트롤러 애노테이션으로 세부권한 수정
                     AUTH_ALL, AUTH_API_ALL, LECTURES_ALL, TEACHERS_ALL, TEACHER_ALL, FILE_ALL, WEBSOCKET_ALL
             };
 
@@ -88,7 +88,7 @@ public class SecurityConfig {
 
     public static final String[] TEACHER =
             {
-                    TEACHER_ALL, TEACHERS_API_ALL
+                    TEACHER_ALL
             };
 
     public static final String[] ANONYMOUS =

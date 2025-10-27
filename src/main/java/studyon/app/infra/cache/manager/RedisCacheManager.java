@@ -128,6 +128,13 @@ public class RedisCacheManager implements CacheManager {
         return Objects.isNull(jsonCache) ? null : StrUtils.fromJson(jsonCache, type);
     }
 
+
+    @Override
+    public boolean removeAuthRequest(String token) {
+        return stringRedisTemplate.delete(RedisUtils.createIdKey(Cache.AUTH, token));
+    }
+
+
     // Value 자료형으로 저장 시 공통적으로 처리하는 key 생성 & 저장 로직
     private void setJsonValue(Cache cache, Object id, Object data) {
 

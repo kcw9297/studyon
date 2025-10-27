@@ -43,18 +43,18 @@ public class AuthRestController {
 
     @PatchMapping("/edit-password")
     public ResponseEntity<?> verifyAndInitPassword(
-            @NotBlank String token, @Password String newPassword) {
+            @NotBlank String token, @Password String password) {
 
         // [1] 인증요청 검증 (token 기반)
         // 만약 인증에 실패한 경우, 예외가 발생하여 로직 중단
         String email = authService.verifyAndGetData(token, String.class);
-        log.warn("email: {}", email);
 
         // [2] 요청 성공 시, 새로운 비밀번호로 설정
-        memberService.editPassword(email, newPassword);
+        memberService.editPassword(email, password);
+        authService.removeAuthRequest(token); // 저장 성공 시, 인증 요청 삭제
 
-        // [3] 발송 성공 응답 반환
-        return RestUtils.ok();
+        // [3] 비밀번호 변경 성공 응답 반환
+        return RestUtils.ok(AppStatus.AUTH_OK_EDIT_PASSWORD);
     }
 
 

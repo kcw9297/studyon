@@ -56,6 +56,9 @@ public enum AppStatus {
     MEMBER_OK_EDIT_NICKNAME(200, "닉네임을 변경했습니다."),
     MEMBER_OK_EDIT_PASSWORD(200, "비밀번호를 변경했습니다."),
 
+    /* AUTH */
+    AUTH_OK_EDIT_PASSWORD(200, "비밀번호를 변경했습니다."),
+
 
     /* 선생님 상태 */
     TEACHER_NOT_FOUND(500, "선생님 정보가 존재하지 않습니다."),

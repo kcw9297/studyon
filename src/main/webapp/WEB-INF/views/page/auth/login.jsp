@@ -13,8 +13,8 @@
 
 <body>
     <%--nickname & password modal--%>
-    <jsp:include page="/WEB-INF/views/page/auth/password_edit_modal.jsp" />
-    <jsp:include page="/WEB-INF/views/page/auth/mail_send_success_modal.jsp" />
+    <jsp:include page="/WEB-INF/views/page/auth/modal_edit_password.jsp" />
+    <jsp:include page="/WEB-INF/views/page/auth/modal_edit_password_success.jsp" />
 
   <div class="login-box">
     <span class="close-btn" onclick="window.location.href='/'">&times;</span>
@@ -29,7 +29,7 @@
             <img src="<c:url value='/img/png/eyeoff.png'/>" alt="비밀번호 보기" />
         </span>
     </div>
-    <div class="text-error" id="loginError" style="color: red;"></div>
+    <div class="asynchronous-message-wrong" id="loginError"></div>
     <div class="divider-login"></div>
     <button type="submit">로그인</button>
 </form>
@@ -146,7 +146,7 @@
         const modal = document.getElementById("passwordEditModal");
         modal.querySelectorAll('input').forEach(input => input.value = '');
         modal.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
-        modal.querySelectorAll('.text-error').forEach(textError => textError.textContent = '');
+        modal.querySelectorAll('.asynchronous-message-wrong').forEach(textError => textError.textContent = '');
         if (modal) modal.style.display = "none";
     }
 

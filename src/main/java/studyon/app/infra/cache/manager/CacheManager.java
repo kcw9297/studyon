@@ -82,6 +82,13 @@ public interface CacheManager {
 
 
     /**
+     * 인증 요청 삭제
+     * @param token 인증 토큰 값
+     */
+    boolean removeAuthRequest(String token);
+
+
+    /**
      * 기존 캐시데이터를 불러오기
      * @param entityName 대상 엔티티명
      * @param methodType 행동 유형
