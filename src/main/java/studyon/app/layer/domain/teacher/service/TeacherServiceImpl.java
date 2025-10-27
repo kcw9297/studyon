@@ -128,30 +128,6 @@ public class TeacherServiceImpl implements TeacherService {
                 .toList();
     }
 
-    @Override
-    public LectureDTO.Register registerLecture(LectureDTO.Register dto){
-        Teacher teacher = teacherRepository.findById(dto.getTeacherId())
-                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
-
-        Lecture lecture = Lecture.builder()
-                .teacher(teacher)
-                .title(dto.getTitle())
-                .description(dto.getDescription())
-                .price(dto.getPrice().doubleValue())
-                .subject(Subject.valueOf(dto.getCategory().toUpperCase()))
-                .difficulty(Difficulty.STANDARD)
-                .build();
-
-        lectureRepository.save(lecture);
-
-        return LectureDTO.Register.builder()
-                .teacherId(teacher.getTeacherId())
-                .title(lecture.getTitle())
-                .description(lecture.getDescription())
-                .category(dto.getCategory())
-                .price(dto.getPrice())
-                .build();
-    }
 
     @Override
     public TeacherDTO.TeacherManagementProfile readProfile(Long memberId) {

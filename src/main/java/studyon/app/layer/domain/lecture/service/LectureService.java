@@ -3,6 +3,7 @@ package studyon.app.layer.domain.lecture.service;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
+import studyon.app.layer.domain.member.MemberProfile;
 
 import java.util.List;
 
@@ -57,6 +58,5 @@ public interface LectureService {
      * @return 해당 선생님 최신 강의 리스트
      */
     List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
-    LectureDTO.Register registerLecture(LectureDTO.Register dto);
-
+    LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile);
 }
