@@ -2,12 +2,10 @@ package studyon.app.layer.domain.lecture_review.repository;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture_review.LectureReview;
-import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 
 import java.util.List;
 
@@ -68,5 +66,6 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
     /* 강의 정보 조회 - 강의소개 페이지 */
     @Query("SELECT r FROM LectureReview r JOIN FETCH r.member WHERE r.lecture.lectureId = :lectureId ORDER BY r.rating DESC")
     List<LectureReview> findByLectureIdWithMemberOrderByRatingDesc(@Param("lectureId") Long lectureId);
+    Long countByLecture_LectureId(Long lectureId);
 
 }

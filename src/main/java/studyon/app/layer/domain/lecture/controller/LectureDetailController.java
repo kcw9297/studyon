@@ -32,10 +32,12 @@ public class LectureDetailController {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다. id=" + lectureId));
 
         List<LectureReview> reviews = lectureReviewRepository.findByLectureIdWithMemberOrderByRatingDesc(lectureId);
+        long reviewCount = lectureReviewRepository.countByLecture_LectureId(lectureId);
 
         model.addAttribute("lecture", lecture);
         model.addAttribute("teacher", lecture.getTeacher());
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewCount", reviewCount);
 
         return ViewUtils.returnView(model, View.LECTURE, "lecture_detail");
     }

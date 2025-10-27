@@ -23,13 +23,13 @@
                 <div class="summary-review">
                     <div class="summary-star">★</div>
                     <div class="summary-score">&nbsp;(${lecture.averageRate})&nbsp;</div>
-                    <div class="summary-count">수강평 1,853개</div>
+                    <div class="summary-count">수강평 <fmt:formatNumber value="${reviewCount}" type="number"/>개</div>
                 </div>
                 <div class="summary-student">
                     <div class="summary-member">
                         <img src="<c:url value='/img/png/student.png'/>" alt="수강생">
                     </div>
-                    <div class="summary-total">&nbsp;수강생 ${lecture.totalStudents}명</div>
+                    <div class="summary-total">&nbsp;수강생 <fmt:formatNumber value="${teacher.totalStudents}" type="number"/>명</div>
                 </div>
             </div>
         </div>
@@ -61,7 +61,6 @@
                 <button onclick="location.href='/payment/${lecture.lectureId}'" class="summary-purchase">
                     바로 구매하기
                 </button>
-                d
             </div>
         </div>
     </div>

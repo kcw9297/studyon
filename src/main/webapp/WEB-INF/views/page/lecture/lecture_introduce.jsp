@@ -130,18 +130,10 @@
     <div id="reviews" class="introduce-content">
         <div class="introduce-title">수강평</div>
         <div class="reviews">
-            <div class="reviews-sort">
-                <select id="reviews-sort" name="reviews-sort">
-                    <option value="recommend" selected>추천순</option>
-                    <option value="latest">최신순</option>
-                    <option value="high-rating">높은 평점순</option>
-                    <option value="low-rating">낮은 평점순</option>
-                </select>
-            </div>
             <div class="reviews-situation">
                 <div class="reviews-total">
                     <strong>4.8</strong>
-                    <p>853개의 수강평</p>
+                    <p><fmt:formatNumber value="${reviewCount}" type="number"/>개의 수강평</p>
                 </div>
                 <div class="reviews-statistics">
                     <div class="reviews-item">
@@ -176,9 +168,15 @@
                     </div>
                     <div class="reviews-content">
                         <div class="reviews-top">
-                            <c:forEach var="i" begin="1" end="5">
-                                <div class="reviews-god">★</div>
-                            </c:forEach>
+                            <div class="reviews-god">
+                                <c:forEach begin="1" end="${review.rating}">
+                                    <span class="reviews-god filled">★</span>
+                                </c:forEach>
+                                <c:forEach begin="1" end="${5 - review.rating}">
+                                    <span class="reviews-god empty">★</span>
+                                </c:forEach>
+                            </div>
+
                             <div class="reviews-day">${review.createdAt}</div>
                         </div>
                         <div class="reviews-bottom">
