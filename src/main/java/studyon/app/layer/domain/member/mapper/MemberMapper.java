@@ -22,4 +22,11 @@ public interface MemberMapper {
                                    @Param("prq") Page.Request prq);
 
     Integer countAll(@Param("rq") MemberDTO.Search rq);
+
+    // 검색 전용 메소드들
+    List<MemberDTO.Read> selectBySearch(@Param("rq") MemberDTO.Search rq,
+                                        @Param("prq") Page.Request prq);
+    Integer countBySearch(@Param("rq") MemberDTO.Search rq,
+                          @Param("prq") Page.Request prq);
+
 }

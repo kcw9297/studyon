@@ -27,6 +27,9 @@ public class MemberDTO {
 
         private String filter;
         private String keyword;
+
+        private String role;       // USER / TEACHER / ADMIN
+        private String isActive;  // true / false
     }
 
     @Data

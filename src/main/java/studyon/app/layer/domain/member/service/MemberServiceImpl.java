@@ -25,6 +25,7 @@ import studyon.app.layer.domain.member.mapper.MemberMapper;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -109,6 +110,26 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+
+    @Override
+    public MemberDTO.Read join(MemberDTO.Join rq) {
+
+        // [1] Entity 생성
+        String nickname = StrUtils.createRandomNumString(10, "학생");
+        String password = passwordEncoder.encode(rq.getPassword());
+        Member member = Member.joinNormalStudent(rq.getEmail(), password, nickname);
+
+        // [2] 이메일 중복 최종 검증
+        if (memberRepository.existsByEmailAndProvider(rq.getEmail(), Provider.NORMAL))
+            throw new BusinessLogicException(AppStatus.MEMBER_DUPLICATE_EMAIL);
+
+        // [3] 회원 가입 수행 후, 가입된 회원 정보 반환
+        MemberDTO.Read readDTO = DTOMapper.toReadDto(memberRepository.save(member));
+        rq.setTarget(readDTO.getMemberId(), Entity.MEMBER); // 로그 기록
+        return readDTO;
+    }
+
+
     @Override
     public void editPassword(String email, String newPassword) {
 
@@ -166,17 +187,16 @@ public class MemberServiceImpl implements MemberService {
     @CacheEvict(value = "member:profile" , key = "#memberId") // 캐시 삭제
     public void editNickname(Long memberId, String nickname) {
 
-        // [1] 닉네임 변경 대상 회원조회
-        Member member = memberRepository
-                .findById(memberId)
-                .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
+        // [1] 닉네임 중복 검증
+        memberRepository
+                .findByNickname(nickname)
+                .ifPresent(m -> {throw new BusinessLogicException(AppStatus.MEMBER_DUPLICATE_NICKNAME);});
 
-        // [2] 닉네임 중복 검증
-        if (Objects.equals(member.getNickname(), nickname))
-            throw new BusinessLogicException(AppStatus.MEMBER_DUPLICATE_NICKNAME);
-
-        // [3] 닉네임 갱신
-        member.updateNickname(nickname);
+        // [2] 검증을 통과한 경우, 기존 회원 정보 조회 후 갱신 수행
+         memberRepository
+                 .findById(memberId)
+                 .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND))
+                 .updateNickname(nickname);
     }
 
 
@@ -199,6 +219,20 @@ public class MemberServiceImpl implements MemberService {
                 .recover();
     }
 
+    @Override
+    @Transactional
+    public Page.Response<MemberDTO.Read> search(MemberDTO.Search rq, Page.Request prq) {
+        log.info("🔍 [SERVICE] 회원 검색 실행: filter={}, keyword={}, role={}, isActive={}",
+                rq.getFilter(), rq.getKeyword(), rq.getRole(), rq.getIsActive());
 
 
+        // [1] MyBatis 매퍼 호출
+        List<MemberDTO.Read> members = memberMapper.selectBySearch(rq, prq);
+
+        // [2] 총 카운트 조회
+        int count = memberMapper.countBySearch(rq, prq);
+        log.info("📘 [DEBUG] page={}, size={}, startPage={}", prq.getPage(), prq.getSize(), prq.getStartPage());
+        // [3] 페이징 응답 생성
+        return Page.Response.create(members, prq.getPage(), prq.getSize(), count);
+    }
 }

@@ -1,20 +1,38 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("[INIT] 회원 목록 불러오기 시작");
 
-
+    // 페이지용 변수
     let currentPage = 1;
     const pageSize = 10;
-
     const tbody = document.getElementById("memberTableBody");
     const pagination = document.getElementById("pagination");
 
     // ✅ [1] 메인 함수 - 회원 목록 불러오기
     function loadMembers(page = 1) {
-        console.log(`[FETCH] /admin/api/members/list?page=${page}&size=${pageSize}`);
+        // ✅ DOM 요소에서 값 읽기
+        const searchType = document.getElementById("searchType")?.value || "";
+        const keyword = document.getElementById("keyword")?.value.trim() || "";
+        const role = document.getElementById("roleFilter")?.value || "";
+        const isActive = document.getElementById("isActiveFilter")?.value || "";
 
-        fetch(`/admin/api/members/list?page=${page}&size=${pageSize}`, {
+        // ✅ 쿼리 파라미터 구성
+        const params = new URLSearchParams({
+            page,
+            size: pageSize,
+        });
+
+        // ✅ 필요한 값만 추가 (값이 있을 때만 append)
+        if (searchType) params.append("filter", searchType);
+        if (keyword) params.append("keyword", keyword);
+        if (role) params.append("role", role);
+        if (isActive !== "") params.append("isActive", isActive);
+
+        const url = `/admin/api/members/list?${params.toString()}`;
+        console.log(`[FETCH] ${url}`);
+
+        fetch(url, {
             method: "GET",
-            headers: { 'X-Requested-From': window.location.pathname + window.location.search }
+            headers: { "X-Requested-From": window.location.pathname + window.location.search },
         })
             .then(res => res.json())
             .then(json => {
@@ -24,35 +42,63 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 const raw = json.data;
+                const members = Array.isArray(raw.data) ? raw.data : [];
 
-                // ✅ 구조 매핑
-                const members = raw.data || [];
-                currentPage = raw.currentPage || 1;   // 1-based
+                currentPage = raw.currentPage || 1;
                 const totalPages = raw.totalPage || 1;
                 const totalMembers = raw.dataCount || 0;
 
                 console.log(`[DATA] 회원 ${members.length}명 / 총 ${totalMembers}명`);
                 renderMemberTable(members);
-                renderPagination(raw?.totalPage ?? 1);
+                renderPagination(totalPages);
             })
             .catch(err => console.error("[ERROR] fetch 실패:", err));
     }
+
+
     /**
      * 회원 목록 테이블 렌더링
      */
     function renderMemberTable(members) {
-        const tbody = document.getElementById("memberTableBody");
         if (!tbody) {
             console.error("memberTableBody 요소를 찾을 수 없습니다.");
             return;
         }
 
+
+        // ✅ 항상 최신 필터 상태 읽기
+        const role = document.getElementById("roleFilter")?.value || "";
+        const isActive = document.getElementById("isActive")?.value || "";
+        const keyword = document.getElementById("keyword")?.value.trim() || "";
+
         tbody.innerHTML = ""; // 기존 내용 비우기
 
         if (!members || members.length === 0) {
+
+            // 이름 매핑
+            const roleLabel = { "USER": "학생", "TEACHER": "강사", "ADMIN": "관리자" }[role] || "";
+            const activeLabel = { "true": "활성", "false": "비활성" }[isActive] || "";
+
+            const conditions = [activeLabel, roleLabel, keyword && `"${keyword}"`].filter(Boolean);
+            // 최종 문구
+            const message = conditions.length > 0
+            ? `${conditions.join(" ")}에 해당하는 회원이 없습니다.`
+                : "조회된 회원이 없습니다.";
+
+            
+            // 최종 렌더링(해당 회원 없을 시 뜨는 문구)
             tbody.innerHTML = `
-            <tr><td colspan="8" style="text-align:center;">회원 데이터가 없습니다.</td></tr>
-        `;
+            <tr><td colspan="8" style="
+                        text-align:center;
+                        color: #888;
+                        padding: 20px;
+                        font-size: 16px;
+                        background: #fff
+                    ">
+                    ${message}
+                </td></tr>
+            `;
+            console.log("[EMPTY]", message);
             return;
         }
 
@@ -68,21 +114,29 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${m.nickname}</td>
             <td>${m.email ?? "-"}</td>
             <td>${convertRole(m.role)}</td>
-            <td>${status}</td>
+            <td>
+                ${m.isActive
+                    ? `<span class="status-active">활성</span>`
+                    : `<span class="status-banned">비활성</span>`}
+            </td>
             <td>${joinDate}</td>
             <td>${lastLogin}</td>
+            <td>
+                <button class="btn-view" data-member-id="${m.memberId}">보기</button>
+                <button class="btn-ban" data-id="${m.memberId}">관리</button>
+            </td>
+            <!--
             <td><a href="#" class="management-button" data-member-id="${m.memberId}">관리</a></td>
-        `;
+            -->
+            `;
 
             tbody.appendChild(tr);
         });
         console.log(`[RENDER] ${members.length}명의 회원 렌더링 완료`);
 
-        // 여기서 이벤트 다시 연결
-        attachModalEvents();
     }
 
-// ✅ [3] 페이지네이션 렌더링
+    // [3] 페이지네이션 렌더링
     function renderPagination(totalPages) {
         pagination.innerHTML = "";
 
@@ -90,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const maxVisible = 5;
         let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-        let end = Math.min(totalPages - 1, start + maxVisible - 1);
+        let end = Math.min(totalPages, start + maxVisible - 1);
 
         if (end - start < maxVisible - 1) {
             start = Math.max(1, end - maxVisible + 1);
@@ -122,57 +176,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ 권한 변환 함수 추가
     function convertRole(role) {
-        switch (role) {
-            case "ROLE_ADMIN": return "관리자";
-            case "ROLE_TEACHER": return "강사";
-            case "ROLE_STUDENT": return "학생";
-            default: return "-";
-        }
+        const map = {
+            "ROLE_ADMIN": "관리자",
+            "ROLE_TEACHER": "강사",
+            "ROLE_STUDENT": "학생",
+        };
+        return map[role] ?? "-";
     }
-    // 모달 창 먹히는 함수 코드 그대로 가져옴
-    function attachModalEvents() {
-        const modal = document.getElementById("memberModal");
-        const closeBtn = document.querySelector(".close-btn");
-        const closeModalBtn = document.getElementById("closeModalBtn");
 
-        // 관리 버튼 클릭 이벤트 새로 연결
-        document.querySelectorAll(".management-button").forEach(btn => {
-            btn.addEventListener("click", (e) => {
+    // 날짜 포맷
+    function formatDate(dateStr) {
+        if (!dateStr) return "-";
+        return new Date(dateStr).toLocaleDateString("ko-KR");
+    }
+
+    // 초기 로드
+    loadMembers(1);
+
+    // 검색 버튼 이벤트
+    const searchBtn = document.getElementById("memberSearchBtn");
+    if (searchBtn) {
+        searchBtn.addEventListener("click", () => {
+            console.log("[SEARCH] 검색 버튼 클릭 감지됨");
+            document.getElementById("keyword").blur();
+            tbody.innerHTML = "<tr><td colspan=\"8\" style=\"text-align:center; color:#777;\">불러오는 중...</td></tr>";
+            loadMembers(1);
+        });
+    }
+
+    //  엔터키 검색
+    const keywordInput = document.getElementById("keyword");
+    if (keywordInput) {
+        keywordInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
                 e.preventDefault();
-                const row = e.target.closest("tr");
-                if (!row) return;
-
-                const name = row.children[1].innerText;
-                const email = row.children[2].innerText;
-                const role = row.children[3].innerText;
-                const status = row.children[4].innerText;
-                const date = row.children[5].innerText;
-
-                document.getElementById("modalName").innerText = name;
-                document.getElementById("modalEmail").innerText = email;
-                document.getElementById("modalRole").innerText = role;
-                document.getElementById("modalStatus").innerText = status;
-                document.getElementById("modalDate").innerText = date;
-
-                modal.style.display = "flex";
-            });
-        });
-
-        // 닫기 이벤트 한 번만 등록
-        if (closeBtn && !closeBtn.dataset.bound) {
-            closeBtn.dataset.bound = "true";
-            closeBtn.addEventListener("click", () => modal.style.display = "none");
-        }
-        if (closeModalBtn && !closeModalBtn.dataset.bound) {
-            closeModalBtn.dataset.bound = "true";
-            closeModalBtn.addEventListener("click", () => modal.style.display = "none");
-        }
-
-        window.addEventListener("click", (e) => {
-            if (e.target === modal) modal.style.display = "none";
+                searchBtn.click();
+            }
         });
     }
-
-    // ✅ 초기 실행
-    loadMembers();
+    ["searchType", "roleFilter", "isActiveFilter"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("change", () => {
+                console.log(`[FILTER] ${id} 변경됨 -> 자동 새로고침`);
+                loadMembers(1);
+            });
+        }
+    });
 });

@@ -68,4 +68,7 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
     List<LectureReview> findByLectureIdWithMemberOrderByRatingDesc(@Param("lectureId") Long lectureId);
     Long countByLecture_LectureId(Long lectureId);
 
+    /* 별점 퍼센트 */
+    Long countByLecture_LectureIdAndRating(Long lectureId, Integer rating);
+
 }

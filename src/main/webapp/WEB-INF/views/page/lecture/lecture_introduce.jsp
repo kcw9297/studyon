@@ -104,7 +104,7 @@
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">평점</p>
-                        <p>${teacher.averageRating}점</p>
+                        <p><fmt:formatNumber value="${teacher.averageRating}" pattern="#0.0"/>점</p>
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">수강평</p>
@@ -132,30 +132,22 @@
         <div class="reviews">
             <div class="reviews-situation">
                 <div class="reviews-total">
-                    <strong>4.8</strong>
+                    <strong><fmt:formatNumber value="${lecture.averageRate}" pattern="#0.0"/></strong>
                     <p><fmt:formatNumber value="${reviewCount}" type="number"/>개의 수강평</p>
                 </div>
                 <div class="reviews-statistics">
-                    <div class="reviews-item">
-                        <div class="reviews-star">★★★★★</div>
-                        <div class="reviews-percent">000%</div>
+
+                <c:forEach var="entry" items="${ratingPercent}" varStatus="loop">
+                <div class="reviews-item">
+                    <div class="reviews-star">
+                        <c:forEach var="i" begin="1" end="${entry.key}">★</c:forEach>
                     </div>
-                    <div class="reviews-item">
-                        <div class="reviews-star">★★★★</div>
-                        <div class="reviews-percent">000%</div>
+                    <div class="reviews-percent">
+                        <fmt:formatNumber value="${entry.value}" pattern="0"/>%
                     </div>
-                    <div class="reviews-item">
-                        <div class="reviews-star">★★★</div>
-                        <div class="reviews-percent">000%</div>
-                    </div>
-                    <div class="reviews-item">
-                        <div class="reviews-star">★★</div>
-                        <div class="reviews-percent">000%</div>
-                    </div>
-                    <div class="reviews-item">
-                        <div class="reviews-star">★</div>
-                        <div class="reviews-percent">000%</div>
-                    </div>
+                </div>
+                </c:forEach>
+
                 </div>
             </div>
             <ul class="reviews-list">
@@ -169,15 +161,18 @@
                     <div class="reviews-content">
                         <div class="reviews-top">
                             <div class="reviews-god">
-                                <c:forEach begin="1" end="${review.rating}">
-                                    <span class="reviews-god filled">★</span>
-                                </c:forEach>
-                                <c:forEach begin="1" end="${5 - review.rating}">
-                                    <span class="reviews-god empty">★</span>
-                                </c:forEach>
-                            </div>
 
-                            <div class="reviews-day">${review.createdAt}</div>
+                            <c:forEach begin="1" end="${review.rating}">
+                                <span class="reviews-god filled">★</span>
+                            </c:forEach>
+                            <c:forEach begin="1" end="${5 - review.rating}">
+                                <span class="reviews-god empty">★</span>
+                            </c:forEach>
+
+                            </div>
+                            <div class="reviews-day">
+                                <c:out value="${fn:substring(review.createdAt, 0, 10)}"/>
+                            </div>
                         </div>
                         <div class="reviews-bottom">
                             <p>${review.content}</p>

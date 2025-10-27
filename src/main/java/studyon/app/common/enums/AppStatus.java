@@ -27,10 +27,11 @@ public enum AppStatus {
     /* 검증 및 인증 상태 */
     VALIDATION_INVALID_PARAMETER(400, "입력하신 값을 다시 확인해 주세요."),
     AUTH_MAIL_NOT_FOUND(400, "탈퇴 혹은 정지 상태거나 존재하지 않는 이메일입니다."),
-    AUTH_REQUEST_EXPIRED(400, "인증 요청이 만료되었습니다. 다시 시도해 주세요."),
     AUTH_INCORRECT_CODE(400, "인증 코드가 일치하지 않습니다."),
-    AUTH_REQUEST_ALREADY_EXIST(400, "인증 요청이 이미 존재합니다. 잠시 후에 다시 시도해 주세요."),
-    AUTH_INVALID_REQUEST(400, "이미 만료되었거나 유효하지 않은 요청입니다."),
+    AUTH_DUPLICATE_EMAIL(400, "이미 가입한 이메일이 존재합니다."),
+    AUTH_REQUEST_EXPIRED(403, "인증 요청이 만료되었습니다. 다시 시도해 주세요."),
+    AUTH_REQUEST_ALREADY_EXIST(403, "인증 요청이 이미 존재합니다. 잠시 후에 다시 시도해 주세요."),
+    AUTH_INVALID_REQUEST(403, "이미 만료되었거나 유효하지 않은 요청입니다."),
 
     /* 유틸 클래스 상태 (아직 구제적으로 케이스를 나누진 않음) */
     UTILS_LOGIC_FAILED(500, "처리 중 오류가 발생했습니다. 잠시 후에 다시 시도해 주세요."),
@@ -51,20 +52,31 @@ public enum AppStatus {
 
     /* 회원 상태 */
     MEMBER_NOT_FOUND(500, "이미 탈퇴했거나 존재하지 않는 회원 정보입니다"),
-    MEMBER_DUPLICATE_NICKNAME(500, "이미 가입한 닉네임입니다."),
-    MEMBER_DUPLICATE_EMAIL(500, "이미 가입한 이메일입니다."),
+    MEMBER_DUPLICATE_NICKNAME(500, "이미 가입한 닉네임이 존재합니다."),
+    MEMBER_DUPLICATE_EMAIL(500, "이미 가입한 이메일이 존재합니다."),
     MEMBER_OK_EDIT_NICKNAME(200, "닉네임을 변경했습니다."),
     MEMBER_OK_EDIT_PASSWORD(200, "비밀번호를 변경했습니다."),
 
     /* AUTH */
     AUTH_OK_EDIT_PASSWORD(200, "비밀번호를 변경했습니다."),
 
+    /* 공지 상태 */
+    NOTICE_NOT_FOUND(500, "이미 삭제되었거나 존재하지 않는 공지입니다."),
+    NOTICE_OK_WRITE(200, "공지사항을 작성했습니다."),
+    NOTICE_OK_EDIT(200, "공지사항을 수정했습니다."),
+    NOTICE_OK_EDIT_IMAGE(200, "공지사항 이미지를 수정했습니다."),
+    NOTICE_OK_ACTIVATE(200, "공지사항 게시를 활성화 했습니다."),
+    NOTICE_OK_INACTIVATE(200, "공지사항 개시를 비활성화 했습니다."),
 
     /* 선생님 상태 */
     TEACHER_NOT_FOUND(500, "선생님 정보가 존재하지 않습니다."),
 
     /* 파일(Entity) 상태 */
-    FILE_NOT_FOUND(500, "파일이 존재하지 않습니다.");
+    FILE_NOT_FOUND(500, "파일이 존재하지 않습니다."),
+
+    /* 강의(Lecture) 상태*/
+    LECTURE_NOT_FOUND(500,"강의 정보가 존재하지 않습니다"),
+    LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다.");
 
     private final int httpCode;     // HTTP 코드
     private final String message;   // 전달 메세지

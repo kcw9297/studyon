@@ -7,6 +7,7 @@ import studyon.app.common.enums.Difficulty;
 import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
 import studyon.app.infra.aop.LogInfo;
+import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +33,7 @@ public class LectureDTO {
 
         private Long teacherId;
 
-        private Double price;
+        private Long price;
         private Difficulty difficulty;
         private Long videoCount;
         private Long totalStudents;
@@ -43,6 +44,8 @@ public class LectureDTO {
         private LocalDateTime publishDate;
 
         private String nickname;
+
+        private List<LectureIndexDTO.Read> lectureIndexes;
     }
 
     @Data
@@ -53,7 +56,7 @@ public class LectureDTO {
         private Long teacherId;
         private String title;
         private String description;
-        private Double price;
+        private Long price;
         private Difficulty difficulty;
         private Boolean onSale;
     }
@@ -67,7 +70,7 @@ public class LectureDTO {
         private Long teacherId;
         private String title;
         private String description;
-        private Double price;
+        private Long price;
         private Difficulty difficulty;
         private Boolean onSale;
     }
@@ -91,9 +94,38 @@ public class LectureDTO {
         private String title;
         private String description;
         private LectureTarget target;
-        private Integer price;
+        private Long price;
         private Difficulty difficulty;
         private Subject subject;
         private List<String> curriculumTitles;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class ReadLectureInfo {
+        private Long teacherId;
+        private String title;
+        private String description;
+        private LectureTarget target;
+        private Long price;
+        private Difficulty difficulty;
+        private Subject subject;
+        private List<LectureVideoInfo> videos;
+        private String teacherName;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class LectureVideoInfo {
+        private String indexTitle;
+        private Integer indexNumber;
+        private String videoTitle;
+        private String videoUrl;
+        private Integer seq;
+        private Integer duration;
     }
 }

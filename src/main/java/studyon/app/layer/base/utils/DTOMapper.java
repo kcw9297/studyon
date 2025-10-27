@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.enums.FileType;
 import studyon.app.common.utils.StrUtils;
+import studyon.app.layer.domain.auth.AuthDTO;
 import studyon.app.layer.domain.category.Category;
 import studyon.app.layer.domain.category.CategoryDTO;
 import studyon.app.layer.domain.file.File;
@@ -27,6 +28,8 @@ import studyon.app.layer.domain.log.LogDTO;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
+import studyon.app.layer.domain.notice.Notice;
+import studyon.app.layer.domain.notice.NoticeDTO;
 import studyon.app.layer.domain.payment.Payment;
 import studyon.app.layer.domain.payment.PaymentDTO;
 import studyon.app.layer.domain.teacher.Teacher;
@@ -382,6 +385,53 @@ public class DTOMapper {
                 .entity(entity.getEntity())
                 .fileType(entity.getFileType())
                 .filePath(entity.getFilePath())
+                .build();
+    }
+
+    public static MemberDTO.Join toJoinDTO(AuthDTO.Join rq) {
+
+        return MemberDTO.Join.builder()
+                .email(rq.getEmail())
+                .password(rq.getPassword())
+                .build();
+    }
+
+    public static NoticeDTO.Read toReadDTO(Notice entity) {
+        return NoticeDTO.Read.builder()
+                .title(entity.getTitle())
+                .noticeId(entity.getNoticeId())
+                .startedAt(entity.getStartedAt())
+                .cdate(entity.getCdate())
+                .endedAt(entity.getEndedAt())
+                .content(entity.getContent())
+                .noticeType(entity.getNoticeType())
+                .isActivate(entity.getIsActivate())
+                .build();
+    }
+
+
+    public static NoticeDTO.Read toReadDTO(Notice entity, FileDTO.Read file) {
+        return NoticeDTO.Read.builder()
+                .title(entity.getTitle())
+                .noticeId(entity.getNoticeId())
+                .startedAt(entity.getStartedAt())
+                .cdate(entity.getCdate())
+                .endedAt(entity.getEndedAt())
+                .content(entity.getContent())
+                .noticeType(entity.getNoticeType())
+                .isActivate(entity.getIsActivate())
+                .noticeImage(file)
+                .build();
+    }
+
+
+    public static Notice toEntity(NoticeDTO.Write dto) {
+        return Notice.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .noticeType(dto.getNoticeType())
+                .startedAt(dto.getStartedAt().atStartOfDay())
+                .endedAt(dto.getEndedAt().atTime(23, 59, 59))
                 .build();
     }
 

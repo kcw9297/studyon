@@ -1,75 +1,230 @@
 <%@ page contentType ="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <jsp:include page="/WEB-INF/views/page/teacher/navbar.jsp" />
-<div class="lecture-register-wrapper">
-    <div class="register-content">
-        <div class="register-title">강의 등록</div>
+<div class="lecture-view-wrapper">
+    <div class="view-content">
+        <div class="view-title">강의 상세 보기</div>
 
-        <form class="register-form">
-            <div class="register-section">
-                <label class="register-label">강의 제목</label>
-                <div class="register-value">파이썬으로 배우는 AI 마스터과정</div>
+        <div class="view-section">
+            <label class="view-label">강의 제목</label>
+            <div id="lecture-title" class="view-value"></div>
+        </div>
+
+        <div class="view-section">
+            <label class="view-label">강사명</label>
+            <div id="teacherName" class="view-value"></div>
+        </div>
+
+        <div class="view-section">
+            <label class="view-label">강의 소개</label>
+            <div id="lecture-description" class="view-value"></div>
+        </div>
+
+        <div class="view-section">
+            <label class="view-label">강의 대상</label>
+            <div id="lecture-target" class="view-value"></div>
+        </div>
+
+        <div class="view-section">
+            <label class="view-label">강의 과목</label>
+            <div id="lecture-subject" class="view-value"></div>
+        </div>
+
+        <div class="view-section">
+            <label class="view-label">난이도</label>
+            <div id="lecture-difficulty" class="view-value"></div>
+        </div>
+
+        <div class="view-section">
+            <label class="view-label">판매 가격</label>
+            <div id="lecture-price" class="view-value"></div>
+        </div>
+
+        <div class="view-section">
+
+            <label class="view-label">썸네일 이미지</label>
+
+            <div id="lecture-thumbnail" class="lecture-thumbnail">
+                썸네일을 등록해주세요 📷
             </div>
-
-            <div class="register-section">
-                <label class="register-label">강의 소개</label>
-                <div class="register-value">파이썬으로 배우는 AI 마스터과정</div>
-            </div>
-
-            <div class="register-section">
-                <label class="register-label">강의 대상</label>
-                <div class="register-value">고3</div>
-            </div>
-
-            <div class="register-section">
-                <label class="register-label">판매 가격</label>
-                <div class="register-value">₩30,000</div>
-            </div>
-
-            <div class="register-section">
-                <label class="register-label">썸네일 이미지</label>
-                <div class="thumbnail-box">
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" class="thumbnail-preview">
-                </div>
-                <button type="button" class="thumbnail-change-btn">📷 사진 변경</button>
-            </div>
-
-            <div class="register-section">
-                <label class="register-label">강의 목차</label>
-
-                <div id="lecture-list-box">
-                    <div class="lecture-item">
-                        <div class="lecture-index">1강</div>
-                        <div class="lecture-info">
-                            <div class="lecture-title">파이썬 기본 문법</div>
-                            <div class="lecture-file">파일: python_basic.mp4</div>
-                        </div>
-                    </div>
-
-                    <div class="lecture-item">
-                        <div class="lecture-index">2강</div>
-                        <div class="lecture-info">
-                            <div class="lecture-title">조건문과 반복문</div>
-                            <div class="lecture-file">파일: python_loop.mp4</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button type="button" class="list-change-btn">목차 변경</button>
+            <input type="file" id="thumbnail-upload" accept="image/*" style="display:none;">
+        </div>
 
 
-            <div class="submit-box">
-                <button class="submit-button" type="submit">강의 등록하기</button>
-            </div>
-        </form>
+        <div class="view-section">
+            <label class="view-label">강의 목차</label>
+            <div id="lecture-list-box"></div>
+        </div>
     </div>
 </div>
 
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture_view.css'/>">
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const path = window.location.pathname;
+        const lectureId = path.split("/").pop();
+        const thumbImg = document.getElementById("lecture-thumbnail");
+        const fileInput = document.getElementById("thumbnail-upload");
+        const thumbBox = document.getElementById("lecture-thumbnail");
+        console.log(lectureId);
+
+        thumbImg.addEventListener("click", () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const form = new FormData();
+            form.append("file", file);
+
+            try {
+                const res = await fetch("/api/teachers/management/lecture/"+lectureId+"/thumbnail", {
+                    method: "PATCH",
+                    body: form
+                });
+                const json = await res.json();
+                if (json.status === "OK") {
+                    thumbImg.src = URL.createObjectURL(file);
+                } else {
+                    alert(json.message || "업로드 실패");
+                }
+                thumbBox.innerHTML =
+                    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
+                    ' alt="강의 썸네일"' +
+                    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
+
+
+            } catch (err) {
+                console.error("썸네일 업로드 실패:", err);
+            }
+        });
+
+
+        try {
+            const res = await fetch("/api/teachers/management/lecture/" + lectureId + "/thumbnail/view");
+            const thumbBox = document.getElementById("lecture-thumbnail");
+
+            if (res.ok) {
+                console.log("✅ 썸네일 이미지 로드 성공");
+                thumbBox.innerHTML =
+                    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
+                    ' alt="강의 썸네일"' +
+                    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
+            } else {
+                console.warn("❌ 썸네일 없음, 기본 문구 표시");
+                thumbBox.textContent = "썸네일을 등록해주세요 📷";
+            }
+        } catch (err) {
+            console.error("🚨 썸네일 로드 실패:", err);
+            thumbBox.textContent = "썸네일을 등록해주세요 📷";
+        }
+
+
+
+
+
+
+
+
+
+        if (!lectureId) {
+            console.error("❌ lectureId가 없습니다.");
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/teachers/management/lectureinfo/" + lectureId);
+            const json = await response.json();
+            const lecture = json.data;
+            console.log(lecture);
+
+            // ✅ 기본 정보 표시
+            document.getElementById("teacherName").innerText = lecture.teacherName;
+            document.getElementById("lecture-title").innerText = lecture.title;
+            document.getElementById("lecture-description").innerText = lecture.description;
+            document.getElementById("lecture-target").innerText = lecture.target;
+            document.getElementById("lecture-subject").innerText = lecture.subject;
+            document.getElementById("lecture-difficulty").innerText = lecture.difficulty;
+            document.getElementById("lecture-price").innerText = "₩" + lecture.price.toLocaleString();
+
+            // ✅ 썸네일 이미지 표시
+            const thumbnailElem = document.getElementById("lecture-thumbnail");
+
+            // ✅ 강의 목차 렌더링
+            const listBox = document.getElementById("lecture-list-box");
+            listBox.innerHTML = "";
+            lecture.videos.forEach(video => {
+                const item = document.createElement("div");
+                item.classList.add("lecture-item");
+                item.innerHTML = `
+                <div class="lecture-index">${video.index}강</div>
+                <div class="lecture-info">
+                    <div class="lecture-title">${video.title}</div>
+                    <div class="lecture-file">파일: ${video.fileName}</div>
+                </div>
+            `;
+                listBox.appendChild(item);
+            });
+        } catch (err) {
+            console.error("🚨 강의 불러오기 실패:", err);
+        }
+    });
+</script>
+
 <style>
-    .lecture-register-wrapper {
+
+
+    .lecture-thumbnail {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        background-color: #f5f5f5;
+        border: 1px dashed #bbb;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #777;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .lecture-thumbnail:hover {
+        background-color: #e8f5e9;
+        border-color: #7cb342;
+        color: #558b2f;
+    }
+
+    .thumbnail-register-button {
+        display: flex;                /* Flexbox로 중앙정렬 */
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #8fbc8f, #7fbf7f); /* 은은한 그라데이션 */
+        color: white;                 /* 글자색은 흰색으로 */
+        font-weight: bold;
+        padding: 8px 18px;            /* 여백 살짝 넓게 */
+        border-radius: 25px;          /* 둥글둥글하게 */
+        height: 36px;
+        border: none;                 /* 기본 테두리 제거 */
+        cursor: pointer;              /* 마우스 커서 변경 */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* 살짝 그림자 */
+        transition: all 0.2s ease-in-out;       /* 부드러운 애니메이션 */
+    }
+
+    .thumbnail-register-button:hover {
+        background: linear-gradient(135deg, #7fbf7f, #6fae6f);
+        transform: translateY(-2px);  /* 살짝 올라가는 효과 */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .lecture-view-wrapper {
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -78,17 +233,17 @@
         padding-bottom: 80px;
     }
 
-    .register-content {
+    .view-content {
         width: 80%;
         max-width: 1000px;
         background: #fafafa;
         border-radius: 12px;
         padding: 30px 40px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        margin-top:30px;
+        margin-top: 30px;
     }
 
-    .register-title {
+    .view-title {
         font-size: 30px;
         font-weight: bold;
         text-align: center;
@@ -96,11 +251,11 @@
         margin-bottom: 25px;
     }
 
-    .register-section {
+    .view-section {
         margin-bottom: 20px;
     }
 
-    .register-label {
+    .view-label {
         display: block;
         font-weight: 600;
         font-size: 18px;
@@ -108,7 +263,7 @@
         color: #444;
     }
 
-    .register-value {
+    .view-value {
         font-size: 17px;
         background: #f9f9f9;
         padding: 12px 15px;
@@ -116,12 +271,10 @@
         border: 1px solid #ddd;
     }
 
-    /* 썸네일 영역 */
     .thumbnail-box {
         display: flex;
-        align-items: center;
-        gap: 20px;
-        background: #fefefe;
+        justify-content: flex-start;
+        background: #fff;
         border: 1px dashed #ccc;
         border-radius: 10px;
         padding: 15px;
@@ -129,45 +282,8 @@
 
     .thumbnail-preview {
         width: 50%;
-        height: auto;
-        object-fit: cover;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .thumbnail-change-btn {
-        border: none;
-        background: #f1f1f1;
-        border-radius: 6px;
-        padding: 10px 16px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: 0.2s;
-        margin-top:10px;
-    }
-
-    .thumbnail-change-btn:hover {
-        background: #e0e0e0;
-    }
-
-    /* 강의 추가 영역 */
-    #add-lecture-btn {
-        background-color: #ffba49;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: 600;
-        margin-top: 15px;
-        cursor: pointer;
-        transition: all 0.25s ease;
-    }
-
-    #add-lecture-btn:hover {
-        background-color: #ff9f00;
-        transform: translateY(-1px);
-        box-shadow: 0 3px 6px rgba(255,159,0,0.3);
     }
 
     #lecture-list-box {
@@ -191,55 +307,14 @@
         border-bottom: none;
     }
 
-    .lecture-index {
-        font-weight: 600;
-        color: #2c3e50;
-        width: 60px;
-    }
-
-    .lecture-info {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
-
-    .lecture-title {
-        font-size: 16px;
-        font-weight: 500;
-        color: #333;
-    }
-
-    .lecture-file {
-        font-size: 14px;
-        color: #888;
-    }
-
-    .submit-box {
+    .button-box {
         display: flex;
         justify-content: center;
+        gap: 10px;
         margin-top: 40px;
     }
 
-    .submit-button {
-        width: 260px;
-        padding: 15px 20px;
-        font-size: 18px;
-        font-weight: 600;
-        color: #fff;
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        box-shadow: 0 4px 10px rgba(39,174,96,0.25);
-    }
-
-    .submit-button:hover {
-        background: linear-gradient(135deg, #219150, #27ae60);
-        transform: translateY(-2px);
-    }
-
-    .list-change-btn{
+    .list-change-btn, .edit-btn, .delete-btn {
         border: none;
         background: #f1f1f1;
         border-radius: 6px;
@@ -248,6 +323,8 @@
         font-weight: 500;
         transition: 0.2s;
     }
-</style>
 
-<script src="<c:url value='/js/page/teacher/management_lecture_register.js'/>"></script>
+    .edit-btn:hover { background: #d5f5e3; }
+    .delete-btn:hover { background: #f5b7b1; }
+
+</style>
