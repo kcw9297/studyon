@@ -17,6 +17,8 @@ import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
+import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
+import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.service.TeacherService;
@@ -47,6 +49,7 @@ public class TeacherRestController {
     private final TeacherService teacherService;
     private final LectureService lectureService;
     private final CacheManager cacheManager;
+    private final LectureIndexService lectureIndexService;
 
     /**
      * [GET] 모든 선생님 정보 가져오기
@@ -94,6 +97,7 @@ public class TeacherRestController {
     @PostMapping("lecture/register")
     public ResponseEntity<?> registerLecture(LectureDTO.Register dto,HttpSession session){
         log.info("강의 등록 요청");
+        log.info(dto.toString());
         MemberProfile profile = SessionUtils.getProfile(session);
         lectureService.registerLecture(dto,profile);
         return RestUtils.ok("강의가 등록되었습니다.");
@@ -201,6 +205,62 @@ public class TeacherRestController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    /**
+     * [GET] 특정 강의의 목차 전체 조회
+     */
+    @GetMapping("/management/lectureindex/{lectureId}")
+    public ResponseEntity<?> getLectureIndexes(@PathVariable Long lectureId, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        List<LectureIndexDTO.Read> response = lectureIndexService.readAllByLectureId(lectureId, teacherId);
+        return RestUtils.ok(response);
+    }
+
+    /**
+     * [POST] 특정 강의에 목차 추가
+     */
+    @PostMapping("/management/lectureindex/{lectureId}")
+    public ResponseEntity<?> createLectureIndex(
+            @PathVariable Long lectureId,
+            @RequestBody LectureIndexDTO.Write dto,
+            HttpSession session
+    ) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        lectureIndexService.createIndex(lectureId, teacherId, dto);
+        return RestUtils.ok("강의 목차가 추가되었습니다.");
+    }
+
+    /**
+     * [PUT] 특정 강의의 목차 전체 수정 (예: 순서 변경)
+     */
+    @PutMapping("/management/lectureindex/{lectureId}")
+    public ResponseEntity<?> updateLectureIndexes(
+            @PathVariable Long lectureId,
+            @RequestBody List<LectureIndexDTO.Edit> dtos,
+            HttpSession session
+    ) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        lectureIndexService.updateIndexes(lectureId, teacherId, dtos);
+        return RestUtils.ok("강의 목차가 수정되었습니다.");
+    }
+
+    /**
+     * [DELETE] 특정 목차 삭제
+     */
+    @DeleteMapping("/management/lectureindex/{lectureIndexId}")
+    public ResponseEntity<?> deleteLectureIndex(
+            @PathVariable Long lectureIndexId,
+            HttpSession session
+    ) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        lectureIndexService.deleteIndex(lectureIndexId, teacherId);
+        return RestUtils.ok("강의 목차가 삭제되었습니다.");
+    }
+
 
 
 

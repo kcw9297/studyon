@@ -159,6 +159,7 @@ public class LectureServiceImpl implements LectureService {
                 .difficulty(dto.getDifficulty())
                 .subject(dto.getSubject())
                 .lectureTarget(dto.getTarget() != null ? dto.getTarget() : LectureTarget.HIGH1)
+                .description(dto.getDescription())
                 .build();
 
         lectureRepository.save(lecture);
@@ -189,7 +190,7 @@ public class LectureServiceImpl implements LectureService {
                 .teacherName(teacher.getMember().getNickname())
                 .teacherId(teacherId)
                 .title(lecture.getTitle())
-                .description(teacher.getDescription())
+                .description(lecture.getDescription())
                 .target(lecture.getLectureTarget())
                 .difficulty(lecture.getDifficulty())
                 .subject(lecture.getSubject())

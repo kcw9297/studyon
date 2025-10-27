@@ -50,4 +50,9 @@ public class LectureIndex extends BaseEntity {
         this.indexTitle = indexTitle;
         this.lecture = lecture;
     }
+
+    public void update(String indexTitle, Long indexNumber) {
+        this.indexTitle = indexTitle;
+        this.indexNumber = indexNumber;
+    }
 }
