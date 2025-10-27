@@ -4,18 +4,24 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="studyon.app.layer.domain.member.mapper.MemberMapper">
-    <select id="selectAll" resultType="MemberInfo">
+    <select id="selectAll" resultType="studyon.app.layer.domain.member.MemberDTO$Read">
         SELECT *
         FROM member
         <where>
-            <if test="rq.filter eq 'name'">
-                name LIKE CONCAT('%', #{rq.keyword}, '%')
-            </if>
-            <if test="rq.filter eq 'nickname'">
-                nickname LIKE CONCAT('%', #{rq.keyword}, '%')
-            </if>
-            <if test="rq.filter eq 'email'">
-                email LIKE CONCAT('%', #{rq.keyword}, '%')
+            <if test="rq.keyword != null and rq.keyword != ''">
+                <choose>
+                    <!--
+                    <if test="rq.filter == 'name'">
+                        name LIKE CONCAT('%', #{rq.keyword}, '%')
+                    </if>
+                    -->
+                    <when test="rq.filter eq 'nickname'">
+                        nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    </when>
+                    <when test="rq.filter eq 'email'">
+                        email LIKE CONCAT('%', #{rq.keyword}, '%')
+                    </when>
+                </choose>
             </if>
         </where>
         ORDER BY member_id DESC LIMIT #{prq.size} OFFSET #{prq.startPage}
@@ -25,15 +31,79 @@
         SELECT COUNT(*)
         FROM member
         <where>
-            <if test="rq.filter eq 'name'">
+            <!--
+            <if test="rq.filter == 'name'">
                 name LIKE CONCAT('%', #{rq.keyword}, '%')
             </if>
+            -->
             <if test="rq.filter eq 'nickname'">
                 nickname LIKE CONCAT('%', #{rq.keyword}, '%')
             </if>
             <if test="rq.filter eq 'email'">
                 email LIKE CONCAT('%', #{rq.keyword}, '%')
             </if>
+        </where>
+    </select>
+    
+    <select id="selectBySearch" resultType="studyon.app.layer.domain.member.MemberDTO$Read">
+        SELECT
+            m.member_id AS memberId,
+            m.email,
+            m.nickname,
+            m.role,
+            m.is_active AS isActive,
+            m.cdate,
+            m.last_login_at AS lastLoginAt
+        FROM member m
+        <where>
+            <if test="rq.keyword != null and rq.keyword != ''">
+                <choose>
+                    <when test="rq.filter eq 'email'">
+                        m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                    </when>
+                    <when test="rq.filter eq 'nickname'">
+                        m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    </when>
+                </choose>
+            </if>
+
+            <if test="rq.role != null and rq.role != ''">
+                <choose>
+                    <when test="rq.role eq 'USER'">m.role = 'ROLE_STUDENT'</when>
+                    <when test="rq.role eq 'TEACHER'">m.role = 'ROLE_TEACHER'</when>
+                    <when test="rq.role eq 'ADMIN'">m.role = 'ROLE_ADMIN'</when>
+                </choose>
+            </if>
+
+        </where>
+
+        ORDER BY m.member_id DESC
+        LIMIT #{prq.size} OFFSET #{prq.startPage}
+    </select>
+    <!-- 카운트 -->
+    <select id="countBySearch" resultType="int">
+        SELECT COUNT(*)
+        FROM member m
+        <where>
+            <if test="rq.keyword != null and rq.keyword != ''">
+                <choose>
+                    <when test="rq.filter eq 'email'">
+                        m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                    </when>
+                    <when test="rq.filter eq 'nickname'">
+                        m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    </when>
+                </choose>
+            </if>
+
+            <if test="rq.role != null and rq.role != ''">
+                <choose>
+                    <when test="rq.role eq 'USER'">m.role = 'ROLE_STUDENT'</when>
+                    <when test="rq.role eq 'TEACHER'">m.role = 'ROLE_TEACHER'</when>
+                    <when test="rq.role eq 'ADMIN'">m.role = 'ROLE_ADMIN'</when>
+                </choose>
+            </if>
+
         </where>
     </select>
 </mapper>
