@@ -45,7 +45,7 @@
                 <div class="account-text">
                     <p>••••••••</p>
                 </div>
-                <c:if test="${sessionScope.profile.provider.value eq 'NORMAL'}">
+                <c:if test="${sessionScope.profile.provider eq 'NORMAL'}">
                     <button class="password-edit-button">수정</button>
                 </c:if>
             </div>

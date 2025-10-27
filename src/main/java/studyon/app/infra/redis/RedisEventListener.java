@@ -5,12 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
-import studyon.app.common.enums.Entity;
-import studyon.app.infra.cache.CacheUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.file.FileManager;
-
-import java.util.Objects;
 
 /**
  * Redis DB 내에서 발생한 이벤트(발행 메세지) 처리 클래스 (만료, 삭제 이벤트 등..)
