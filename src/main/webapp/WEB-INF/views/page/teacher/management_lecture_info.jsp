@@ -82,21 +82,23 @@
             const form = new FormData();
             form.append("file", file);
 
-            console.log("작동");
-
             try {
                 const res = await fetch("/api/teachers/management/lecture/"+lectureId+"/thumbnail", {
                     method: "PATCH",
                     body: form
                 });
-                console.log("작동2");
                 const json = await res.json();
                 if (json.status === "OK") {
-                    alert("썸네일이 변경되었습니다.");
                     thumbImg.src = URL.createObjectURL(file);
                 } else {
                     alert(json.message || "업로드 실패");
                 }
+                thumbBox.innerHTML =
+                    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
+                    ' alt="강의 썸네일"' +
+                    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
+
+
             } catch (err) {
                 console.error("썸네일 업로드 실패:", err);
             }
