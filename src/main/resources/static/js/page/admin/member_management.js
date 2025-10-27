@@ -1,51 +1,42 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("[INIT] 회원 목록 불러오기 시작");
 
-    const page = 1;
-    const size = 10;
 
-    // let currentPage = 0;      // ✅ 현재 페이지 (0부터 시작)
-    // const pageSize = 10;      // ✅ 한 페이지당 회원 수
-    // const tbody = document.getElementById("memberTableBody");
-    // const pagination = document.getElementById("pagination");
+    let currentPage = 1;
+    const pageSize = 10;
 
-    fetch(`/admin/api/members/list?page=${page}&size=${size}` , {
-        method: "GET",
-        headers: { 'X-Requested-From': window.location.pathname + window.location.search
-        }
-    })
-        .then(res => {
-            console.log("[STEP1] 서버 응답 객체:", res);
-            return res.json();
+    const tbody = document.getElementById("memberTableBody");
+    const pagination = document.getElementById("pagination");
+
+    // ✅ [1] 메인 함수 - 회원 목록 불러오기
+    function loadMembers(page = 1) {
+        console.log(`[FETCH] /admin/api/members/list?page=${page}&size=${pageSize}`);
+
+        fetch(`/admin/api/members/list?page=${page}&size=${pageSize}`, {
+            method: "GET",
+            headers: { 'X-Requested-From': window.location.pathname + window.location.search }
         })
-        .then(json => {
-            console.log("[STEP2] 파싱된 JSON:", json.data);
-
-            if (!json.success) {
-                console.error("[ERROR] 요청 실패:", json?.message);
-                return;
-            }
-
-            let raw = json.data;
-
-            // ✅ 문자열일 경우 JSON 파싱
-            if (typeof raw === "string") {
-                try {
-                    raw = JSON.parse(raw);
-                    console.log("[DEBUG] 문자열 JSON 파싱 완료:", raw);
-                } catch (err) {
-                    console.error("[ERROR] JSON 파싱 실패:", err);
-                    raw = {};
+            .then(res => res.json())
+            .then(json => {
+                if (!json.success) {
+                    console.error("[ERROR] 요청 실패:", json?.message);
+                    return;
                 }
-            }
 
-            // ✅ 실제 회원 리스트는 raw.data 안에 있음
-            const members = Array.isArray(raw.data) ? raw.data : [];
+                const raw = json.data;
 
-            console.log("[STEP3] 회원 리스트:", members);
+                // ✅ 구조 매핑
+                const members = raw.data || [];
+                currentPage = raw.currentPage || 1;   // 1-based
+                const totalPages = raw.totalPage || 1;
+                const totalMembers = raw.dataCount || 0;
 
-            renderMemberTable(members);
-        })
+                console.log(`[DATA] 회원 ${members.length}명 / 총 ${totalMembers}명`);
+                renderMemberTable(members);
+                renderPagination(raw?.totalPage ?? 1);
+            })
+            .catch(err => console.error("[ERROR] fetch 실패:", err));
+    }
     /**
      * 회원 목록 테이블 렌더링
      */
@@ -73,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const status = m.isActive ? "활성" : "비활성";
 
             tr.innerHTML = `
-            <td>${index + 1}</td>
+            <td>${(currentPage - 1) * pageSize + index + 1}</td>
             <td>${m.nickname}</td>
             <td>${m.email ?? "-"}</td>
             <td>${convertRole(m.role)}</td>
@@ -85,66 +76,103 @@ document.addEventListener("DOMContentLoaded", () => {
 
             tbody.appendChild(tr);
         });
-
-
-        // ✅ 여기서 이벤트 다시 연결
-        attachModalEvents();
-
-
         console.log(`[RENDER] ${members.length}명의 회원 렌더링 완료`);
 
-        // ✅ 권한 변환 함수 추가
-        function convertRole(role) {
-            switch (role) {
-                case "ROLE_ADMIN": return "관리자";
-                case "ROLE_TEACHER": return "강사";
-                case "ROLE_STUDENT": return "학생";
-                default: return "-";
-            }
-        }
-        // 모달 창 먹히는 함수 코드 그대로 가져옴
-        function attachModalEvents() {
-            const modal = document.getElementById("memberModal");
-            const closeBtn = document.querySelector(".close-btn");
-            const closeModalBtn = document.getElementById("closeModalBtn");
-
-            // 관리 버튼 클릭 이벤트 새로 연결
-            document.querySelectorAll(".management-button").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const row = e.target.closest("tr");
-                    if (!row) return;
-
-                    const name = row.children[1].innerText;
-                    const email = row.children[2].innerText;
-                    const role = row.children[3].innerText;
-                    const status = row.children[4].innerText;
-                    const date = row.children[5].innerText;
-
-                    document.getElementById("modalName").innerText = name;
-                    document.getElementById("modalEmail").innerText = email;
-                    document.getElementById("modalRole").innerText = role;
-                    document.getElementById("modalStatus").innerText = status;
-                    document.getElementById("modalDate").innerText = date;
-
-                    modal.style.display = "flex";
-                });
-            });
-
-            // 닫기 이벤트 한 번만 등록
-            if (closeBtn && !closeBtn.dataset.bound) {
-                closeBtn.dataset.bound = "true";
-                closeBtn.addEventListener("click", () => modal.style.display = "none");
-            }
-            if (closeModalBtn && !closeModalBtn.dataset.bound) {
-                closeModalBtn.dataset.bound = "true";
-                closeModalBtn.addEventListener("click", () => modal.style.display = "none");
-            }
-
-            window.addEventListener("click", (e) => {
-                if (e.target === modal) modal.style.display = "none";
-            });
-        }
-
+        // 여기서 이벤트 다시 연결
+        attachModalEvents();
     }
+
+// ✅ [3] 페이지네이션 렌더링
+    function renderPagination(totalPages) {
+        pagination.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        const maxVisible = 5;
+        let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let end = Math.min(totalPages - 1, start + maxVisible - 1);
+
+        if (end - start < maxVisible - 1) {
+            start = Math.max(1, end - maxVisible + 1);
+        }
+
+        // 이전 버튼
+        const prev = document.createElement("button");
+        prev.textContent = "◀";
+        prev.className = `page-btn ${currentPage === 1 ? "disabled" : ""}`;
+        prev.onclick = () => currentPage > 1 && loadMembers(currentPage - 1);
+        pagination.appendChild(prev);
+
+        // 페이지 번호
+        for (let i = start; i <= end; i++) {
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            btn.className = `page-btn ${i === currentPage ? "active" : ""}`;
+            btn.onclick = () => loadMembers(i);
+            pagination.appendChild(btn);
+        }
+
+        // 다음 버튼
+        const next = document.createElement("button");
+        next.textContent = "▶";
+        next.className = `page-btn ${currentPage === totalPages ? "disabled" : ""}`;
+        next.onclick = () => currentPage < totalPages && loadMembers(currentPage + 1);
+        pagination.appendChild(next);
+    }
+
+    // ✅ 권한 변환 함수 추가
+    function convertRole(role) {
+        switch (role) {
+            case "ROLE_ADMIN": return "관리자";
+            case "ROLE_TEACHER": return "강사";
+            case "ROLE_STUDENT": return "학생";
+            default: return "-";
+        }
+    }
+    // 모달 창 먹히는 함수 코드 그대로 가져옴
+    function attachModalEvents() {
+        const modal = document.getElementById("memberModal");
+        const closeBtn = document.querySelector(".close-btn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+
+        // 관리 버튼 클릭 이벤트 새로 연결
+        document.querySelectorAll(".management-button").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                const row = e.target.closest("tr");
+                if (!row) return;
+
+                const name = row.children[1].innerText;
+                const email = row.children[2].innerText;
+                const role = row.children[3].innerText;
+                const status = row.children[4].innerText;
+                const date = row.children[5].innerText;
+
+                document.getElementById("modalName").innerText = name;
+                document.getElementById("modalEmail").innerText = email;
+                document.getElementById("modalRole").innerText = role;
+                document.getElementById("modalStatus").innerText = status;
+                document.getElementById("modalDate").innerText = date;
+
+                modal.style.display = "flex";
+            });
+        });
+
+        // 닫기 이벤트 한 번만 등록
+        if (closeBtn && !closeBtn.dataset.bound) {
+            closeBtn.dataset.bound = "true";
+            closeBtn.addEventListener("click", () => modal.style.display = "none");
+        }
+        if (closeModalBtn && !closeModalBtn.dataset.bound) {
+            closeModalBtn.dataset.bound = "true";
+            closeModalBtn.addEventListener("click", () => modal.style.display = "none");
+        }
+
+        window.addEventListener("click", (e) => {
+            if (e.target === modal) modal.style.display = "none";
+        });
+    }
+
+    // ✅ 초기 실행
+    loadMembers();
 });
