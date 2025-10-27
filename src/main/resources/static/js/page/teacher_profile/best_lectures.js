@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetch(`/api/teachers/profile/bestLecture`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search },
         body: params
     })
         .then(res => res.json())
@@ -36,9 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const rating = bestLecture.averageRate ?? "N/A";
             const description = bestLecture.description || "강의 소개가 없습니다.";
 
+            // div 클릭 시 들어갈 링크
+            const detailUrl = `/lecture/detail/${bestLecture.lectureId}`;
             // ✅ JSP 구조 그대로 템플릿화
             item.innerHTML = `
-                <img src="/img/png/sample1.png" alt="강의이미지">
+            <a href="${detailUrl}"
+                <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                 <div class="lecture-info">
                     <p class="lecture-title">${bestLecture.title}</p>
                     <p class="lecture-info-text">${description}</p>
@@ -48,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         &#x1F9F8; ${students}
                     </p>
                 </div>
+            </a>
             `;
             container.appendChild(item);
         });

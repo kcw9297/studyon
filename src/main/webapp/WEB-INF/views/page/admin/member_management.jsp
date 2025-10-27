@@ -102,8 +102,13 @@
             </c:forEach>
             </tbody>
         </table>
+
+        <!-- 페이징 -->
+        <div id="pagination" class="pagination-container"></div>
     </div>
 </div>
+
+
 
 <div id="memberModal" class="modal-overlay">
     <div class="modal-content">

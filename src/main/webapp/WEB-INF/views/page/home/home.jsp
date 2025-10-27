@@ -131,6 +131,15 @@
     .main-banner-container {
         margin-bottom: 20px;
     }
+
+    .recent-lecture-thumbnail {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-bottom: 1px solid #ddd;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
 </style>
 
 <%-- Local Script --%>

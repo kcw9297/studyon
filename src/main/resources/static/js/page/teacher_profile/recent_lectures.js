@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetch(`/api/teachers/profile/recentLecture`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search } ,
         body: params
     })
         .then(res => res.json())
@@ -35,8 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const students = recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents;
             const rating = recentLecture.averageRate ?? "N/A";
 
+            // div 클릭 시 들어갈 링크
+            const detailUrl = `/lecture/detail/${recentLecture.lectureId}`;
+            
             item.innerHTML = `
-               <img src="/img/png/sample1.png" alt="강의이미지">
+                <a href="${detailUrl}">
+                    <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                     <div class="lecture-info">
                         <p class="lecture-title">${recentLecture.title}</p>
                         <p class="lecture-info-text">${recentLecture.description}</p>
@@ -44,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p class="lecture-info-text"><!--⭐${rating}--></p>
                         <p class="lecture-info-text">&#x1F9F8; ${students}</p>
                     </div>
+                </a>
             `;
             container.appendChild(item);
         });
