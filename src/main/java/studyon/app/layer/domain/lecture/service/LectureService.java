@@ -6,16 +6,18 @@ import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 
 import java.util.List;
+import java.util.Map;
 
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-17) : khj00 최초 작성
+ *  ▶ ver 1.1 (2025-10-27) : phj : 리뷰 퍼센트 계산 - 강의페이지 추가
  */
 
 /**
  * 강의 서비스 인터페이스
- * @version 1.0
- * @author khj00
+ * @version 1.1
+ * @author phj
  */
 
 public interface LectureService {
@@ -59,4 +61,7 @@ public interface LectureService {
      */
     List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
     LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile);
+
+    /* 리뷰 퍼센트 계산 - 강의페이지 */
+    Map<Integer, Double> getRatingPercentage(Long lectureId);
 }

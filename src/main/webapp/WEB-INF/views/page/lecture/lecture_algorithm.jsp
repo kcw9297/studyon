@@ -1,5 +1,6 @@
 <%@ page contentType ="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,27 +22,57 @@
         </div>
     </div>
     <div class="algorithm-list">
-        <a class="algorithm-item" href="">
-            <div class="algorithm-thumbnail">
-                <img src="<c:url value='/img/png/thumbnail1.png'/>">
-            </div>
-            <div class="algorithm-lecture">2025 수능특강 : 미적분</div>
-            <div class="algorithm-teacher">전성홍 강사</div>
-            <div class="algorithm-price">90,000원</div>
-            <div class="algorithm-report">
-                <div class="algorithm-review">
-                    <div class="algorithm-star">★</div>
-                    <div class="algorithm-score">4.8</div>
-                    <div class="algorithm-count">(350)</div>
+        <c:forEach var="lecture" items="${recommendedByTeacher}">
+            <a class="algorithm-item" href="/lecture/detail/${lecture.lectureId}">
+                <div class="algorithm-thumbnail">
+                        <%--                    <img src="<c:url value='${lecture.thumbnailUrl}'/>" alt="썸네일">--%>
+                    <img src="<c:url value='/img/png/thumbnail1.png'/>">
                 </div>
-                <div class="algorithm-student">
-                    <div class="algorithm-member">
-                        <img src="<c:url value='/img/png/student.png'/>">
+                <div class="algorithm-lecture">${lecture.title}</div>
+                <div class="algorithm-teacher">${lecture.nickname} 강사</div>
+                <div class="algorithm-price"><fmt:formatNumber value="${lecture.price}" type="number"/>원</div>
+                <div class="algorithm-report">
+                    <div class="algorithm-review">
+                        <div class="algorithm-star">★</div>
+                        <div class="algorithm-score"><fmt:formatNumber value="${lecture.averageRate}" pattern="#0.0"/></div>
+                        <div class="algorithm-count">(<fmt:formatNumber value="${reviewCount}" type="number"/>)</div>
                     </div>
-                    <div class="algorithm-total">1,200</div>
+                    <div class="algorithm-student">
+                        <div class="algorithm-member">
+                            <img src="<c:url value='/img/png/student.png'/>" alt="학생">
+                        </div>
+                        <div class="algorithm-total"><fmt:formatNumber value="${teacher.totalStudents}" type="number"/></div>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </c:forEach>
+        <c:forEach var="lecture" items="${recommendedBySubject}">
+            <a class="algorithm-item" href="/lecture/detail/${lecture.lectureId}">
+                <div class="algorithm-thumbnail">
+<%--                    <img src="<c:url value='${lecture.thumbnailUrl}'/>" alt="썸네일">--%>
+                    <img src="<c:url value='/img/png/thumbnail1.png'/>">
+                </div>
+                <div class="algorithm-lecture">${lecture.title}</div>
+                <div class="algorithm-teacher">${lecture.nickname} 강사</div>
+                <div class="algorithm-price"><fmt:formatNumber value="${lecture.price}" type="number"/>원</div>
+                <div class="algorithm-report">
+                    <div class="algorithm-review">
+                        <div class="algorithm-star">★</div>
+                        <div class="algorithm-score"><fmt:formatNumber value="${lecture.averageRate}" pattern="#0.0"/></div>
+                        <div class="algorithm-count">(<fmt:formatNumber value="${reviewCount}" type="number"/>)</div>
+                    </div>
+                    <div class="algorithm-student">
+                        <div class="algorithm-member">
+                            <img src="<c:url value='/img/png/student.png'/>" alt="학생">
+                        </div>
+                        <div class="algorithm-total"><fmt:formatNumber value="${teacher.totalStudents}" type="number"/></div>
+                    </div>
+                </div>
+            </a>
+        </c:forEach>
+    </div>
+
+
     </div>
 </section>
 </body>
