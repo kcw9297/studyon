@@ -40,19 +40,7 @@ public class AdminHomeController {
      * URL: /admin
      */
     @GetMapping
-    public String adminMain(Model model, HttpSession session) {
-
-        // [1] 프로필 조회
-        MemberProfile profile = SessionUtils.getProfile(session);
-
-        // 프로필이 없으면 홈으로
-        if (Objects.isNull(profile)) return "redirect:%s".formatted(Url.INDEX);
-
-        // 회원 세션은 이제 jsp애서 ${sessionScope.profile} 으로 접근 (세션에 존재)
-        //model.addAttribute("profile", profile);
-
-        // view 출력
-        log.info("✅ 관리자 페이지 접근: memberId={}, role={}", profile.getMemberId(), profile.getRole());
+    public String showAdminHome(Model model) {
         return ViewUtils.returnView(model, View.ADMIN, "admin");
     }
 

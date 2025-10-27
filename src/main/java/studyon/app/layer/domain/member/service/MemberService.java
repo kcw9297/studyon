@@ -39,6 +39,13 @@ public interface MemberService {
     MemberProfile readProfile(Long memberId);
 
     /**
+     * 회원 가입
+     * @param rq 회원 가입 요청
+     * @return 가입에 성공한 회원 정보
+     */
+    MemberDTO.Read join(MemberDTO.Join rq);
+
+    /**
      * 비밀번호 초기화
      * @param email 대상 이메일
      * @param newPassword 새로 초기화하는 패스워드

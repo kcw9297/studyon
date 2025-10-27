@@ -12,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import studyon.app.layer.domain.member.MemberDTO;
+import studyon.app.layer.domain.notice.NoticeDTO;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -60,7 +61,8 @@ public class DatabaseConfig {
         TypeAliasRegistry registry = configuration.getTypeAliasRegistry();
 
         // 각 도메인의 DTO 패키지에서 Info 내부클래스 등록
-        registry.registerAlias("memberInfo", MemberDTO.Read.class);
+        registry.registerAlias("memberRead", MemberDTO.Read.class);
+        registry.registerAlias("noticeRead", NoticeDTO.Read.class);
     }
 
 }

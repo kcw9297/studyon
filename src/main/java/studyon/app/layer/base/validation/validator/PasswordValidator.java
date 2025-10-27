@@ -23,7 +23,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         // 사용자 입력 오류 메세지
         String message = annotation.message();
         this.message = Objects.isNull(message) || message.isBlank() ?
-                "8-20자 사이 공백제외 영문/숫자/특수문자 입력" : message;
+                "공백제외 영문/숫자/특수문자를 8~20자 사이로 입력해야 합니다." : message;
     }
 
     @Override

@@ -6,9 +6,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이메일 인증 | Oneday OneClass</title>
+    <link rel="icon" href="<c:url value='/img/png/icon_title.png'/>" type="image/x-icon">
+    <title>STUDY ON | 회원가입</title>
 
-    <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/member/authmail.css'/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/auth/auth_mail.css'/>">
     <link rel="icon" href="<c:url value='/img/favicon.ico'/>" type="image/x-icon">
 </head>
 
