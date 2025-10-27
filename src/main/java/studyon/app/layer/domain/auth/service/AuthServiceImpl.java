@@ -16,15 +16,20 @@ import studyon.app.common.utils.EnvUtils;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.mail.MailManager;
-import studyon.app.layer.domain.auth.JoinCache;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 
 import java.time.Duration;
 import java.util.Objects;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-26) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-27) : kcw97 회원기입 인증 메일 전송 추가
+ */
+
 /**
  * 캐시 데이터 기반 인증 서비스 제공 구현체
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 
@@ -113,13 +118,22 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public JoinCache getJoinCache() {
-        return null;
-    }
+    public void sendJoinEmail(String email, Object joinRequest) {
 
+        // [1] 이미 가입된 이메일이 존재하는지 검증
+        if (memberRepository.existsByEmailAndProvider(email, Provider.NORMAL))
+            throw new BusinessLogicException(AppStatus.AUTH_DUPLICATE_EMAIL);
 
-    @Override
-    public void sendJoinEmail(String email) {
+        // [2] 인증 요청 전, 이미 전송된 요청이 있는지 검증
+        String token = StrUtils.createUUID();
+        Duration expiration = Duration.ofMinutes(3);
 
+        // 이미 인증 요청이 존재하면 중복된 요청이므로 예외 반환
+        if (!cacheManager.recordAuthRequest(email, token, expiration, joinRequest))
+            throw new BusinessLogicException(AppStatus.AUTH_REQUEST_ALREADY_EXIST);
+
+        // [3] 인증 이메일 전송
+        String verifyUrl = "%s%s?token=%s".formatted(currentDomain, Url.AUTH_JOIN_MAIL_RESULT, token);
+        mailManager.sendVerifyUrl(email, verifyUrl, expiration);
     }
 }

@@ -19,45 +19,32 @@
 
     </div>
     <div class="header-info">
-        <c:if test="${isLogin}">
-            <div style="margin-right: 20px">
-                <c:if test="${sessionScope.profile.role.role eq 'TEACHER'}">
-                    ${sessionScope.profile.nickname} 선생님 환영합니다
-                </c:if>
-                <c:if test="${sessionScope.profile.role.role eq 'ADMIN'}">
-                    관리자님 환영합니다
-                </c:if>
-                <c:if test="${sessionScope.profile.role.role eq 'STUDENT'}">
-                    ${sessionScope.profile.nickname}님 환영합니다
-                </c:if>
-            </div>
-        </c:if>
+
         <div style="gap:10px;">
             <c:if test="${isLogin}">
-                <c:if test="${sessionScope.profile.role.role eq 'TEACHER'}">
-                    <a style="border:2px solid black;" href="/teacher/management/profile"> 선생님 </a>
-                </c:if>
                 <c:if test="${sessionScope.profile.role.role eq 'ADMIN'}">
                     <a style="border:2px solid black;" href="/admin"> 관리자 </a>
-                </c:if>
-                <c:if test="${sessionScope.profile.role.role eq 'STUDENT'}">
-                    <a style="border:2px solid black;" href="/mypage/account"> 마이페이지 </a>
                 </c:if>
             </c:if>
             <c:if test="${not isLogin}">
                 <a style="border:2px solid black;" href="/join"> 회원가입</a>
-                <a style="border:2px solid black;" href="/mypage/account"> 마이페이지 </a>
             </c:if>
         </div>
 
+        <c:if test="${isLogin and not empty sessionScope.profile and sessionScope.profile.role.role ne 'ADMIN'}">
+            <div class="profile-img-div" onclick="location.href='${sessionScope.profile.role.role eq 'STUDENT' ? '/mypage/account' : '/teacher/management/profile'}'">
+                <c:if test="${not empty sessionScope.profile.profileImage}">
+                    <img src="${fileDomain}/${sessionScope.profile.profileImage.filePath}" class="profile-img" alt="프로필 사진">
+                </c:if>
+                <c:if test="${empty sessionScope.profile.profileImage}">
+                    <img src="<c:url value='/img/png/default_member_profile_image.png'/>"; class="profile-img" alt="프로필 사진">
+                </c:if>
+            </div>
+        </c:if>
 
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">
         </button>
-        <div class="profile-img-div">
-            <img src="<c:url value='/img/png/default_member_profile_image.png'/>" class="profile-img" alt="프로필 사진">
-        </div>
-
 
         <c:if test="${not isLogin}">
             <a href="<c:url value='/login'/>" id="loginModalBtn" class="modal">
@@ -75,14 +62,13 @@
 
 <style>
     .profile-img{
-        height:90%;
+        height:85%;
         width:auto;
         border-radius:90px;
-
     }
     .profile-img-div{
-        height:90%;
+        height:85%;
         width:auto;
-
+        cursor:pointer;
     }
 </style>

@@ -28,6 +28,7 @@ public final class Url {
     public static final String EDITOR = "/editor";
     public static final String FILE = "/file";
     public static final String MYPAGE = "/mypage";
+    public static final String RESULT = "/result";
 
     // Security, auth, account
     public static final String MAIL = "/mail";
@@ -40,7 +41,8 @@ public final class Url {
     public static final String EDIT_PASSWORD = "/edit-password";
     public static final String LOGIN_PROCESS = LOGIN + "/process";
     public static final String LOGOUT = "/logout";
-    public static final String JOIN_MAIL = JOIN + MAIL;
+    public static final String NOTICE = "/notice";
+    public static final String NOTICES = "/notices";
 
     public static final String AUTH = "/auth";
     public static final String AUTH_EDIT_PASSWORD = AUTH + EDIT_PASSWORD;
@@ -49,6 +51,8 @@ public final class Url {
     public static final String AUTH_API_MAIL = AUTH_API + MAIL;
     public static final String AUTH_API_MAIL_CODE = AUTH_API_MAIL + CODE;
     public static final String AUTH_API_MAIL_URL = AUTH_API_MAIL + URL;
+    public static final String AUTH_JOIN_MAIL = JOIN + MAIL;
+    public static final String AUTH_JOIN_MAIL_RESULT = AUTH_JOIN_MAIL + RESULT;
 
     /* MEMBER */
     public static final String MEMBER_API = API + MEMBERS;
@@ -66,6 +70,10 @@ public final class Url {
 
     /* HOME */
     public static final String HOME_API = API + HOME;    //  "/api/home"
+
+    /* NOTICE */
+    public static final String NOTICES_API = API + NOTICES;    //  "/api/home"
+    public static final String ADMIN_NOTICES_API = ADMIN + NOTICES_API;    //  "/api/home"
 
     /* PAYMENT */
     public static final String PAYMENT = "/payment";

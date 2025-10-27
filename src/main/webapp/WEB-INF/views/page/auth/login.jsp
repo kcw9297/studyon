@@ -172,7 +172,7 @@
             form.append("email", editPasswordEmail);
 
             // REST API 요청
-            const res = await fetch(`/api/auth/edit-password`, {
+            const res = await fetch(`/api/auth/edit-password/request`, {
                 method: "POST",
                 body: form
             });

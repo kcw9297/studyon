@@ -23,7 +23,7 @@ public class NicknameValidator implements ConstraintValidator<Nickname, String> 
         // 사용자 입력 오류 메세지
         String message = annotation.message();
         this.message = Objects.isNull(message) || message.isBlank() ?
-                "5-12자 사이 한글/영문/숫자 입력" : message;
+                "5-12자 사이 한글/영문/숫자를 입력해야 합니다." : message;
     }
 
     @Override
