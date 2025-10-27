@@ -9,6 +9,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.infra.cache.manager.CacheManager;
@@ -108,6 +109,15 @@ public class TeacherRestController {
         //가져올 정보 : 강사명, 강사 이메일, 강사 프로필, 강의 수, 수강생 수, 평균 평점
     }
 
+    @GetMapping("management/lectureinfo/{lectureId}")
+    public ResponseEntity<?> getTeacherLectureInfo(HttpSession session,@PathVariable Long lectureId){
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        LectureDTO.ReadLectureInfo response= lectureService.readLectureInfo(lectureId,teacherId);
+        return RestUtils.ok(response);
+
+    }
+
     @GetMapping("/management/profile/image")
     public ResponseEntity<Resource> getTeacherProfileImage(HttpSession session) {
         // [1] 세션에서 프로필 정보 가져오기
@@ -142,5 +152,56 @@ public class TeacherRestController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @PatchMapping("/management/lecture/{lectureId}/thumbnail")
+    public ResponseEntity<?> updateLectureThumbnail(
+            @PathVariable Long lectureId,
+            @RequestPart("file") MultipartFile file,
+            HttpSession session
+    ) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+
+        lectureService.updateThumbnail(lectureId, teacherId, file);
+
+        return RestUtils.ok("썸네일이 등록되었습니다.");
+    }
+
+    @GetMapping("/management/lecture/{lectureId}/thumbnail/view")
+    public ResponseEntity<Resource> getLectureThumbnail(
+            @PathVariable Long lectureId
+    ) {
+        try {
+            // 1️⃣ 썸네일 파일 경로 조회
+            String filePath = lectureService.getLectureThumbnailPath(lectureId); // 아래에 설명
+
+            if (filePath == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // 2️⃣ 실제 경로 변환
+            Path path = Paths.get("C:/PROJECT_FILE/" + filePath);
+
+            if (!Files.exists(path)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // 3️⃣ 리소스 생성
+            Resource resource = new UrlResource(path.toUri());
+            String contentType = Files.probeContentType(path);
+            if (contentType == null) contentType = "image/jpeg";
+
+            // 4️⃣ 응답 반환
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .body(resource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
 
 }

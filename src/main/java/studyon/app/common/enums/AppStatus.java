@@ -64,7 +64,11 @@ public enum AppStatus {
     TEACHER_NOT_FOUND(500, "선생님 정보가 존재하지 않습니다."),
 
     /* 파일(Entity) 상태 */
-    FILE_NOT_FOUND(500, "파일이 존재하지 않습니다.");
+    FILE_NOT_FOUND(500, "파일이 존재하지 않습니다."),
+
+    /* 강의(Lecture) 상태*/
+    LECTURE_NOT_FOUND(500,"강의 정보가 존재하지 않습니다"),
+    LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다.");
 
     private final int httpCode;     // HTTP 코드
     private final String message;   // 전달 메세지

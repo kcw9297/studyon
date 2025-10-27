@@ -1,5 +1,6 @@
 package studyon.app.layer.domain.lecture.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
@@ -59,4 +60,7 @@ public interface LectureService {
      */
     List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
     LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile);
+    LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId,Long teacherId);
+    void updateThumbnail(Long teacherId, Long lectureId, MultipartFile file);
+    String getLectureThumbnailPath(Long lectureId);
 }

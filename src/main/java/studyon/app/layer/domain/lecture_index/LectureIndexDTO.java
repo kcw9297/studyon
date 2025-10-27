@@ -3,6 +3,7 @@ package studyon.app.layer.domain.lecture_index;
 
 import lombok.*;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture_video.LectureVideoDTO;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +32,7 @@ public class LectureIndexDTO {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private Long lectureId;
+        private LectureVideoDTO.Read lectureVideo;
     }
     @Data
     @Builder
