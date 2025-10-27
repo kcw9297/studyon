@@ -40,11 +40,21 @@ public class LectureDetailController {
         long reviewCount = lectureReviewRepository.countByLecture_LectureId(lectureId);
         Map<Integer, Double> ratingPercent = lectureService.getRatingPercentage(lectureId);
 
-        /* 알고리즘 */
+        /* 알고리즘 - 리스트 */
         LectureDTO.Search lectureSearch = LectureDTO.Search.builder().subject(lecture.getSubject()).build();
-        List<LectureDTO.Read> recommendedBySubject = lectureService.readBestLectures(lectureSearch.getSubject(), 4);
         TeacherDTO.Search teacherSearch = TeacherDTO.Search.builder().teacherId(lecture.getTeacher().getTeacherId()).build();
+        List<LectureDTO.Read> recommendedBySubject = lectureService.readBestLectures(lectureSearch.getSubject(), 4);
         List<LectureDTO.Read> recommendedByTeacher = lectureService.readBestLectures(teacherSearch.getTeacherId(), 4);
+
+        Map<Long, Long> reviewCountMap = new HashMap<>();
+        for (LectureDTO.Read rec : recommendedBySubject) {
+            long count = lectureReviewRepository.countByLecture_LectureId(rec.getLectureId());
+            reviewCountMap.put(rec.getLectureId(), count);
+        }
+        for (LectureDTO.Read rec : recommendedByTeacher) {
+            long count = lectureReviewRepository.countByLecture_LectureId(rec.getLectureId());
+            reviewCountMap.put(rec.getLectureId(), count);
+        }
 
         model.addAttribute("lecture", lecture);
         model.addAttribute("teacher", lecture.getTeacher());
@@ -53,6 +63,7 @@ public class LectureDetailController {
         model.addAttribute("ratingPercent", ratingPercent);
         model.addAttribute("recommendedBySubject", recommendedBySubject);
         model.addAttribute("recommendedByTeacher", recommendedByTeacher);
+        model.addAttribute("reviewCountMap", reviewCountMap);
 
         return ViewUtils.returnView(model, View.LECTURE, "lecture_detail");
     }

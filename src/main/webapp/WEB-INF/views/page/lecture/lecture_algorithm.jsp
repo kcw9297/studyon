@@ -35,13 +35,13 @@
                     <div class="algorithm-review">
                         <div class="algorithm-star">★</div>
                         <div class="algorithm-score"><fmt:formatNumber value="${lecture.averageRate}" pattern="#0.0"/></div>
-                        <div class="algorithm-count">(<fmt:formatNumber value="${reviewCount}" type="number"/>)</div>
+                        <div class="algorithm-count">(<fmt:formatNumber value="${reviewCountMap[lecture.lectureId]}" type="number"/>)</div>
                     </div>
                     <div class="algorithm-student">
                         <div class="algorithm-member">
                             <img src="<c:url value='/img/png/student.png'/>" alt="학생">
                         </div>
-                        <div class="algorithm-total"><fmt:formatNumber value="${teacher.totalStudents}" type="number"/></div>
+                        <div class="algorithm-total"><fmt:formatNumber value="${lecture.totalStudents}" type="number"/></div>
                     </div>
                 </div>
             </a>
@@ -49,8 +49,8 @@
         <c:forEach var="lecture" items="${recommendedBySubject}">
             <a class="algorithm-item" href="/lecture/detail/${lecture.lectureId}">
                 <div class="algorithm-thumbnail">
-<%--                    <img src="<c:url value='${lecture.thumbnailUrl}'/>" alt="썸네일">--%>
-                    <img src="<c:url value='/img/png/thumbnail1.png'/>">
+                        <%--                    <img src="<c:url value='${lecture.thumbnailUrl}'/>" alt="썸네일">--%>
+                    <img src="<c:url value='/img/png/thumbnail4.png'/>">
                 </div>
                 <div class="algorithm-lecture">${lecture.title}</div>
                 <div class="algorithm-teacher">${lecture.nickname} 강사</div>
@@ -59,13 +59,13 @@
                     <div class="algorithm-review">
                         <div class="algorithm-star">★</div>
                         <div class="algorithm-score"><fmt:formatNumber value="${lecture.averageRate}" pattern="#0.0"/></div>
-                        <div class="algorithm-count">(<fmt:formatNumber value="${reviewCount}" type="number"/>)</div>
+                        <div class="algorithm-count">(<fmt:formatNumber value="${reviewCountMap[lecture.lectureId]}" type="number"/>)</div>
                     </div>
                     <div class="algorithm-student">
                         <div class="algorithm-member">
                             <img src="<c:url value='/img/png/student.png'/>" alt="학생">
                         </div>
-                        <div class="algorithm-total"><fmt:formatNumber value="${teacher.totalStudents}" type="number"/></div>
+                        <div class="algorithm-total"><fmt:formatNumber value="${lecture.totalStudents}" type="number"/></div>
                     </div>
                 </div>
             </a>
