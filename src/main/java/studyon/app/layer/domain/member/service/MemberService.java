@@ -24,6 +24,14 @@ public interface MemberService {
     Page.Response<MemberDTO.Read> readPagedList(MemberDTO.Search rq, Page.Request prq);
 
     /**
+     * 회원 목록 검색용
+     * @param prq 검색 페이징 요청
+     * @param dto 멤버 검색 dto
+     * @return 검색 필터된 회원 정보 목록
+     */
+    Page.Response<MemberDTO.Read> search(Page.Request prq, MemberDTO.Search dto);
+
+    /**
      * 회원 프로필정보 조회
      * @param memberId 대상 회원번호
      * @return 회원 프로필 정보
@@ -69,5 +77,7 @@ public interface MemberService {
      * @param memberId 대상 회원번호
      */
     void recover(Long memberId);
+
+
 
 }

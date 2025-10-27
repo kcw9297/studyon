@@ -219,6 +219,25 @@ public class MemberServiceImpl implements MemberService {
                 .recover();
     }
 
+    @Override
+    @Transactional
+    public Page.Response<MemberDTO.Read> search(Page.Request prq, MemberDTO.Search rq) {
+        log.info("🔍 [SERVICE] 회원 검색 실행: filter={}, keyword={}, role={}, isActive={}",
+                rq.getFilter(), rq.getKeyword(), rq.getRole(), rq.getIsActive());
 
 
+        // [1] MyBatis 매퍼 호출
+        List<MemberDTO.Read> members = memberMapper.selectBySearch(rq, prq);
+
+        // [2] 총 카운트 조회
+        int count = memberMapper.countBySearch(rq);
+        log.info("📘 [DEBUG] page={}, size={}, startPage={}", prq.getPage(), prq.getSize(), prq.getStartPage());
+
+
+        log.info("📗 [DEBUG] 검색 결과 count: {}", members.size());
+
+        log.info("📘 [DEBUG] 총 데이터 수: {}", count);
+        // [3] 페이징 응답 생성
+        return Page.Response.create(members, prq.getPage(), prq.getSize(), count);
+    }
 }
