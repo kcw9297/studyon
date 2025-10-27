@@ -42,7 +42,6 @@ import java.util.Objects;
 public class TeacherController {
 
     private final TeacherService teacherService;
-    private final CacheManager cacheManager;
 
     /**
      * [GET] 강의 생성 뷰
@@ -126,7 +125,7 @@ public class TeacherController {
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture");
     }
 
-    @GetMapping("/management/lectureinfo")
+    @GetMapping("/management/lectureinfo/{lectureId}")
     public String lectureinfo(Model model, HttpSession session) {
         MemberProfile profile = SessionUtils.getProfile(session);
         if (Objects.isNull(profile)) {

@@ -8,7 +8,7 @@
 <div class="unregistered-lecture-label">
   미등록 강의
 </div>
-<div class ="unregistered-lecture-container" onclick="location.href='/teacher/management/lectureinfo'">
+<div class ="unregistered-lecture-container">
     <div class="unregistered-lecture-item">
         <img src="<c:url value='/img/png/thumbnail.png'/>" class="lecture-thumbnail">
         <div class="unregistered-lecture-info">
@@ -98,15 +98,28 @@
                     return;
                 }
 
-                lectures.forEach(lecture => {
-                    // ✅ 아이템 div
-                    const item = document.createElement("div");
-                    item.classList.add(`${itemClassPrefix}-lecture-item`);
 
-                    // ✅ 썸네일
+                lectures.forEach(lecture => {
+                    console.log("lecture 확인:", lecture);
+
+                    const lectureId = lecture.lectureId; // ✅ 미리 복사해서 스코프 고정
+                    const item = document.createElement("div");
+                    item.classList.add(itemClassPrefix + "-lecture-item");
+
                     const img = document.createElement("img");
                     img.src = "/img/png/thumbnail.png";
                     img.classList.add("lecture-thumbnail");
+
+                    // ✅ 클릭 시 이동
+                    img.addEventListener("click", function() {
+                        if (lectureId) {
+                            console.log("이동할 lectureId:", lectureId);
+                            window.location.href = "/teacher/management/lectureinfo/" + lectureId;
+                        } else {
+                            console.warn("⚠️ lectureId가 없습니다:", lecture);
+                        }
+                    });
+
 
                     // ✅ 정보 div
                     const infoDiv = document.createElement("div");
