@@ -54,6 +54,9 @@
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">
         </button>
+        <div class="profile-img-div">
+            <img src="<c:url value='/img/png/default_member_profile_image.png'/>" class="profile-img" alt="프로필 사진">
+        </div>
 
 
         <c:if test="${not isLogin}">
@@ -69,3 +72,17 @@
         </c:if>
     </div>
 </div>
+
+<style>
+    .profile-img{
+        height:90%;
+        width:auto;
+        border-radius:90px;
+
+    }
+    .profile-img-div{
+        height:90%;
+        width:auto;
+
+    }
+</style>
