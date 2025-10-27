@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetch(`/api/lecture/best?subject=${subjectFromJSP}&count=${count}`, {
         method: "GET",
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search }
     })
         .then(res => res.json())
         .then(json => {

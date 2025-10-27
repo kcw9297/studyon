@@ -4,7 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const page = 1;
     const size = 10;
 
-    fetch(`/admin/api/members/list?page=${page}&size=${size}`)
+    // let currentPage = 0;      // ✅ 현재 페이지 (0부터 시작)
+    // const pageSize = 10;      // ✅ 한 페이지당 회원 수
+    // const tbody = document.getElementById("memberTableBody");
+    // const pagination = document.getElementById("pagination");
+
+    fetch(`/admin/api/members/list?page=${page}&size=${size}` , {
+        method: "GET",
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search
+        }
+    })
         .then(res => {
             console.log("[STEP1] 서버 응답 객체:", res);
             return res.json();

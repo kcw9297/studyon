@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ [1] 최근 등록된 강의 조회
     fetch(`/api/home/recent?count=${count}`, {
-        method: "GET"
+        method: "GET",
+        headers: {'X-Requested-From': window.location.pathname + window.location.search}
     })
         .then(res => res.json())
         .then(json => {
@@ -20,7 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ [2] 인기 강의 조회
     fetch(`/api/home/best?count=${count}`, {
-        method: "GET"
+        method: "GET",
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search }
     })
         .then(res => res.json())
         .then(json => {

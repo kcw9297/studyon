@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetch(`/api/teachers/profile/recentLecture`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search } ,
         body: params
     })
         .then(res => res.json())

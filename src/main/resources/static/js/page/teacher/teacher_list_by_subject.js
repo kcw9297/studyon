@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     params.append("subject", teacherJSP);
 
     fetch(`/api/teachers/subject/${teacherJSP}`, {
-        method: "GET"
+        method: "GET",
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search }
     })
         .then(res => res.json())
         .then(json => {

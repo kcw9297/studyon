@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
 
     fetch(`/api/lecture/reviews/recent/${subjectFromJSP}?count=${count}`, {
-        method: "GET"
+        method: "GET",
+        headers: { 'X-Requested-From': window.location.pathname + window.location.search }
     })
             .then(res => {
                 if (!res.ok) throw new Error("HTTP " + res.status);
