@@ -39,11 +39,6 @@
                     <span class="stat-rate">⭐ 4.5 / 5.0</span>
                 </div>
             </div>
-
-            <div class="profile-buttons">
-                <button class="btn-edit">정보 수정</button>
-                <button class="btn-dashboard">통계 보기</button>
-            </div>
         </div>
     </div>
 </div>

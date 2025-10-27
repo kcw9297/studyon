@@ -45,8 +45,8 @@
                 <div class="account-text">
                     <p>••••••••</p>
                 </div>
-                <c:if test="${sessionScope.profile.provider.value eq 'NORMAL'}">
-                    <button class="password-edit-button">수정</button>
+                <c:if test="${sessionScope.profile.provider eq 'NORMAL'}">
+                    <button onclick="openPasswordeditModal()" class="password-edit-modal-button">수정</button>
                 </c:if>
             </div>
         </div>
@@ -56,6 +56,10 @@
 <%--nickname & password modal--%>
 <jsp:include page="/WEB-INF/views/page/mypage/nickname_edit_modal.jsp" />
 
+<%--password edit modal --%>
+<jsp:include page="/WEB-INF/views/page/auth/account_password_edit_modal.jsp" />
+
+
 
 <style>
 
@@ -63,6 +67,13 @@
 
 
     <%-- 추가된 부분 이후에 우리 스타일에 맞게 변경 요구 --%>
+
+    .password-edit-modal-button{
+        border : 2px solid green;
+        padding : 5px;
+        border-radius:15px;
+        font-weight: bold;
+    }
 
     .mypage-info-container {
         width: 100%;
@@ -361,6 +372,14 @@
     function closeMailSendSuccessModal() {
         const modal = document.getElementById("mailSendSuccessModal");
         if (modal) modal.style.display = "none";
+    }
+
+    function openPasswordeditModal() {
+        document.querySelector('.password-modal').style.display = 'flex';
+    }
+
+    function closePasswordeditModal() {
+        document.querySelector('.password-modal').style.display = 'none';
     }
 
 
