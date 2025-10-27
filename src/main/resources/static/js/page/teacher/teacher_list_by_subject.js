@@ -33,14 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         teachers.forEach((teacher) => {
             const item = document.createElement("div");
+
+            // div 클릭 시 들어갈 링크
+            const detailUrl = `/teacher/profile/${teacher.teacherId}`;
+
             item.classList.add("recent-lecture-item");
 
             item.innerHTML = `
-                <img src="/img/png/sample1.png" alt="강의이미지">
+                <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                 <div class="lecture-info">
                   <p class="lecture-title">${teacher.nickname}</p>
                   <p class="lecture-info-text">${teacher.description || "소개가 없습니다."}</p>
-                  <p class="lecture-info-text">⭐${teacher.averageRating ?? "0.0"}</p>
+                  <!-- <p class="lecture-info-text">⭐${teacher.averageRating ?? "0.0"}</p> -->
                 </div>
             `;
             container.appendChild(item);

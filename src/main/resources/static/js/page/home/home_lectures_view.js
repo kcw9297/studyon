@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
             item.classList.add("recent-lecture-item");
             item.innerHTML = `
             <a href="${detailUrl}">
-                <img src="/img/png/sample1.png" alt="강의이미지">
+                <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                 <div class="lecture-info">
                     <p class="lecture-title">${bestLecture.title}</p>
                     <p class="lecture-info-text">${bestLecture.nickname}</p>
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
             item.classList.add("recent-lecture-item");
             item.innerHTML = `
                 <a href="${detailUrl}">
-                    <img src="/img/png/sample1.png" alt="강의이미지">
+                    <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                         <div class="lecture-info">
                             <p class="lecture-title">${recentLecture.title}</p>
                             <p class="lecture-info-text">${recentLecture.nickname}</p>

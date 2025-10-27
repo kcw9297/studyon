@@ -8,31 +8,22 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
-import studyon.app.common.enums.LectureRegisterStatus;
-import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
-import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
-import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture.service.LectureService;
 import studyon.app.layer.domain.member.MemberProfile;
-import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
-import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 import studyon.app.layer.domain.teacher.service.TeacherService;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
  * [수정 이력]

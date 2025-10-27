@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         members.forEach((m, index) => {
             const tr = document.createElement("tr");
 
-            const lastLogin = m.lastLoginAt ? "🟢" : "🔴";
+            const lastLogin = m.isActive ? "🟢" : "🔴";
             const joinDate = m.cdate ? new Date(m.cdate).toLocaleDateString() : "-";
             const status = m.isActive ? "활성" : "비활성";
 
