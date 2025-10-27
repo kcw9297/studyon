@@ -29,7 +29,7 @@ public class MemberDTO {
         private String keyword;
 
         private String role;       // USER / TEACHER / ADMIN
-        private Boolean isActive;  // true / false
+        private String isActive;  // true / false
     }
 
     @Data

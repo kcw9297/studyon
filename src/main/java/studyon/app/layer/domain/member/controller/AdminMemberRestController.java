@@ -46,13 +46,14 @@ public class AdminMemberRestController {
 
         Page.Response<MemberDTO.Read> members;
 
-        Boolean hasSearch = (rq.getKeyword() != null && !rq.getKeyword().isBlank())
-                || (rq.getRole() != null && !rq.getRole().isBlank())
-                || rq.getIsActive() != null;
+        Boolean hasSearch =
+                (rq.getKeyword() != null && !rq.getKeyword().isBlank())
+                        || (rq.getRole() != null && !rq.getRole().isBlank())
+                        || (rq.getIsActive() != null && !"".equals(String.valueOf(rq.getIsActive())));
 
 
         if (hasSearch) {
-            members = memberService.search(prq, rq); // 검색 모드
+            members = memberService.search(rq, prq); // 검색 모드
         } else {
             members = memberService.readPagedList(rq, prq); // 전체 목록 모드
         }
