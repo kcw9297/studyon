@@ -9,34 +9,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ [1] 메인 함수 - 회원 목록 불러오기
     function loadMembers(page = 1) {
-
-        // 검색용 변수
+        // ✅ DOM 요소에서 값 읽기
         const searchType = document.getElementById("searchType")?.value || "";
         const keyword = document.getElementById("keyword")?.value.trim() || "";
         const role = document.getElementById("roleFilter")?.value || "";
+        const isActive = document.getElementById("isActiveFilter")?.value || "";
 
-        // 쿼리 파라미터 구성
+        // ✅ 쿼리 파라미터 구성
         const params = new URLSearchParams({
             page,
             size: pageSize,
         });
 
-        // keyword가 있을 때만 filter도 같이 붙이기
-        if (keyword) {
-            if (searchType) params.append("filter", searchType);
-            params.append("keyword", keyword);
-        }
-
-        // role 필터는 단독 가능
+        // ✅ 필요한 값만 추가 (값이 있을 때만 append)
+        if (searchType) params.append("filter", searchType);
+        if (keyword) params.append("keyword", keyword);
         if (role) params.append("role", role);
+        if (isActive !== "") params.append("isActive", isActive);
 
         const url = `/admin/api/members/list?${params.toString()}`;
         console.log(`[FETCH] ${url}`);
 
-
         fetch(url, {
             method: "GET",
-            headers: {'X-Requested-From': window.location.pathname + window.location.search}
+            headers: { "X-Requested-From": window.location.pathname + window.location.search },
         })
             .then(res => res.json())
             .then(json => {
@@ -45,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // ✅ 올바른 구조 접근
                 const raw = json.data;
                 const members = Array.isArray(raw.data) ? raw.data : [];
 
@@ -60,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(err => console.error("[ERROR] fetch 실패:", err));
     }
 
+
     /**
      * 회원 목록 테이블 렌더링
      */
@@ -69,12 +65,40 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+
+        // ✅ 항상 최신 필터 상태 읽기
+        const role = document.getElementById("roleFilter")?.value || "";
+        const isActive = document.getElementById("isActive")?.value || "";
+        const keyword = document.getElementById("keyword")?.value.trim() || "";
+
         tbody.innerHTML = ""; // 기존 내용 비우기
 
         if (!members || members.length === 0) {
+
+            // 이름 매핑
+            const roleLabel = { "USER": "학생", "TEACHER": "강사", "ADMIN": "관리자" }[role] || "";
+            const activeLabel = { "true": "활성", "false": "비활성" }[isActive] || "";
+
+            const conditions = [activeLabel, roleLabel, keyword && `"${keyword}"`].filter(Boolean);
+            // 최종 문구
+            const message = conditions.length > 0
+            ? `${conditions.join(" ")}에 해당하는 회원이 없습니다.`
+                : "조회된 회원이 없습니다.";
+
+            
+            // 최종 렌더링(해당 회원 없을 시 뜨는 문구)
             tbody.innerHTML = `
-            <tr><td colspan="8" style="text-align:center;">회원 데이터가 없습니다.</td></tr>
-        `;
+            <tr><td colspan="8" style="
+                        text-align:center;
+                        color: #888;
+                        padding: 20px;
+                        font-size: 16px;
+                        background: #fff
+                    ">
+                    ${message}
+                </td></tr>
+            `;
+            console.log("[EMPTY]", message);
             return;
         }
 
@@ -152,16 +176,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ 권한 변환 함수 추가
     function convertRole(role) {
-        switch (role) {
-            case "ROLE_ADMIN":
-                return "관리자";
-            case "ROLE_TEACHER":
-                return "강사";
-            case "ROLE_STUDENT":
-                return "학생";
-            default:
-                return "-";
-        }
+        const map = {
+            "ROLE_ADMIN": "관리자",
+            "ROLE_TEACHER": "강사",
+            "ROLE_STUDENT": "학생",
+        };
+        return map[role] ?? "-";
     }
 
     // 날짜 포맷
@@ -179,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         searchBtn.addEventListener("click", () => {
             console.log("[SEARCH] 검색 버튼 클릭 감지됨");
             document.getElementById("keyword").blur();
-            tbody.innerHTML = "<tr><td colspan='8' style='text-align:center;'>검색 중...</td></tr>";
+            tbody.innerHTML = "<tr><td colspan=\"8\" style=\"text-align:center; color:#777;\">불러오는 중...</td></tr>";
             loadMembers(1);
         });
     }
@@ -194,4 +214,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+    ["searchType", "roleFilter", "isActiveFilter"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("change", () => {
+                console.log(`[FILTER] ${id} 변경됨 -> 자동 새로고침`);
+                loadMembers(1);
+            });
+        }
+    });
 });

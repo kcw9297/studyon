@@ -26,6 +26,7 @@ public interface MemberMapper {
     // 검색 전용 메소드들
     List<MemberDTO.Read> selectBySearch(@Param("rq") MemberDTO.Search rq,
                                         @Param("prq") Page.Request prq);
+    Integer countBySearch(@Param("rq") MemberDTO.Search rq,
+                          @Param("prq") Page.Request prq);
 
-    Integer countBySearch(@Param("rq") MemberDTO.Search rq);
 }
