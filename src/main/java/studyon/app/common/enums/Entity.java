@@ -25,9 +25,10 @@ public enum Entity {
     LECTURE_ANSWER("lecture_answer"),
     PURCHASE("purchase"),
     REFUND("refund"),
+    UNKNOWN("unknown"),
+    NOTICE("notice"),
     PAYMENT("payment"),
-    TEMP("temp"),
-    UNKNOWN("unknown");
+    TEMP("temp");
 
     private final String name;
 

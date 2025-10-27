@@ -14,6 +14,18 @@ import java.util.Objects;
 
 public class EmailValidator implements ConstraintValidator<Email, String> {
 
+    // 사용자 오류 메세지
+    private String message;
+
+    @Override
+    public void initialize(Email annotation) {
+
+        // 사용자 입력 오류 메세지
+        String message = annotation.message();
+        this.message = Objects.isNull(message) || message.isBlank() ?
+                "30자 이내 이메일 형식을 입력해야 합니다." : message;
+    }
+
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
@@ -30,8 +42,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 
 
         // [1] 검증 메세지 & 패턴
-        String message = "30자 이내 이메일 입력";
-        String pattern =  "^(?=.{1,30}$)[a-zA-Z0-9][a-zA-Z0-9._-]*@[a-zA-Z0-9][a-zA-Z0-9.-]*\\.[a-zA-Z]{2,}$";;
+        String pattern =  "^(?=.{1,30}$)[a-zA-Z0-9][a-zA-Z0-9._-]*@[a-zA-Z0-9][a-zA-Z0-9.-]*\\.[a-zA-Z]{2,}$";
 
         // [2] 기본 메세지 비활성화
         context.disableDefaultConstraintViolation();

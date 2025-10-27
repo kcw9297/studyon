@@ -4,10 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import studyon.app.common.enums.LectureRegisterStatus;
+import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.common.enums.Difficulty;
+import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.teacher.Teacher;
 
@@ -39,8 +43,8 @@ public class Lecture extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
-    private Double price;
+    @Column(nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    private Long price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -84,13 +88,25 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private LectureRegisterStatus lectureRegisterStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LectureTarget lectureTarget;
+
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "thumbnail_file_id")
+    private File thumbnail;
+
+
+
     @Builder
-    public Lecture(String title, String description, Double price,
-                   Difficulty difficulty, Teacher teacher,Subject subject) {
+    public Lecture(String title, String description, Long price,
+                   Difficulty difficulty, Teacher teacher,Subject subject,LectureTarget lectureTarget) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.publishDate = LocalDateTime.now();
+        this.lectureTarget = (lectureTarget != null) ? lectureTarget : LectureTarget.HIGH1;
 
         this.difficulty = difficulty;
         this.videoCount = 0L;
@@ -105,6 +121,10 @@ public class Lecture extends BaseEntity {
         this.lectureRegisterStatus = (lectureRegisterStatus != null)
                 ? lectureRegisterStatus
                 : LectureRegisterStatus.UNREGISTERED;
+    }
+
+    public void updateThumbnail(File newThumbnail) {
+        this.thumbnail = newThumbnail;
     }
 
     @Override
@@ -122,7 +142,7 @@ public class Lecture extends BaseEntity {
         JPA 변경 감지를 이용한 갱신 로직 (setter) - 강의 수정 페이지 연동 갱신
      */
 
-    public void update(String title, String description, Double price,
+    public void update(String title, String description, Long price,
                        Boolean onSale, Difficulty difficulty) {
         this.title = title;
         this.description = description;
@@ -136,4 +156,6 @@ public class Lecture extends BaseEntity {
     public void updateAverageRate(Double avg) {
         this.averageRate = avg;
     }
+
+
 }

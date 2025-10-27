@@ -13,19 +13,19 @@
 
     <!-- 검색 바 -->
     <div class="member-search-bar">
-        <select id="roleFilter">
-            <option value="USER">이메일</option>
-            <option value="TEACHER">이름</option>
+        <select id="searchType" name="filter">
+            <option value="email">이메일</option>
+            <option value="nickname">이름</option>
         </select>
-        <select id="roleFilter">
+        <select id="roleFilter" name="role">
             <option value="">전체 권한</option>
             <option value="USER">일반회원</option>
             <option value="TEACHER">강사</option>
             <option value="ADMIN">관리자</option>
         </select>
-        <input type="text" id="keyword" placeholder="회원 이름 또는 이메일 검색..." />
+        <input type="text" id="keyword" name="keyword" placeholder="회원 이름 또는 이메일 검색..." />
 
-        <button id="searchBtn">검색</button>
+        <button id="memberSearchBtn" type="button">검색</button>
     </div>
 
     <!-- 회원 테이블 -->
@@ -34,7 +34,7 @@
             <thead>
             <tr>
                 <th>No</th>
-                <th>이름</th>
+                <th>닉네임</th>
                 <th>이메일</th>
                 <th>권한</th>
                 <th>상태</th>
@@ -80,7 +80,7 @@
             </tr>
             </tbody>
             -->
-            <tbody>
+            <tbody id="memberTableBody">
             <c:forEach var="member" items="${memberList}" varStatus="loop">
                 <tr>
                     <td>${loop.index + 1}</td>
@@ -116,11 +116,15 @@
         <label class="modal-title">회원 상세정보</label>
 
         <div class="modal-info">
-            <p><strong>이름:</strong> <span id="modalName">-</span></p>
+            <p><strong>닉네임:</strong> <span id="modalName">-</span></p>
             <p><strong>이메일:</strong> <span id="modalEmail">-</span></p>
             <p><strong>권한:</strong> <span id="modalRole">-</span></p>
             <p><strong>상태:</strong> <span id="modalStatus"></span>✏️</p>
             <p><strong>가입일:</strong> <span id="modalDate">-</span></p>
+            <!--
+            <button class="btn-view" data-id="${m.memberId}">재활성</button>
+            <button class="btn-ban" data-id="${m.memberId}">정지</button>
+            -->
         </div>
 
         <div class="modal-buttons">
@@ -340,6 +344,7 @@
     }
 </style>
 
+
 <script src="<c:url value='/js/page/admin/member_management.js'/>"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -348,10 +353,12 @@
         const closeModalBtn = document.getElementById("closeModalBtn");
 
         // 관리 버튼 클릭 시
-        document.querySelectorAll(".management-button").forEach(btn => {
-            btn.addEventListener("click", (e) => {
+        // ✅ 이벤트 위임: tbody에 클릭 이벤트 등록
+        document.getElementById("memberTableBody").addEventListener("click", (e) => {
+            if (e.target.classList.contains("btn-view")) {
                 e.preventDefault();
                 const row = e.target.closest("tr");
+                if (!row) return;
 
                 // 데이터 추출
                 const name = row.children[1].innerText;
@@ -369,7 +376,7 @@
 
                 // 모달 표시
                 modal.style.display = "flex";
-            });
+            }
         });
 
         // 닫기 버튼
@@ -381,6 +388,4 @@
             if (e.target === modal) modal.style.display = "none";
         });
     });
-
-
 </script>
