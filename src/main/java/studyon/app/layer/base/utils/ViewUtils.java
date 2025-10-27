@@ -28,4 +28,8 @@ public final class ViewUtils {
     public static String redirectHome() {
         return "redirect:%s".formatted(Url.INDEX);
     }
+
+    public static String return403() {
+        return "error/403";
+    }
 }

@@ -25,6 +25,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByProviderIdAndProvider(String providerId, Provider provider);
 
+    Optional<Member> findByNickname(String nickname);
+
     /** ✅ 오늘 가입한 회원 수 조회 */
     @Query("""
         SELECT COUNT(m)
@@ -40,6 +42,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         WHERE m.lastLoginAt BETWEEN :start AND :end
     """)
     Long countByLastLoginAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    boolean existsByEmailAndProvider(String email, Provider provider);
 
     boolean existsByEmailAndProviderAndIsActive(String email, Provider provider, Boolean isActive);
 }

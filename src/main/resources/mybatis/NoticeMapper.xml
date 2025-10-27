@@ -3,36 +3,30 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="studyon.app.layer.domain.member.mapper.MemberMapper">
-    <select id="selectAll" resultType="memberRead">
+<mapper namespace="studyon.app.layer.domain.notice.mapper.NoticeMapper">
+    <select id="selectAll" resultType="noticeRead">
         SELECT *
-        FROM member
+        FROM notice
         <where>
-            <if test="rq.filter eq 'name'">
+            <if test="rq.filter eq 'NORMAL'">
                 name LIKE CONCAT('%', #{rq.keyword}, '%')
             </if>
-            <if test="rq.filter eq 'nickname'">
+            <if test="rq.filter eq 'EVENT'">
                 nickname LIKE CONCAT('%', #{rq.keyword}, '%')
             </if>
-            <if test="rq.filter eq 'email'">
-                email LIKE CONCAT('%', #{rq.keyword}, '%')
-            </if>
         </where>
-        ORDER BY member_id DESC LIMIT #{prq.size} OFFSET #{prq.startPage}
+        ORDER BY notice_id DESC LIMIT #{prq.size} OFFSET #{prq.startPage}
     </select>
 
     <select id="countAll" resultType="Integer">
         SELECT COUNT(*)
-        FROM member
+        FROM notice
         <where>
-            <if test="rq.filter eq 'name'">
+            <if test="rq.filter eq 'NORMAL'">
                 name LIKE CONCAT('%', #{rq.keyword}, '%')
             </if>
-            <if test="rq.filter eq 'nickname'">
+            <if test="rq.filter eq 'EVENT'">
                 nickname LIKE CONCAT('%', #{rq.keyword}, '%')
-            </if>
-            <if test="rq.filter eq 'email'">
-                email LIKE CONCAT('%', #{rq.keyword}, '%')
             </if>
         </where>
     </select>

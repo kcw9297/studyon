@@ -1,10 +1,11 @@
 package studyon.app.layer.domain.auth.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import studyon.app.common.constant.Param;
 import studyon.app.common.constant.Url;
@@ -30,21 +31,24 @@ import java.util.Objects;
 @Service
 @Controller
 @RequiredArgsConstructor
+@Validated
 public class AuthController {
 
     private final AuthService authService;
+
 
     @GetMapping(Url.LOGIN)
     public String showLoginView() {
         return "page/auth/login";
     }
 
+
     @GetMapping(Url.JOIN)
     public String showJoinView() {
         return "page/auth/join";
     }
 
-    @GetMapping(Url.JOIN_MAIL)
+    @GetMapping(Url.AUTH_JOIN_MAIL)
     public String showJoinMailView(HttpSession session) {
 
         // [1] 유효한 접근인지 검증 (의도하지 않은 경로로 접근 시 리다이렉트)
@@ -55,6 +59,18 @@ public class AuthController {
         session.removeAttribute(Param.VERIFIED);
         return "page/auth/join_mail";
     }
+
+
+    @GetMapping(Url.AUTH_JOIN_MAIL_RESULT)
+    public String showJoinMailResultView(@NotBlank String token) {
+
+        // [1] 유효한 접근인지 검증 (의도하지 않은 경로로 접근 시 리다이렉트)
+        authService.verify(token);
+
+        // [2] 검증 후 view 반환
+        return "page/auth/join_mail_result";
+    }
+
 
     @GetMapping(Url.AUTH_EDIT_PASSWORD)
     public String showAuthEditPasswordView(String token) {

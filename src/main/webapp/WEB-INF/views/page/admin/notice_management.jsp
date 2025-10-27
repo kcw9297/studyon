@@ -19,7 +19,7 @@
             <input type="text" placeholder="제목 또는 내용 검색..." />
             <select>
                 <option value="">전체 유형</option>
-                <option value="GENERAL">일반공지</option>
+                <option value="NORMAL">일반공지</option>
                 <option value="EVENT">이벤트</option>
                 <option value="SYSTEM">시스템</option>
             </select>
@@ -40,6 +40,7 @@
             </tr>
             </thead>
             <tbody>
+            <%--
             <tr>
                 <td>1</td>
                 <td class="title-cell">[시스템 점검 안내] 10월 25일(금) 02:00 ~ 05:00</td>
@@ -52,18 +53,7 @@
                     <button class="btn-delete">삭제</button>
                 </td>
             </tr>
-            <tr>
-                <td>2</td>
-                <td class="title-cell">이벤트 : 신규 가입자 할인 쿠폰 증정 🎉</td>
-                <td>이벤트</td>
-                <td>2025-10-01 ~ 2025-10-31</td>
-                <td><span class="popup-badge off">OFF</span></td>
-                <td>2025-10-10</td>
-                <td>
-                    <button class="btn-view">보기</button>
-                    <button class="btn-delete">삭제</button>
-                </td>
-            </tr>
+            --%>
             </tbody>
         </table>
     </div>
@@ -76,42 +66,38 @@
 <div class="notice-container" id="noticeModal">
     <h2 class="admin-page-title">공지사항 등록</h2>
 
-    <form id="noticeForm" method="post" action="/admin/notice/save">
+    <form id="noticeForm" method="post">
         <div class="form-group">
             <label for="title">제목</label>
-            <input type="text" id="title" name="title" placeholder="공지 제목을 입력하세요" required />
+            <input type="text" id="title" name="title" placeholder="공지 제목을 입력하세요" />
+            <div class="asynchronous-message-wrong" id="titleError"></div>
         </div>
 
         <div class="form-group">
-            <label for="title">이미지</label>
-            <input type="file" id="title" name="title" placeholder="공지 제목을 입력하세요" required />
-        </div>
-
-        <div class="form-group">
-            <label for="title">등록기간</label>
+            <label for="startedAt">등록기간</label>
             <label>from</label>
-            <input type="date" id="title" name="title" placeholder="공지 제목을 입력하세요" required />
-            <label>to</label>
-            <input type="date" id="title" name="title" placeholder="공지 제목을 입력하세요" required />
+            <input type="date" id="startedAt" name="startedAt" />
+            <div class="asynchronous-message-wrong" id="startedAtError"></div>
+            <label for="endedAt">to</label>
+            <input type="date" id="endedAt" name="endedAt" />
+            <div class="asynchronous-message-wrong" id="endedAtError"></div>
         </div>
 
         <div class="form-group">
             <label for="modal-content">내용</label>
             <textarea id="modal-content" name="content" placeholder="공지 내용을 입력하세요" rows="8" required></textarea>
+            <div class="asynchronous-message-wrong" id="contentError"></div>
         </div>
 
         <div class="form-group">
             <label for="noticeType">공지 유형</label>
             <select id="noticeType" name="noticeType">
-                <option value="GENERAL">일반공지</option>
+                <option value="NORMAL">일반공지</option>
                 <option value="EVENT">이벤트</option>
                 <option value="SYSTEM">시스템 점검</option>
             </select>
         </div>
-
-        <div class="form-group checkbox-group">
-            <label><input type="checkbox" name="popup" value="true" /> 홈페이지 접속 시 팝업 표시</label>
-        </div>
+        <div class="asynchronous-message-wrong" id="noticeTypeError"></div>
 
         <div class="form-actions">
             <button type="submit" class="btn-submit">등록하기</button>
@@ -365,6 +351,18 @@
         background: #c0392b;
     }
 
+    .asynchronous-message {
+        color: #999;
+        font-size: 14px;
+        opacity: 0.7;
+    }
+
+    .asynchronous-message-wrong {
+        color: red;
+        font-size: 14px;
+        opacity: 0.7;
+    }
+
 
 </style>
 
@@ -379,6 +377,66 @@
         const openBtn = document.querySelector(".resister-notice-button");
         const closeBtn = document.getElementById("closeModalBtn");
 
+        // ✅ 함수들을 먼저 정의
+
+        // HTML 이스케이프 (XSS 방지)
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 폼 초기화 함수
+        function clearForm() {
+            document.getElementById("noticeForm").reset();
+
+            // 에러 메시지 초기화
+            ['title', 'startedAt', 'endedAt', 'content', 'noticeType'].forEach(field => {
+                const errorElem = document.getElementById(field + "Error");
+                if (errorElem) errorElem.textContent = '';
+            });
+        }
+
+        // 테이블에 공지사항 추가하는 함수
+        function addNoticeToTable(notice) {
+            const tbody = document.querySelector(".notice-board-table tbody");
+
+            // 날짜
+            const startedAt = notice.startedAt;
+            const endedAt = notice.endedAt;
+
+            // NoticeType 한글 변환
+            const noticeTypeText = notice.noticeType.value;
+
+            // 팝업 여부 (isActivate 기준)
+            const popupBadge = notice.isActivate
+                ? '<span class="popup-badge on">ON</span>'
+                : '<span class="popup-badge off">OFF</span>';
+
+            // 작성일 (cdate 사용)
+            const createdDate = notice.cdate ? notice.cdate.split('T')[0] : new Date().toISOString().split('T')[0];
+
+            // 새 행 생성
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-notice-id', notice.noticeId);
+            newRow.innerHTML = `
+                <td>\${notice.noticeId}</td>
+                <td class="title-cell">\${escapeHtml(notice.title)}</td>
+                <td>\${noticeTypeText}</td>
+                <td>\${startedAt} ~ \${endedAt}</td>
+                <td>\${popupBadge}</td>
+                <td>\${createdDate}</td>
+                <td>
+                    <button class="btn-view" onclick="viewNotice(\${notice.noticeId})">보기</button>
+                    <button class="btn-delete" onclick="deleteNotice(\${notice.noticeId})">삭제</button>
+                </td>
+        `;
+
+            // 테이블 맨 위에 추가
+            tbody.insertBefore(newRow, tbody.firstChild);
+        }
+
         // 🔹 모달 열기
         openBtn.addEventListener("click", () => {
             modal.style.display = "block";
@@ -389,29 +447,117 @@
         closeBtn.addEventListener("click", () => {
             modal.style.display = "none";
             overlay.style.display = "none";
+            clearForm();
         });
 
         // 🔹 배경 클릭 시 닫기
         overlay.addEventListener("click", () => {
             modal.style.display = "none";
             overlay.style.display = "none";
+            clearForm();
         });
 
-        // 🔹 등록 버튼 제출 시 확인
+        // 🔹 등록 버튼 제출
         const form = document.getElementById("noticeForm");
-        form.addEventListener("submit", (e) => {
+        form.addEventListener("submit", async (e) => {
             e.preventDefault();
-            const title = document.getElementById("title").value.trim();
-            const content = document.getElementById("content").value.trim();
-
-            if (!title || !content) {
-                alert("제목과 내용을 입력하세요.");
-                return;
-            }
 
             if (confirm("공지사항을 등록하시겠습니까?")) {
-                form.submit();
+
+                try {
+                    // FormData 생성
+                    const formData = new FormData();
+                    formData.append("title", document.getElementById("title").value);
+                    formData.append("startedAt", document.getElementById("startedAt").value);
+                    formData.append("endedAt", document.getElementById("endedAt").value);
+                    formData.append("content", document.getElementById("modal-content").value);
+                    formData.append("noticeType", document.getElementById("noticeType").value);
+
+                    // REST API 요청
+                    const res = await fetch("/admin/api/notices", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    // JSON 데이터 파싱
+                    const rp = await res.json();
+                    console.log("서버 응답:", rp);
+
+                    // 실패 처리
+                    if (!res.ok || !rp.success) {
+
+                        // 로그인이 필요한 경우
+                        if (rp.statusCode === 401) {
+                            if (confirm(rp.message || "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+                                window.location.href = rp.redirect || "/login";
+                            }
+                            return;
+                        }
+
+                        // 권한이 부족한 경우
+                        if (rp.statusCode === 403) {
+                            alert(rp.message || "접근 권한이 없습니다.");
+                            return;
+                        }
+
+                        // 유효성 검사에 실패한 경우
+                        if (rp.inputErrors) {
+                            Object.entries(rp.inputErrors).forEach(([field, message]) => {
+                                const errorElem = document.getElementById(field + "Error");
+                                if (errorElem) {
+                                    errorElem.textContent = message;
+                                }
+                            });
+                            return;
+                        }
+
+                        // 기타 예기치 않은 오류
+                        alert(rp.message || "서버 오류가 발생했습니다. 잠시 후에 시도해 주세요.");
+                        return;
+                    }
+
+                    // ✅ 성공 처리 - 테이블에 즉시 추가
+                    const notice = rp.data;
+                    addNoticeToTable(notice);
+
+                    // 모달 닫기
+                    modal.style.display = "none";
+                    overlay.style.display = "none";
+
+                    // 폼 초기화
+                    clearForm();
+                    alert("공지사항이 등록되었습니다.");
+
+                } catch (error) {
+                    console.error("공지 등록 실패:", error);
+                    alert("오류가 발생했습니다. 다시 시도해주세요.");
+                }
             }
         });
     });
+
+
+    // 폼 초기화 함수
+    function clearForm() {
+        document.getElementById("noticeForm").reset();
+
+        // 에러 메시지 초기화
+        ['title', 'startedAt', 'endedAt', 'content', 'noticeType'].forEach(field => {
+            const errorElem = document.getElementById(`\${field}Error`);
+            if (errorElem) errorElem.textContent = '';
+        });
+    }
+
+    // ✅ 공지사항 보기 함수 (전역 함수로 선언)
+    function viewNotice(noticeId) {
+        console.log("공지사항 보기:", noticeId);
+        alert("공지사항 ID: " + noticeId);
+    }
+
+    // ✅ 공지사항 삭제 함수 (전역 함수로 선언)
+    async function deleteNotice(noticeId) {
+    if (!confirm("정말 삭제하시겠습니까? noticeId = " + noticeId)) {
+        return;
+    }
+}
 </script>

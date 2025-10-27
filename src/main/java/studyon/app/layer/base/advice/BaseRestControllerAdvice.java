@@ -5,6 +5,8 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,6 +15,7 @@ import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.utils.RestUtils;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +51,27 @@ public class BaseRestControllerAdvice {
         log.error(errors.toString());
         return RestUtils.fail(AppStatus.VALIDATION_INVALID_PARAMETER, errors);
     }
+
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleBeanValidationEx(MethodArgumentNotValidException e) {
+
+        // [1] 발생 오류 추출
+        Map<String, String> errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        fieldError -> Objects.isNull(fieldError.getDefaultMessage()) ? "올바른 값을 입력해 주세요." : fieldError.getDefaultMessage(),
+                        (msg1, msg2) -> msg1 // 중복 시 첫 번째 유지
+                ));
+
+        // [2] 유효성 검사 실패 응답 반환
+        log.error(errors.toString());
+        return RestUtils.fail(AppStatus.VALIDATION_INVALID_PARAMETER, errors);
+    }
+
+
 
     /**
      * 비즈니스 예외 처리
