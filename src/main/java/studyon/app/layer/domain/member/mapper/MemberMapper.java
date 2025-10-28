@@ -29,5 +29,5 @@ public interface MemberMapper {
     Integer countBySearch(@Param("rq") MemberDTO.Search rq,
                           @Param("prq") Page.Request prq);
 
-    Integer toggleActive(@Param("memberId") Long memberId);
+    Long toggleActive(@Param("memberId") Long memberId);
 }

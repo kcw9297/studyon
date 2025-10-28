@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/member_management.css'/>">
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/member_management_paging.css'/>">
 
 <jsp:include page="/WEB-INF/views/page/admin/navbar.jsp">
     <jsp:param name="active" value="member"/>
@@ -41,12 +42,13 @@
             <thead>
             <tr>
                 <th>No</th>
+                <th>ID</th>
                 <th>닉네임</th>
                 <th>이메일</th>
                 <th>권한</th>
                 <th>상태</th>
                 <th>가입일</th>
-                <th>로그인</th>
+                <th>최근 로그인 일시</th>
                 <th>관리</th>
             </tr>
             </thead>
@@ -86,7 +88,7 @@
                 <td><a class="management-button" href="#">관리</a></td>
             </tr>
             </tbody>
-            -->
+            <-- 안쓰는 부분
             <tbody id="memberTableBody">
             <c:forEach var="member" items="${memberList}" varStatus="loop">
                 <tr>
@@ -108,8 +110,8 @@
                 </tr>
             </c:forEach>
             </tbody>
+            -->
         </table>
-
         <!-- 페이징 -->
         <div id="pagination" class="pagination-container"></div>
     </div>
@@ -128,6 +130,7 @@
             <p><strong>권한:</strong> <span id="modalRole">-</span></p>
             <p><strong>상태:</strong> <span id="modalStatus"></span>✏️</p>
             <p><strong>가입일:</strong> <span id="modalDate">-</span></p>
+            <p><strong>최근 로그인 일시:</strong> <span id="modalLoginDate">-</span></p>
             <!--
             <button class="btn-view" data-id="${m.memberId}">재활성</button>
             <button class="btn-ban" data-id="${m.memberId}">정지</button>
@@ -141,357 +144,6 @@
     </div>
 </div>
 
-<style>
-    .admin-content-container {
-        display:flex;
-        flex-direction: column;
-        border:2px solid black;
-        min-height: 600px;
-        height:auto;
-        width:100%;
-
-    }
-    .admin-page-title {
-        font-size: 22px;
-        font-weight: bold;
-        color: #333;
-        padding: 10px;
-    }
-
-    /* 검색바 */
-    .member-search-bar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        width: 100%;
-        padding: 10px;
-    }
-
-    .member-search-bar input {
-        flex: 7; /* 4 비율 */
-        padding: 8px 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-    .member-search-bar select {
-        flex: 1; /* 4 비율 */
-        padding: 8px 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-    .member-search-bar button {
-        flex: 1; /* 1 비율 */
-        background: #4a90e2;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .member-search-bar button:hover {
-        background: #357ac8;
-    }
-
-    /* 테이블 */
-    .member-table-wrapper {
-        width: 100%;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-
-    .member-table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: center;
-    }
-
-    /* 전체 공통 스타일 */
-    .member-table th {
-        background-color: #f5f6fa;
-        color: #444;
-        font-family: "Noto Sans KR", sans-serif;
-        font-size: 16px;
-        padding: 12px;
-        border-bottom: 1px solid #ccc;
-    }
-    .member-table td {
-        text-align: center;
-        padding: 10px 12px;
-        border-bottom: 1px solid #f0f0f0;
-        color: #333;
-    }
-
-    .member-table th:nth-child(1) { width: 5%; }   /* No */
-    .member-table th:nth-child(2) { width: 15%; }  /* 이름 */
-    .member-table th:nth-child(3) { width: 20%; }  /* 이메일 */
-    .member-table th:nth-child(4) { width: 10%; }  /* 권한 */
-    .member-table th:nth-child(5) { width: 10%; }  /* 상태 */
-    .member-table th:nth-child(6) { width: 15%; }  /* 가입일 */
-    .member-table th:nth-child(7) { width: 10%; }  /* 관리 */
-
-    .member-table tr:hover {
-        background: #f9f9fc;
-    }
-
-    /* 상태 */
-    .status-active {
-        color: #27ae60;
-        font-weight: bold;
-    }
-
-    .status-banned {
-        color: #e74c3c;
-        font-weight: bold;
-    }
-
-    /* 버튼 */
-    .btn-view, .btn-ban {
-        padding: 6px 10px;
-        border: none;
-        border-radius: 5px;
-        color: white;
-        cursor: pointer;
-        font-size: 13px;
-        transition: all 0.2s ease;
-    }
-
-    .btn-view {
-        background: #4a90e2;
-    }
-    .btn-view:hover {
-        background: #357ac8;
-    }
-
-    .btn-ban {
-        background: #e74c3c;
-        margin-left: 5px;
-    }
-    .btn-ban:hover {
-        background: #c0392b;
-    }
-
-    .management-button{
-        color:pink;
-    }
-
-    .modal-overlay {
-        display: none; /* 기본 숨김 */
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 999;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* 모달 본체 */
-    .modal-content {
-        background: #fff;
-        padding: 25px 30px;
-        border-radius: 10px;
-        width: 800px;
-        height:600px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        position: relative;
-        animation: fadeIn 0.3s ease;
-    }
-
-    /* 닫기버튼 */
-    .close-btn {
-        position: absolute;
-        right: 15px;
-        top: 10px;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    /* 내용 */
-    .modal-info p {
-        margin: 10px 0;
-        font-size: 15px;
-    }
-
-    /* 버튼 영역 */
-    .modal-buttons {
-        margin-top: 20px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        width: 300px;
-        height: 50px;
-    }
-
-    /* 애니메이션 */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .modal-info p {
-        font-size: 16px; /* ✅ 원하는 크기로 조정 (예: 14px~18px 권장) */
-        color: #333;     /* 글자색도 변경 가능 */
-    }
-
-    .modal-title{
-        font-size:40px;
-        font-weight: bold;
-    }
-
-    .modal-info p {
-        font-size: 16px; /* ✅ 원하는 크기로 조정 (예: 14px~18px 권장) */
-        color: #333;     /* 글자색도 변경 가능 */
-    }
-
-    .admin-header-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 20px;
-        width: 100%;
-    }
-    .btn-download {
-        background-color: #4a90e2;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        padding: 8px 15px;
-        font-size: 14px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .btn-download:hover {
-        background-color: #357ac8;
-    }
-</style>
 
 <script src="<c:url value='/js/page/admin/member_management.js'/>"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const modal = document.getElementById("memberModal");
-        const closeBtn = document.querySelector(".close-btn");
-        const closeModalBtn = document.getElementById("closeModalBtn");
-
-        // 정지 / 해제 버튼 (모달 안)
-        const toggleBtn = document.getElementById("toggleBtn");
-
-        // 관리 버튼 클릭 시
-        // ✅ 이벤트 위임: tbody에 클릭 이벤트 등록
-        document.getElementById("memberTableBody").addEventListener("click", (e) => {
-            if (e.target.classList.contains("btn-view")) {
-                e.preventDefault();
-                const row = e.target.closest("tr");
-                if (!row) return;
-
-                // 데이터 추출
-                const name = row.children[1].innerText;
-                const email = row.children[2].innerText;
-                const role = row.children[3].innerText;
-                const status = row.children[4].innerText;
-                const date = row.children[5].innerText;
-                const memberId = e.target.dataset.memberId;
-
-                // 모달 채우기
-                document.getElementById("modalName").innerText = name;
-                document.getElementById("modalEmail").innerText = email;
-                document.getElementById("modalRole").innerText = role;
-                document.getElementById("modalStatus").innerText = status;
-                document.getElementById("modalDate").innerText = date;
-
-                // 모달 자체에 memberId 저장
-                modal.dataset.memberId = memberId;
-
-                // 토글 역할 버튼 텍스트 설정
-                toggleBtn.innerText = status === "활성" ? "정지" : "해제";
-
-                // 모달 표시
-                modal.style.display = "flex";
-            }
-        });
-
-        // 모달 닫기 버튼
-        closeBtn.addEventListener("click", () => modal.style.display = "none");
-        closeModalBtn.addEventListener("click", () => modal.style.display = "none");
-
-        // 바깥 클릭 시 닫기
-        window.addEventListener("click", (e) => {
-            if (e.target === modal) modal.style.display = "none";
-        });
-
-
-        toggleBtn.addEventListener("click", async () => {
-            const memberId = modal.dataset.memberId;
-            const name = document.getElementById("modalName").innerText;
-            const currentStatus = document.getElementById("modalStatus").innerText.trim();
-
-
-            if (!memberId) {
-                alert("회원 정보를 찾을 수 없습니다.");
-                return;
-            }
-
-            const confirmMsg = currentStatus === "활성"
-                ? `${name}님을 비활성화(정지)하시겠습니까?`
-                : `${name}님을 활성화(해제)하시겠습니까?`;
-
-            if (!confirm(confirmMsg)) return;
-
-            try {
-                /* await fetch (await를 붙이면 비동기 로직에서 동기 로직이 필요할 경우 사용
-                - ex) 요청 처리할 때까지 대기가 필요할 때
-                 */
-                const res = await fetch(`/admin/api/members/toggle/${memberId}`, {
-                    method: "POST",
-                    headers: { "X-Requested-From": window.location.pathname + window.location.search },
-                });
-                const json = await res.json();
-
-                console.log("[DEBUG] 서버 응답 전체:", json);
-
-                if (!json || !json.data) {
-                    console.error("[ERROR] 서버에서 data가 null임:", json);
-                    alert("상태 변경 실패: " + (json.message ?? "데이터가 비어 있습니다."));
-                    return;
-                }
-
-
-
-                if (json.success) {
-                    const newStatus = json.data.isActive ? "활성" : "비활성";
-                    // 모달 상태 갱신
-                    document.getElementById("modalStatus").innerText = newStatus;
-
-                    // 버튼 텍스트 변경
-                    toggleBtn.innerText = newStatus === "활성" ? "정지" : "해제";
-
-                    // 테이블의 상태 칸도 즉시 갱신
-                    const targetRow = document.querySelector(`button[data-member-id="${memberId}"]`)?.closest("tr");
-                    if (targetRow) {
-                        const statusCell = targetRow.children[4];
-                        statusCell.innerHTML = json.data.isActive
-                            ? `<span class="status-active">활성</span>`
-                            : `<span class="status-banned">비활성</span>`;
-                    }
-                    alert("상태가 변경되었습니다.");
-                } else {
-                    alert("⚠️ 상태 변경 실패: " + (json.message ?? "서버에서 데이터를 받지 못했습니다."));
-                    return;
-                }
-            } catch (err) {
-                console.error("요청 중 오류:", err);
-                alert("상태 변경 중 오류가 발생했습니다.");
-            }
-        });
-
-    });
-</script>
+<script src="<c:url value='/js/page/admin/member_management_modal.js'/>"></script>

@@ -263,10 +263,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
     public MemberDTO.Read toggleActive(Long memberId) {
         log.info("[TOGGLE] memberId = {}", memberId);
-
+        // [1] 값 제대로 받았는지 검증
         Optional<Member> opt = memberRepository.findById(memberId);
         if (opt.isEmpty()) {
             log.warn("[TOGGLE] 존재하지 않는 회원 ID: {}", memberId);
@@ -274,7 +273,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // [2] MyBatis로 상태 반전 (UPDATE 실행)
-        Integer updated = memberMapper.toggleActive(memberId);
+        Long updated = memberMapper.toggleActive(memberId);
         if (updated == 0) {
             log.warn("[TOGGLE] 상태 변경 실패: DB 업데이트 0건");
             return null;
