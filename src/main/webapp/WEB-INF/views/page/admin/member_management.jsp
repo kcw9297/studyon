@@ -135,7 +135,7 @@
         </div>
 
         <div class="modal-buttons">
-            <button id="toggleBtn" class="btn-ban">정지</button>
+            <button id="toggleBtn" class="btn-ban">비활성</button>
             <button id="closeModalBtn" class="btn-view">닫기</button>
         </div>
     </div>
@@ -382,6 +382,9 @@
         const closeBtn = document.querySelector(".close-btn");
         const closeModalBtn = document.getElementById("closeModalBtn");
 
+        // 정지 / 해제 버튼 (모달 안)
+        const toggleBtn = document.getElementById("toggleBtn");
+
         // 관리 버튼 클릭 시
         // ✅ 이벤트 위임: tbody에 클릭 이벤트 등록
         document.getElementById("memberTableBody").addEventListener("click", (e) => {
@@ -396,6 +399,7 @@
                 const role = row.children[3].innerText;
                 const status = row.children[4].innerText;
                 const date = row.children[5].innerText;
+                const memberId = e.target.dataset.memberId;
 
                 // 모달 채우기
                 document.getElementById("modalName").innerText = name;
@@ -404,12 +408,18 @@
                 document.getElementById("modalStatus").innerText = status;
                 document.getElementById("modalDate").innerText = date;
 
+                // 모달 자체에 memberId 저장
+                modal.dataset.memberId = memberId;
+
+                // 토글 역할 버튼 텍스트 설정
+                toggleBtn.innerText = status === "활성" ? "정지" : "해제";
+
                 // 모달 표시
                 modal.style.display = "flex";
             }
         });
 
-        // 닫기 버튼
+        // 모달 닫기 버튼
         closeBtn.addEventListener("click", () => modal.style.display = "none");
         closeModalBtn.addEventListener("click", () => modal.style.display = "none");
 
@@ -417,5 +427,71 @@
         window.addEventListener("click", (e) => {
             if (e.target === modal) modal.style.display = "none";
         });
+
+
+        toggleBtn.addEventListener("click", async () => {
+            const memberId = modal.dataset.memberId;
+            const name = document.getElementById("modalName").innerText;
+            const currentStatus = document.getElementById("modalStatus").innerText.trim();
+
+
+            if (!memberId) {
+                alert("회원 정보를 찾을 수 없습니다.");
+                return;
+            }
+
+            const confirmMsg = currentStatus === "활성"
+                ? `${name}님을 비활성화(정지)하시겠습니까?`
+                : `${name}님을 활성화(해제)하시겠습니까?`;
+
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                /* await fetch (await를 붙이면 비동기 로직에서 동기 로직이 필요할 경우 사용
+                - ex) 요청 처리할 때까지 대기가 필요할 때
+                 */
+                const res = await fetch(`/admin/api/members/toggle/${memberId}`, {
+                    method: "POST",
+                    headers: { "X-Requested-From": window.location.pathname + window.location.search },
+                });
+                const json = await res.json();
+
+                console.log("[DEBUG] 서버 응답 전체:", json);
+
+                if (!json || !json.data) {
+                    console.error("[ERROR] 서버에서 data가 null임:", json);
+                    alert("상태 변경 실패: " + (json.message ?? "데이터가 비어 있습니다."));
+                    return;
+                }
+
+
+
+                if (json.success) {
+                    const newStatus = json.data.isActive ? "활성" : "비활성";
+                    // 모달 상태 갱신
+                    document.getElementById("modalStatus").innerText = newStatus;
+
+                    // 버튼 텍스트 변경
+                    toggleBtn.innerText = newStatus === "활성" ? "정지" : "해제";
+
+                    // 테이블의 상태 칸도 즉시 갱신
+                    const targetRow = document.querySelector(`button[data-member-id="${memberId}"]`)?.closest("tr");
+                    if (targetRow) {
+                        const statusCell = targetRow.children[4];
+                        statusCell.innerHTML = json.data.isActive
+                            ? `<span class="status-active">활성</span>`
+                            : `<span class="status-banned">비활성</span>`;
+                    }
+                    alert("상태가 변경되었습니다.");
+                } else {
+                    alert("⚠️ 상태 변경 실패: " + (json.message ?? "서버에서 데이터를 받지 못했습니다."));
+                    return;
+                }
+            } catch (err) {
+                console.error("요청 중 오류:", err);
+                alert("상태 변경 중 오류가 발생했습니다.");
+            }
+        });
+
     });
 </script>

@@ -86,8 +86,10 @@ public class AdminMemberRestController {
     }
 
     @PostMapping("/toggle/{memberId}")
-    public ResponseEntity<?> toggleActive(@PathVariable Long memberId) {
-        memberService.toggleActive(memberId);
-        return RestUtils.ok();
+    public ResponseEntity<?> toggleActive(@PathVariable Long memberId, HttpSession session) {
+        MemberDTO.Read result = memberService.toggleActive(memberId);
+        log.info("[TOGGLE] 전달받은 memberId={}, (Session)={}", memberId, SessionUtils.getProfile(session).getMemberId());
+
+        return RestUtils.ok(result);
     }
 }

@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 /*
@@ -262,8 +263,28 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void toggleActive(Long memberId) {
-        memberMapper.toggleActive(memberId);
+    @Transactional
+    public MemberDTO.Read toggleActive(Long memberId) {
+        log.info("[TOGGLE] memberId = {}", memberId);
+
+        Optional<Member> opt = memberRepository.findById(memberId);
+        if (opt.isEmpty()) {
+            log.warn("[TOGGLE] 존재하지 않는 회원 ID: {}", memberId);
+            return null;
+        }
+
+        // [2] MyBatis로 상태 반전 (UPDATE 실행)
+        Integer updated = memberMapper.toggleActive(memberId);
+        if (updated == 0) {
+            log.warn("[TOGGLE] 상태 변경 실패: DB 업데이트 0건");
+            return null;
+        }
+
+        // [3] 변경된 정보 리턴
+        return memberRepository
+                .findById(memberId)
+                .map(DTOMapper::toReadDto)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
     }
 
     @Override
