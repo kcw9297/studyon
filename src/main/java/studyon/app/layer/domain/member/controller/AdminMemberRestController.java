@@ -4,10 +4,11 @@ package studyon.app.layer.domain.member.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.RestUtils;
@@ -58,5 +59,35 @@ public class AdminMemberRestController {
             members = memberService.readPagedList(rq, prq); // 전체 목록 모드
         }
         return RestUtils.ok(members);
+    }
+
+    /**
+     * [GET] 회원 목록을 PDF로 다운로드
+     * URL: GET /admin/members/export/pdf
+     * @param rq 멤버 목록 요청 리퀘스트
+     */
+
+    @GetMapping("/export/pdf")
+    public ResponseEntity<byte[]> exportMemberListPdf(MemberDTO.Search rq) {
+        log.info("📤 [CONTROLLER] 회원 목록 PDF 다운로드 요청");
+
+        byte[] pdfBytes = memberService.generateMemberListPdf(rq);
+
+        // [1] http 헤더 구성
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "member_list.pdf");
+        headers.setCacheControl("no-cache, no-store, must-revalidate");
+        headers.setPragma("no-cache");
+        headers.setExpires(0);
+
+        // [2] 응답 반환
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/toggle/{memberId}")
+    public ResponseEntity<?> toggleActive(@PathVariable Long memberId) {
+        memberService.toggleActive(memberId);
+        return RestUtils.ok();
     }
 }

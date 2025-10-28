@@ -7,8 +7,8 @@
 
     <select id="selectAll" resultType="studyon.app.layer.domain.member.MemberDTO$Read">
         SELECT *
-        FROM member
-        <where>
+        FROM member m
+        WHERE 1=1
             <if test="rq.keyword neq null and rq.keyword neq ''">
                 <choose>
                     <!--
@@ -17,33 +17,56 @@
                     </if>
                     -->
                     <when test="rq.filter eq 'nickname'">
-                        nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                        AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                     </when>
                     <when test="rq.filter eq 'email'">
-                        email LIKE CONCAT('%', #{rq.keyword}, '%')
+                        AND m.email LIKE CONCAT('%', #{rq.keyword}, '%')
                     </when>
                 </choose>
             </if>
-        </where>
-        ORDER BY member_id DESC LIMIT #{prq.size} OFFSET #{prq.startPage}
+        ORDER BY m.member_id DESC LIMIT #{prq.size} OFFSET #{prq.startPage}
     </select>
 
     <select id="countAll" resultType="Integer">
         SELECT COUNT(*)
-        FROM member
-        <where>
-
+        FROM member m
+        WHERE 1=1
+            <!--
             <if test="rq.filter == 'name'">
                 name LIKE CONCAT('%', #{rq.keyword}, '%')
             </if>
+            -->
+        <!-- (1) 검색어 필터 -->
+        <if test="rq.keyword != null and rq.keyword != ''">
+            <choose>
+                <when test="rq.filter eq 'email'">
+                    AND m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                </when>
+                <when test="rq.filter eq 'nickname'">
+                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                </when>
+            </choose>
+        </if>
 
-            <if test="rq.filter eq 'nickname'">
-                nickname LIKE CONCAT('%', #{rq.keyword}, '%')
-            </if>
-            <if test="rq.filter eq 'email'">
-                email LIKE CONCAT('%', #{rq.keyword}, '%')
-            </if>
-        </where>
+        <!-- (2) 권한 필터 -->
+        <if test="rq.role != null and rq.role != ''">
+            <choose>
+                <when test="rq.role eq 'USER'">
+                    AND m.role = 'ROLE_STUDENT'
+                </when>
+                <when test="rq.role eq 'TEACHER'">
+                    AND m.role = 'ROLE_TEACHER'
+                </when>
+                <when test="rq.role eq 'ADMIN'">
+                    AND m.role = 'ROLE_ADMIN'
+                </when>
+            </choose>
+        </if>
+
+        <!-- (3) 활성/비활성 필터 -->
+        <if test="rq.isActive != null and rq.isActive != ''">
+            AND m.is_active = ${rq.isActive}
+        </if>
     </select>
 
     <select id="selectBySearch"
@@ -137,4 +160,10 @@
             AND m.is_active = ${rq.isActive}
         </if>
     </select>
+
+    <update id="toggleActive" parameterType="Long">
+        UPDATE member
+        SET is_active = NOT is_active
+        WHERE member_id = #{memberId}
+    </update>
 </mapper>

@@ -78,6 +78,14 @@ public interface MemberService {
      */
     void recover(Long memberId);
 
+    /**
+     * 회원 목록 PDF 생성
+     * @return PDF 바이트 배열
+     */
+    byte[] generateMemberListPdf(MemberDTO.Search rq);
 
-
+    /**
+     * 회원 활성/비활성 컨트롤
+     */
+    void toggleActive(Long memberId);
 }

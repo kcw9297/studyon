@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
+import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.RestUtils;
@@ -101,11 +102,11 @@ public class TeacherRestController {
     }
 
     @PostMapping("lecture/register")
-    public ResponseEntity<?> registerLecture(LectureDTO.Register dto,HttpSession session){
+    public ResponseEntity<?> registerLecture(LectureDTO.Register dto, LectureRegisterStatus status, HttpSession session){
         log.info("강의 등록 요청");
         log.info(dto.toString());
         MemberProfile profile = SessionUtils.getProfile(session);
-        lectureService.registerLecture(dto,profile);
+        lectureService.registerLecture(dto, profile, status);
         return RestUtils.ok("강의가 등록되었습니다.");
     }
 
@@ -120,10 +121,10 @@ public class TeacherRestController {
     }
 
     @GetMapping("management/lectureinfo/{lectureId}")
-    public ResponseEntity<?> getTeacherLectureInfo(HttpSession session,@PathVariable Long lectureId){
+    public ResponseEntity<?> getTeacherLectureInfo(HttpSession session, @PathVariable Long lectureId){
         MemberProfile profile = SessionUtils.getProfile(session);
         Long teacherId = profile.getTeacherId();
-        LectureDTO.ReadLectureInfo response= lectureService.readLectureInfo(lectureId,teacherId);
+        LectureDTO.ReadLectureInfo response= lectureService.readLectureInfo(lectureId, teacherId);
         return RestUtils.ok(response);
 
     }

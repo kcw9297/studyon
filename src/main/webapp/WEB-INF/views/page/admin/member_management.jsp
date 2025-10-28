@@ -9,8 +9,10 @@
 </jsp:include>
 
 <div class="admin-content-container">
-    <h2 class="admin-page-title">회원 조회</h2>
-    <!-- <button id="downloadPdfBtn" class="btn btn-primary">PDF로 저장</button> -->
+    <div class="admin-header-bar">
+        <h2 class="admin-page-title">회원 조회</h2>
+        <button id="downloadPdfBtn" class="btn-download">PDF로 저장</button>
+    </div>
     <!-- 검색 바 -->
     <div class="member-search-bar">
         <select id="searchType" name="filter">
@@ -133,6 +135,7 @@
         </div>
 
         <div class="modal-buttons">
+            <button id="toggleBtn" class="btn-ban">정지</button>
             <button id="closeModalBtn" class="btn-view">닫기</button>
         </div>
     </div>
@@ -347,10 +350,31 @@
         font-size: 16px; /* ✅ 원하는 크기로 조정 (예: 14px~18px 권장) */
         color: #333;     /* 글자색도 변경 가능 */
     }
+
+    .admin-header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        width: 100%;
+    }
+    .btn-download {
+        background-color: #4a90e2;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 15px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-download:hover {
+        background-color: #357ac8;
+    }
 </style>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="<c:url value='/js/page/admin/member_management.js'/>"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -392,21 +416,6 @@
         // 바깥 클릭 시 닫기
         window.addEventListener("click", (e) => {
             if (e.target === modal) modal.style.display = "none";
-        });
-    });
-</script>
-<script>
-    document.getElementById("downloadPdfBtn").addEventListener("click", () => {
-        const element = document.querySelector(".admin-content-container"); // PDF로 캡처할 영역
-
-        html2canvas(element, { scale: 2 }).then(canvas => {
-            const imgData = canvas.toDataURL("image/png");
-            const pdf = new jspdf.jsPDF("p", "mm", "a4");
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-            pdf.save("회원목록.pdf");
         });
     });
 </script>

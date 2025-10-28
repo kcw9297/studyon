@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.lecture.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.member.MemberProfile;
@@ -44,6 +45,7 @@ public interface LectureService {
 
     /** 인기순(수강생수 기준) 강의 목록 조회 로직 (홈화면)
      * @param count 정렬용 변수
+     * @param registerStatus 강의 활성 상태
      * @return 전체 인기순 강의 목록
      */
     List<LectureDTO.Read> readAllPopularLectures(int count);
@@ -59,7 +61,7 @@ public interface LectureService {
      * @return 해당 선생님 최신 강의 리스트
      */
     List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
-    LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile);
+    LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile, LectureRegisterStatus status);
     LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId,Long teacherId);
     void updateThumbnail(Long teacherId, Long lectureId, MultipartFile file);
     String getLectureThumbnailPath(Long lectureId);
