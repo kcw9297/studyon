@@ -40,4 +40,6 @@ public class AppException extends RuntimeException {
         super(appStatus.getMessage(), cause);
         this.appStatus = appStatus;
     }
+
+    public AppException() {}
 }

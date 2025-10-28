@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.Lecture;
-import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.teacher.Teacher;
 
 import java.util.List;
@@ -151,5 +150,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     List<Lecture> findByTeacherAndLectureRegisterStatus(Teacher teacher, LectureRegisterStatus status);
     Long countByTeacher_TeacherId(Long teacherId);
 
-
+    Optional<Lecture> findByLectureIdAndOnSale(Long lectureId, Boolean onSale);
 }

@@ -41,5 +41,4 @@ out/
 .env
 docker-compose.yml
 init.sql
-src/main/resources/setting/application-web.yml
 

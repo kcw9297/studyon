@@ -12,11 +12,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Url {
 
-    // base url (entity)
+    // 기본적으로 자주 쓰일 수 있는 보편적 URL 상수
     public static final String INDEX = "/";
     public static final String HOME = "/home";
     public static final String API = "/api";
     public static final String ADMIN = "/admin";
+    public static final String MAIL = "/mail";
+    public static final String VERIFY = "/verify";
+    public static final String OAUTH2 = "/oauth2";
+    public static final String LOGIN = "/login";
+    public static final String JOIN = "/join";
+    public static final String CODE = "/code";
+    public static final String URL = "/url";
+
+    // base url (entity)
     public static final String TEACHER = "/teacher";
     public static final String TEACHERS =  "/teachers";
     public static final String LECTURE = "/lecture";
@@ -31,20 +40,15 @@ public final class Url {
     public static final String RESULT = "/result";
 
     // Security, auth, account
-    public static final String MAIL = "/mail";
-    public static final String VERIFY = "/verify";
-    public static final String OAUTH2 = "/oauth2";
-    public static final String LOGIN = "/login";
-    public static final String JOIN = "/join";
-    public static final String CODE = "/code";
-    public static final String URL = "/url";
     public static final String EDIT_PASSWORD = "/edit-password";
     public static final String LOGIN_PROCESS = LOGIN + "/process";
     public static final String LOGOUT = "/logout";
     public static final String NOTICE = "/notice";
     public static final String NOTICES = "/notices";
-
+    public static final String PAYMENT = "/payment";
+    public static final String PAYMENTS = "/payments";
     public static final String AUTH = "/auth";
+
     public static final String AUTH_EDIT_PASSWORD = AUTH + EDIT_PASSWORD;
     public static final String AUTH_API = API + AUTH;
     public static final String AUTH_API_VERIFY = AUTH_API + VERIFY;
@@ -76,8 +80,7 @@ public final class Url {
     public static final String ADMIN_NOTICES_API = ADMIN + NOTICES_API;    //  "/api/home"
 
     /* PAYMENT */
-    public static final String PAYMENT = "/payment";
-    public static final String PAYMENTS = "/payments";
+    public static final String PAYMENTS_API = API + PAYMENTS;
 
     /* ADMIN */
     public static final String ADMIN_API = ADMIN + API;  // "/admin/api/home"

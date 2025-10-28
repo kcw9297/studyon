@@ -104,7 +104,6 @@ public class DTOMapper {
         return Lecture.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
-                .lectureRegisterStatus(dto.getLectureRegisterStatus())
                 .price(dto.getPrice())
                 .difficulty(dto.getDifficulty())
                 .teacher(teacher)

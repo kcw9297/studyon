@@ -44,7 +44,7 @@ public class LectureLikeServiceImpl implements LectureLikeService {
         if (!lectureLikeRepository.existsByMember_MemberIdAndLecture_LectureId(member.getMemberId(), lecture.getLectureId())) {
             lectureLikeRepository.save(new LectureLike(member, lecture));
 
-            lecture.setLikeCount(lecture.getLikeCount() + 1);
+            lecture.updateLikeCount(lecture.getLikeCount() + 1);
             lectureRepository.save(lecture);
         }
     }
@@ -61,7 +61,7 @@ public class LectureLikeServiceImpl implements LectureLikeService {
                 .ifPresent(like -> {
                     lectureLikeRepository.delete(like);
 
-                    lecture.setLikeCount(lecture.getLikeCount() - 1);
+                    lecture.updateLikeCount(lecture.getLikeCount() - 1);
                     lectureRepository.save(lecture);
                 });
     }

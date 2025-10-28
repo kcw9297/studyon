@@ -3,35 +3,71 @@ package studyon.app.layer.domain.payment.service;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.payment.PaymentDTO;
 
+import java.time.Duration;
 import java.util.List;
+
+
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : khj00 최초 작성
+ *  ▶ ver 1.1 (2025-10-28) : kcw97 결제 메소드명 수정 및 메소드 추가
+ */
 
 /**
  * 결제 서비스 인터페이스
- * @version 1.0
+ * @version 1.1
  * @author khj00
  */
 
-
 public interface PaymentService {
-    /**
-     * 결제 생성 (등록)
-     * @param dto 결제 요청 데이터
-     * @return 생성된 Payment 엔티티
-     */
-    PaymentDTO.Read createPayment(PaymentDTO.Pay dto);
 
     /**
      * 특정 회원의 결제 목록 조회
-     * @param memberId 회원 ID
-     * @return 결제 리스트
+     * @param rq 검색 요청
+     * @param prq 페이징 요청
+     * @return 페이징된 결제정보 리스트
      */
-    Page.Response<PaymentDTO.Read> getPaymentsByMemberId(Long memberId);
+    Page.Response<PaymentDTO.Read> readPagedList(PaymentDTO.Search rq, Page.Request prq);
+
 
     /**
-     * 결제 상세 조회
-     * @param paymentId 결제 ID
-     * @return Payment 객체
+     * 특정 회원의 N개월 내 목록 조회
+     * @param days 기준 시간
+     * @return N개월 내의 결제정보 리스트
      */
-    PaymentDTO.Read getPaymentDetail(Long paymentId);
+    List<PaymentDTO.Read> readRecentList(Duration days);
 
+
+    /**
+     * 특정 결제정보 조회
+     * @param paymentId 결제번호 (서버 내에서 사용하는 번호)
+     * @return N개월 내의 결제정보 리스트
+     */
+    PaymentDTO.Read read(Long paymentId);
+
+
+    /**
+     * 결제 수행
+     * @param memberId 주문 대상 회원번호
+     * @param lectureId 대상 결제번호
+     */
+    void verify(Long memberId, Long lectureId);
+
+
+    /**
+     * 결제 수행
+     * @param dto 결제 요청 데이터
+     * @return 수행된 결제정보
+     */
+    PaymentDTO.Read pay(PaymentDTO.Pay dto);
+
+
+
+
+    /**
+     * 강의 환불 (현재는 구매가 하나만 가능하여, 모두 환불)
+     * @param paymentId    결제번호 (서버 내에서 사용하는 번호)
+     * @param refundReason 환불 사유
+     */
+    void refund(Long paymentId, String refundReason);
 }

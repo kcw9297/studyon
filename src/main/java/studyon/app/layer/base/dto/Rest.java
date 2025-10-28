@@ -56,6 +56,9 @@ public class Rest {
             return new Response(true, appStatus.getHttpCode(), appStatus.getMessage(), redirect, data, null);
         }
 
+        public static Response fail(String errorMessage, int statusCode) {
+            return new Response(false, statusCode, errorMessage, "", null, null);
+        }
 
         public static Response fail(AppStatus appStatus) {
             return fail(appStatus, "");
@@ -72,6 +75,8 @@ public class Rest {
         public static Response fail(AppStatus appStatus, String errorField, String errorMessage) {
             return new Response(false, appStatus.getHttpCode(), appStatus.getMessage(), "", null, Map.of(errorField, errorMessage));
         }
+
+
     }
 
 

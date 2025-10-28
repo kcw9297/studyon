@@ -3,7 +3,6 @@ package studyon.app.layer.domain.payment;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -35,6 +34,16 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")  // @OnDelete (nullable=false면 불가능)
+    private Member member;
+
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id")
+    private Lecture lecture;
+
     @Column(nullable = false, updatable = false)
     private String paymentUid; // 결제 대행사에서 제공한 결제 고유번호
 
@@ -50,33 +59,22 @@ public class Payment extends BaseEntity {
     @Column
     private LocalDateTime refundedAt;
 
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")  // @OnDelete (nullable=false면 불가능)
-    private Member member;
-
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id")
-    private Lecture lecture;
-
 
     @Builder
-    public Payment(String paymentUid, Double paidAmount, Member member, Lecture lecture, String paymentApiResult) {
+    public Payment(Member member, Lecture lecture, String paymentUid, Double paidAmount, String paymentApiResult) {
+        this.member = member;
+        this.lecture = lecture;
         this.paymentUid = paymentUid;
         this.paidAmount = paidAmount;
         this.paymentApiResult = paymentApiResult;
-        this.member = member;
-        this.lecture = lecture;
         this.isRefunded = false;
-        this.refundedAt = null;
     }
 
     /**
      * 환불 정보 업데이트 로직
      */
 
-    public void markRefunded() {
+    public void refund() {
         this.isRefunded = true;
         this.refundedAt = LocalDateTime.now(); // 환불 시각을 수동으로 저장
     }

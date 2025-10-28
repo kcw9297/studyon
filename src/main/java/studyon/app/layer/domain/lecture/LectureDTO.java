@@ -7,7 +7,6 @@ import studyon.app.common.enums.Difficulty;
 import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
-import studyon.app.infra.aop.LogInfo;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;

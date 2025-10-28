@@ -149,9 +149,7 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessLogicException(AppStatus.MEMBER_DUPLICATE_EMAIL);
 
         // [3] 회원 가입 수행 후, 가입된 회원 정보 반환
-        MemberDTO.Read readDTO = DTOMapper.toReadDto(memberRepository.save(member));
-        rq.setTarget(readDTO.getMemberId(), Entity.MEMBER); // 로그 기록
-        return readDTO;
+        return DTOMapper.toReadDto(memberRepository.save(member));
     }
 
 
