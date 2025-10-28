@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
-import studyon.app.common.enums.Subject;
 import studyon.app.common.enums.View;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture.Lecture;
@@ -15,7 +14,6 @@ import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture.service.LectureService;
 import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
-import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.*;
@@ -46,6 +44,7 @@ public class LectureDetailController {
         List<LectureDTO.Read> recommendedBySubject = lectureService.readBestLectures(lectureSearch.getSubject(), 4);
         List<LectureDTO.Read> recommendedByTeacher = lectureService.readBestLectures(teacherSearch.getTeacherId(), 4);
 
+        /* 알고리즘 계산(강사&과목) */
         Map<Long, Long> reviewCountMap = new HashMap<>();
         for (LectureDTO.Read rec : recommendedBySubject) {
             long count = lectureReviewRepository.countByLecture_LectureId(rec.getLectureId());

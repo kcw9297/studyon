@@ -3,11 +3,9 @@ package studyon.app.layer.domain.lecture.service;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.LectureDTO;
-import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  * [수정 이력]
