@@ -1,10 +1,9 @@
 package studyon.app.layer.domain.notice.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.notice.NoticeDTO;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 공지사항 비즈니스 로직 처리
@@ -14,21 +13,47 @@ import java.util.Collection;
 
 public interface NoticeService {
 
-    Page.Response<NoticeDTO.Read> readPagedList(NoticeDTO.Search rq, Page.Request prq);
+    /**
+     * 공지사항 전체 조회
+     * @return 전체 조회된 공지사항 리스트
+     */
+    List<NoticeDTO.Read> readAll();
 
-    NoticeDTO.Read read(Long noticeId);
+    /**
+     * 활성 상태의 공지만 일괄 조회
+     * @return 활성 상태의 공지사항 전체 리스트
+     */
+    List<NoticeDTO.Read> readAllActivate();
 
-    NoticeDTO.Read write(NoticeDTO.Write rq);
+    /**
+     * 공지사항 제목 수정 (관리자 구별용)
+     * @param index 대상 공지 번호
+     * @param title 변경 제목
+     */
+    void editTitle(Integer index, String title);
 
-    void edit(NoticeDTO.Edit rq);
+    /**
+     * 공지사항 이미지 수정 (실제로 사용자에게 보임)
+     * @param index 대상 공지 번호
+     * @param noticeImageFile 변경 이미지
+     */
+    void editNoticeImage(Integer index, MultipartFile noticeImageFile);
 
-    void editNoticeImage(Long noticeId, MultipartFile noticeImageFile);
+    /**
+     * 공지사항 활성화 (사용자에게 표시)
+     * @param index 대상 공지 번호
+     */
+    void activate(Integer index);
 
-    void activate(Long noticeId);
+    /**
+     * 공지사항 비활성화 (사용자에게 미표시)
+     * @param index 대상 공지 번호
+     */
+    void inactivate(Integer index);
 
-    void inactivate(Long noticeId);
-
-    void remove(Long noticeId);
-
-    void removeAll(Collection<Long> noticeIds);
+    /**
+     * 공지사항 초기화 (이미지, 제목, 활성상태 모두 초기화)
+     * @param index 대상 공지 번호
+     */
+    void initialize(Integer index);
 }

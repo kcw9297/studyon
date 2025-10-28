@@ -109,12 +109,12 @@ public class FileController {
     // 테스트 메소드
     @ResponseBody
     @DeleteMapping("/api/{fileId}")
-    public String remove(@PathVariable Long fileId) {
+    public String initialize(@PathVariable Long fileId) {
 
         // [1] 파일 조회
         FileDTO.Read readDto = fileService.read(fileId);
 
-        fileManager.remove(readDto.getStoreName(), readDto.getEntity());
+        fileManager.initialize(readDto.getStoreName(), readDto.getEntity());
         return "OK";
     }
 

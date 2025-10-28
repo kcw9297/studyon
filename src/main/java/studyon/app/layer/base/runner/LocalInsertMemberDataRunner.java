@@ -15,6 +15,8 @@ import studyon.app.common.utils.EnvUtils;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.repository.MemberRepository;
+import studyon.app.layer.domain.notice.Notice;
+import studyon.app.layer.domain.notice.repository.NoticeRepository;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
@@ -37,6 +39,7 @@ public class LocalInsertMemberDataRunner implements ApplicationRunner {
     private final Environment env;
     private final MemberRepository memberRepository;
     private final TeacherRepository teacherRepository;
+    private final NoticeRepository noticeRepository;
     private final PasswordEncoder passwordEncoder;
     private final Random random = new Random();
 
@@ -95,6 +98,19 @@ public class LocalInsertMemberDataRunner implements ApplicationRunner {
             members.addAll(teacherMembers);
             memberRepository.saveAll(members);
             teacherRepository.saveAll(teachers);
+            
+            
+            // [3] create 옵션일 시, 공지사항 카드 정보 새롭게 생성
+            if (isCreate) {
+                // 공지사항 엔티티 생성
+                List<Notice> notices = IntStream.rangeClosed(1, 6)
+                        .mapToObj(Notice::new)
+                        .toList();
+
+                // 저장
+                noticeRepository.saveAll(notices);
+            }
+            
         }
     }
 
