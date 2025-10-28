@@ -19,6 +19,7 @@ import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
+import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 import studyon.app.layer.domain.lecture_video.LectureVideo;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
 import studyon.app.layer.domain.member.MemberProfile;
@@ -54,6 +55,7 @@ public class LectureServiceImpl implements LectureService {
     private final LectureVideoRepository lectureVideoRepository;
     private final FileManager fileManager;
     private final FileRepository fileRepository;
+    private final LectureReviewRepository lectureReviewRepository;
 
     /** 최근 강의 리스트 불러오는 메소드
      * @param subject 과목
@@ -269,7 +271,5 @@ public class LectureServiceImpl implements LectureService {
 
         return lecture.getThumbnail().getFilePath();
     }
-
-
 
 }
