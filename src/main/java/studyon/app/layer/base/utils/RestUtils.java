@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import studyon.app.common.constant.Param;
 import studyon.app.common.enums.AppStatus;
@@ -134,6 +135,10 @@ public class RestUtils {
 
     public static ResponseEntity<?> fail(AppStatus appStatus, String errorField, String errorMessage) {
         return new ResponseEntity<>(Rest.Response.fail(appStatus, Map.of(errorField, errorMessage)), getStatus(appStatus));
+    }
+
+    public static ResponseEntity<?> fail(String errorMessage, int statusCode) {
+        return new ResponseEntity<>(Rest.Response.fail(errorMessage, statusCode), HttpStatusCode.valueOf(statusCode));
     }
 
 

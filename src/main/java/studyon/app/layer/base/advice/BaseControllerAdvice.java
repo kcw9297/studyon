@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.BusinessLogicException;
+import studyon.app.common.exception.ManagerException;
 import studyon.app.layer.base.utils.ViewUtils;
 
 import java.util.Objects;
@@ -27,7 +28,7 @@ public class BaseControllerAdvice {
     /**
      * 필요한 파라미터가 존재하지 않는 경우 예외 처리
      */
-    @ExceptionHandler(value = {ConstraintViolationException.class})
+    @ExceptionHandler(value = {ManagerException.class})
     public String handleBeanValidationEx(ConstraintViolationException e) {
         return ViewUtils.return403();
     }

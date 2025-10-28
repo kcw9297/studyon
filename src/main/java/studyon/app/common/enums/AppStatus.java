@@ -36,11 +36,13 @@ public enum AppStatus {
     /* 유틸 클래스 상태 (아직 구제적으로 케이스를 나누진 않음) */
     UTILS_LOGIC_FAILED(500, "처리 중 오류가 발생했습니다. 잠시 후에 다시 시도해 주세요."),
 
-    /* 매니저 클래스 상태 */
+    /* 결제(Payment/PaymentManager) 상태 */
+    PAYMENT_NOT_FOUND(500, "결제 정보가 존재하지 않습니다"),
     PAYMENT_INVALID_PAYMENT_UID(500, "결제에 실패했습니다. 존재하지 않는 결제 정보입니다."),
     PAYMENT_INVALID_AMOUNT(500, "결제에 실패했습니다. 실제 결제 금액과 일치하지 않습니다."),
-    PAYMENT_ALREADY_REFUNDED(500, "이미 환불이 완료된 결제입니다."),
     PAYMENT_LOGIC_FAILED(500, "결제에 실패했습니다. 잠시 후에 다시 시도해 주세요."),
+    PAYMENT_ALREADY_REFUNDED(400, "이미 환불이 완료된 결제입니다."),
+    PAYMENT_REFUND_NOT_AVAILABLE(400, "환불 가능 기간이 경과하였습니다.\n(결제일로부터 1년 이내에만 가능)"),
 
     /* Spring Security 처리 상태 */
     SECURITY_INCORRECT_USERNAME_PASSWORD(400, "이메일과 비밀번호가 일치하지 않습니다"),
@@ -74,6 +76,7 @@ public enum AppStatus {
     /* 강의(Lecture) 상태*/
     LECTURE_NOT_FOUND(500,"강의 정보가 존재하지 않습니다"),
     LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다.");
+
 
     private final int httpCode;     // HTTP 코드
     private final String message;   // 전달 메세지

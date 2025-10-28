@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = EditorRangeValidator.class)  // Validator 클래스 지정
 @Documented
 public @interface EditorContentRange {
-
+    String message() default "";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

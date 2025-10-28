@@ -11,7 +11,6 @@ import studyon.app.layer.domain.lecture_like.repository.LectureLikeRepository;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -44,7 +43,7 @@ public class LectureLikeServiceImpl implements LectureLikeService {
         if (!lectureLikeRepository.existsByMember_MemberIdAndLecture_LectureId(member.getMemberId(), lecture.getLectureId())) {
             lectureLikeRepository.save(new LectureLike(member, lecture));
 
-            lecture.setLikeCount(lecture.getLikeCount() + 1);
+            lecture.updateLikeCount(lecture.getLikeCount() + 1);
             lectureRepository.save(lecture);
         }
     }
@@ -61,7 +60,7 @@ public class LectureLikeServiceImpl implements LectureLikeService {
                 .ifPresent(like -> {
                     lectureLikeRepository.delete(like);
 
-                    lecture.setLikeCount(lecture.getLikeCount() - 1);
+                    lecture.updateLikeCount(lecture.getLikeCount() - 1);
                     lectureRepository.save(lecture);
                 });
     }
@@ -80,17 +79,13 @@ public class LectureLikeServiceImpl implements LectureLikeService {
 
     @Override
     public List<LectureLike> getLikesByMember(Long memberId) {
-        if (memberId == null) {
-            return Collections.emptyList();
-        }
-
-        Member member = memberRepository.findById(memberId)
-                .orElse(null);
-
-        if (member == null) {
-            return Collections.emptyList();
-        }
-
-        return lectureLikeRepository.findByMember_MemberId(memberId);
+        return lectureLikeRepository.findByMemberIdWithLectureTeacherMember(memberId);
     }
+
+    @Override
+    public void deleteLike(Long memberId, Long lectureId) {
+        lectureLikeRepository.findByMember_MemberIdAndLecture_LectureId(memberId, lectureId)
+                .ifPresent(lectureLikeRepository::delete);
+    }
+
 }

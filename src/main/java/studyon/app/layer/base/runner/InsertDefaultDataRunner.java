@@ -10,9 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.constant.Env;
+import studyon.app.common.enums.Difficulty;
+import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
 import studyon.app.common.utils.EnvUtils;
 import studyon.app.common.utils.StrUtils;
+import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 import studyon.app.layer.domain.notice.Notice;
@@ -34,7 +37,7 @@ import java.util.stream.IntStream;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class LocalInsertMemberDataRunner implements ApplicationRunner {
+public class InsertDefaultDataRunner implements ApplicationRunner {
 
     private final Environment env;
     private final MemberRepository memberRepository;
@@ -110,7 +113,7 @@ public class LocalInsertMemberDataRunner implements ApplicationRunner {
                 // 저장
                 noticeRepository.saveAll(notices);
             }
-            
+
         }
     }
 

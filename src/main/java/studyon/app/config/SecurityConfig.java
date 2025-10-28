@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -74,12 +75,17 @@ public class SecurityConfig {
     private static final String PAYMENTS_ALL = Url.PAYMENTS + "/**";
     private static final String NOTICES_API_ALL = Url.NOTICES_API + "/**";
 
+    // 결제
+
+
+
     // 접근을 모두 허용할 주소 (정적 자원 제외)
     public static final String[] PERMIT_ALL =
             {
                     Url.INDEX, HOME_API_ALL, TEACHERS_API_ALL, // 선생님 API는 컨트롤러 애노테이션으로 세부권한 수정
-                    AUTH_ALL, AUTH_API_ALL, LECTURES_ALL, TEACHERS_ALL, TEACHER_ALL, FILE_ALL, WEBSOCKET_ALL, NOTICES_API_ALL
+                    AUTH_ALL, AUTH_API_ALL, LECTURES_ALL, TEACHERS_ALL, TEACHER_ALL, FILE_ALL, WEBSOCKET_ALL, NOTICES_API_ALL,
             };
+
 
     public static final String[] STUDENT =
             {
@@ -158,6 +164,7 @@ public class SecurityConfig {
 
                         // 공개 페이지 - 모두 접근 가능
                         .requestMatchers(PERMIT_ALL).permitAll()
+                        .requestMatchers(HttpMethod.POST, Url.PAYMENTS_API).permitAll() // 결제 "수행" POST 요청은 반드시 허용
 
                         // 관리자만 접근 가능
                         .requestMatchers(ADMIN_ALL).hasAuthority(Role.ROLE_ADMIN.name())

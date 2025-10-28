@@ -2,11 +2,8 @@ package studyon.app.layer.domain.member;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import studyon.app.common.enums.Role;
-import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Provider;
-import studyon.app.layer.base.validation.annotation.Email;
 
 import java.time.LocalDateTime;
 
@@ -64,11 +61,9 @@ public class MemberDTO {
 
     @Data
     @Builder
-    @ToString(callSuper = true)
-    @EqualsAndHashCode(callSuper = true)
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Join extends LogInfo {
+    public static class Join {
 
         private String email;
         private String nickname;

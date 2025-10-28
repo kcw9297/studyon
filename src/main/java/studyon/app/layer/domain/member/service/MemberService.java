@@ -87,5 +87,5 @@ public interface MemberService {
     /**
      * 회원 활성/비활성 컨트롤
      */
-    void toggleActive(Long memberId);
+    MemberDTO.Read toggleActive(Long memberId);
 }

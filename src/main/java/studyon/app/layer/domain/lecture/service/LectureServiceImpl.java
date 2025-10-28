@@ -157,7 +157,6 @@ public class LectureServiceImpl implements LectureService {
                 .subject(dto.getSubject())
                 .lectureTarget(dto.getTarget() != null ? dto.getTarget() : LectureTarget.HIGH1)
                 .description(dto.getDescription())
-                .lectureRegisterStatus(status)
                 .build();
 
         lectureRepository.save(lecture);
@@ -233,7 +232,7 @@ public class LectureServiceImpl implements LectureService {
         }
 
         // 3️⃣ 기존 썸네일 확인
-        File thumbnail = lecture.getThumbnail();
+        File thumbnail = lecture.getThumbnailFile();
 
         if (Objects.isNull(thumbnail)) {
             // 4️⃣ 없으면 새로 등록
@@ -264,11 +263,11 @@ public class LectureServiceImpl implements LectureService {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의 ID: " + lectureId));
 
-        if (lecture.getThumbnail() == null) {
+        if (lecture.getThumbnailFile() == null) {
             return null;
         }
 
-        return lecture.getThumbnail().getFilePath();
+        return lecture.getThumbnailFile().getFilePath();
     }
 
 }

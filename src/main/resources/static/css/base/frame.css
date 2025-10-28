@@ -58,7 +58,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-top: 1px solid #444;
+  border-top: 2px solid rgba(85, 26, 139, 0.4);
 }
 
 #content {
@@ -149,8 +149,9 @@ html, body {
 }
 
 .svg-login{
-  width:35px;
-  height:35px;
+  width:45px;
+  height:45px;
+    opacity: 85%;
 }
 
 
@@ -194,8 +195,10 @@ html, body {
 }
 
 .svg-list{
-  width:40px;
-  height:40px;
+  width:55px;
+  height:55px;
+    margin-left:18px;
+    opacity: 75%;
 }
 
 button {
@@ -292,12 +295,12 @@ a {
 /* ✅ 검색 결과 박스 */
 .search-results {
   position: absolute;
-  top: calc(100% + 5px); /* input 아래 */
+  top: calc(100% - 10px); /* input 아래 */
   left: 50%;             /* 화면 중앙 기준 */
   transform: translateX(-50%); /* 정확히 가운데 정렬 */
   width: 400px;
   left:200px;
-  background: #a08585;
+  background: white;
   border: 1px solid #000000;
   border-radius: 6px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
@@ -316,7 +319,7 @@ a {
 }
 
 .search-result-item:hover {
-  background-color: #691919;
+  background-color: darkseagreen;
 }
 
 .search-result-item:last-child {

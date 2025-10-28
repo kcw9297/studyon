@@ -34,6 +34,7 @@ public class LectureIndexDTO {
         private Long lectureId;
         private LectureVideoDTO.Read lectureVideo;
         private String videoFileName;
+        private String videoFilePath;
 
     }
     @Data

@@ -12,7 +12,8 @@
     <a href="<c:url value='/teacher/find/MATH'/>">강사리스트</a>
 </div>
 <div class="main-banner-container">
-  <img src="<c:url value='/img/png/teacher_profile_img.png'/>" alt="메인비주얼이미지" class="main-banner">
+    <img src="<c:url value='/img/png/banner1.png'/>" class="main-banner fade active" alt="배너1">
+    <img src="<c:url value='/img/png/banner2.png'/>" class="main-banner fade" alt="배너2">
 </div>
 
 
@@ -104,7 +105,7 @@
     .recent-lecture-item {
         width: 260px;
         height: auto;
-        border:1px solid #2c3e50;
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.5); /* ✅ 내부 border처럼 */
         border-radius: 10px;
         display: flex;
         flex-direction: column;
@@ -124,17 +125,8 @@
 
     .lecture-info{
         margin-left:5px;
+        margin-bottom:5px;
     }
-
-    .main-banner {
-        width: 100%;
-        height: 100%;
-    }
-
-    .main-banner-container {
-        margin-bottom: 20px;
-    }
-
     .recent-lecture-thumbnail {
         width: 100%;
         height: 180px;
@@ -143,9 +135,48 @@
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
     }
+    /*배너*/
+    .main-banner-container {
+        position: relative;
+        width: 100%;
+        height: 450px; /* 필요에 따라 조절 */
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    .main-banner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .main-banner.active {
+        opacity: 1;
+    }
+
+    .fade {
+        animation: fadeEffect 10s infinite;
+    }
+
 </style>
 
 <%-- Local Script --%>
 <script src="<c:url value='/js/page/home/home_lectures_view.js'/>"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const banners = document.querySelectorAll(".main-banner");
+        let current = 0;
 
+        setInterval(() => {
+            banners[current].classList.remove("active");
+            current = (current + 1) % banners.length;
+            banners[current].classList.add("active");
+        }, 4000); // 4초마다 전환
+    });
+</script>
 
