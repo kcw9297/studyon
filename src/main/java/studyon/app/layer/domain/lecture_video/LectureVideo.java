@@ -2,10 +2,9 @@ package studyon.app.layer.domain.lecture_video;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import studyon.app.layer.base.entity.BaseEntity;
+import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 
 import java.time.LocalDateTime;
@@ -51,6 +50,11 @@ public class LectureVideo extends BaseEntity {
     @JoinColumn(nullable = false, name = "lecture_index_id")
     private LectureIndex lectureIndex;
 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "video_file_id")
+    private File videoFile;
+
 
     @Builder
     public LectureVideo(String title, Integer seq, Integer duration, String videoUrl, LectureIndex lectureIndex) {
@@ -59,5 +63,9 @@ public class LectureVideo extends BaseEntity {
         this.duration = duration;
         this.videoUrl = videoUrl;
         this.lectureIndex = lectureIndex;
+    }
+
+    public void updateVideoFile(File newFile) {
+        this.videoFile = newFile;
     }
 }

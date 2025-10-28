@@ -33,6 +33,8 @@ public class LectureIndexDTO {
         private LocalDateTime updatedAt;
         private Long lectureId;
         private LectureVideoDTO.Read lectureVideo;
+        private String videoFileName;
+
     }
     @Data
     @Builder

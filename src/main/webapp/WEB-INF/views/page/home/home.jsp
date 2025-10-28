@@ -28,6 +28,9 @@
     <!-- JS에서 렌더링될 영역 -->
 </div>
 
+<%-- 공지사항 팝업 모달 --%>
+<jsp:include page="/WEB-INF/views/page/home/notice_popup_modal.jsp" />
+
 <style>
     .home-nav {
         display: flex;

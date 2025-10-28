@@ -144,7 +144,6 @@
             const res = await fetch("/api/teachers/management/lectureindex/" + lectureId);
             const jsondata = await res.json();
             const indexList = jsondata.data || [];
-            console.log("목차정보");
             console.log(indexList);
 
 
@@ -164,22 +163,13 @@
                         '<div class="lecture-info">' +
                         '<div class="lecture-title">' + item.indexTitle + '</div>' +
                         '</div>' +
-                        '<div class="lecture-video-title">' + item.videoFileName + '</div>' +
-                        '<div class="lecture-actions">' +
-                        '   <button class="upload-btn">📹 업로드</button>' +
-                        '   <button class="delete-btn">✕</button>' +
-                        '</div>' +
-                        // ✅ 영상 리스트 컨테이너 추가
-                        '<div id="video-list-' + item.lectureIndexId + '" class="video-list-container"></div>';
+                        '<button class="delete-btn">✕</button>';
 
                     listBox.appendChild(div);
                 });
-
-
-
-
             }
 
+            /* ✅ [1] X버튼 삭제 이벤트 */
             /* ✅ [1] X버튼 삭제 이벤트 */
             listBox.addEventListener("click", async function(e) {
                 if (e.target.classList.contains("delete-btn")) {
@@ -191,11 +181,15 @@
                             const res = await fetch("/api/teachers/management/lectureindex/" + indexId, {
                                 method: "DELETE"
                             });
+                            console.log("🚀 DELETE 응답 상태:", res.status);
                             const json = await res.json();
+                            console.log("🚀 DELETE 응답 JSON:", json);
 
+                            // ✅ DELETE 응답 성공 조건 수정
                             if (json.success === true || json.statusCode === 200) {
                                 item.remove();
 
+                                // ✅ 삭제 후 순서 재정렬 요청
                                 const reordered = Array.from(listBox.querySelectorAll(".lecture-item")).map((item, i) => {
                                     const title = item.querySelector(".lecture-title").innerText;
                                     return {
@@ -232,47 +226,6 @@
                         }
                     }
                 }
-
-
-                if (e.target.classList.contains("upload-btn")) {
-                    const item = e.target.closest(".lecture-item");
-                    const indexId = item.dataset.id;
-
-                    const fileInput = document.createElement("input");
-                    fileInput.type = "file";
-                    fileInput.accept = "video/*";
-                    fileInput.click();
-
-                    fileInput.addEventListener("change", async (ev) => {
-                        const file = ev.target.files[0];
-                        if (!file) return;
-
-                        const form = new FormData();
-                        form.append("file", file);
-
-                        try {
-                            const res = await fetch("/api/teachers/management/lectureindex/" + indexId + "/video", {
-                                method: "POST", // ✅ PATCH → POST 로 수정
-                                body: form
-                            });
-                            const json = await res.json();
-
-                            if (json.success === true || json.statusCode === 200 || json.status === "OK") {
-                                alert("🎬 동영상 업로드 완료!");
-                                location.reload();
-                            } else {
-                                alert(json.message || "업로드 실패");
-                            }
-                        } catch (err) {
-                            console.error("🚨 동영상 업로드 실패:", err);
-                        }
-                    });
-                }
-
-
-
-
-
             });
 
 
@@ -334,8 +287,8 @@
                         body: JSON.stringify(reordered)
                     });
                     const json = await res.json();
-                    if (json.success) {
-                        location.reload();
+                    if (json.status === "OK") {
+                        alert("목차 순서가 저장되었습니다.");
                     } else {
                         alert(json.message || "저장 실패");
                     }
@@ -352,7 +305,7 @@
         /* ✅ [4] 새 목차 추가 버튼 */
         const addBtn = document.createElement("button");
         addBtn.textContent = "새 목차 추가";
-        addBtn.classList.add("list-change-btn");
+        addBtn.classList.add("list-add-btn");
         document.querySelector(".view-content").appendChild(addBtn);
 
         addBtn.addEventListener("click", async () => {
@@ -385,8 +338,11 @@
             }
             location.reload();
         });
-    });
 
+
+
+
+    });
 </script>
 
 <style>
@@ -507,6 +463,18 @@
         background: #fff;
     }
 
+    .lecture-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .lecture-item:last-child {
+        border-bottom: none;
+    }
 
     .button-box {
         display: flex;
@@ -532,16 +500,17 @@
     LIST PART CSS
     */
 
-    .lecture-item{
-        display:grid;
-        grid-template-columns: 80px 1fr 280px auto; /* 번호 / 제목 / 파일명 / 버튼 */
-        column-gap:16px;
-        align-items:center;
-        padding:12px 16px;
-        margin-bottom:10px;
-        border:1px solid #ddd;
-        border-radius:8px;
-        background:#fff;
+    .lecture-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 12px;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: #fff;
+        transition: all 0.2s;
     }
 
     .lecture-item.dragging {
@@ -578,68 +547,6 @@
 
     .list-change-btn:hover {
         background: #66bb6a;
-    }
-
-    /*
-    video button css
-    */
-    .lecture-actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        justify-content: flex-end;
-    }
-
-    .upload-btn {
-        background: #e3f2fd;
-        color: #1565c0;
-        border: none;
-        border-radius: 6px;
-        padding: 6px 10px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: 0.2s;
-    }
-
-    .upload-btn:hover {
-        background: #bbdefb;
-    }
-
-    .video-list-container {
-        margin-top: 20px;
-    }
-
-    .video-item {
-        margin-bottom: 15px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background: #fafafa;
-    }
-
-
-    .lecture-index {
-        font-weight: 600;
-        text-align: center;
-        color: #333;
-    }
-
-    .lecture-info {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .lecture-video-title {
-        font-size: 14px;
-        color: #1565c0;
-        font-weight: 500;
-        text-align: center;
-    }
-
-    .lecture-actions {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
     }
 
 </style>

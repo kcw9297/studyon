@@ -205,6 +205,7 @@
                 // meme 타입 검사
                 if (!file.type.startsWith("image/")) {
                     alert("이미지 파일만 선택 가능합니다.");
+                    inputFile.value = ""; // 선택 초기화
                     return;
                 }
 
@@ -220,6 +221,7 @@
                 const maxSize = 5 * 1024 * 1024;
                 if (file.size > maxSize) {
                     alert("파일 크기는 5MB 이하여야 합니다.");
+                    inputFile.value = ""; // 선택 초기화
                     return;
                 }
 
@@ -282,15 +284,6 @@
                 // 권한이 부족한 경우
                 if (rp.statusCode === 403) {
                     alert(rp.message || "접근 권한이 없습니다.");
-                    return;
-                }
-
-                // 유효성 검사에 실패한 경우
-                if (rp.inputErrors) {
-                    Object.entries(rp.inputErrors).forEach(([field, message]) => {
-                        const errorElem = document.getElementById(`\${field}Error`);
-                        if (errorElem) errorElem.textContent = message;
-                    });
                     return;
                 }
 
