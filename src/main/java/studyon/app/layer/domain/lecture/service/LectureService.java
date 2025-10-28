@@ -65,4 +65,7 @@ public interface LectureService {
     LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId,Long teacherId);
     void updateThumbnail(Long teacherId, Long lectureId, MultipartFile file);
     String getLectureThumbnailPath(Long lectureId);
+
+    /* 리뷰 퍼센트 계산 - 강의페이지 */
+    Map<Integer, Double> getRatingPercentage(Long lectureId);
 }

@@ -56,6 +56,7 @@ public class LectureServiceImpl implements LectureService {
     private final LectureReviewRepository lectureReviewRepository;
     private final FileManager fileManager;
     private final FileRepository fileRepository;
+    private final LectureReviewRepository lectureReviewRepository;
 
     /** 최근 강의 리스트 불러오는 메소드
      * @param subject 과목
@@ -276,7 +277,5 @@ public class LectureServiceImpl implements LectureService {
 
         return lecture.getThumbnail().getFilePath();
     }
-
-
 
 }
