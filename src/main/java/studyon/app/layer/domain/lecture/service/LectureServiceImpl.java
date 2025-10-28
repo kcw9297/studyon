@@ -19,6 +19,7 @@ import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
+import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 import studyon.app.layer.domain.lecture_video.LectureVideo;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
 import studyon.app.layer.domain.member.MemberProfile;
@@ -52,6 +53,7 @@ public class LectureServiceImpl implements LectureService {
     private final TeacherRepository teacherRepository;
     private final LectureIndexRepository lectureIndexRepository;
     private final LectureVideoRepository lectureVideoRepository;
+    private final LectureReviewRepository lectureReviewRepository;
     private final FileManager fileManager;
     private final FileRepository fileRepository;
 
@@ -183,6 +185,7 @@ public class LectureServiceImpl implements LectureService {
         return dto;
     }
 
+
     /* 리뷰 퍼센트 계산 - 강의페이지 */
     @Override
     public Map<Integer, Double> getRatingPercentage(Long lectureId) {
@@ -204,6 +207,9 @@ public class LectureServiceImpl implements LectureService {
         countMap.forEach((star, count) -> percentMap.put(star, (count * 100.0) / totalReviews));
         return percentMap;
     }
+
+
+
     @Override
     public LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId, Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
