@@ -53,6 +53,7 @@
 
     <%-- 공용 Script --%>
     <script src="<c:url value='/js/base/header.js'/>"></script>
+    <script src="<c:url value='/js/base/maintemplate.js'/>"></script>
 </html>
 
 

@@ -10,9 +10,11 @@ import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
+import studyon.app.layer.domain.lecture_video.LectureVideo;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static studyon.app.layer.base.utils.DTOMapper.toReadDTO;
 
@@ -108,6 +110,37 @@ public class LectureIndexServiceImpl implements LectureIndexService {
 
         lectureIndexRepository.delete(index);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LectureIndexDTO.Read> readMemberAllByLectureId(Long lectureId) {
+
+        // ✅ 강의에 연결된 모든 목차 조회
+        return lectureIndexRepository.findByLecture_LectureIdOrderByIndexNumberAsc(lectureId)
+                .stream()
+                .map(index -> {
+                    // ✅ 1. 각 목차의 첫 번째 영상 조회 (seq 오름차순)
+                    Optional<LectureVideo> videoOpt =
+                            lectureVideoRepository.findFirstByLectureIndex_LectureIndexIdOrderBySeqAsc(index.getLectureIndexId());
+
+                    // ✅ 2. 영상 정보가 있다면 경로와 이름 추출
+                    String videoFileName = videoOpt.map(LectureVideo::getTitle).orElse(null);
+                    String videoFilePath = videoOpt.map(LectureVideo::getVideoUrl).orElse(null);
+
+                    // ✅ 3. DTO 생성
+                    return LectureIndexDTO.Read.builder()
+                            .lectureIndexId(index.getLectureIndexId())
+                            .indexNumber(index.getIndexNumber())
+                            .indexTitle(index.getIndexTitle())
+                            .lectureId(lectureId)
+                            .videoFileName(videoFileName)   // ex) "1강 - AI 소개.mp4"
+                            .videoFilePath(videoFilePath)   // ex) "lecture_video/a3b4c5d6e7.mp4"
+                            .build();
+                })
+                .toList();
+    }
+
+
 
     /**
      * 강의 ID와 강사 ID 일치 여부 검증
