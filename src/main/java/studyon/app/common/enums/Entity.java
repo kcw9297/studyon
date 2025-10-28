@@ -10,10 +10,11 @@ import java.util.List;
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
  *  ▶ ver 1.1 (2025-10-20) : kcw97 TEMP 유형 추가
+ *  ▶ ver 1.2 (2025-10-20) : khs97 LECTURE_VIDEO 추가
  */
 /**
  * ENTITY (= Table) 유형
- * @version 1.1
+ * @version 1.2
  * @author kcw97
  */
 @Getter
@@ -28,6 +29,7 @@ public enum Entity {
     UNKNOWN("unknown"),
     NOTICE("notice"),
     PAYMENT("payment"),
+    LECTURE_VIDEO("lecture_video"),
     TEMP("temp");
 
     private final String name;

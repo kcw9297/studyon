@@ -7,8 +7,10 @@ import java.util.List;
 
 /**
  * 파일 유형
- * @version 1.0
+ * @version 1.1
  * @author kcw97
+ *
+ * khs97 video 추가
  */
 @Getter
 public enum FileType {
@@ -16,6 +18,7 @@ public enum FileType {
     THUMBNAIL("thumbnail"),
     EDITOR("editor"),
     PROFILE("editor"),
+    VIDEO("video"),
     UPLOAD("upload");
 
     private final String value;

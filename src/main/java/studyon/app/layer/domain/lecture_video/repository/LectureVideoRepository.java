@@ -8,6 +8,7 @@ import studyon.app.layer.domain.lecture_video.LectureVideo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface LectureVideoRepository extends JpaRepository<LectureVideo, Long> {
@@ -30,4 +31,23 @@ public interface LectureVideoRepository extends JpaRepository<LectureVideo, Long
         ORDER BY i.indexNumber ASC, v.seq ASC
     """)
     List<LectureVideo> findLectureVideosWithIndex(Long lectureId);
+
+    @Query("""
+    SELECT v
+    FROM LectureVideo v
+    WHERE v.lectureIndex.lectureIndexId = :indexId
+    ORDER BY v.seq ASC
+""")
+    List<LectureVideo> findAllByLectureIndexId(@Param("indexId") Long indexId);
+    List<LectureVideo> findAllByLectureIndex_LectureIndexId(Long indexId);
+
+    @Query("""
+    SELECT v FROM LectureVideo v
+    WHERE v.lectureIndex.lectureIndexId = :indexId
+    ORDER BY v.createdAt DESC
+""")
+    LectureVideo findTopByLectureIndexId(@Param("indexId") Long indexId);
+    Optional<LectureVideo> findFirstByLectureIndex_LectureIndexIdOrderBySeqAsc(Long lectureIndexId);
+
 }
+
