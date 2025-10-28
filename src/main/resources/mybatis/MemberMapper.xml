@@ -24,7 +24,7 @@
                     </when>
                 </choose>
             </if>
-        ORDER BY m.member_id DESC LIMIT #{prq.size} OFFSET #{prq.startPage}
+        ORDER BY m.member_id LIMIT #{prq.size} OFFSET #{prq.startPage}
     </select>
 
     <select id="countAll" resultType="Integer">
@@ -116,7 +116,7 @@
         </if>
 
 
-        ORDER BY m.member_id DESC
+        ORDER BY m.member_id
         LIMIT #{prq.size} OFFSET #{prq.startPage}
     </select>
 
@@ -161,9 +161,9 @@
         </if>
     </select>
 
-    <update id="toggleActive" parameterType="Long">
+    <update id="toggleActive" parameterType="long">
         UPDATE member
-        SET is_active = NOT is_active
+        SET is_active = CASE WHEN is_active = 1 THEN 0 ELSE 1 END
         WHERE member_id = #{memberId}
     </update>
 </mapper>
