@@ -105,14 +105,13 @@ a{color:inherit; text-decoration:none}
 .likes-thumbnail{position:relative;}
 .likes-thumbnail img{width:320px; height:180px; border-radius:15px;}
 .likes-deleteIcon img{width:25px; height:25px; position:absolute; top:10px; right:10px; z-index:2;}
+.likes-deleteIcon form{display:inline; margin:0; padding:0; border:0;}
+.likes-deleteIcon button{all:unset;}
 .likes-lecture{margin-bottom:8px; font-size:20px; font-weight:var(--bold);}
 .likes-teacher{margin-bottom:5px; font-size:18px;}
-.likes-price, .likes-report{display:flex; flex-direction:row; margin-bottom:5px;}
+.likes-price{font-size:18px; font-weight:var(--bold);}
+.likes-report{display:flex; flex-direction:row; margin-bottom:5px;}
 .likes-review, .likes-student{display:flex; flex-direction:row; margin-right:10px;}
-/* 강의 목록 - 금액 */
-.likes-present{margin-right:10px; color:var(--deep-gray); text-decoration:line-through;}
-.likes-discount{margin-right:5px; color:var(--deep-red);}
-.likes-special{font-weight:var(--bold);}
 /* 강의 목록 - 평점&수강생 */
 .likes-star{margin-right:5px; color:var(--star);}
 .likes-score{margin-right:5px; color:var(--deep-gray);}

@@ -1,9 +1,9 @@
 package studyon.app.layer.domain.lecture_like.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import studyon.app.layer.domain.lecture.Lecture;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import studyon.app.layer.domain.lecture_like.LectureLike;
-import studyon.app.layer.domain.member.Member;
 
 import java.util.*;
 
@@ -30,5 +30,14 @@ public interface LectureLikeRepository extends JpaRepository<LectureLike, Long> 
     long countByLecture_LectureId(Long lectureId);
 
     // 회원별 좋아요 리스트 (관심목록)
-    List<LectureLike> findByMember_MemberId(Long memberId);
+    @Query("""
+       SELECT ll
+       FROM LectureLike ll
+       JOIN FETCH ll.lecture lec
+       JOIN FETCH lec.teacher t
+       JOIN FETCH t.member m
+       WHERE ll.member.memberId = :memberId
+    """)
+    List<LectureLike> findByMemberIdWithLectureTeacherMember(@Param("memberId") Long memberId);
+
 }

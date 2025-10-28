@@ -11,7 +11,6 @@ import studyon.app.common.enums.View;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture_like.LectureLike;
 import studyon.app.layer.domain.lecture_like.service.LectureLikeService;
-import studyon.app.layer.domain.member.Member;
 
 import java.util.*;
 
@@ -41,10 +40,19 @@ public class MypageController {
 
         model.addAttribute("likeList", likeList);
         model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/likes.jsp");
-
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }
 
+    // 좋아요 삭제
+    @GetMapping("/likes/delete/{lectureId}")
+    public String deleteLike(@PathVariable Long lectureId, HttpSession session) {
+        Long memberId = (Long) session.getAttribute("memberId");
+        if (memberId != null) {
+            lectureLikeService.deleteLike(memberId, lectureId);
+        }
+
+        return "redirect:/mypage/likes";
+    }
 
     @GetMapping("/lecture_management")
     public String lecture_management(Model model) {
