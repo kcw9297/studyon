@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import studyon.app.layer.domain.notice.Notice;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,7 +17,16 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
         SELECT n
         FROM Notice n
         LEFT JOIN FETCH n.noticeImage
-        WHERE n.noticeId = :noticeId
     """)
-    Optional<Notice> findByNoticeIdWithFile(Long noticeId);
+    List<Notice> findAllWithFile();
+
+    @Query("""
+        SELECT n
+        FROM Notice n
+        LEFT JOIN FETCH n.noticeImage
+        WHERE n.isActivate = :isActivate
+    """)
+    List<Notice> findAllWithFileByIsActivate(Boolean isActivate);
+
+    Optional<Notice> findByIdx(Integer idx);
 }

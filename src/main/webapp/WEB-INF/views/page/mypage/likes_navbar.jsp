@@ -1,0 +1,46 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<div class="category">
+    <a href="/mypage/likes?subject=all" class="subject" id="all">전체</a>
+    <a href="/mypage/likes?subject=math" class="subject" id="math">수학</a>
+    <a href="/mypage/likes?subject=english" class="subject" id="english">영어</a>
+    <a href="/mypage/likes?subject=korean" class="subject" id="korean">국어</a>
+    <a href="/mypage/likes?subject=science" class="subject" id="science">과학탐구</a>
+    <a href="/mypage/likes?subject=social" class="subject" id="social">사회탐구</a>
+</div>
+
+
+<style>
+    .category {
+        display: flex;
+        margin-bottom: 20px;
+    }
+    .subject {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        color: #333;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+    .subject:hover {
+        background-color: #f8f9fa;
+    }
+    .subject.active {
+        background-color: #fff7e6;
+        border-color: #ffb000;
+        color: #ffb000;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const currentSubject = new URLSearchParams(window.location.search).get("subject") || "all";
+        document.querySelectorAll(".subject").forEach(a => {
+            const subject = new URL(a.href, window.location.origin).searchParams.get("subject");
+            if (subject === currentSubject) {
+                a.classList.add("active");
+            }
+        });
+    });
+</script>
+

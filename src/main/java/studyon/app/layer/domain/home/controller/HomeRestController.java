@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
+import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
@@ -53,12 +54,13 @@ public class HomeRestController {
      * [GET] 홈화면 인기 강의 목록 조회(수강생 순)
      */
     @GetMapping("/best")
-    public ResponseEntity<?> readAllBestLectures(@ModelAttribute LectureDTO.Search rq, @RequestParam(defaultValue = "5") int count) {
+    public ResponseEntity<?> readAllBestLectures(@ModelAttribute LectureDTO.Search rq,
+                                                 @RequestParam(defaultValue = "5") int count) {
         // [1] 인기 강의 조회 로그 (수강생 순)
         log.info("전체 인기 강의 GET 요청: 전체 인기 강의 조회");
         // [2] 전체 인기 강의 조회
         List<LectureDTO.Read> result = lectureService.readAllPopularLectures(count);
-        // [3Z] 성공 응답 반환
+        // [3] 성공 응답 반환
         return RestUtils.ok(result);
     }
 }

@@ -3,6 +3,7 @@ package studyon.app.layer.domain.notice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.Entity;
@@ -10,78 +11,64 @@ import studyon.app.common.enums.FileType;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.file.FileManager;
-import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.file.repository.FileRepository;
 import studyon.app.layer.domain.notice.Notice;
 import studyon.app.layer.domain.notice.NoticeDTO;
-import studyon.app.layer.domain.notice.mapper.NoticeMapper;
 import studyon.app.layer.domain.notice.repository.NoticeRepository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class NoticeServiceImpl implements NoticeService {
 
     private final NoticeRepository noticeRepository;
-    private final NoticeMapper noticeMapper;
     private final FileRepository fileRepository;
     private final FileManager fileManager;
 
 
     @Override
-    public Page.Response<NoticeDTO.Read> readPagedList(NoticeDTO.Search rq, Page.Request prq) {
-
-        // [1] 페이징 & 카운팅 쿼리 수행
-        List<NoticeDTO.Read> pagedList = noticeMapper.selectAll(rq, prq);
-        Integer count = noticeMapper.countAll(rq);
-
-        // [2] 페이징 정보 계산 후 반환
-        return Page.Response.create(pagedList, prq.getPage(), count, prq.getSize());
-    }
-
-
-    @Override
-    public NoticeDTO.Read read(Long noticeId) {
+    @Transactional(readOnly = true)
+    public List<NoticeDTO.Read> readAll() {
         return noticeRepository
-                .findByNoticeIdWithFile(noticeId)
-                .map(entity -> DTOMapper.toReadDTO(entity, DTOMapper.toReadDTO(entity.getNoticeImage())))
-                .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND));
+                .findAllWithFile()
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .toList();
     }
 
 
     @Override
-    public NoticeDTO.Read write(NoticeDTO.Write rq) {
-
-        // [1] Entity 변환
-        Notice entity = DTOMapper.toEntity(rq);
-
-        // [2] 저장 후, 생성된 공지정보 DTO 반환
-        return DTOMapper.toReadDTO(noticeRepository.save(entity));
+    public List<NoticeDTO.Read> readAllActivate() {
+        return noticeRepository
+                .findAllWithFileByIsActivate(true) // 활성 상태만 조회
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .toList();
     }
 
 
     @Override
-    public void edit(NoticeDTO.Edit rq) {
+    public void editTitle(Integer index, String title) {
         noticeRepository
-                .findById(rq.getNoticeId())
+                .findByIdx(index)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND))
-                .update(rq.getTitle(), rq.getContent(), rq.getNoticeType(), rq.getStartedAt(), rq.getEndedAt());
+                .updateTitle(title);
     }
 
 
     @Override
-    public void editNoticeImage(Long noticeId, MultipartFile noticeImageFile) {
+    public void editNoticeImage(Integer index, MultipartFile noticeImageFile) {
 
         // [1] 공지사항 조회
         Notice notice = noticeRepository
-                .findById(noticeId)
+                .findByIdx(index)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND));
 
 
@@ -93,7 +80,7 @@ public class NoticeServiceImpl implements NoticeService {
 
             // 업로드 요청 DTO 생성
             FileDTO.Upload uploadDTO =
-                    DTOMapper.toUploadDTO(noticeImageFile, noticeId, Entity.NOTICE, FileType.THUMBNAIL);
+                    DTOMapper.toUploadDTO(noticeImageFile, notice.getNoticeId(), Entity.NOTICE, FileType.THUMBNAIL);
 
             // DB 내 파일정보 생성
             notice.updateNoticeImage(fileRepository.save(DTOMapper.toEntity(uploadDTO)));
@@ -119,28 +106,46 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public void activate(Long noticeId) {
-        noticeRepository
-                .findById(noticeId)
-                .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND))
-                .activate();
+    public void activate(Integer index) {
+
+        // [1] 공지사항 조회
+        Notice notice = noticeRepository
+                .findByIdx(index)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND));
+
+        // [2] 제목이 빈 칸이거나, 등록 이미지가 존재하지 않으면 예외 처리
+        if (Objects.isNull(notice.getNoticeImage()) || notice.getTitle().isBlank())
+            throw new BusinessLogicException(AppStatus.NOTICE_NOT_EXIST_TITLE_AND_IMAGE);
+
+        // [3] 공지사항을 활성 상태로 변경 수행
+        notice.activate();
     }
 
     @Override
-    public void inactivate(Long noticeId) {
+    public void inactivate(Integer index) {
         noticeRepository
-                .findById(noticeId)
+                .findByIdx(index)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND))
                 .inactivate();
     }
 
     @Override
-    public void remove(Long noticeId) {
-        noticeRepository.deleteById(noticeId);
+    public void initialize(Integer index) {
+
+        // [1] 공지사항 조회
+        Notice notice = noticeRepository
+                .findByIdx(index)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND));
+
+        // [2] 파일 정보 조회 후 삭제 & 공지 엔티티 갱신
+        File noticeImage = notice.getNoticeImage();
+        notice.initialize(); // 초기화 후에는 파일 정보가 없으므로 먼저 파일 조회 후 초기화 수행
+
+        // 존재하는 경우에만 파일 삭제
+        if (Objects.nonNull(noticeImage)) {
+            fileRepository.delete(noticeImage);
+            fileManager.remove(noticeImage.getStoreName(), Entity.NOTICE.getName());
+        }
     }
 
-    @Override
-    public void removeAll(Collection<Long> noticeIds) {
-        noticeRepository.deleteAllById(noticeIds);
-    }
 }

@@ -5,15 +5,19 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import studyon.app.common.enums.NoticeType;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.file.File;
 
-import java.time.LocalDateTime;
+
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-27) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-28) : kcw97 구성 요소 간략화 (내용을 이미지로 대체)
+ */
 
 /**
  * 공지사항 엔티티 클래스
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 
@@ -34,37 +38,30 @@ public class Notice extends BaseEntity {
     @JoinColumn(name = "notice_image_id")
     private File noticeImage;
 
+    @Column(nullable = false, unique = true, updatable = false, columnDefinition = "INT(1)")
+    private Integer idx; // 공지사항은 개수와 순서가 고정 (순서있는 카드 형태 제공)
+
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private NoticeType noticeType;
-
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isActivate;
 
-    @Column(nullable = false)
-    private LocalDateTime startedAt;
-
-    @Column(nullable = false)
-    private LocalDateTime endedAt;
 
 
     @Builder
-    public Notice(String title, String content, NoticeType noticeType, LocalDateTime startedAt, LocalDateTime endedAt) {
-        this.title = title;
-        this.content = content;
-        this.noticeType = noticeType;
-        this.startedAt = startedAt;
-        this.endedAt = endedAt;
+    public Notice(Integer idx) {
+        this.idx = idx;
+        this.title = "";
         this.isActivate = false;
     }
 
     /* 객체 구현체 제공 정적 메소드 */
+
+    // 이미지 제외 일괄 갱신
+    public void updateTitle(String title) {
+        this.title = title;
+    }
 
     // 이미지 갱신
     public void updateNoticeImage(File noticeImage) {
@@ -81,13 +78,13 @@ public class Notice extends BaseEntity {
         this.isActivate = false;
     }
 
-    // 이미지 제외 일괄 갱신
-    public void update(String title, String content, NoticeType noticeType, LocalDateTime startedAt, LocalDateTime endedAt) {
-        this.title = title;
-        this.content = content;
-        this.noticeType = noticeType;
-        this.startedAt = startedAt;
-        this.endedAt = endedAt;
+    // 비활성 상태로 갱신
+    public void initialize() {
+        this.noticeImage = null;
+        this.title = "";
+        this.isActivate = false;
     }
+
+
 
 }

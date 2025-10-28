@@ -99,7 +99,7 @@ public class WriteServiceLogAspect {
         if (methodName.startsWith("write")) return Action.WRITE;
         if (methodName.startsWith("edit")) return Action.EDIT;
         if (methodName.startsWith("inactivate")) return Action.INACTIVATE;
-        if (methodName.startsWith("remove")) return Action.REMOVE;
+        if (methodName.startsWith("initialize")) return Action.REMOVE;
         if (methodName.startsWith("join")) return Action.JOIN;
         if (methodName.startsWith("withdraw")) return Action.WITHDRAWAL;
         if (methodName.startsWith("pay")) return Action.PAY;

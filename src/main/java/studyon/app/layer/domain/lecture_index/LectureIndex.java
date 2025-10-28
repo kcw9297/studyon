@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @DynamicUpdate
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)

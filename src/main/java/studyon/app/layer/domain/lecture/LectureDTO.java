@@ -4,6 +4,7 @@ package studyon.app.layer.domain.lecture;
 import lombok.*;
 
 import studyon.app.common.enums.Difficulty;
+import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
 import studyon.app.infra.aop.LogInfo;
@@ -33,6 +34,8 @@ public class LectureDTO {
 
         private Long teacherId;
 
+        private LectureRegisterStatus lectureRegisterStatus;
+
         private Long price;
         private Difficulty difficulty;
         private Long videoCount;
@@ -57,6 +60,7 @@ public class LectureDTO {
         private String title;
         private String description;
         private Long price;
+        private LectureRegisterStatus lectureRegisterStatus;
         private Difficulty difficulty;
         private Boolean onSale;
     }
@@ -96,6 +100,7 @@ public class LectureDTO {
         private LectureTarget target;
         private Long price;
         private Difficulty difficulty;
+        private LectureRegisterStatus lectureRegisterStatus;
         private Subject subject;
         private List<String> curriculumTitles;
     }

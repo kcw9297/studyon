@@ -111,7 +111,7 @@ class Pointcuts {
     @Pointcut("execution(* *..inactivate*(..))")
     public void inactivateMeth() {}
 
-    // "remove" 으로 시작하는 메소드
+    // "initialize" 으로 시작하는 메소드
     @Pointcut("execution(* *..remove*(..))")
     public void removeMeth() {}
 
@@ -168,7 +168,7 @@ class Pointcuts {
     @Pointcut("domainPack() && svcAnno() && inactivateMeth()")
     public void domainPackSvcAnnoInactivateMeth() {}
 
-    // domain 패키지 내 "remove" 메소드
+    // domain 패키지 내 "initialize" 메소드
     @Pointcut("domainPack() && svcAnno() && removeMeth()")
     public void domainPackSvcAnnoRemoveMeth() {}
 

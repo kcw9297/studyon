@@ -48,7 +48,7 @@ public class RedisEventListener implements MessageListener {
             String backupKey = CacheUtils.createBackupKey(lectureQuestionTempKey);
             List<String> tempFileNames = cacheManager.getAndRemoveBackupKey(backupKey, );
             log.warn("tempFileNames = {}", tempFileNames);
-            tempFileNames.forEach(tempFileName -> fileManager.remove(tempFileName, Entity.TEMP));
+            tempFileNames.forEach(tempFileName -> fileManager.initialize(tempFileName, Entity.TEMP));
 
 
         }
@@ -73,12 +73,12 @@ public class RedisEventListener implements MessageListener {
         log.warn("onApplicationEvent sessionId = {}, memberId = {}", sessionId, memberId);
 
         // [3] 회원 로그인 목록에서 만료된 id 제거
-        stringRedisTemplate.opsForSet().remove(memberLoginKey, sessionId);
+        stringRedisTemplate.opsForSet().initialize(memberLoginKey, sessionId);
         Long remain = stringRedisTemplate.opsForSet().size(memberLoginKey);
 
         // [4] 만약 로그인 세션이 더 이상 남아있지 않으면, 로그인 회원 목록에서 제거
         if (Objects.equals(remain, 0L))
-            stringRedisTemplate.opsForSet().remove(Cache.CURRENT_LOGIN.getBaseKey(), commonLoginValue);
+            stringRedisTemplate.opsForSet().initialize(Cache.CURRENT_LOGIN.getBaseKey(), commonLoginValue);
          */
     }
 }

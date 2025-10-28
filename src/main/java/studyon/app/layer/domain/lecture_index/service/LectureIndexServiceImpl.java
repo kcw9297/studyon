@@ -32,16 +32,27 @@ public class LectureIndexServiceImpl implements LectureIndexService {
     @Override
     @Transactional(readOnly = true)
     public List<LectureIndexDTO.Read> readAllByLectureId(Long lectureId, Long teacherId) {
-        Lecture lecture = validateLectureByTeacher(lectureId, teacherId);
+        validateLectureByTeacher(lectureId, teacherId);
 
         return lectureIndexRepository.findByLecture_LectureIdOrderByIndexNumberAsc(lectureId)
                 .stream()
-                .map(index -> {
-                    LectureIndexDTO.Read dto = toReadDTO(index);
-                    return dto;
-                })
+                .map(index -> LectureIndexDTO.Read.builder()
+                        .lectureIndexId(index.getLectureIndexId())
+                        .indexNumber(index.getIndexNumber())
+                        .indexTitle(index.getIndexTitle())
+                        .lectureId(lectureId)
+                        // ✅ 여기서 대표 영상 파일명만 조회
+                        .videoFileName(
+                                lectureVideoRepository
+                                        .findFirstByLectureIndex_LectureIndexIdOrderBySeqAsc(index.getLectureIndexId())
+                                        .map(video -> video.getTitle()) // 또는 video.getVideoFile().getOriginalFileName()
+                                        .orElse(null)
+                        )
+                        .build()
+                )
                 .toList();
     }
+
 
     /**
      * 강의 목차 하나 등록
@@ -63,6 +74,7 @@ public class LectureIndexServiceImpl implements LectureIndexService {
      * 강의 목차 일괄 수정
      */
     @Override
+    @Transactional
     public void updateIndexes(Long lectureId, Long teacherId, List<LectureIndexDTO.Edit> dtos) {
         validateLectureByTeacher(lectureId, teacherId);
 
@@ -73,10 +85,14 @@ public class LectureIndexServiceImpl implements LectureIndexService {
             if (!index.getLecture().getLectureId().equals(lectureId)) {
                 throw new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND);
             }
+            log.info("📥 updateIndexes 호출됨 lectureId={}, teacherId={}, dtos={}", lectureId, teacherId, dtos);
 
-            index.update(dto.getIndexTitle(), dto.getIndexNumber());
+            // ✅ 순서 및 제목 모두 갱신 (Dirty Checking 자동 반영)
+            index.setIndexNumber(dto.getIndexNumber());
+            index.setIndexTitle(dto.getIndexTitle());
         }
     }
+
 
     /**
      * 강의 목차 삭제

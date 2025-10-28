@@ -25,6 +25,7 @@ import java.util.List;
  * @author khj00
  * 20251023 Subject추가
  * 202251024 LectureRegisterStatus
+ * 20251028 좋아요 카운트 - phj
  */
 
 @Entity
@@ -101,13 +102,15 @@ public class Lecture extends BaseEntity {
 
     @Builder
     public Lecture(String title, String description, Long price,
-                   Difficulty difficulty, Teacher teacher,Subject subject,LectureTarget lectureTarget) {
+                   Difficulty difficulty, Teacher teacher, Subject subject,
+                   LectureTarget lectureTarget, LectureRegisterStatus lectureRegisterStatus) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.publishDate = LocalDateTime.now();
         this.lectureTarget = (lectureTarget != null) ? lectureTarget : LectureTarget.HIGH1;
 
+        this.lectureRegisterStatus = lectureRegisterStatus;
         this.difficulty = difficulty;
         this.videoCount = 0L;
         this.totalDuration = 0L;
@@ -157,5 +160,12 @@ public class Lecture extends BaseEntity {
         this.averageRate = avg;
     }
 
+    /* 좋아요 카운트 */
+    public Long getLikeCount() {
+        return likeCount;
+    }
 
+    public void setLikeCount(Long likeCount) {
+        this.likeCount = likeCount;
+    }
 }

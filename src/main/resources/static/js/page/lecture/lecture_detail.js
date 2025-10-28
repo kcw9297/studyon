@@ -26,52 +26,50 @@ document.addEventListener("DOMContentLoaded", () => {
 // 좋아요 버튼
 document.addEventListener("DOMContentLoaded", function () {
     const likeButton = document.querySelector(".summary-like");
-    const likeImg = likeButton.querySelector("img");
-    let liked = false; // 초기 상태 — 서버에서 받아올 수도 있음
+    if (!likeButton) return;
 
-    // 페이지 로드시 서버에서 유저의 좋아요 상태를 불러오기
-    /*
-    fetch("/lecture/likeStatus?lectureId=1")
+    const lectureId = likeButton.dataset.lectureId;
+    const memberId = 93; // 로그인 유저 ID
+    const likeImg = likeButton.querySelector("img");
+    const likeCountElem = likeButton.querySelector(".like-count");
+
+    let liked = false; // 클릭 시 토글용
+    let likeCount = parseInt(likeCountElem.textContent); // 초기 숫자
+
+    // 1️⃣ 초기 상태 fetch
+    fetch(`/lecture-like/${lectureId}/status?memberId=${memberId}`)
         .then(res => res.json())
         .then(data => {
             liked = data.liked;
             likeImg.src = liked ? "/img/png/like2.png" : "/img/png/like1.png";
-        });
-     */
+            if (data.likeCount !== undefined) {
+                likeCount = data.likeCount;
+                likeCountElem.textContent = likeCount;
+            }
+        })
+        .catch(err => console.error("좋아요 상태 불러오기 실패:", err));
 
+    // 2️⃣ 버튼 클릭 시 토글
     likeButton.addEventListener("click", () => {
-        liked = !liked; // 상태 토글
-        likeImg.src = liked ? "/img/png/like2.png" : "/img/png/like1.png";
+        const url = liked
+            ? `/lecture-like/${lectureId}/remove`
+            : `/lecture-like/${lectureId}/add`;
 
-        //백앤드 없는 임시 사용js. 좋아요 숫자 증가
-        let countText = likeButton.innerText.trim();
-        let count = parseInt(countText) || 0;
+        const dto = { memberId: memberId, lectureId: parseInt(lectureId) };
 
-        if (liked) {
-            count++;
-        } else {
-            count--;
-        }
-
-        likeButton.innerHTML = `<img src="${likeImg.src}">${count}`;
-
-        // 서버에 좋아요 상태 업데이트 요청 (POST)
-        /*
-        fetch("/lecture/toggleLike", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                lectureId: 1,
-                liked: liked
-            })
+        fetch(url, {
+            method: liked ? "DELETE" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dto)
         })
             .then(res => res.json())
             .then(data => {
-                // 서버 응답에 따라 좋아요 수 갱신
-                likeButton.innerHTML = `<img src="${liked ? '/img/png/like2.png' : '/img/png/like1.png'}">${data.likeCount}`;
+                liked = data.liked;
+                likeImg.src = liked ? "/img/png/like2.png" : "/img/png/like1.png";
+
+                likeCountElem.textContent = data.likeCount;
             })
-            .catch(err => console.error("좋아요 오류:", err));
-         */
+            .catch(err => console.error("좋아요 토글 오류:", err));
     });
 });
 

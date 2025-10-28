@@ -104,6 +104,7 @@ public class DTOMapper {
         return Lecture.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
+                .lectureRegisterStatus(dto.getLectureRegisterStatus())
                 .price(dto.getPrice())
                 .difficulty(dto.getDifficulty())
                 .teacher(teacher)
@@ -223,6 +224,7 @@ public class DTOMapper {
                 .publishDate(entity.getPublishDate())
                 .teacherId(entity.getTeacher().getTeacherId())
                 .nickname(entity.getTeacher().getMember().getNickname())
+                .lectureRegisterStatus(entity.getLectureRegisterStatus())
                 .build();
     }
 
@@ -397,41 +399,14 @@ public class DTOMapper {
     }
 
     public static NoticeDTO.Read toReadDTO(Notice entity) {
+
+        File noticeImage = entity.getNoticeImage();
+
         return NoticeDTO.Read.builder()
                 .title(entity.getTitle())
-                .noticeId(entity.getNoticeId())
-                .startedAt(entity.getStartedAt())
-                .cdate(entity.getCdate())
-                .endedAt(entity.getEndedAt())
-                .content(entity.getContent())
-                .noticeType(entity.getNoticeType())
+                .idx(entity.getIdx())
                 .isActivate(entity.getIsActivate())
-                .build();
-    }
-
-
-    public static NoticeDTO.Read toReadDTO(Notice entity, FileDTO.Read file) {
-        return NoticeDTO.Read.builder()
-                .title(entity.getTitle())
-                .noticeId(entity.getNoticeId())
-                .startedAt(entity.getStartedAt())
-                .cdate(entity.getCdate())
-                .endedAt(entity.getEndedAt())
-                .content(entity.getContent())
-                .noticeType(entity.getNoticeType())
-                .isActivate(entity.getIsActivate())
-                .noticeImage(file)
-                .build();
-    }
-
-
-    public static Notice toEntity(NoticeDTO.Write dto) {
-        return Notice.builder()
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .noticeType(dto.getNoticeType())
-                .startedAt(dto.getStartedAt().atStartOfDay())
-                .endedAt(dto.getEndedAt().atTime(23, 59, 59))
+                .noticeImage(Objects.isNull(noticeImage) ? null : toReadDTO(noticeImage))
                 .build();
     }
 
