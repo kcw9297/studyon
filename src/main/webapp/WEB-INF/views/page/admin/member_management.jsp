@@ -9,8 +9,10 @@
 </jsp:include>
 
 <div class="admin-content-container">
-    <h2 class="admin-page-title">회원 조회</h2>
-
+    <div class="admin-header-bar">
+        <h2 class="admin-page-title">회원 조회</h2>
+        <button id="downloadPdfBtn" class="btn-download">PDF로 저장</button>
+    </div>
     <!-- 검색 바 -->
     <div class="member-search-bar">
         <select id="searchType" name="filter">
@@ -19,9 +21,14 @@
         </select>
         <select id="roleFilter" name="role">
             <option value="">전체 권한</option>
-            <option value="USER">일반회원</option>
+            <option value="USER">학생</option>
             <option value="TEACHER">강사</option>
             <option value="ADMIN">관리자</option>
+        </select>
+        <select id="isActiveFilter">
+            <option value="">전체 상태</option>
+            <option value="1">활성</option>
+            <option value="0">비활성</option>
         </select>
         <input type="text" id="keyword" name="keyword" placeholder="회원 이름 또는 이메일 검색..." />
 
@@ -128,6 +135,7 @@
         </div>
 
         <div class="modal-buttons">
+            <button id="toggleBtn" class="btn-ban">정지</button>
             <button id="closeModalBtn" class="btn-view">닫기</button>
         </div>
     </div>
@@ -342,8 +350,30 @@
         font-size: 16px; /* ✅ 원하는 크기로 조정 (예: 14px~18px 권장) */
         color: #333;     /* 글자색도 변경 가능 */
     }
-</style>
 
+    .admin-header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        width: 100%;
+    }
+    .btn-download {
+        background-color: #4a90e2;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 15px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-download:hover {
+        background-color: #357ac8;
+    }
+</style>
 
 <script src="<c:url value='/js/page/admin/member_management.js'/>"></script>
 <script>

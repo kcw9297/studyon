@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.BusinessLogicException;
+import studyon.app.common.exception.PaymentException;
 import studyon.app.layer.base.utils.RestUtils;
 
 import java.util.Map;
@@ -72,6 +73,31 @@ public class BaseRestControllerAdvice {
     }
 
 
+    /**
+     * 결제 예외 처리
+     * <br>결제 실패 + 환불 실패 복합 예외 처리
+     */
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<?> handlePaymentException(PaymentException e) {
+
+        // [1] 예외 원인 분석
+        Exception paymentEx = e.getPaymentFailureCause(); // 결제 예외
+        Exception refundEx = e.getRefundFailureCause(); // 환불 예외
+
+        // [2] 환불 실패가 있는 경우 (이중 예외)와 구분하여 예외 응답 반환
+        if (Objects.nonNull(refundEx)) {
+            log.error("⚠️ 긴급: 수동 환불 처리 필요! {}", refundEx.getMessage());
+            return RestUtils.fail(e.getMessage(), e.getStatusCode()); // 수동으로 전파한 메세지, 코드 반환
+
+            // 결제만 실패하고 환불은 성공한 경우 (결제 예외만 실패해서 PaymentException 으로 덮어씌워진 경우)
+        } else {
+
+            if (paymentEx instanceof BusinessLogicException businessEx)
+                return RestUtils.fail(businessEx.getAppStatus());
+
+            else return RestUtils.fail(AppStatus.SERVER_ERROR);
+        }
+    }
 
     /**
      * 비즈니스 예외 처리

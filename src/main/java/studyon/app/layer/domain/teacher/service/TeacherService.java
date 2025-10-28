@@ -1,12 +1,9 @@
 package studyon.app.layer.domain.teacher.service;
 
 import studyon.app.common.enums.Subject;
-import studyon.app.layer.domain.lecture.LectureDTO;
-import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /*
  * [수정 이력]

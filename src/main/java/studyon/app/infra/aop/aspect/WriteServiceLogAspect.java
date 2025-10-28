@@ -10,7 +10,6 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Action;
 import studyon.app.common.enums.Entity;
 import studyon.app.layer.domain.log.LogDTO;
@@ -23,11 +22,12 @@ import java.util.Objects;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-28) : kcw97 로직 개선을 위한 임시 주석 처리
  */
 
 /**
  * 서비스 메소드 처리 로그를 DB에 저장하기 위한 Aspect
- * @version 1.0
+ * @version 1.1
  * @author kcw97
  */
 @Order(2)
@@ -51,6 +51,8 @@ public class WriteServiceLogAspect {
              Map.entry(Entity.REFUND.getName(), Entity.REFUND)
     );
 
+
+    /*
 
     // 로직 성공 처리 로그 기록
     @AfterReturning(
@@ -99,7 +101,7 @@ public class WriteServiceLogAspect {
         if (methodName.startsWith("write")) return Action.WRITE;
         if (methodName.startsWith("edit")) return Action.EDIT;
         if (methodName.startsWith("inactivate")) return Action.INACTIVATE;
-        if (methodName.startsWith("remove")) return Action.REMOVE;
+        if (methodName.startsWith("initialize")) return Action.REMOVE;
         if (methodName.startsWith("join")) return Action.JOIN;
         if (methodName.startsWith("withdraw")) return Action.WITHDRAWAL;
         if (methodName.startsWith("pay")) return Action.PAY;
@@ -190,6 +192,8 @@ public class WriteServiceLogAspect {
                 .build();
     }
 
+
+     */
 
 }
 

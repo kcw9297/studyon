@@ -1,12 +1,17 @@
 package studyon.app.config.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
@@ -14,21 +19,21 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisIndexedHttpSession;
 
+import java.time.Duration;
 import java.util.Objects;
 
 
 @Slf4j
 @Configuration
-@EnableCaching // SpringCache 활성화 (Redis)
 @EnableRedisIndexedHttpSession // Session Event 수신 가능
+@EnableCaching // SpringCache 활성화 (Redis)
 @RequiredArgsConstructor
 public class RedisCoreConfig {
-
-    private final ObjectMapper objectMapper;
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -41,6 +46,15 @@ public class RedisCoreConfig {
 
     @Value("${spring.data.redis.ssl.enabled}")
     private boolean ssl;
+
+    @Bean // 원활한 캐싱을 위한 커스텀
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return objectMapper;
+    }
+
 
     @Bean // connector 구현체로 Lettuce 사용 (가장 좋은 성능)
     public RedisConnectionFactory redisConnectionFactory() {
@@ -62,19 +76,33 @@ public class RedisCoreConfig {
         }
     }
 
+
+    @Bean // RedisCacheManager 설정
+    public CacheManager cacheManager() {
+
+        // Redis 직렬화 설정
+        RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(60)); // 60분 TTL
+
+        return RedisCacheManager.builder(redisConnectionFactory())
+                .cacheDefaults(cacheConfig)
+                .build();
+    }
+
+
     @Bean
-    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory factory) {
-        return new StringRedisTemplate(factory);
+    public StringRedisTemplate stringRedisTemplate() {
+        return new StringRedisTemplate(redisConnectionFactory());
     }
 
     @Bean // RedisTemplate customize
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
         return redisTemplate;
     }
 

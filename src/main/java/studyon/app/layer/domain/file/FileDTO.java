@@ -2,10 +2,8 @@ package studyon.app.layer.domain.file;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.FileType;
-import studyon.app.infra.aop.LogInfo;
 import studyon.app.common.enums.Entity;
 
 import java.io.Serial;

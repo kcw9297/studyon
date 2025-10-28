@@ -7,36 +7,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = document.getElementById("memberTableBody");
     const pagination = document.getElementById("pagination");
 
-    // ✅ [1] 메인 함수 - 회원 목록 불러오기
+    // [1] 메인 함수 - 회원 목록 불러오기
     function loadMembers(page = 1) {
-
-        // 검색용 변수
+        // ✅ DOM 요소에서 값 읽기
         const searchType = document.getElementById("searchType")?.value || "";
         const keyword = document.getElementById("keyword")?.value.trim() || "";
         const role = document.getElementById("roleFilter")?.value || "";
+        const isActive = document.getElementById("isActiveFilter")?.value || "";
 
-        // 쿼리 파라미터 구성
+        // ✅ 쿼리 파라미터 구성
         const params = new URLSearchParams({
             page,
             size: pageSize,
         });
 
-        // keyword가 있을 때만 filter도 같이 붙이기
-        if (keyword) {
-            if (searchType) params.append("filter", searchType);
-            params.append("keyword", keyword);
-        }
-
-        // role 필터는 단독 가능
+        // ✅ 필요한 값만 추가 (값이 있을 때만 append)
+        if (searchType) params.append("filter", searchType);
+        if (keyword) params.append("keyword", keyword);
         if (role) params.append("role", role);
+        if (isActive !== "") params.append("isActive", isActive);
 
         const url = `/admin/api/members/list?${params.toString()}`;
         console.log(`[FETCH] ${url}`);
 
-
         fetch(url, {
             method: "GET",
-            headers: {'X-Requested-From': window.location.pathname + window.location.search}
+            headers: { "X-Requested-From": window.location.pathname + window.location.search },
         })
             .then(res => res.json())
             .then(json => {
@@ -45,12 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // ✅ 올바른 구조 접근
                 const raw = json.data;
                 const members = Array.isArray(raw.data) ? raw.data : [];
 
-                currentPage = raw.currentPage || 1;
+
+                currentPage = raw.currentPage || page;
                 const totalPages = raw.totalPage || 1;
+
                 const totalMembers = raw.dataCount || 0;
 
                 console.log(`[DATA] 회원 ${members.length}명 / 총 ${totalMembers}명`);
@@ -60,21 +57,48 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(err => console.error("[ERROR] fetch 실패:", err));
     }
 
-    /**
-     * 회원 목록 테이블 렌더링
-     */
+
+    // [2] 회원 목록 렌더링
     function renderMemberTable(members) {
         if (!tbody) {
             console.error("memberTableBody 요소를 찾을 수 없습니다.");
             return;
         }
 
+
+        // ✅ 항상 최신 필터 상태 읽기
+        const role = document.getElementById("roleFilter")?.value || "";
+        const isActive = document.getElementById("isActiveFilter")?.value || "";
+        const keyword = document.getElementById("keyword")?.value.trim() || "";
+
         tbody.innerHTML = ""; // 기존 내용 비우기
 
         if (!members || members.length === 0) {
+
+            // 이름 매핑
+            const roleLabel = { "USER": "학생", "TEACHER": "강사", "ADMIN": "관리자" }[role] || "";
+            const activeLabel = { "true": "활성", "false": "비활성" }[isActive] || "";
+
+            const conditions = [activeLabel, roleLabel, keyword && `"${keyword}"`].filter(Boolean);
+            // 최종 문구
+            const message = conditions.length > 0
+            ? `${conditions.join(" ")}에 해당하는 회원이 없습니다.`
+                : "조회된 회원이 없습니다.";
+
+            
+            // 최종 렌더링(해당 회원 없을 시 뜨는 문구)
             tbody.innerHTML = `
-            <tr><td colspan="8" style="text-align:center;">회원 데이터가 없습니다.</td></tr>
-        `;
+            <tr><td colspan="8" style="
+                        text-align:center;
+                        color: #888;
+                        padding: 20px;
+                        font-size: 16px;
+                        background: #fff
+                    ">
+                    ${message}
+                </td></tr>
+            `;
+            console.log("[EMPTY]", message);
             return;
         }
 
@@ -98,8 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${joinDate}</td>
             <td>${lastLogin}</td>
             <td>
-                <button class="btn-view" data-member-id="${m.memberId}">보기</button>
-                <button class="btn-ban" data-id="${m.memberId}">관리</button>
+                <button class="btn-view" data-member-id="${m.memberId}">보기/관리</button>
+                <!-- <button class="btn-ban" data-id="${m.memberId}">관리</button>  -->
             </td>
             <!--
             <td><a href="#" class="management-button" data-member-id="${m.memberId}">관리</a></td>
@@ -116,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderPagination(totalPages) {
         pagination.innerHTML = "";
 
-        if (totalPages <= 1) return;
+        if (!totalPages || totalPages <= 0) return;
 
         const maxVisible = 5;
         let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
@@ -150,27 +174,23 @@ document.addEventListener("DOMContentLoaded", () => {
         pagination.appendChild(next);
     }
 
-    // ✅ 권한 변환 함수 추가
+    // [4] 권한 변환 함수 (사용 예정)
     function convertRole(role) {
-        switch (role) {
-            case "ROLE_ADMIN":
-                return "관리자";
-            case "ROLE_TEACHER":
-                return "강사";
-            case "ROLE_STUDENT":
-                return "학생";
-            default:
-                return "-";
-        }
+        const map = {
+            "ROLE_ADMIN": "관리자",
+            "ROLE_TEACHER": "강사",
+            "ROLE_STUDENT": "학생",
+        };
+        return map[role] ?? "-";
     }
 
-    // 날짜 포맷
+    // [5] 날짜 포맷 변환 함수
     function formatDate(dateStr) {
         if (!dateStr) return "-";
         return new Date(dateStr).toLocaleDateString("ko-KR");
     }
 
-    // 초기 로드
+        // 초기 로드
     loadMembers(1);
 
     // 검색 버튼 이벤트
@@ -179,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         searchBtn.addEventListener("click", () => {
             console.log("[SEARCH] 검색 버튼 클릭 감지됨");
             document.getElementById("keyword").blur();
-            tbody.innerHTML = "<tr><td colspan='8' style='text-align:center;'>검색 중...</td></tr>";
+            tbody.innerHTML = "<tr><td colspan=\"8\" style=\"text-align:center; color:#777;\">불러오는 중...</td></tr>";
             loadMembers(1);
         });
     }
@@ -194,4 +214,63 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+    ["searchType", "roleFilter", "isActiveFilter"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("change", () => {
+                console.log(`[FILTER] ${id} 변경됨 -> 자동 새로고침`);
+                loadMembers(1);
+            });
+        }
+    });
+
+    // [6] PDF 출력 함수
+    function renderPdf() {
+        console.log("[PDF] 회원 목록 PDF 다운로드 시작");
+        // [1] 현재 화면 필터 상태 읽기
+        const searchType = document.getElementById("searchType")?.value || "";
+        const keyword = document.getElementById("keyword")?.value.trim() || "";
+        const role = document.getElementById("roleFilter")?.value || "";
+        const isActive = document.getElementById("isActiveFilter")?.value || "";
+
+        // [2] 쿼리 파라미터 구성
+        const params = new URLSearchParams();
+        if (searchType) params.append("filter", searchType);
+        if (keyword) params.append("keyword", keyword);
+        if (role) params.append("role", role);
+        if (isActive !== "") params.append("isActive", isActive);
+
+        // [3] api 가져온 후 fetch
+        fetch(`/admin/api/members/export/pdf?${params.toString()}`, {
+            method: "GET",
+            headers: {"X-Requested-From": window.location.pathname + window.location.search},
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP 상태 코드 ${res.status}`);
+                return res.blob(); // PDF는 바이너리로 받기
+            })
+            
+            // [2] then : document 파일 바이너릭 저장 로직
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "회원목록.pdf"; // 파일명 지정
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                console.log("[PDF] 다운로드 완료");
+            })
+            .catch(err => console.error("[ERROR] PDF 다운로드 실패:", err));
+    }
+
+    // [6-*] Pdf 다운로드 버튼 이벤트 로직
+    const pdfBtn = document.getElementById("downloadPdfBtn");
+    if (pdfBtn) {
+        pdfBtn.addEventListener("click", () => {
+            renderPdf();
+        });
+    }
+
 });

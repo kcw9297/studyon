@@ -182,7 +182,7 @@ public class TestBoardController {
         // [4] 실제 업로드되지 않은 파일은 물리적 삭제 수행
         uploadedImages.stream()
                 .filter(dto -> !currentImages.contains(dto.getStoreName()))
-                .forEach(dto -> fileManager.remove(dto.getStoreName(), dto.getEntity().getName()));
+                .forEach(dto -> fileManager.initialize(dto.getStoreName(), dto.getEntity().getName()));
 
 
         // [5] 캐시 삭제 후 성공 처리
@@ -239,7 +239,7 @@ public class TestBoardController {
         fileRepository.deleteAllById(files.stream().map(File::getFileId).toList());
 
         // 물리적 삭제
-        files.forEach(entity -> fileManager.remove(entity.getStoreName(), entity.getEntity().getName()));
+        files.forEach(entity -> fileManager.initialize(entity.getStoreName(), entity.getEntity().getName()));
 
 
         // [5] 캐시 삭제 후 성공 처리

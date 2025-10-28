@@ -36,11 +36,13 @@ public enum AppStatus {
     /* 유틸 클래스 상태 (아직 구제적으로 케이스를 나누진 않음) */
     UTILS_LOGIC_FAILED(500, "처리 중 오류가 발생했습니다. 잠시 후에 다시 시도해 주세요."),
 
-    /* 매니저 클래스 상태 */
+    /* 결제(Payment/PaymentManager) 상태 */
+    PAYMENT_NOT_FOUND(500, "결제 정보가 존재하지 않습니다"),
     PAYMENT_INVALID_PAYMENT_UID(500, "결제에 실패했습니다. 존재하지 않는 결제 정보입니다."),
     PAYMENT_INVALID_AMOUNT(500, "결제에 실패했습니다. 실제 결제 금액과 일치하지 않습니다."),
-    PAYMENT_ALREADY_REFUNDED(500, "이미 환불이 완료된 결제입니다."),
     PAYMENT_LOGIC_FAILED(500, "결제에 실패했습니다. 잠시 후에 다시 시도해 주세요."),
+    PAYMENT_ALREADY_REFUNDED(400, "이미 환불이 완료된 결제입니다."),
+    PAYMENT_REFUND_NOT_AVAILABLE(400, "환불 가능 기간이 경과하였습니다.\n(결제일로부터 1년 이내에만 가능)"),
 
     /* Spring Security 처리 상태 */
     SECURITY_INCORRECT_USERNAME_PASSWORD(400, "이메일과 비밀번호가 일치하지 않습니다"),
@@ -62,11 +64,8 @@ public enum AppStatus {
 
     /* 공지 상태 */
     NOTICE_NOT_FOUND(500, "이미 삭제되었거나 존재하지 않는 공지입니다."),
-    NOTICE_OK_WRITE(200, "공지사항을 작성했습니다."),
-    NOTICE_OK_EDIT(200, "공지사항을 수정했습니다."),
-    NOTICE_OK_EDIT_IMAGE(200, "공지사항 이미지를 수정했습니다."),
-    NOTICE_OK_ACTIVATE(200, "공지사항 게시를 활성화 했습니다."),
-    NOTICE_OK_INACTIVATE(200, "공지사항 개시를 비활성화 했습니다."),
+    NOTICE_NOT_EXIST_TITLE_AND_IMAGE(400, "공지사항 제목 혹은 이미지가 등록되지 않았습니다.\n이미지와 제목을 등록 후 다시 시도해 주세요."),
+    NOTICE_OK_INITIALIZE(200, "공지사항을 초기화 했습니다."),
 
     /* 선생님 상태 */
     TEACHER_NOT_FOUND(500, "선생님 정보가 존재하지 않습니다."),
@@ -77,6 +76,7 @@ public enum AppStatus {
     /* 강의(Lecture) 상태*/
     LECTURE_NOT_FOUND(500,"강의 정보가 존재하지 않습니다"),
     LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다.");
+
 
     private final int httpCode;     // HTTP 코드
     private final String message;   // 전달 메세지

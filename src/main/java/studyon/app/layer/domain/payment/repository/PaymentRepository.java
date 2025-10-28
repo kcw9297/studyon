@@ -4,15 +4,62 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import studyon.app.layer.domain.payment.Payment;
-import studyon.app.layer.domain.payment.PaymentDTO;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+/*
+ * [수정 이력]
+ *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
+ *  ▶ ver 1.1 (2025-10-26) : khj00 통계메소드 추가
+ *  ▶ ver 1.2 (2025-10-28) : kcw97 회원과 함께 조인하는 패치조인 메소드 추가
+ */
+
+/**
+ * 결제정보 조작 클래스
+ * @version 1.2
+ * @author khj00
+ */
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    List<Payment> findByMember_MemberId(Long memberId);
+
+    /**
+     * 회원 정보와 함께 조회 특정 회원이 결제한 목록 조회
+     */
+
+    @Query("""
+        SELECT p
+        FROM Payment p
+        LEFT JOIN FETCH p.member m
+        WHERE m.memberId = :memberId
+    """)
+    List<Payment> findWithMemberByMemberId(Long memberId);
+
+    /**
+     * 회원 정보화 함께 결제정보 단일 조회
+     */
+
+    @Query("""
+        SELECT p
+        FROM Payment p
+        LEFT JOIN FETCH p.member m
+        WHERE p.paymentId = :paymentId
+    """)
+    Optional<Payment> findWithMemberById(Long paymentId);
+
+
+    /**
+     * 기간 내 결제정보 조회
+     */
+    @Query("""
+        SELECT p
+        FROM Payment p
+        LEFT JOIN FETCH p.member m
+        WHERE p.cdate <= :endDate
+    """)
+    List<Payment> findWithinDate(LocalDateTime endDate);
+
 
     /**
      * 이번 달 강사별 매출 합계 조회
@@ -31,6 +78,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
 
     /**
      * 이번 달 매출 합계 조회 (환불 제외)

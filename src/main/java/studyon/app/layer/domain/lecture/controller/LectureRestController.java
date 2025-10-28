@@ -1,13 +1,18 @@
 package studyon.app.layer.domain.lecture.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
+import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
+import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
+import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.List;
@@ -30,6 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LectureRestController {
     private final LectureService lectureService;
+    private final LectureIndexService lectureIndexService;
     /**
      * [GET] 과목별 최신 강의 목록 조회
      */
@@ -83,5 +89,14 @@ public class LectureRestController {
         List<LectureDTO.Read> bestLectures = lectureService.readBestLectures(rq.getTeacherId(), count);
         // [2] 리스팅한 정보 리턴하기
         return RestUtils.ok(bestLectures);
+    }
+
+    @GetMapping("/video/lectureindex/{lectureId}")
+    public ResponseEntity<?> getLectureVideoIndexes(@PathVariable Long lectureId, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long memberId = profile.getMemberId();
+
+        List<LectureIndexDTO.Read> response = lectureIndexService.readMemberAllByLectureId(lectureId);
+        return RestUtils.ok(response);
     }
 }

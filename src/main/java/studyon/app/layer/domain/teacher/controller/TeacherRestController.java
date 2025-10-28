@@ -12,11 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
+import studyon.app.common.enums.LectureRegisterStatus;
+import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
+import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
+import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
+import studyon.app.layer.domain.lecture_video.LectureVideo;
+import studyon.app.layer.domain.lecture_video.LectureVideoDTO;
+import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
+import studyon.app.layer.domain.lecture_video.service.LectureVideoService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.service.TeacherService;
@@ -47,6 +55,8 @@ public class TeacherRestController {
     private final TeacherService teacherService;
     private final LectureService lectureService;
     private final CacheManager cacheManager;
+    private final LectureIndexService lectureIndexService;
+    private final LectureVideoService lectureVideoService;
 
     /**
      * [GET] 모든 선생님 정보 가져오기
@@ -92,10 +102,11 @@ public class TeacherRestController {
     }
 
     @PostMapping("lecture/register")
-    public ResponseEntity<?> registerLecture(LectureDTO.Register dto,HttpSession session){
+    public ResponseEntity<?> registerLecture(LectureDTO.Register dto, LectureRegisterStatus status, HttpSession session){
         log.info("강의 등록 요청");
+        log.info(dto.toString());
         MemberProfile profile = SessionUtils.getProfile(session);
-        lectureService.registerLecture(dto,profile);
+        lectureService.registerLecture(dto, profile, status);
         return RestUtils.ok("강의가 등록되었습니다.");
     }
 
@@ -110,10 +121,10 @@ public class TeacherRestController {
     }
 
     @GetMapping("management/lectureinfo/{lectureId}")
-    public ResponseEntity<?> getTeacherLectureInfo(HttpSession session,@PathVariable Long lectureId){
+    public ResponseEntity<?> getTeacherLectureInfo(HttpSession session, @PathVariable Long lectureId){
         MemberProfile profile = SessionUtils.getProfile(session);
         Long teacherId = profile.getTeacherId();
-        LectureDTO.ReadLectureInfo response= lectureService.readLectureInfo(lectureId,teacherId);
+        LectureDTO.ReadLectureInfo response= lectureService.readLectureInfo(lectureId, teacherId);
         return RestUtils.ok(response);
 
     }
@@ -200,6 +211,86 @@ public class TeacherRestController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    /**
+     * [GET] 특정 강의의 목차 전체 조회
+     */
+    @GetMapping("/management/lectureindex/{lectureId}")
+    public ResponseEntity<?> getLectureIndexes(@PathVariable Long lectureId, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        List<LectureIndexDTO.Read> response = lectureIndexService.readAllByLectureId(lectureId, teacherId);
+        return RestUtils.ok(response);
+    }
+
+    /**
+     * [POST] 특정 강의에 목차 추가
+     */
+    @PostMapping("/management/lectureindex/{lectureId}")
+    public ResponseEntity<?> createLectureIndex(
+            @PathVariable Long lectureId,
+            @RequestBody LectureIndexDTO.Write dto,
+            HttpSession session
+    ) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        lectureIndexService.createIndex(lectureId, teacherId, dto);
+        return RestUtils.ok("강의 목차가 추가되었습니다.");
+    }
+
+    /**
+     * [PUT] 특정 강의의 목차 전체 수정 (예: 순서 변경)
+     */
+    @PutMapping("/management/lectureindex/{lectureId}")
+    public ResponseEntity<?> updateLectureIndexes(
+            @PathVariable Long lectureId,
+            @RequestBody List<LectureIndexDTO.Edit> dtos,
+            HttpSession session
+    ) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        lectureIndexService.updateIndexes(lectureId, teacherId, dtos);
+        return RestUtils.ok("강의 목차가 수정되었습니다.");
+    }
+
+    /**
+     * [DELETE] 특정 목차 삭제
+     */
+    @DeleteMapping("/management/lectureindex/{lectureIndexId}")
+    public ResponseEntity<?> deleteLectureIndex(
+            @PathVariable Long lectureIndexId,
+            HttpSession session
+    ) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        lectureIndexService.deleteIndex(lectureIndexId, teacherId);
+        return RestUtils.ok("강의 목차가 삭제되었습니다.");
+    }
+
+
+    @PostMapping("/management/lectureindex/{indexId}/video")
+    public ResponseEntity<?> uploadLectureVideo(@PathVariable Long indexId,@RequestParam("file") MultipartFile file) {
+        lectureVideoService.uploadVideo(indexId, file);
+        return RestUtils.ok("동영상이 업로드 되었습니다.");
+    }
+
+//    @GetMapping("/management/lectureindex/{lectureId}/videos")
+//    public ResponseEntity<?> getLectureVideos(@PathVariable Long lectureId,HttpSession session) {
+//        // 🔥 로그인한 강사 ID 가져오기 (세션 or SecurityContext)
+//        Long teacherId = SessionUtils.getMemberId(session);
+//
+//        List<LectureVideoDTO.Read> list =
+//                lectureVideoService.getVideosForMemberLecture(teacherId, lectureId);
+//
+//        return RestUtils.ok(list);
+//    }
+
+    @GetMapping("/management/lectureindex/{indexId}/videos")
+    public ResponseEntity<?> getLectureVideos(@PathVariable Long indexId, HttpSession session) {
+        Long teacherId = SessionUtils.getMemberId(session);
+        List<LectureVideoDTO.Read> videos = lectureVideoService.getVideosForMemberLecture(teacherId, indexId);
+        return RestUtils.ok(videos);
     }
 
 

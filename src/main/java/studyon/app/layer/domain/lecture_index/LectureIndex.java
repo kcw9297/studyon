@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @DynamicUpdate
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
@@ -49,5 +50,10 @@ public class LectureIndex extends BaseEntity {
         this.indexNumber = indexNumber;
         this.indexTitle = indexTitle;
         this.lecture = lecture;
+    }
+
+    public void update(String indexTitle, Long indexNumber) {
+        this.indexTitle = indexTitle;
+        this.indexNumber = indexNumber;
     }
 }

@@ -47,9 +47,9 @@ public class LectureServiceImpl implements LectureService {
     private final TeacherRepository teacherRepository;
     private final LectureIndexRepository lectureIndexRepository;
     private final LectureVideoRepository lectureVideoRepository;
+    private final LectureReviewRepository lectureReviewRepository;
     private final FileManager fileManager;
     private final FileRepository fileRepository;
-    private final LectureReviewRepository lectureReviewRepository;
 
     /** 최근 강의 리스트 불러오는 메소드
      * @param subject 과목
@@ -61,7 +61,7 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 최근 강의 정렬
-        return lectureRepository.findRecentLecturesBySubject(subject, pageable)
+        return lectureRepository.findRecentLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 BEST 강의 정렬
-        return lectureRepository.findBestLecturesBySubject(subject, pageable)
+        return lectureRepository.findBestLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
@@ -93,7 +93,7 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 모든 강의 중 카운트만큼 최신순 정렬
-        return lectureRepository.findAllByOrderByPublishDateDesc(pageable)
+        return lectureRepository.findAllByOrderByPublishDateDesc(pageable, LectureRegisterStatus.REGISTERED)
                 .stream()
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
@@ -107,7 +107,7 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 모든 강의 중 카운트만큼 인기순 정렬
-        return lectureRepository.findAllByOrderByTotalStudentsDesc(pageable)
+        return lectureRepository.findAllByOrderByTotalStudentsDesc(pageable, LectureRegisterStatus.REGISTERED)
                 .stream()
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
@@ -124,14 +124,13 @@ public class LectureServiceImpl implements LectureService {
         // [1] 정렬을 위해 필요한 변수 불러오기
         Pageable pageable = PageRequest.of(0, count);
         // [2] 해당하는 선생님 ID를 통해 Best 강의 조회 후 리스팅
-        return lectureRepository.findBestLecturesByTeacherId(teacherId, pageable)
+        return lectureRepository.findBestLecturesByTeacherId(teacherId, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
     /**
      * 선생님 최신 강의 조회
-     *
      * @param teacherId 선생님 아이디
      * @param count 리스트 카운트용 변수(보여지는 개수)
      * @return 해당 선생님 최신 강의 리스트
@@ -141,14 +140,14 @@ public class LectureServiceImpl implements LectureService {
         // [1] 정렬을 위해 필요한 변수 불러오기
         Pageable pageable = PageRequest.of(0, count);
         // [2] 해당하는 선생님 ID를 통해 최근 강의 조회 후 리스팅
-        return lectureRepository.findRecentLecturesByTeacherId(teacherId, pageable)
+        return lectureRepository.findRecentLecturesByTeacherId(teacherId, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
 
     @Override
-    public LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile) {
+    public LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile, LectureRegisterStatus status) {
         Teacher teacher = teacherRepository.findById(profile.getTeacherId()).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
         Lecture lecture = Lecture.builder()
                 .teacher(teacher)
@@ -157,6 +156,7 @@ public class LectureServiceImpl implements LectureService {
                 .difficulty(dto.getDifficulty())
                 .subject(dto.getSubject())
                 .lectureTarget(dto.getTarget() != null ? dto.getTarget() : LectureTarget.HIGH1)
+                .description(dto.getDescription())
                 .build();
 
         lectureRepository.save(lecture);
@@ -177,6 +177,7 @@ public class LectureServiceImpl implements LectureService {
         }
         return dto;
     }
+
 
     /* 리뷰 퍼센트 계산 - 강의페이지 */
     @Override
@@ -199,6 +200,9 @@ public class LectureServiceImpl implements LectureService {
         countMap.forEach((star, count) -> percentMap.put(star, (count * 100.0) / totalReviews));
         return percentMap;
     }
+
+
+
     @Override
     public LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId, Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
@@ -208,7 +212,7 @@ public class LectureServiceImpl implements LectureService {
                 .teacherName(teacher.getMember().getNickname())
                 .teacherId(teacherId)
                 .title(lecture.getTitle())
-                .description(teacher.getDescription())
+                .description(lecture.getDescription())
                 .target(lecture.getLectureTarget())
                 .difficulty(lecture.getDifficulty())
                 .subject(lecture.getSubject())
@@ -228,7 +232,7 @@ public class LectureServiceImpl implements LectureService {
         }
 
         // 3️⃣ 기존 썸네일 확인
-        File thumbnail = lecture.getThumbnail();
+        File thumbnail = lecture.getThumbnailFile();
 
         if (Objects.isNull(thumbnail)) {
             // 4️⃣ 없으면 새로 등록
@@ -259,11 +263,11 @@ public class LectureServiceImpl implements LectureService {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의 ID: " + lectureId));
 
-        if (lecture.getThumbnail() == null) {
+        if (lecture.getThumbnailFile() == null) {
             return null;
         }
 
-        return lecture.getThumbnail().getFilePath();
+        return lecture.getThumbnailFile().getFilePath();
     }
 
 }

@@ -110,7 +110,7 @@
 
         // 🔹 삭제
         listBox.addEventListener("click", (e) => {
-            if (e.target.classList.contains("remove-btn")) {
+            if (e.target.classList.contains("initialize-btn")) {
                 e.target.closest(".lecture-item").remove();
                 updateNumbers();
             }

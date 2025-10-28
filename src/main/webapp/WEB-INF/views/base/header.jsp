@@ -27,7 +27,9 @@
                 </c:if>
             </c:if>
             <c:if test="${not isLogin}">
-                <a style="border:2px solid black;" href="/join"> 회원가입</a>
+                <div class="register-tag">
+                    <a href="/join"> 회원가입</a>
+                </div>
             </c:if>
         </div>
 
@@ -42,9 +44,11 @@
             </div>
         </c:if>
 
+        <%--
         <button>
             <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">
         </button>
+        --%>
 
         <c:if test="${not isLogin}">
             <a href="<c:url value='/login'/>" id="loginModalBtn" class="modal">
@@ -62,13 +66,55 @@
 
 <style>
     .profile-img{
-        height:85%;
-        width:auto;
+
+        height:90%;
+        width:45px;
         border-radius:90px;
     }
     .profile-img-div{
+        display:flex;
+        align-items: center;
+        justify-content: center;
         height:85%;
         width:auto;
         cursor:pointer;
+
+
     }
+    .register-tag {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 18px;                 /* ⬆ 여백 살짝 늘림 */
+        border: 3px solid #551A8B;         /* 보라 계열 포인트 컬러 */
+        border-radius: 25px;
+        background-color: white;
+        color: #551A8B;
+        font-weight: 600;
+        font-size: 15px;
+        white-space: nowrap;
+        height: 40px;                      /* ✅ header 높이에 맞게 조정 */
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .register-tag:hover {
+        background-color: #551A8B;
+        color: white;
+        transform: translateY(-2px);       /* 살짝 떠오르는 효과 */
+        box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    }
+
+    .register-tag:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .register-tag a {
+        text-decoration: none;
+        color: inherit;
+        white-space: nowrap;
+    }
+
 </style>

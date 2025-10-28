@@ -59,8 +59,9 @@
         </div>
     </div>
 </div>
-
+<%--
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture_view.css'/>">
+--%>
 
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
@@ -69,12 +70,15 @@
         const thumbImg = document.getElementById("lecture-thumbnail");
         const fileInput = document.getElementById("thumbnail-upload");
         const thumbBox = document.getElementById("lecture-thumbnail");
+        const listBox = document.getElementById("lecture-list-box");
         console.log(lectureId);
 
+        // 썸네일 변경 이벤트 감지
         thumbImg.addEventListener("click", () => {
             fileInput.click();
         });
 
+        //썸네일 파일 변경 이벤트 감지
         fileInput.addEventListener("change", async (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -82,66 +86,52 @@
             const form = new FormData();
             form.append("file", file);
 
-            console.log("작동");
-
             try {
                 const res = await fetch("/api/teachers/management/lecture/"+lectureId+"/thumbnail", {
                     method: "PATCH",
                     body: form
                 });
-                console.log("작동2");
                 const json = await res.json();
                 if (json.status === "OK") {
-                    alert("썸네일이 변경되었습니다.");
                     thumbImg.src = URL.createObjectURL(file);
                 } else {
                     alert(json.message || "업로드 실패");
                 }
+                thumbBox.innerHTML =
+                    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
+                    ' alt="강의 썸네일"' +
+                    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
+
+
             } catch (err) {
                 console.error("썸네일 업로드 실패:", err);
             }
         });
 
-
+        //썸네일 유무 판단 후 브라우저에 렌더링
         try {
             const res = await fetch("/api/teachers/management/lecture/" + lectureId + "/thumbnail/view");
             const thumbBox = document.getElementById("lecture-thumbnail");
 
             if (res.ok) {
-                console.log("✅ 썸네일 이미지 로드 성공");
                 thumbBox.innerHTML =
                     '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
                     ' alt="강의 썸네일"' +
                     ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
             } else {
-                console.warn("❌ 썸네일 없음, 기본 문구 표시");
                 thumbBox.textContent = "썸네일을 등록해주세요 📷";
             }
         } catch (err) {
-            console.error("🚨 썸네일 로드 실패:", err);
             thumbBox.textContent = "썸네일을 등록해주세요 📷";
         }
 
-
-
-
-
-
-
-
-
-        if (!lectureId) {
-            console.error("❌ lectureId가 없습니다.");
-            return;
-        }
-
+        //등록된 강좌를 브라우저에 렌더링
         try {
             const response = await fetch("/api/teachers/management/lectureinfo/" + lectureId);
             const json = await response.json();
             const lecture = json.data;
-            console.log(lecture);
 
-            // ✅ 기본 정보 표시
+            // ✅ 강의 기본 정보 렌더링
             document.getElementById("teacherName").innerText = lecture.teacherName;
             document.getElementById("lecture-title").innerText = lecture.title;
             document.getElementById("lecture-description").innerText = lecture.description;
@@ -150,28 +140,253 @@
             document.getElementById("lecture-difficulty").innerText = lecture.difficulty;
             document.getElementById("lecture-price").innerText = "₩" + lecture.price.toLocaleString();
 
-            // ✅ 썸네일 이미지 표시
-            const thumbnailElem = document.getElementById("lecture-thumbnail");
+            // ✅ 강의 목차 불러오기
+            const res = await fetch("/api/teachers/management/lectureindex/" + lectureId);
+            const jsondata = await res.json();
+            const indexList = jsondata.data || [];
+            console.log("목차정보");
+            console.log(indexList);
 
-            // ✅ 강의 목차 렌더링
-            const listBox = document.getElementById("lecture-list-box");
+
             listBox.innerHTML = "";
-            lecture.videos.forEach(video => {
-                const item = document.createElement("div");
-                item.classList.add("lecture-item");
-                item.innerHTML = `
-                <div class="lecture-index">${video.index}강</div>
-                <div class="lecture-info">
-                    <div class="lecture-title">${video.title}</div>
-                    <div class="lecture-file">파일: ${video.fileName}</div>
-                </div>
-            `;
-                listBox.appendChild(item);
+
+            if (indexList.length === 0) {
+                listBox.innerHTML = "<div>등록된 목차가 없습니다.</div>";
+            } else {
+                indexList.forEach(function(item, idx) {
+                    const div = document.createElement("div");
+                    div.classList.add("lecture-item");
+                    div.setAttribute("draggable", "true");
+                    div.dataset.id = item.lectureIndexId;
+
+                    div.innerHTML =
+                        '<div class="lecture-index">' + (item.indexNumber || (idx + 1)) + '강</div>' +
+                        '<div class="lecture-info">' +
+                        '<div class="lecture-title">' + item.indexTitle + '</div>' +
+                        '</div>' +
+                        '<div class="lecture-video-title">' + item.videoFileName + '</div>' +
+                        '<div class="lecture-actions">' +
+                        '   <button class="upload-btn">📹 업로드</button>' +
+                        '   <button class="delete-btn">✕</button>' +
+                        '</div>' +
+                        // ✅ 영상 리스트 컨테이너 추가
+                        '<div id="video-list-' + item.lectureIndexId + '" class="video-list-container"></div>';
+
+                    listBox.appendChild(div);
+                });
+
+
+
+
+            }
+
+            /* ✅ [1] X버튼 삭제 이벤트 */
+            listBox.addEventListener("click", async function(e) {
+                if (e.target.classList.contains("delete-btn")) {
+                    const item = e.target.closest(".lecture-item");
+                    const indexId = item.dataset.id;
+
+                    if (confirm("이 목차를 삭제하시겠습니까?")) {
+                        try {
+                            const res = await fetch("/api/teachers/management/lectureindex/" + indexId, {
+                                method: "DELETE"
+                            });
+                            const json = await res.json();
+
+                            if (json.success === true || json.statusCode === 200) {
+                                item.remove();
+
+                                const reordered = Array.from(listBox.querySelectorAll(".lecture-item")).map((item, i) => {
+                                    const title = item.querySelector(".lecture-title").innerText;
+                                    return {
+                                        lectureIndexId: Number(item.dataset.id),
+                                        indexNumber: i + 1,
+                                        indexTitle: title
+                                    };
+                                });
+
+                                console.log("📡 삭제 후 자동 재정렬:", reordered);
+
+                                const res2 = await fetch("/api/teachers/management/lectureindex/" + lectureId, {
+                                    method: "PUT",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify(reordered)
+                                });
+
+                                const json2 = await res2.json();
+                                console.log("update로직 실행됨 ✅", json2);
+
+                                if (json2.success === true || json2.statusCode === 200) {
+                                    console.log("✅ 삭제 후 순서 자동 업데이트 완료");
+                                    location.reload();
+                                } else {
+                                    console.warn("⚠ 삭제 후 순서 업데이트 실패:", json2.message);
+                                }
+
+                            } else {
+                                alert(json.message || "삭제 실패");
+                                console.warn("⚠ DELETE 응답 실패:", json);
+                            }
+                        } catch (err) {
+                            console.error("🚨 삭제 실패:", err);
+                        }
+                    }
+                }
+
+
+                if (e.target.classList.contains("upload-btn")) {
+                    const item = e.target.closest(".lecture-item");
+                    const indexId = item.dataset.id;
+
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.accept = "video/*";
+                    fileInput.click();
+
+                    fileInput.addEventListener("change", async (ev) => {
+                        const file = ev.target.files[0];
+                        if (!file) return;
+
+                        const form = new FormData();
+                        form.append("file", file);
+
+                        try {
+                            const res = await fetch("/api/teachers/management/lectureindex/" + indexId + "/video", {
+                                method: "POST", // ✅ PATCH → POST 로 수정
+                                body: form
+                            });
+                            const json = await res.json();
+
+                            if (json.success === true || json.statusCode === 200 || json.status === "OK") {
+                                alert("🎬 동영상 업로드 완료!");
+                                location.reload();
+                            } else {
+                                alert(json.message || "업로드 실패");
+                            }
+                        } catch (err) {
+                            console.error("🚨 동영상 업로드 실패:", err);
+                        }
+                    });
+                }
+
+
+
+
+
             });
+
+
+
+            /* ✅ [2] 드래그 앤 드롭 */
+            let draggedItem = null;
+
+            listBox.addEventListener("dragstart", function(e) {
+                if (e.target.classList.contains("lecture-item")) {
+                    draggedItem = e.target;
+                    e.target.style.opacity = "0.5";
+                }
+            });
+
+            listBox.addEventListener("dragend", function(e) {
+                e.target.style.opacity = "1";
+            });
+
+            listBox.addEventListener("dragover", function(e) {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(listBox, e.clientY);
+                if (afterElement == null) {
+                    listBox.appendChild(draggedItem);
+                } else {
+                    listBox.insertBefore(draggedItem, afterElement);
+                }
+            });
+
+            function getDragAfterElement(container, y) {
+                const draggableElements = [].slice.call(container.querySelectorAll(".lecture-item:not(.dragging)"));
+                return draggableElements.reduce(function(closest, child) {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+            }
+
+            /* ✅ [3] 순서 저장 버튼 */
+            const saveOrderBtn = document.createElement("button");
+            saveOrderBtn.textContent = "목차 순서 저장";
+            saveOrderBtn.classList.add("list-change-btn");
+            document.querySelector(".view-content").appendChild(saveOrderBtn);
+
+            saveOrderBtn.addEventListener("click", async function() {
+                const reordered = Array.from(listBox.querySelectorAll(".lecture-item")).map((item, i) => ({
+                    lectureIndexId: Number(item.dataset.id),   // ✅ 숫자로 변환
+                    indexNumber: Number(i + 1),                // ✅ 숫자로 변환
+                    indexTitle: item.querySelector(".lecture-title").innerText
+                }));
+
+                try {
+                    const res = await fetch("/api/teachers/management/lectureindex/" + lectureId, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(reordered)
+                    });
+                    const json = await res.json();
+                    if (json.success) {
+                        location.reload();
+                    } else {
+                        alert(json.message || "저장 실패");
+                    }
+                } catch (err) {
+                    console.error("🚨 순서 저장 실패:", err);
+                }
+            });
+
         } catch (err) {
-            console.error("🚨 강의 불러오기 실패:", err);
+            console.error("🚨 강의정보/목차 로드 실패:", err);
         }
+
+
+        /* ✅ [4] 새 목차 추가 버튼 */
+        const addBtn = document.createElement("button");
+        addBtn.textContent = "새 목차 추가";
+        addBtn.classList.add("list-change-btn");
+        document.querySelector(".view-content").appendChild(addBtn);
+
+        addBtn.addEventListener("click", async () => {
+            const title = prompt("새 목차 제목을 입력하세요:");
+            if (!title) return;
+
+            // 현재 마지막 번호 계산
+            const items = listBox.querySelectorAll(".lecture-item");
+            const newIndexNumber = items.length + 1;
+
+            try {
+                const res = await fetch("/api/teachers/management/lectureindex/" + lectureId, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        indexTitle: title,
+                        indexNumber: newIndexNumber
+                    })
+                });
+
+                const json = await res.json();
+                if (json.status === "OK") {
+                    alert("새 목차가 추가되었습니다!");
+                    location.reload(); // 새로고침으로 반영
+                } else {
+                    alert(json.message || "추가 실패");
+                }
+            } catch (err) {
+                console.error("🚨 목차 추가 실패:", err);
+            }
+            location.reload();
+        });
     });
+
 </script>
 
 <style>
@@ -292,18 +507,6 @@
         background: #fff;
     }
 
-    .lecture-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 15px;
-        margin-bottom: 12px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .lecture-item:last-child {
-        border-bottom: none;
-    }
 
     .button-box {
         display: flex;
@@ -324,5 +527,119 @@
 
     .edit-btn:hover { background: #d5f5e3; }
     .delete-btn:hover { background: #f5b7b1; }
+
+    /*
+    LIST PART CSS
+    */
+
+    .lecture-item{
+        display:grid;
+        grid-template-columns: 80px 1fr 280px auto; /* 번호 / 제목 / 파일명 / 버튼 */
+        column-gap:16px;
+        align-items:center;
+        padding:12px 16px;
+        margin-bottom:10px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        background:#fff;
+    }
+
+    .lecture-item.dragging {
+        opacity: 0.6;
+        background: #f1f8e9;
+    }
+
+    .delete-btn {
+        background: #ffebee;
+        color: #d32f2f;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 10px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+    .delete-btn:hover {
+        background: #ffcdd2;
+    }
+
+    .list-change-btn {
+        margin-top: 15px;
+        background: #81c784;
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .list-change-btn:hover {
+        background: #66bb6a;
+    }
+
+    /*
+    video button css
+    */
+    .lecture-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .upload-btn {
+        background: #e3f2fd;
+        color: #1565c0;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .upload-btn:hover {
+        background: #bbdefb;
+    }
+
+    .video-list-container {
+        margin-top: 20px;
+    }
+
+    .video-item {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #fafafa;
+    }
+
+
+    .lecture-index {
+        font-weight: 600;
+        text-align: center;
+        color: #333;
+    }
+
+    .lecture-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .lecture-video-title {
+        font-size: 14px;
+        color: #1565c0;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .lecture-actions {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
 
 </style>

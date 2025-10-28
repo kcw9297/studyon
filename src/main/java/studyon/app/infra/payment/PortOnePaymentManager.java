@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import studyon.app.common.constant.Param;
 import studyon.app.common.enums.AppStatus;
+import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.common.exception.ManagerException;
 import studyon.app.common.utils.StrUtils;
 
@@ -50,7 +51,7 @@ public class PortOnePaymentManager implements PaymentManager {
             else validatePaymentAmountAndReturnCode(serverResult, clientResult);
 
 
-        } catch (ManagerException e) {
+        } catch (BusinessLogicException e) {
             log.error(StrUtils.createLogStr(this.getClass(), "결제 처리 실패! 오류 : %s".formatted(e.getMessage())));
             throw e;
         }
@@ -79,7 +80,7 @@ public class PortOnePaymentManager implements PaymentManager {
             if (!Objects.equals(serverResult.getCode(), 0)) throwFailException(serverResult);
 
 
-        } catch (ManagerException e) {
+        } catch (BusinessLogicException e) {
             log.error(StrUtils.createLogStr(this.getClass(), "환불 처리 실패! 오류 : %s".formatted(e.getMessage())));
             throw e;
         }
@@ -106,15 +107,11 @@ public class PortOnePaymentManager implements PaymentManager {
 
         // [1] 오류 메세지 분석
         String message = serverResult.getMessage();
-        AppStatus appStatus;
 
-        // 오류 메세지별 AppStatus 매칭 수행
-        if (message.contains("존재하지 않는")) appStatus = AppStatus.PAYMENT_INVALID_PAYMENT_UID;
-        else if (message.contains("이미 취소된")) appStatus = AppStatus.PAYMENT_ALREADY_REFUNDED;
-        else appStatus = AppStatus.PAYMENT_LOGIC_FAILED;
-
-        // [2] 예외 던지기
-        throw new ManagerException(appStatus);
+        // [2] 메세지에 따라 비즈니스 로직 예외 던짐 (일부분만 처리)
+        if (message.contains("존재하지 않는")) throw new BusinessLogicException(AppStatus.PAYMENT_INVALID_PAYMENT_UID);
+        if (message.contains("이미 취소된")) throw new BusinessLogicException(AppStatus.PAYMENT_ALREADY_REFUNDED);
+        throw new ManagerException(AppStatus.PAYMENT_LOGIC_FAILED);
     }
 
     // 결제액수 검증
@@ -128,6 +125,6 @@ public class PortOnePaymentManager implements PaymentManager {
 
         // [2] 결제 액수 확인 후 검증. 실패 시 예외 던지기
         if (!Objects.equals(serverAmount, clientAmount))
-            throw new ManagerException(AppStatus.PAYMENT_INVALID_AMOUNT);
+            throw new BusinessLogicException(AppStatus.PAYMENT_INVALID_AMOUNT);
     }
 }

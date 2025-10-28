@@ -16,16 +16,24 @@ import java.util.Objects;
 
 public class EditorRangeValidator implements ConstraintValidator<EditorContentRange, String> {
 
+    // 사용자 오류 메세지
+    private String message;
+
+    @Override
+    public void initialize(EditorContentRange annotation) {
+        // 사용자 입력 오류 메세지
+        String message = annotation.message();
+        this.message = Objects.isNull(message) || message.isBlank() ?
+                "2000자 이하의 내용 작성" : message;
+    }
+
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        // [1] 검증 메세지 & 패턴
-        String message = "2000자 이하의 내용 작성";
-
-        // [2] 기본 메세지 비활성화
+        // [1] 기본 메세지 비활성화
         context.disableDefaultConstraintViolation();
 
-        // [3] html 태그 제거 후 검증 수행
+        // [2] html 태그 제거 후 검증 수행
         String pureContext = StrUtils.removeHtmlTags(value);
 
         if (Objects.isNull(pureContext) || pureContext.length() > 2000) {

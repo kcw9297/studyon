@@ -106,6 +106,10 @@ dependencies {
     // AWS cloudfront (SDK v1)
     implementation 'com.amazonaws:aws-java-sdk-cloudfront:1.12.772'
 
+    // ItextPDF (PDF 출력 관련)
+    implementation 'com.itextpdf:itextpdf:5.5.13.3'
+    implementation 'com.itextpdf.tool:xmlworker:5.5.13.1'
+
     // JUnit & Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

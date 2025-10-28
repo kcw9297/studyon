@@ -26,10 +26,10 @@ public interface MemberService {
     /**
      * 회원 목록 검색용
      * @param prq 검색 페이징 요청
-     * @param dto 멤버 검색 dto
+     * @param rq 멤버 검색 dto
      * @return 검색 필터된 회원 정보 목록
      */
-    Page.Response<MemberDTO.Read> search(Page.Request prq, MemberDTO.Search dto);
+    Page.Response<MemberDTO.Read> search(MemberDTO.Search rq, Page.Request prq);
 
     /**
      * 회원 프로필정보 조회
@@ -78,6 +78,14 @@ public interface MemberService {
      */
     void recover(Long memberId);
 
+    /**
+     * 회원 목록 PDF 생성
+     * @return PDF 바이트 배열
+     */
+    byte[] generateMemberListPdf(MemberDTO.Search rq);
 
-
+    /**
+     * 회원 활성/비활성 컨트롤
+     */
+    void toggleActive(Long memberId);
 }
