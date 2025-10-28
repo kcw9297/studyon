@@ -67,7 +67,7 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 최근 강의 정렬
-        return lectureRepository.findRecentLecturesBySubject(subject, pageable)
+        return lectureRepository.findRecentLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
@@ -84,7 +84,7 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 BEST 강의 정렬
-        return lectureRepository.findBestLecturesBySubject(subject, pageable)
+        return lectureRepository.findBestLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
@@ -99,7 +99,7 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 모든 강의 중 카운트만큼 최신순 정렬
-        return lectureRepository.findAllByOrderByPublishDateDesc(pageable)
+        return lectureRepository.findAllByOrderByPublishDateDesc(pageable, LectureRegisterStatus.REGISTERED)
                 .stream()
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
@@ -113,7 +113,7 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 모든 강의 중 카운트만큼 인기순 정렬
-        return lectureRepository.findAllByOrderByTotalStudentsDesc(pageable)
+        return lectureRepository.findAllByOrderByTotalStudentsDesc(pageable, LectureRegisterStatus.REGISTERED)
                 .stream()
                 .map(DTOMapper::toReadDTO)
                 .collect(Collectors.toList());
@@ -130,14 +130,13 @@ public class LectureServiceImpl implements LectureService {
         // [1] 정렬을 위해 필요한 변수 불러오기
         Pageable pageable = PageRequest.of(0, count);
         // [2] 해당하는 선생님 ID를 통해 Best 강의 조회 후 리스팅
-        return lectureRepository.findBestLecturesByTeacherId(teacherId, pageable)
+        return lectureRepository.findBestLecturesByTeacherId(teacherId, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
     /**
      * 선생님 최신 강의 조회
-     *
      * @param teacherId 선생님 아이디
      * @param count 리스트 카운트용 변수(보여지는 개수)
      * @return 해당 선생님 최신 강의 리스트
@@ -147,14 +146,14 @@ public class LectureServiceImpl implements LectureService {
         // [1] 정렬을 위해 필요한 변수 불러오기
         Pageable pageable = PageRequest.of(0, count);
         // [2] 해당하는 선생님 ID를 통해 최근 강의 조회 후 리스팅
-        return lectureRepository.findRecentLecturesByTeacherId(teacherId, pageable)
+        return lectureRepository.findRecentLecturesByTeacherId(teacherId, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
                 .collect(Collectors.toList());
     }
 
     @Override
-    public LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile) {
+    public LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile, LectureRegisterStatus status) {
         Teacher teacher = teacherRepository.findById(profile.getTeacherId()).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
         Lecture lecture = Lecture.builder()
                 .teacher(teacher)
@@ -164,6 +163,7 @@ public class LectureServiceImpl implements LectureService {
                 .subject(dto.getSubject())
                 .lectureTarget(dto.getTarget() != null ? dto.getTarget() : LectureTarget.HIGH1)
                 .description(dto.getDescription())
+                .lectureRegisterStatus(status)
                 .build();
 
         lectureRepository.save(lecture);

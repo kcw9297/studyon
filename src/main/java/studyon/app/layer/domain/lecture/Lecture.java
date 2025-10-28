@@ -101,13 +101,15 @@ public class Lecture extends BaseEntity {
 
     @Builder
     public Lecture(String title, String description, Long price,
-                   Difficulty difficulty, Teacher teacher,Subject subject,LectureTarget lectureTarget) {
+                   Difficulty difficulty, Teacher teacher, Subject subject,
+                   LectureTarget lectureTarget, LectureRegisterStatus lectureRegisterStatus) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.publishDate = LocalDateTime.now();
         this.lectureTarget = (lectureTarget != null) ? lectureTarget : LectureTarget.HIGH1;
 
+        this.lectureRegisterStatus = lectureRegisterStatus;
         this.difficulty = difficulty;
         this.videoCount = 0L;
         this.totalDuration = 0L;
