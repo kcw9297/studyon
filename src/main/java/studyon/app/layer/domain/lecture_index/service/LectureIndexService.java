@@ -19,4 +19,5 @@ public interface LectureIndexService {
     void createIndex(Long lectureId, Long teacherId, LectureIndexDTO.Write dto);
     void updateIndexes(Long lectureId, Long teacherId, List<LectureIndexDTO.Edit> dtos);
     void deleteIndex(Long lectureIndexId, Long teacherId);
+    List<LectureIndexDTO.Read> readMemberAllByLectureId(Long lectureId);
 }

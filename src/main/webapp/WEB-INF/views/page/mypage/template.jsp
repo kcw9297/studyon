@@ -69,3 +69,9 @@
         }
     });
 </script>
+
+<style>
+    .mypage-section{
+        width:100%;
+    }
+</style>
