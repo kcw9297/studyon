@@ -25,6 +25,7 @@ import java.util.List;
  * @author khj00
  * 20251023 Subject추가
  * 202251024 LectureRegisterStatus
+ * 20251028 좋아요 카운트 - phj
  */
 
 @Entity
@@ -157,5 +158,12 @@ public class Lecture extends BaseEntity {
         this.averageRate = avg;
     }
 
+    /* 좋아요 카운트 */
+    public Long getLikeCount() {
+        return likeCount;
+    }
 
+    public void setLikeCount(Long likeCount) {
+        this.likeCount = likeCount;
+    }
 }

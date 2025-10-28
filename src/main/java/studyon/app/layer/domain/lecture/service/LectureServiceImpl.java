@@ -2,8 +2,7 @@ package studyon.app.layer.domain.lecture.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.*;
@@ -20,17 +19,12 @@ import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
-import studyon.app.layer.domain.lecture_video.LectureVideo;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /*
