@@ -3,7 +3,10 @@ package studyon.app.layer.base.advice;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import studyon.app.common.enums.AppStatus;
@@ -26,13 +29,16 @@ import java.util.Objects;
 public class BaseControllerAdvice {
 
     /**
-     * 필요한 파라미터가 존재하지 않는 경우 예외 처리
+     * 필요한 파라미터를 정상적으로 받지 못한 경우 처리 예외
      */
-    @ExceptionHandler(value = {ManagerException.class})
-    public String handleBeanValidationEx(ConstraintViolationException e) {
+    @ExceptionHandler(value = {
+            MissingServletRequestParameterException.class,
+            ConstraintViolationException.class,
+            MethodArgumentTypeMismatchException.class,
+            MethodArgumentNotValidException.class})
+    public String handleBeanValidationEx(Exception e) {
         return ViewUtils.return403();
     }
-
 
     /**
      * 비즈니스 예외 처리
@@ -40,10 +46,10 @@ public class BaseControllerAdvice {
     @ExceptionHandler(value = BusinessLogicException.class)
     public String handleBusinessLogicEx(BusinessLogicException e) {
 
-        if (Objects.equals(e.getAppStatus(), AppStatus.AUTH_INVALID_REQUEST))
-            return ViewUtils.return403();
-
-        return ViewUtils.redirectHome();
+        return switch (e.getAppStatus()) {
+            case AUTH_INVALID_REQUEST, PAYMENT_INVALID_REQUEST -> ViewUtils.return403();
+            default -> ViewUtils.redirectHome();
+        };
     }
 
     /**

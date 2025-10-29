@@ -72,8 +72,6 @@ public class MemberLectureService {
         MemberLecture memberLecture = MemberLecture.builder()
                 .member(member)
                 .lecture(lecture)
-                .progress(0.0)
-                .completed(false)
                 .build();
 
         memberLectureRepository.save(memberLecture);

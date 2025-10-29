@@ -90,4 +90,12 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     """)
     Long findAllSales(@Param("start") LocalDateTime start,
                       @Param("end") LocalDateTime end);
+
+
+    @Query("""
+        SELECT CASE WHEN COUNT(p) > 0 THEN TRUE ELSE FALSE END
+        FROM Payment p
+        WHERE p.member.memberId = :memberId AND p.lecture.lectureId = :lectureId AND p.isRefunded = :isRefunded
+    """)
+    boolean existsByMemberIdAndLectureIdAndIsRefunded(Long memberId, Long lectureId, Boolean isRefunded);
 }

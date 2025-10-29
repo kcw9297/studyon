@@ -25,6 +25,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
         FROM Notice n
         LEFT JOIN FETCH n.noticeImage
         WHERE n.isActivate = :isActivate
+        ORDER BY n.idx ASC
     """)
     List<Notice> findAllWithFileByIsActivate(Boolean isActivate);
 

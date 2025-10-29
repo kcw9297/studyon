@@ -81,6 +81,7 @@ public final class Url {
 
     /* PAYMENT */
     public static final String PAYMENTS_API = API + PAYMENTS;
+    public static final String PAYMENTS_ADMIN_API = ADMIN + PAYMENTS_API;
 
     /* ADMIN */
     public static final String ADMIN_API = ADMIN + API;  // "/admin/api/home"
