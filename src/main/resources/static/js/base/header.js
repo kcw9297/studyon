@@ -2,8 +2,7 @@
 function logout(e) {
 
     fetch("/logout", {
-        method: "post",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        method: "post"
     })
         .then(async res => {
             const data = await res.json().catch(() => ({}));

@@ -20,8 +20,14 @@ public class PaymentSession implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String token; // 결제 검증 토큰
+
     private Long lectureId;
+
     private String thumbnailImagePath;
+
     private String lectureTitle;
+
+    private String lectureTeacherNickname;
+
     private Long price;
 }

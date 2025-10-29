@@ -261,8 +261,6 @@ public class DTOMapper {
                 .lectureQuestionId(entity.getLectureQuestionId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
-                .answerCount(entity.getAnswerCount())
-                .viewCount(entity.getViewCount())
                 .isSolved(entity.getIsSolved())
                 .lectureId(entity.getLecture().getLectureId())
                 .build();

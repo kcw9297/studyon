@@ -1,6 +1,7 @@
 <%@ page contentType ="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+
 <div id="content">
     <jsp:include page="lecture_summary.jsp"/>
     <jsp:include page="lecture_navigation.jsp"/>
@@ -69,7 +70,7 @@
 
 
         } catch (error) {
-            console.error('초기화 실패 오류:', error);
+            console.error('결제요청 실패 오류:', error);
         }
 
     })

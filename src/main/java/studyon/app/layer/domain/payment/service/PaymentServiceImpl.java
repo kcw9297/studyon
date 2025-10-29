@@ -113,7 +113,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
 
         Lecture lecture = lectureRepository
-                .findWithThumbnailFileByLectureIdAndOnSale(lectureId, true) // 판매 중인 강의만 조회
+                .findAllFetchByLectureIdAndOnSale(lectureId, true) // 판매 중인 강의만 조회
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
 
         // (환불하지 않은) 결제 이력이 존재하면, 재구매가 불가능하므로 예외 반환
@@ -124,7 +124,9 @@ public class PaymentServiceImpl implements PaymentService {
         // [2] 토큰 정보 및 결제할 강의 정보가 포함된 세션 발급
         String token = StrUtils.createUUID();
         String thumbnailImagePath = Objects.isNull(lecture.getThumbnailFile()) ? null : lecture.getThumbnailFile().getFilePath();
-        PaymentSession paymentSession = new PaymentSession(token, lectureId, thumbnailImagePath, lecture.getTitle(), lecture.getPrice());
+        PaymentSession paymentSession = new PaymentSession(
+                token, lectureId, thumbnailImagePath, lecture.getTitle(), lecture.getTeacher().getMember().getNickname(), lecture.getPrice()
+        );
 
         // [3] 세션 정보 저장 후 반환
         cacheManager.recordPaymentRequest(memberId, lectureId, paymentSession);
