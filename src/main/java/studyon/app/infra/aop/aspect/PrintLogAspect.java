@@ -88,6 +88,7 @@ public class PrintLogAspect {
         Signature signature = joinPoint.getSignature();
 
         // [2] 현재 JoinPoint가 최초 발생 지점과 일치하는 경우에만 로그 출력
+        if (Objects.isNull(origin)) return; // 로그 출력이 불가한 경우 하지 않음
         boolean isOriginClass = Objects.equals(signature.getDeclaringTypeName(), origin.getClassName());
         boolean isOriginMethod = Objects.equals(signature.getName(), origin.getMethodName());
         if (isOriginClass && isOriginMethod) doPrintError(origin, e);
@@ -105,15 +106,16 @@ public class PrintLogAspect {
      */
     private void doPrintError(StackTraceElement origin, Exception e) {
 
-        // [1] 로그 필요정보 추출
-        String className = origin.getClassName();
-        String methodName = origin.getMethodName();
-        int lineNumber = origin.getLineNumber();
-        String exClassName = e.getClass().getSimpleName();
-        String exMessage = e.getMessage();
+        try {
+            // [1] 로그 필요정보 추출
+            String className = origin.getClassName();
+            String methodName = origin.getMethodName();
+            int lineNumber = origin.getLineNumber();
+            String exClassName = e.getClass().getSimpleName();
+            String exMessage = e.getMessage();
 
-        // [2] Log DTO 생성 및 로그 출력 수행
-        log.error("""
+            // [2] Log DTO 생성 및 로그 출력 수행
+            log.error("""
         
         ┌─ ERROR DETAILS ───────────────────────────────────────────────────────────────
         │ Location:     {}
@@ -122,12 +124,14 @@ public class PrintLogAspect {
         │ Cause:        {}
         └───────────────────────────────────────────────────────────────────────────────
         """,
-                className,
-                methodName,
-                lineNumber,
-                exClassName,
-                exMessage
-        );
+                    className,
+                    methodName,
+                    lineNumber,
+                    exClassName,
+                    exMessage
+            );
+        } catch (Exception ex) {}
+
     }
 
 
@@ -137,13 +141,21 @@ public class PrintLogAspect {
         Throwable root = getRootCause(e);
 
         // [2] 우리 프로젝트에서 발생한 예외를 찾으면 반환
-        for (StackTraceElement element : root.getStackTrace()) {
+
+        StackTraceElement[] stackTrace = root.getStackTrace();
+        if (stackTrace == null || stackTrace.length == 0) {
+            // ✅ 스택이 비었을 때 방어
+            return null;
+        }
+
+        for (StackTraceElement element : stackTrace) {
+
             if (element.getClassName().startsWith("studyon.app")) {
                 return element;
             }
         }
         // [3] 못 찯은 경우 root cause의 첫 번째 스택 반환
-        return root.getStackTrace()[0];
+        return stackTrace[0];
     }
 
 

@@ -52,7 +52,9 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Page.Response<TeacherDTO.Read> readPagedList(TeacherDTO.Search rq, Page.Request prq) {
         // [1] 리스팅 카운트용 변수
-        log.info("[SERVICE] 강사 목록 조회 요청 - keyword={}, subject={}", rq.getKeyword(), rq.getSubject());
+        log.info("[SERVICE] 강사 목록 조회 요청 - keyword={}, subject={}",
+                rq.getKeyword(),
+                rq.getSubject() != null ? rq.getSubject().getValue() : "전체");
         List<TeacherDTO.Read> list = teacherMapper.findBySearch(rq, prq);
         Integer totalCount = teacherMapper.countBySearch(rq);
         // [2] 레포지토리에서 모든 선생님 정보 가져오기

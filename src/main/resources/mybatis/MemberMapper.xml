@@ -22,6 +22,12 @@
                     <when test="rq.filter eq 'email'">
                         AND m.email LIKE CONCAT('%', #{rq.keyword}, '%')
                     </when>
+                    <otherwise>
+                        AND (
+                        m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                        )
+                    </otherwise>
                 </choose>
             </if>
         ORDER BY m.member_id LIMIT #{prq.size} OFFSET #{prq.startPage}
@@ -45,6 +51,12 @@
                 <when test="rq.filter eq 'nickname'">
                     AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
+                <otherwise>
+                    AND (
+                    m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                    OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    )
+                </otherwise>
             </choose>
         </if>
 
@@ -92,6 +104,12 @@
                 <when test="rq.filter eq 'nickname'">
                     AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
+                <otherwise>
+                    AND (
+                    m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                    OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    )
+                </otherwise>
             </choose>
         </if>
 
@@ -120,7 +138,7 @@
         LIMIT #{prq.size} OFFSET #{prq.startPage}
     </select>
 
-    <!-- ✅ count 쿼리 동일 -->
+
     <select id="countBySearch"
             parameterType="map"
             resultType="Integer">
@@ -137,6 +155,12 @@
                 <when test="rq.filter eq 'nickname'">
                     AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
+                <otherwise>
+                    AND (
+                    m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                    OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    )
+                </otherwise>
             </choose>
         </if>
 
