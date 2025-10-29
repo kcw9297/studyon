@@ -10,36 +10,36 @@
             <nav class="sidebar">
                 <p class="sidebar-title">Home</p>
                 <ui>
-                    <li class="sidebar-text">
-                        <a href="/mypage/account"">
+                    <a href="/mypage/account">
+                        <li class="sidebar-text">
                             <input type="radio" name="mypage" value="계정 정보" id="account" checked>
                             <span>계정 정보</span>
-                        </a>
-                    </li>
+                        </li>
+                    </a>
                 </ui>
                 <p class="sidebar-title">학습 관리</p>
                 <ui>
-                    <li class="sidebar-text">
-                        <a href="lecture_management">
+                    <a href="lecture_management">
+                        <li class="sidebar-text">
                             <input type="radio" name="mypage" value="강의 관리" id="courses">
                             <span>강의 관리</span>
-                        </a>
-                    </li>
+                        </li>
+                    </a>
                 </ui>
                 <p class="sidebar-title">장바구니</p>
                 <ui>
-                    <li class="sidebar-text">
-                        <a href="likes">
+                    <a href="likes">
+                        <li class="sidebar-text">
                             <input type="radio" name="mypage" value="관심 목록" id="likes">
                             <span>관심 목록</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-text">
-                        <a href="payment">
+                        </li>
+                    </a>
+                    <a href="payments">
+                        <li class="sidebar-text">
                             <input type="radio" name="mypage" value="구매 내역" id="payments">
                             <span>구매 내역</span>
-                        </a>
-                    </li>
+                        </li>
+                    </a>
                 </ui>
             </nav>
         </aside>

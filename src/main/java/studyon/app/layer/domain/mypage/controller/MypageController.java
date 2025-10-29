@@ -3,6 +3,7 @@ package studyon.app.layer.domain.mypage.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,10 @@ import studyon.app.common.enums.View;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture_like.LectureLike;
 import studyon.app.layer.domain.lecture_like.service.LectureLikeService;
+import studyon.app.layer.domain.payment.Payment;
+import studyon.app.layer.domain.payment.repository.PaymentRepository;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -19,7 +23,7 @@ import java.util.*;
 @RequestMapping(Url.MYPAGE)
 @RequiredArgsConstructor
 public class MypageController {
-
+    private final PaymentRepository paymentRepository;
     private final LectureLikeService lectureLikeService;
 
     @GetMapping
@@ -50,7 +54,6 @@ public class MypageController {
         if (memberId != null) {
             lectureLikeService.deleteLike(memberId, lectureId);
         }
-
         return "redirect:/mypage/likes";
     }
 
@@ -60,9 +63,25 @@ public class MypageController {
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }
 
-    @GetMapping("/payment")
-    public String payment(Model model) {
-        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/payment.jsp");
+    @GetMapping("/payments")
+    public String payments(
+            @RequestParam(value="since", required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate since,
+            @RequestParam(value="until", required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until,
+            Model model, HttpSession session) {
+        Long memberId = (Long) session.getAttribute("memberId");
+
+        // 기본값: 이번 달 1일 ~ 말일
+        LocalDate now = LocalDate.now();
+        if (since == null) since = now.withDayOfMonth(1);
+        if (until == null) until = now.withDayOfMonth(now.lengthOfMonth());
+
+        // 내역 조회
+        List<Payment> paymentList = paymentRepository.findWithMemberAndLectureByMemberIdAndDateRange(memberId, since.atStartOfDay(), until.atTime(23,59,59));
+
+        model.addAttribute("paymentList", paymentList);
+        model.addAttribute("sinceDate", since);
+        model.addAttribute("untilDate", until);
+        model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/payments.jsp");
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }
 

@@ -70,47 +70,20 @@ a{color:inherit; text-decoration:none}
 .courses-text2{color:var(--deep-gray)}
 
 
-/* ===== coupons(쿠폰) ===== */
-.coupons{width:1100px;min-height:850px; display:flex; flex-direction:column; padding:20px; border:1px solid var(--light-gray); border-radius:20px; font-family:"Inter",sans-serif; font-style:normal; font-size:16px;}
-/* 쿠폰 코드 입력 */
-.coupons-issue{display:flex; flex-direction:row; width:100%; padding:5px; margin-bottom:10px;}
-.coupons-input{width:100%; height:auto; margin-right:10px;}
-.coupons-input input{width:100%; padding:10px 20px; border:1px solid var(--light-gray); border-radius:10px;}
-.coupons-button button{width:100px; padding:10px; border:none; border-radius:10px; color:white; font-weight:var(--bold); background-color:var(--deep-yellow); cursor:pointer;}
-.coupons-button button:disabled{background-color:var(--deep-gray); cursor:not-allowed;}
-/* 쿠폰 목록 */
-.coupons-list{display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:10px; align-items:start;}
-.coupons-item{list-style:none;}
-.coupons-item button{all:unset; width:440px; height:auto; padding:30px; border:1px solid var(--light-gray); border-radius:15px;}
-.coupons-item button:hover{background-color:var(--background-gray); cursor:pointer;}
-.coupons-top, .coupons-bottom{display:flex; flex-direction:column;}
-.coupons-open, .coupons-close{display:flex; flex-direction:row; align-items: center;}
-/* 쿠폰 목록 - 세부사항 */
-.coupons-book{width:100%; display:flex; justify-content:space-between; margin-bottom:10px;}
-.coupons-count{color:var(--deep-red); font-weight:var(--bold); font-size:26px;}
-.coupons-countdown{padding:5px 10px; border:1px solid var(--deep-red); border-radius:8px; color:var(--deep-red); text-align:center;}
-.coupons-big{font-size:20px; font-weight:var(--bold);}
-.coupons-middle{margin-top:10px; color:var(--deep-gray);}
-.coupons-small{display:flex; flex-direction:column; margin-top:10px; line-height:1; color:var(--deep-gray); font-size:14px;}
-.coupons-small p{margin:2px 0 2px 0;}
-.coupons-open img{width:10px; height:10px; margin:10px 0 0 5px; transform:rotate(180deg);}
-.coupons-close img{width:10px; height:10px; margin:10px 0 0 5px;}
-
-
 /* ===== likes(관심 목록) ===== */
 .likes{min-height:700px; display:flex; flex-direction:column; padding:20px; border:1px solid var(--light-gray); border-radius:20px; font-family:"Inter",sans-serif; font-style:normal; font-size:16px;}
 /* 강의 목록 */
 .likes-list{display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px 40px; padding:10px;}
-.likes-item{display:flex; flex-direction:column; width:320px; height:auto;}
-.likes-thumbnail{position:relative;}
+.likes-item{display:flex; flex-direction:column; gap:5px; width:320px; height:auto;}
+.likes-thumbnail{position:relative; width:320px; height:180px;}
 .likes-thumbnail img{width:320px; height:180px; border-radius:15px;}
 .likes-deleteIcon img{width:25px; height:25px; position:absolute; top:10px; right:10px; z-index:2;}
-.likes-deleteIcon form{display:inline; margin:0; padding:0; border:0;}
+.likes-deleteIcon{display:inline-block; margin:0; padding:0; border:0; line-height:0; font-size:0; background:none;}
 .likes-deleteIcon button{all:unset;}
-.likes-lecture{margin-bottom:8px; font-size:20px; font-weight:var(--bold);}
-.likes-teacher{margin-bottom:5px; font-size:18px;}
+.likes-lecture{font-size:20px; font-weight:var(--bold);}
+.likes-teacher{font-size:18px;}
 .likes-price{font-size:18px; font-weight:var(--bold);}
-.likes-report{display:flex; flex-direction:row; margin-bottom:5px;}
+.likes-report{display:flex; flex-direction:row;}
 .likes-review, .likes-student{display:flex; flex-direction:row; margin-right:10px;}
 /* 강의 목록 - 평점&수강생 */
 .likes-star{margin-right:5px; color:var(--star);}
@@ -124,10 +97,10 @@ a{color:inherit; text-decoration:none}
 .payments{min-height:700px; display:flex; flex-direction:column; padding:20px; border:1px solid var(--light-gray); border-radius:20px; font-family:"Inter",sans-serif; font-style:normal; font-size:16px;}
 /* 날짜 조회 */
 .parameters-top{width:1060px; display:flex; flex-direction:row; justify-content:center; padding:10px;}
-.parameters-top button{height:35px; margin-left:20px; padding:5px 10px; border:none; border-radius:10px; color:white; font-size:18px; font-weight:var(--bold); background-color:var(--deep-yellow); cursor:pointer;}
+.parameters-top button{height:25px; margin-left:20px; padding:5px 10px; border:none; border-radius:10px; color:white; font-size:18px; font-weight:var(--bold); background-color:var(--deep-yellow); cursor:pointer;}
 .payments-date{display:flex; flex-direction:row; align-items:center;}
 .parameters-start, .parameters-last{height:35px; align-items:center;}
-.parameters-start input, .parameters-last input{box-sizing:border-box; width:160px; height:35px; padding:5px 10px; border:1px solid var(--light-gray); border-radius:10px; font-family:"Inter", sans-serif; font-size: 18px;}
+.parameters-start input, .parameters-last input{box-sizing:border-box; width:160px; height:35px; padding:5px 10px; border:1px solid var(--light-gray); border-radius:10px; font-family:"Inter", sans-serif; font-size:18px; cursor:pointer;}
 .parameters-and{margin: 0 10px; font-size:18px; font-weight:var(--bold);}
 /* 구매 목록 */
 .parameters-bottom{width:1060px; padding:10px; margin-top:10px;}
