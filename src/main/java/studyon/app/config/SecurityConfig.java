@@ -72,7 +72,7 @@ public class SecurityConfig {
     private static final String FILE_ALL = Url.FILE + "/**";
     private static final String HOME_API_ALL = Url.HOME_API + "/**";
     private static final String PAYMENT_ALL = Url.PAYMENT + "/**";
-    private static final String PAYMENTS_ALL = Url.PAYMENTS + "/**";
+    private static final String PAYMENTS_API_ALL = Url.PAYMENTS_API + "/**";
     private static final String NOTICES_API_ALL = Url.NOTICES_API + "/**";
 
     // 결제
@@ -89,7 +89,7 @@ public class SecurityConfig {
 
     public static final String[] STUDENT =
             {
-                    MYPAGE_ALL, PAYMENT_ALL, PAYMENTS_ALL
+                    MYPAGE_ALL, PAYMENT_ALL, PAYMENTS_API_ALL,
             };
 
 

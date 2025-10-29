@@ -3,10 +3,16 @@ package studyon.app.layer.domain.lecture_question.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import studyon.app.common.enums.AppStatus;
+import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.utils.DTOMapper;
+import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture.repository.LectureRepository;
+import studyon.app.layer.domain.lecture_question.LectureQuestion;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_question.repository.LectureQuestionRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +33,7 @@ import java.util.Optional;
 public class LectureQuestionServiceImpl implements LectureQuestionService {
 
     private final LectureQuestionRepository lectureQuestionRepository;
+    private final LectureRepository lectureRepository;
 
     @Override
     public List<LectureQuestionDTO.Read> readAllQuestions() {
@@ -50,4 +57,29 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
     public void deleteQuestion(Long id) {
 
     }
+
+    @Override
+    public void register(LectureQuestionDTO.Write rq) {
+
+        Lecture lecture = lectureRepository.findById(rq.getLectureId()).orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+        LectureQuestion entity = LectureQuestion.builder()
+                .title(rq.getTitle())
+                .content(rq.getContent())
+                .lecture(lecture)
+                .build();
+
+    }
+
+    public static class Write {
+        private Long lectureQuestionId;
+        private Long lectureId;
+        private String title;
+        private String content;
+        private Long memberId;
+        private String memberNickname;
+        private LocalDateTime createdAt;
+    }
+
+
+
 }

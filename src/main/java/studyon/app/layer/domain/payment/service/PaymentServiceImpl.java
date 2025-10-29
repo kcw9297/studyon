@@ -2,29 +2,34 @@ package studyon.app.layer.domain.payment.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.enums.AppStatus;
+import studyon.app.common.enums.Role;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.common.exception.PaymentException;
 import studyon.app.common.utils.StrUtils;
+import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.infra.payment.PaymentManager;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.member.Member;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.repository.MemberRepository;
+import studyon.app.layer.domain.member_lecture.MemberLecture;
+import studyon.app.layer.domain.member_lecture.repository.MemberLectureRepository;
 import studyon.app.layer.domain.payment.Payment;
 import studyon.app.layer.domain.payment.PaymentDTO;
+import studyon.app.layer.domain.payment.PaymentSession;
 import studyon.app.layer.domain.payment.mapper.PaymentMapper;
 import studyon.app.layer.domain.payment.repository.PaymentRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 결제 서비스 인터페이스 구현체
@@ -42,8 +47,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentMapper paymentMapper;
     private final MemberRepository memberRepository;
     private final LectureRepository lectureRepository;
+    private final MemberLectureRepository memberLectureRepository;
 
     private final PaymentManager paymentManager;
+    private final CacheManager cacheManager;
 
 
     @Override
@@ -79,43 +86,92 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(readOnly = true)
-    public PaymentDTO.Read read(Long paymentId) {
-        return paymentRepository
+    public PaymentDTO.Read read(Long paymentId, MemberProfile profile) {
+
+        // [1] 결제정보 조회
+        Payment payment = paymentRepository
                 .findWithMemberById(paymentId)
-                .map(DTOMapper::toReadDTO)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.PAYMENT_NOT_FOUND));
+
+        // [2] 조회 가능여부 검증
+        boolean isOwner = Objects.equals(profile.getMemberId(), payment.getMember().getMemberId());
+        boolean isAdmin = Objects.equals(profile.getRole(), Role.ROLE_ADMIN);
+
+        // 관리자도 아닌데, 주인도 아닌 경우 예외 반환
+        if (!isAdmin && !isOwner) throw new BusinessLogicException(AppStatus.ACCESS_DENIED);
+        return DTOMapper.toReadDTO(payment);
     }
 
 
-    @Cacheable(
-            cacheNames = "payment:",
-            key = "#memberId + ':' + #lectureId",
-            unless = "#result == null"  // null이면 캐시 안 함
-    )
     @Override
-    public void verify(Long memberId, Long lectureId) {
+    @Transactional(readOnly = true)
+    public PaymentSession access(Long memberId, Long lectureId) {
 
-        // [1] 구매 회원 & 강의 정보 조회
+        // [1] 구매 회원 & 강의 정보 & 결제 정보 조회
         Member member = memberRepository
                 .findByMemberIdAndIsActive(memberId, true) // 활성 상태의 회원만 조회
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
 
         Lecture lecture = lectureRepository
-                .findByLectureIdAndOnSale(lectureId, true) // 판매 중인 강의만 조회
+                .findWithThumbnailFileByLectureIdAndOnSale(lectureId, true) // 판매 중인 강의만 조회
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
 
+        // (환불하지 않은) 결제 이력이 존재하면, 재구매가 불가능하므로 예외 반환
+        boolean isExistPayment = paymentRepository.existsByMemberIdAndLectureIdAndIsRefunded(memberId, lectureId, false);
+        if (isExistPayment) throw new BusinessLogicException(AppStatus.PAYMENT_ALREADY_PAYED);
 
-        // [2] 회원이 잘 조회된 경우 (+ 로직을 호출했으므로 세션도 무사 존재)
+
+        // [2] 토큰 정보 및 결제할 강의 정보가 포함된 세션 발급
+        String token = StrUtils.createUUID();
+        String thumbnailImagePath = Objects.isNull(lecture.getThumbnailFile()) ? null : lecture.getThumbnailFile().getFilePath();
+        PaymentSession paymentSession = new PaymentSession(token, lectureId, thumbnailImagePath, lecture.getTitle(), lecture.getPrice());
+
+        // [3] 세션 정보 저장 후 반환
+        cacheManager.recordPaymentRequest(memberId, lectureId, paymentSession);
+        return paymentSession;
     }
 
-    @CacheEvict( // 캐시 삭제
-            cacheNames = "payment:",
-            key = "#memberId + ':' + #lectureId"
-    )
+
+    @Override
+    @Transactional(readOnly = true)
+    public PaymentSession verify(Long memberId, Long lectureId, String token) {
+
+        // [1] 결제 세션 조회. 존재하지 않거나, 토큰 정보가 다르면 유효하지 않은 접근으로 판단
+        PaymentSession paymentRequest = cacheManager.getPaymentRequest(memberId, lectureId, PaymentSession.class);
+        log.warn("paymentRequest = {}", paymentRequest);
+        if (Objects.isNull(paymentRequest) || !Objects.equals(paymentRequest.getToken(), token))
+            throw new BusinessLogicException(AppStatus.PAYMENT_INVALID_REQUEST);
+
+        // [2] 구매 회원 & 강의 정보 존재 & 구매여부 반환
+        boolean isExistMember = memberRepository.existsByMemberIdAndIsActive(memberId, true);
+        if (!isExistMember) throw new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND);
+
+        boolean isExistLecture = lectureRepository.existsByLectureIdAndOnSale(lectureId, true);
+        if (!isExistLecture) throw new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND);
+
+        // (환불하지 않은) 결제 이력이 존재하면, 재구매가 불가능하므로 예외 반환
+        boolean isExistPayment = paymentRepository.existsByMemberIdAndLectureIdAndIsRefunded(memberId, lectureId, false);
+        if (isExistPayment) throw new BusinessLogicException(AppStatus.PAYMENT_ALREADY_PAYED);
+
+        // [3] 검증 통과 시, 결제 세션정보 반환
+        return paymentRequest;
+    }
+
+
     @Override
     public PaymentDTO.Read pay(PaymentDTO.Pay rq) {
 
         try {
+
+            // [1] 결제 세션 조회. 존재하지 않거나, 토큰 정보가 다르면 유효하지 않은 접근으로 판단
+            // 이를 검증하지 않으면 한 번만 구매 가능한 강의를 중복 구매처리될 수 있음
+            PaymentSession paymentRequest =
+                    cacheManager.getAndDeletePaymentRequest(rq.getMemberId(), rq.getLectureId(), PaymentSession.class);
+
+            if (Objects.isNull(paymentRequest) || !Objects.equals(paymentRequest.getToken(), rq.getToken()))
+                throw new BusinessLogicException(AppStatus.PAYMENT_INVALID_REQUEST);
+
+
             // [1] 결제 검증 수행 (결제 결과가 조작되었거나, 다른 이유로 실패하면 예외 반환)
             paymentManager.checkPayment(rq.getPaymentApiResult());
 
@@ -128,8 +184,13 @@ public class PaymentServiceImpl implements PaymentService {
                     .findByLectureIdAndOnSale(rq.getLectureId(), true) // 판매 중인 강의만 조회
                     .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
 
-            // [3] 결제 엔티티 생성 및 저장
+            // (환불하지 않은) 결제 이력이 존재하면, 재구매가 불가능하므로 예외 반환
+            boolean isExistPayment = paymentRepository.existsByMemberIdAndLectureIdAndIsRefunded(rq.getMemberId(), rq.getLectureId(), false);
+            if (isExistPayment) throw new BusinessLogicException(AppStatus.PAYMENT_ALREADY_PAYED);
+
+            // [3] 결제 및 회원강의 엔티티 생성
             Payment savedPayment = paymentRepository.save(DTOMapper.toEntity(rq, member, lecture));
+            memberLectureRepository.save(new MemberLecture(member, lecture));
 
             // [4] 로그 기록을 위한 정보 저장 후 반환
             return DTOMapper.toReadDTO(savedPayment);

@@ -141,8 +141,8 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     /* 강의 정보 조회 - 강의소개 페이지 */
     @Query("""
         SELECT l FROM Lecture l
-        JOIN FETCH l.teacher t
-        JOIN FETCH t.member m
+        LEFT JOIN FETCH l.teacher t
+        LEFT JOIN FETCH t.member m
         WHERE l.lectureId = :id
         """)
     Optional<Lecture> findWithTeacherById(@Param("id") Long lectureId);
@@ -151,4 +151,14 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     Long countByTeacher_TeacherId(Long teacherId);
 
     Optional<Lecture> findByLectureIdAndOnSale(Long lectureId, Boolean onSale);
+
+    boolean existsByLectureIdAndOnSale(Long lectureId, Boolean onSale);
+
+    @Query("""
+        SELECT l
+        FROM Lecture l
+        LEFT JOIN FETCH l.thumbnailFile t
+        WHERE l.lectureId = :lectureId AND l.onSale = :onSale
+        """)
+    Optional<Lecture> findWithThumbnailFileByLectureIdAndOnSale(Long lectureId, Boolean onSale);
 }

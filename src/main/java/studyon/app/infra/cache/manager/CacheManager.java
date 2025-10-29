@@ -85,7 +85,38 @@ public interface CacheManager {
      * 인증 요청 삭제
      * @param token 인증 토큰 값
      */
-    boolean removeAuthRequest(String token);
+    void removeAuthRequest(String token);
+
+
+    /**
+     * 결제 인증 토큰 정보를 담은 요청 저장 (기존 요청이 있다면 새롭게 대체하여 토큰 값 변경)
+     * @param memberId       결제 대상 회원번호
+     * @param lectureId      결제 대상 강의번호
+     * @param paymentRequest 결제 정보 객체 (토큰 정보 포함)
+     */
+     void recordPaymentRequest(Long memberId, Long lectureId, Object paymentRequest);
+
+
+    /**
+     * 결제 인증 토큰 정보를 담은 요청 저장 (기존 요청이 있다면 새롭게 대체하여 토큰 값 변경)
+     * @param memberId  결제 대상 회원번호
+     * @param lectureId 결제 대상 강의번호
+     * @param dataType  저장된 결제 객체 타입
+     * @return 만료되지 않은 경우, 저장된 결제 정보 (만료 시 null)
+     */
+     <T> T getPaymentRequest(Long memberId, Long lectureId, Class<T> dataType);
+
+
+    /**
+     * 결제 인증 토큰 정보를 담은 요청 저장 (조회 후 인증요청 삭제)
+     * @param memberId  결제 대상 회원번호
+     * @param lectureId 결제 대상 강의번호
+     * @param dataType  저장된 결제 객체 타입
+     * @return 만료되지 않은 경우, 저장된 결제 정보 (만료 시 null)
+     */
+    <T> T getAndDeletePaymentRequest(Long memberId, Long lectureId, Class<T> dataType);
+
+
 
 
     /**

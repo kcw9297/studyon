@@ -1,7 +1,9 @@
 package studyon.app.layer.domain.payment.service;
 
 import studyon.app.layer.base.dto.Page;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.payment.PaymentDTO;
+import studyon.app.layer.domain.payment.PaymentSession;
 
 import java.time.Duration;
 import java.util.List;
@@ -40,18 +42,30 @@ public interface PaymentService {
 
     /**
      * 특정 결제정보 조회
-     * @param paymentId 결제번호 (서버 내에서 사용하는 번호)
-     * @return N개월 내의 결제정보 리스트
+     * @param paymentId 대상 결제번호
+     * @param profile   회원 프로필 정보
+     * @return 단일 결제정보
      */
-    PaymentDTO.Read read(Long paymentId);
+    PaymentDTO.Read read(Long paymentId, MemberProfile profile);
+
+
+    /**
+     * 결제 페이지 접근
+     * @param memberId  주문 대상 회원번호
+     * @param lectureId 대상 강의번호
+     * @return 검증 후 생성된 결제세션 데이터
+     */
+    PaymentSession access(Long memberId, Long lectureId);
 
 
     /**
      * 결제 수행
-     * @param memberId 주문 대상 회원번호
-     * @param lectureId 대상 결제번호
+     * @param memberId  주문 대상 회원번호
+     * @param lectureId 대상 강의번호
+     * @param token 결제 토큰번호
+     * @return 현재 결제를 진행중인 결제 세션정보
      */
-    void verify(Long memberId, Long lectureId);
+    PaymentSession verify(Long memberId, Long lectureId, String token);
 
 
     /**
@@ -60,9 +74,6 @@ public interface PaymentService {
      * @return 수행된 결제정보
      */
     PaymentDTO.Read pay(PaymentDTO.Pay dto);
-
-
-
 
     /**
      * 강의 환불 (현재는 구매가 하나만 가능하여, 모두 환불)

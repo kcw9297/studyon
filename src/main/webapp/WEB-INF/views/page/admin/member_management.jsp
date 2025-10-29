@@ -11,7 +11,7 @@
 
 <div class="admin-content-container">
     <div class="admin-header-bar">
-        <h2 class="admin-page-title">회원 조회</h2>
+        <h2 class="admin-page-title">회원 관리</h2>
         <button id="downloadPdfBtn" class="btn-download">PDF로 저장</button>
     </div>
     <!-- 검색 바 -->
@@ -113,8 +113,9 @@
             -->
         </table>
         <!-- 페이징 -->
-        <div id="pagination" class="pagination-container"></div>
+        <div id="pagination" class="pagination"></div>
     </div>
+
 </div>
 
 

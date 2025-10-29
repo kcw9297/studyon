@@ -148,18 +148,20 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!totalPages || totalPages <= 0) return;
 
         const maxVisible = 5;
-        let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-        let end = Math.min(totalPages, start + maxVisible - 1);
-
-        if (end - start < maxVisible - 1) {
-            start = Math.max(1, end - maxVisible + 1);
-        }
+        const currentGroup = Math.ceil(currentPage / maxVisible);
+        const start = (currentGroup - 1) * maxVisible + 1;
+        const end = Math.min(totalPages, start + maxVisible - 1);
 
         // 이전 버튼
         const prev = document.createElement("button");
         prev.textContent = "◀";
-        prev.className = `page-btn ${currentPage === 1 ? "disabled" : ""}`;
-        prev.onclick = () => currentPage > 1 && loadMembers(currentPage - 1);
+        prev.className = `page-btn ${currentGroup === 1 ? "disabled" : ""}`;
+        prev.onclick = () => {
+            if (currentGroup > 1) {
+                const prevGroupLastPage = (currentGroup - 2) * maxVisible + 1;
+                loadMembers(prevGroupLastPage);
+            }
+        };
         pagination.appendChild(prev);
 
         // 페이지 번호
@@ -171,11 +173,16 @@ document.addEventListener("DOMContentLoaded", () => {
             pagination.appendChild(btn);
         }
 
-        // 다음 버튼
+        // ▶ 다음 그룹 버튼
         const next = document.createElement("button");
         next.textContent = "▶";
-        next.className = `page-btn ${currentPage === totalPages ? "disabled" : ""}`;
-        next.onclick = () => currentPage < totalPages && loadMembers(currentPage + 1);
+        next.className = `page-btn ${end >= totalPages ? "disabled" : ""}`;
+        next.onclick = () => {
+            if (end < totalPages) {
+                const nextGroupFirstPage = end + 1;
+                loadMembers(nextGroupFirstPage);
+            }
+        };
         pagination.appendChild(next);
     }
 

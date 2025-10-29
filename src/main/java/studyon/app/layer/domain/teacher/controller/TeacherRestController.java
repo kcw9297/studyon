@@ -15,6 +15,7 @@ import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
@@ -64,10 +65,10 @@ public class TeacherRestController {
      */
 
     @GetMapping
-    public ResponseEntity<?> getAllTeachers(@ModelAttribute TeacherDTO.Search rq) {
+    public ResponseEntity<?> getAllTeachers(@ModelAttribute TeacherDTO.Search rq, Page.Request prq) {
         log.info(" 선생님 전체 정보 GET 요청: 모든 선생님 조회");
         // [1] 모든 선생님 정보 가져와서 리스팅
-        List<TeacherDTO.Read> teachers = teacherService.readAllTeachers();
+        Page.Response<TeacherDTO.Read> teachers = teacherService.readPagedList(rq, prq);
         // [2] 리스팅한 정보 리턴하기
         return RestUtils.ok(teachers);
     }

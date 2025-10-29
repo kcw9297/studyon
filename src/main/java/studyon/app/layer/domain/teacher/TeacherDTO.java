@@ -4,6 +4,7 @@ import lombok.*;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.Lecture;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /*
@@ -36,6 +37,13 @@ public class TeacherDTO {
         private Double averageRating;
 
         private String nickname;
+
+        // 관리자 테이블용 (member 테이블)
+        private String email;
+        private String role;
+        private boolean active;
+        private LocalDateTime createdAt;
+        private LocalDateTime lastLoginAt;
     }
 
     @Data
