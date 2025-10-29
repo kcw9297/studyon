@@ -23,7 +23,7 @@ public class MemberCouponDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long memberCouponId;
         private LocalDateTime issuedAt;
@@ -36,7 +36,7 @@ public class MemberCouponDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private Long couponId; // 어떤 쿠폰을 발급할지
         private Long memberId; // 어떤 회원에게 줄지
@@ -46,7 +46,7 @@ public class MemberCouponDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long memberCouponId;
         private LocalDateTime usedAt;

@@ -14,13 +14,13 @@ import java.io.Serializable;
  * @author kcw97
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class AuthDTO {
 
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Join implements Serializable {
 
         @Serial

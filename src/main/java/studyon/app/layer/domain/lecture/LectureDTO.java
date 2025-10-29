@@ -7,6 +7,7 @@ import studyon.app.common.enums.*;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,12 +17,12 @@ import java.util.List;
  */
 
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class LectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long lectureId;
 
@@ -50,7 +51,7 @@ public class LectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private Long teacherId;
         private String title;
@@ -64,7 +65,7 @@ public class LectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long lectureId;
         private Long teacherId;
@@ -78,17 +79,35 @@ public class LectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Search {
-        private String filter; // "title", "difficulty", "controller"
+
+        // 사용자가 검색하는 값
+        private String filter = "";
         private String keyword;
-        private Subject subject;
+        private List<String> subjects;
+        private List<String> subjectDetails;
+        private List<String> difficulties;
+        private String sort;
+
+        // 서버 제공 값
+        private Long memberId;
+        private Subject subject; // 단일 조회 시
+
+        // 객체 생성 시 사용자 옵션 초기화
+        public Search() {
+            this.filter = "";
+            this.keyword = "";
+            this.sort = "";
+            this.subjects = new ArrayList<>();
+            this.subjectDetails = new ArrayList<>();
+            this.difficulties = new ArrayList<>();
+        }
     }
 
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Register {
         private Long teacherId;
         private String title;
@@ -105,7 +124,7 @@ public class LectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class ReadLectureInfo {
         private Long teacherId;
         private String title;
@@ -121,7 +140,7 @@ public class LectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class LectureVideoInfo {
         private String indexTitle;
         private Integer indexNumber;

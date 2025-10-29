@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
  * @author khj00
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class LectureAnswerDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long lectureAnswerId;
         private String content;
@@ -33,7 +33,7 @@ public class LectureAnswerDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private String content;
         private Long lectureQuestionId;
@@ -44,7 +44,7 @@ public class LectureAnswerDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long lectureAnswerId;
         private String content;

@@ -53,10 +53,8 @@ public enum SubjectDetail {
     SCIENCE_PHYSICS_II("물리 II", "SCIENCE"),
     SCIENCE_CHEMISTRY_II("화학 II", "SCIENCE"),
     SCIENCE_BIOLOGY_II("생명과학 II", "SCIENCE"),
-    SCIENCE_EARTH_II("지구과학 II", "SCIENCE"),
+    SCIENCE_EARTH_II("지구과학 II", "SCIENCE");
 
-    // ✅ 기타
-    UNKNOWN("기타", "UNKNOWN");
 
     private final String name;    // 표시 이름 (한글)
     private final String parent;  // 1차 과목 ENUM 코드 (MATH, ENGLISH 등)

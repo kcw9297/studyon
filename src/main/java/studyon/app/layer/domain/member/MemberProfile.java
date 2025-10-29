@@ -23,7 +23,7 @@ import java.io.Serializable;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public final class MemberProfile implements Serializable {
 
     @Serial

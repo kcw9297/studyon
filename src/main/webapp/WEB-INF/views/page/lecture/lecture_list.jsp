@@ -18,69 +18,83 @@
             </div>
         </div>
 
-        <!-- ✅ 메인 컨텐츠 -->
+        <!--메인 컨텐츠 -->
         <div class="main-content-container">
             <div class="search-box">
-                <form id="lecture-search-form" method="get" action="<c:url value='/lecture/recommend/search'/>">
+                <form id="lecture-search-form" method="get">
                     <!-- 검색 구분 -->
                     <div class="filter-row">
                         <label>검색 구분:</label>
-                        <select name="searchType">
-                            <option value="ALL">전체</option>
-                            <option value="TITLE">강의명</option>
-                            <option value="CONTENT">내용</option>
-                            <option value="TEACHER">선생님</option>
+                        <select name="filter">
+                            <option value="">전체</option>
+                            <c:forEach var="filter" items="${filters}">
+                                <option value="${filter}" <c:if test="${param.filter eq filter}">selected</c:if>>
+                                        ${filter.value}
+                                </option>
+                            </c:forEach>
                         </select>
 
                         <label>검색어:</label>
-                        <input type="text" name="keyword" placeholder="검색어를 입력하세요">
+                        <input type="text" name="keyword" placeholder="검색어를 입력하세요" value="${param.keyword}">
                     </div>
 
                     <!-- 카테고리 -->
                     <div class="filter-row">
-                        <label>카테고리 1차:</label>
-                        <label><input type="radio" name="category1" value="MATH"> 수학</label>
-                        <label><input type="radio" name="category1" value="ENGLISH"> 영어</label>
-                        <label><input type="radio" name="category1" value="KOREAN"> 국어</label>
-                        <label><input type="radio" name="category1" value="SCIENCE"> 과학탐구</label>
-                        <label><input type="radio" name="category1" value="SOCIAL"> 사회탐구</label>
+                        <label>과목:</label>
+                        <c:forEach var="subject" items="${subjects}">
+                            <label>
+                                <input type="checkbox" name="subjects" value="${subject}"
+                                       <c:if test="${fn:contains(selectedSubjects, subject.name())}">checked</c:if>>
+                                    ${subject.value}
+                            </label>
+                        </c:forEach>
                     </div>
 
-                    <!-- ✅ 2차 카테고리 자동 변경 영역 -->
+                    <!-- 2차 카테고리 자동 변경 영역 -->
                     <div class="filter-row">
-                        <label>카테고리 2차:</label>
-                        <select name="category2" id="category2">
-                            <option value="">-- 선택 --</option>
-                        </select>
+                        <label>세부:</label>
+                        <c:forEach var="subjectDetail" items="${subjectDetails}">
+                            <label>
+                                <input type="checkbox" name="subjectDetails" value="${subjectDetail}"
+                                       <c:if test="${fn:contains(selectedSubjectDetails, subjectDetail.name())}">checked</c:if>>
+                                    ${subjectDetail.name}
+                            </label>
+                        </c:forEach>
                     </div>
 
                     <!-- 가격 -->
                     <div class="filter-row">
                         <label>가격 범위:</label>
-                        <input type="number" name="minPrice" placeholder="최소 금액" min="0">
+                        <input type="number" name="minPrice" placeholder="최소 금액" min="0" value="${param.minPrice}">
                         ~
-                        <input type="number" name="maxPrice" placeholder="최대 금액" min="0">
+                        <input type="number" name="maxPrice" placeholder="최대 금액" min="0" value="${param.maxPrice}">
                     </div>
 
                     <!-- 난이도 -->
                     <div class="filter-row">
                         <label>난이도:</label>
-                        <label><input type="radio" name="difficulty" value="BASIC"> 초급</label>
-                        <label><input type="radio" name="difficulty" value="STANDARD"> 중급</label>
-                        <label><input type="radio" name="difficulty" value="ADVANCED"> 고급</label>
+                        <c:forEach var="difficulty" items="${difficulties}">
+                            <label>
+                                <input type="checkbox" name="difficulties" value="${difficulty}"
+                                       <c:if test="${fn:contains(selectedDifficulties, difficulty.name())}">checked</c:if>>
+                                    ${difficulty.value}
+                            </label>
+                        </c:forEach>
                     </div>
 
                     <!-- 정렬 -->
                     <div class="filter-row">
                         <label>정렬 기준:</label>
-                        <label><input type="radio" name="sort" value="LATEST" checked> 최신순</label>
-                        <label><input type="radio" name="sort" value="RATING"> 평점순</label>
-                        <label><input type="radio" name="sort" value="POPULAR"> 수강생순</label>
+                        <c:forEach var="sort" items="${sorts}">
+                            <label><input type="radio" name="sort" value="${sort}" <c:if test="${param.sort eq sort}">checked</c:if>>
+                                    ${sort.value}
+                            </label>
+                        </c:forEach>
                     </div>
 
                     <!-- 검색 버튼 -->
                     <div class="filter-row" style="text-align:right;">
-                        <button type="submit" class="search-btn">검색</button>
+                        <button type="submit" id="search-btn" class="search-btn">검색</button>
                     </div>
                 </form>
             </div>
@@ -233,30 +247,54 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const subCategories = {
-            "MATH": ["수학 I", "수학 II", "확률과 통계"],
-            "ENGLISH": ["문법", "독해", "듣기", "회화"],
-            "KOREAN": ["문학", "비문학", "문법", "작문"],
-            "SCIENCE": ["물리 I", "화학 I", "생명과학 I", "지구과학 I"],
-            "SOCIAL": ["생활과 윤리", "윤리와 사상", "사회·문화", "한국지리"]
-        };
 
-        const categoryRadios = document.querySelectorAll("input[name='category1']");
-        const category2Select = document.getElementById("category2");
+        loadLectures();
 
-        categoryRadios.forEach(radio => {
-            radio.addEventListener("change", () => {
-                const selected = radio.value;
-                category2Select.innerHTML = '<option value="">-- 선택 --</option>';
-                if (subCategories[selected]) {
-                    subCategories[selected].forEach(sub => {
-                        const option = document.createElement("option");
-                        option.value = sub;
-                        option.textContent = sub;
-                        category2Select.appendChild(option);
-                    });
-                }
-            });
-        });
+        // 검색 버튼 클릭
+        document.getElementById("search-btn").addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            // 검색어 필터 추출
+            const form = document.getElementById('lecture-search-form');
+            const formData = new FormData(form);
+            const params = new URLSearchParams();
+
+            for (let [key, value] of formData.entries())
+                if (value) params.append(key, value);
+
+            // 쿼리 조합
+            const queryString = params.toString();
+            window.location.href = window.location.pathname + "?page=1&" + queryString; // 검색 수행
+        })
     });
+
+
+    async function loadLectures() {
+
+        try {
+
+            // 현재 url 검색 파라미터, 경로
+            const pathname = "/api/lectures"
+            const params = window.location.search;
+            const url = pathname + params;
+
+            const res = await fetch(url, {
+                method: "GET"
+            });
+
+            // 서버 JSON 응답 문자열 파싱
+            const rp = await res.json();
+            console.log("서버 응답:", rp);
+
+            // 요청 성공시에 최근 검색어 출력
+            if (res.ok && rp.success) {
+
+            }
+
+        } catch (error) {
+            console.error('검색 실패 오류:', error);
+        }
+    }
+
+
 </script>

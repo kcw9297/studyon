@@ -21,9 +21,9 @@ import java.util.List;
 public enum Difficulty {
     BASIC("기초"),
     STANDARD("핵심"),
-    ADVANCED("심화"),
     MASTER("응용"),
-    EXPERT("최상급");
+    ADVANCED("심화"),
+    EXPERT("최상위");
 
     private final String value;
 

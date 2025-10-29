@@ -77,8 +77,13 @@ public class SessionUtils {
 
 
     public static Long getMemberId(HttpSession session) {
-        Object attr = Objects.requireNonNull(session.getAttribute(Param.MEMBER_ID));
+        Object attr = Objects.requireNonNull(session.getAttribute(Param.MEMBER_ID), "회원 번호가 존재하지 않습니다!");
         return (Long) attr;
+    }
+
+    public static Long getMemberIdOrNull(HttpSession session) {
+        Object attr = session.getAttribute(Param.MEMBER_ID);
+        return Objects.isNull(attr) ? null : (Long) attr;
     }
 
 
@@ -91,6 +96,11 @@ public class SessionUtils {
     public static MemberProfile getProfile(HttpSession session) {
         Object attr = Objects.requireNonNull(session.getAttribute(Param.PROFILE), "프로필 정보가 존재하지 않습니다!");
         return (MemberProfile) attr;
+    }
+
+    public static MemberProfile getProfileOrNull(HttpSession session) {
+        Object attr = session.getAttribute(Param.PROFILE);
+        return Objects.isNull(attr) ? null : (MemberProfile) attr;
     }
 
     public static <T> T getValue(HttpServletRequest request, String paramName) {

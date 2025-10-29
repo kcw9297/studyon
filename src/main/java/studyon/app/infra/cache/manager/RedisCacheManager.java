@@ -47,7 +47,7 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public void recordLatestSearch(Long memberId, String keyword) {
+    public void recordRecentKeyword(Long memberId, String keyword) {
 
         // [1] Key
         String key = RedisUtils.createIdKey(Cache.MEMBER_LATEST_SEARCH, memberId);
@@ -62,7 +62,7 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public List<String> getLatestSearchList(Long memberId) {
+    public List<String> getRecentKeywords(Long memberId) {
 
         // [1] key
         String key = RedisUtils.createIdKey(Cache.MEMBER_LATEST_SEARCH, memberId);

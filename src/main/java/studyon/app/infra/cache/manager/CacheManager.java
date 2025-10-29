@@ -36,14 +36,14 @@ public interface CacheManager {
      * @param memberId 검색 수행 회원
      * @param keyword 검색 키워드
      */
-    void recordLatestSearch(Long memberId, String keyword);
+    void recordRecentKeyword(Long memberId, String keyword);
 
     /**
      * 최근 검색어 목록 조회
      * @param memberId 조회 대상 회원번호
      * @return 회원이 최근에 검색한 검색어 목록 반환
      */
-    List<String> getLatestSearchList(Long memberId);
+    List<String> getRecentKeywords(Long memberId);
 
 
     /**

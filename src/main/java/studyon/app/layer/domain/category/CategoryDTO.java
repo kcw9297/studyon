@@ -13,13 +13,13 @@ import lombok.*;
  * @author khj00
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class CategoryDTO {
 
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long categoryId;
         private String name;
@@ -31,7 +31,7 @@ public class CategoryDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private String name;
         private Long parentId;
@@ -41,7 +41,7 @@ public class CategoryDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long categoryId;  // 수정할 카테고리 식별자
         private String name;      // 수정할 이름

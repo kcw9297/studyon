@@ -21,7 +21,7 @@ public class LectureQuestionDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long lectureQuestionId;
         private String title;
@@ -39,7 +39,7 @@ public class LectureQuestionDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private Long lectureQuestionId;
         private Long lectureId;
@@ -48,16 +48,37 @@ public class LectureQuestionDTO {
         private Long memberId;
         private String memberNickname;
         private LocalDateTime createdAt;
+        private Long lectureIndexId;
     }
 
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long lectureQuestionId;
         private Long lectureId;
         private String title;
         private String content;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ReadQna {
+
+        // 질문 정보
+        private Long questionId;
+        private String title;
+        private String content;
+        private boolean isSolved;
+        private LocalDateTime questionCreatedAt;
+        private String answerContent;
+        private LocalDateTime answerCreatedAt;
+        private Long lectureId;
+        private Long lectureIndexId;
+        private String indexTitle;
+    }
+
 }

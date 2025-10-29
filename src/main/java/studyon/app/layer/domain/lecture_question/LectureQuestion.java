@@ -2,10 +2,23 @@ package studyon.app.layer.domain.lecture_question;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.member.Member;
+
+import java.time.LocalDateTime;
+
+/**
+ * 강의 question
+ * @version 1.0
+ * @author khs00
+ * 20251029 LectureIndex 추가
+ */
 
 @Entity
 @Getter
@@ -35,13 +48,22 @@ public class LectureQuestion extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_index_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    private LectureIndex lectureIndex;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     @Builder
-    public LectureQuestion(String title, String content, Boolean isSolved, Lecture lecture, Member member) {
+    public LectureQuestion(String title, String content, Boolean isSolved, Lecture lecture, Member member,LectureIndex lectureIndex) {
         this.title = title;
         this.content = content;
         this.isSolved = isSolved;
         this.lecture = lecture;
         this.member = member;
+        this.lectureIndex = lectureIndex;
     }
 
     /*

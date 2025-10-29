@@ -3,6 +3,7 @@ package studyon.app.layer.domain.lecture.service;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
+import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 
@@ -21,6 +22,24 @@ import java.util.*;
  */
 
 public interface LectureService {
+
+    /**
+     * 강의 검색
+     * @param rq 강의 검색 요청
+     * @param prq 페이징 요청
+     * @return 최근 문자열 리스트
+     */
+    List<LectureDTO.Read> readPagedList(LectureDTO.Search rq, Page.Request prq);
+
+
+    /**
+     * 최근 검색어 조회
+     * @param memberId 대상 회원번호
+     * @return 최근 문자열 리스트
+     */
+    List<String> readRecentKeywords(Long memberId);
+
+
     /** 과목별 최근 강의 목록 조회 로직
      * @param subject 해당 과목
      * @param count 정렬용 변수
@@ -45,7 +64,6 @@ public interface LectureService {
 
     /** 인기순(수강생수 기준) 강의 목록 조회 로직 (홈화면)
      * @param count 정렬용 변수
-     * @param registerStatus 강의 활성 상태
      * @return 전체 인기순 강의 목록
      */
     List<LectureDTO.Read> readAllPopularLectures(int count);
@@ -61,11 +79,16 @@ public interface LectureService {
      * @return 해당 선생님 최신 강의 리스트
      */
     List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
+
     LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile, LectureRegisterStatus status);
+
     LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId,Long teacherId);
+
     void updateThumbnail(Long teacherId, Long lectureId, MultipartFile file);
+
     String getLectureThumbnailPath(Long lectureId);
 
     /* 리뷰 퍼센트 계산 - 강의페이지 */
     Map<Integer, Double> getRatingPercentage(Long lectureId);
+
 }

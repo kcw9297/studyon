@@ -24,7 +24,7 @@ public class TeacherDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long teacherId;
 
@@ -49,7 +49,7 @@ public class TeacherDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private String description;
         private Subject subject;
@@ -59,7 +59,7 @@ public class TeacherDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long teacherId;
 
@@ -72,7 +72,7 @@ public class TeacherDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Search {
         private Long teacherId;
 
@@ -84,7 +84,7 @@ public class TeacherDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class LectureListResponse {
         private Long teacherId;
         private String nickname;
@@ -95,7 +95,7 @@ public class TeacherDTO {
         @Data
         @Builder
         @AllArgsConstructor
-        @NoArgsConstructor(access = AccessLevel.PACKAGE)
+        @NoArgsConstructor
         public static class LectureSimple {
             private Long lectureId;
             private String title;
@@ -106,7 +106,7 @@ public class TeacherDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class TeacherManagementProfile{
         private Long teacherId;
         private Long memberId;

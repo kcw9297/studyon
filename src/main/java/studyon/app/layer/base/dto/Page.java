@@ -13,12 +13,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Page {
 
-    /**
-     * 삭제 등의 행동 후 응답 페이지 계산
-     * @param afterRdateDataCount
-     * @param pageSize
-     * @return
-     */
     public static Integer calculateReturnPage(Integer afterRdateDataCount, Integer pageSize) {
         return Math.max(1, (int) Math.ceil((double) afterRdateDataCount / pageSize));
     }
@@ -26,11 +20,16 @@ public class Page {
 
     @Data
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Request {
 
-        private Integer page = 0;
-        private Integer size = 3;
+        private Integer page;
+        private Integer size;
+
+        // 기본 생성자
+        public Request() {
+            this.page = 0;
+            this.size = 3;
+        }
 
         public void setPage(Integer page) {
             this.page = page - 1;
@@ -45,7 +44,7 @@ public class Page {
 
     @Data
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Response<T> {
 
         private List<T> data;
