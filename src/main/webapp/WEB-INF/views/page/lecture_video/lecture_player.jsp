@@ -49,7 +49,8 @@
         <%-- 여기가 이제 이전에 학생들이 질문 올렸던 QNA 올리는 곳--%>
 
         <div class="qna-input-box">
-            <form id="qnaForm" onsubmit="return false;">
+            <form id="qnaForm" onsubmit="return false;" class="qnaForm-style">
+                <input id="title" class="qna-title-input-style" placeholder="질문 제목을 입력하세요">
                 <textarea id="qna-input" class="qna-textarea" placeholder="이 강의에 대한 질문을 입력하세요."></textarea>
                 <button type="button" class="qna-submit">등록</button>
             </form>
@@ -78,6 +79,28 @@
     /* QNA SECTION CSS*/
 
     /* QNA 질답쪽*/
+    .qna-item-text-question{
+        margin-bottom:5px;
+    }
+
+    .qnaForm-style{
+        margin-bottom:0px;
+    }
+
+    .qna-title-input-style {
+        width: 100%;
+        resize: vertical;
+        border-radius: 6px;
+        border: 1px solid #444;
+        padding: 10px;
+        font-size: 14px;
+        background: #222;
+        color: #fff;
+        outline: none;
+        transition: border-color 0.2s ease;
+        margin-bottom:5px;
+    }
+
 
     .qna-title {
         font-size: 24px;
@@ -91,8 +114,7 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
-        margin-top: 15px;
-        margin-bottom: 20px;
+        height:auto;
     }
 
     .qna-textarea {
@@ -107,6 +129,7 @@
         color: #fff;
         outline: none;
         transition: border-color 0.2s ease;
+        margin-bottom:5px;
     }
 
     .qna-textarea:focus {
@@ -469,13 +492,13 @@
         }
 
         async function loadQNA() {
+            console.log("loadQNA 호출");
             const list = document.querySelector(".qna-list");
             const qnaItem = document.querySelector(".qna-item");
             const teacher = document.querySelector(".qna-item-teachername");
             const answer = document.querySelector(".qna-item-answer");
             const questionInput = document.getElementById(".qna-input");
 
-            const response = await fetch("/api/lecture/answer_and_question/"+lectureId+"/" + indexId)
             if(!response) throw new Error("QNA 불러오기 실패")
             const jsondata = await response.json();
             const qnaDATA = jsondata.data || [] ;
@@ -483,10 +506,72 @@
             list.innerHTML="";
             questionInput.textContent = "";
 
-            qnaDATA.foreach(q => {
-                // DATA 뿌려주는 로직 작성
-                list.appendChild(item);
-            })
+            console.log("List 지우기");
+
+            try{
+                const response = await fetch("/api/lecture/answer_and_question/"+currentLectureId+"/" + currentIndexId)
+                if(!response.ok) throw new Error("QNA 불러오기 실패");
+                const jsonData = await response.json();
+                const qnaData = jsonData.data || [];
+
+                if(qnaDATA.length === 0 ){
+                    list.innerHTML = `<div>등록된 질문이 없습니다.</div>`
+                    return;
+                }
+
+                console.log(qnaData);
+
+                qnaData.forEach(q => {
+                    const item = document.createElement("div");
+                    item.classList.add("qna-item");
+
+                    // 질문 박스
+                    const questionBox = document.createElement("div");
+                    questionBox.classList.add("qna-item-question-box");
+
+                    const title = document.createElement("div");
+                    title.classList.add("qna-item-title");
+                    title.textContent = "📘 " + q.title;
+
+                    const content = document.createElement("div");
+                    content.classList.add("qna-item-text-question");
+                    content.textContent = q.content;
+
+                    const meta = document.createElement("div");
+                    meta.classList.add("qna-item-meta");
+                    meta.textContent = `작성자: ${q.memberName || "익명"} • 상태: ${q.isSolved ? "✅ 답변 완료" : "⌛ 대기 중"}`;
+
+                    questionBox.appendChild(title);
+                    questionBox.appendChild(content);
+                    questionBox.appendChild(meta);
+
+                    // 답변이 존재하는 경우
+                    if (q.answerContent) {
+                        const answerBox = document.createElement("div");
+                        answerBox.classList.add("qna-answer");
+                        answerBox.innerHTML = `
+                    <label class="qna-item-teachername">👩‍🏫 ${q.teacherName || "강사"} :</label>
+                    <label class="qna-item-answer">${q.answerContent}</label>
+                `;
+                        questionBox.appendChild(answerBox);
+                    }
+
+                    // 구분선
+                    const divider = document.createElement("hr");
+                    divider.classList.add("qna-divider");
+
+                    list.appendChild(questionBox);
+                    list.appendChild(divider);
+                });
+
+                console.log("✅ QNA 데이터 렌더링 완료");
+
+
+            }catch{
+
+            }
+
+
             console.log("데이터 로딩 완료");
         }
 
@@ -503,26 +588,18 @@
                 const form = new FormData();
                 form.append("lectureId", lectureId);
                 form.append("indexId", indexId);
-                form.append("question", question);
+                form.append("content", question);
+                form.append("title", title);
+                console.log("1");
 
-                const res = await fetch("/api/lecture/register_question", {
+                const res = await fetch("lecture/question/register", {
                     headers: { 'X-Requested-From': window.location.pathname + window.location.search },
                     method: "POST",
                     body: form
                 });
+                console.log("서버 응답:");
 
-                const rp = await res.json();
-                console.log("서버 응답:", rp);
-
-                if (!res.ok || !rp.success) {
-                    alert(rp.message || "질문 등록 실패");
-                    return;
-                }
-
-                alert("질문이 등록되었습니다!");
                 textarea.value = "";
-
-                // ✅ 등록 후 QNA 새로고침
                 await loadQNA(currentIndexId);
             }catch(error){
                 console.error("질문 등록 실패");

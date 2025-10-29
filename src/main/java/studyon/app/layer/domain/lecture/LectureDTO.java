@@ -3,10 +3,7 @@ package studyon.app.layer.domain.lecture;
 
 import lombok.*;
 
-import studyon.app.common.enums.Difficulty;
-import studyon.app.common.enums.LectureRegisterStatus;
-import studyon.app.common.enums.LectureTarget;
-import studyon.app.common.enums.Subject;
+import studyon.app.common.enums.*;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;
@@ -102,6 +99,7 @@ public class LectureDTO {
         private LectureRegisterStatus lectureRegisterStatus;
         private Subject subject;
         private List<String> curriculumTitles;
+        private SubjectDetail subjectDetail;
     }
 
     @Data

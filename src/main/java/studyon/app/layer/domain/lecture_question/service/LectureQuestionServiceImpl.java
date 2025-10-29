@@ -2,6 +2,7 @@ package studyon.app.layer.domain.lecture_question.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.BusinessLogicException;
@@ -11,6 +12,8 @@ import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_question.LectureQuestion;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_question.repository.LectureQuestionRepository;
+import studyon.app.layer.domain.member.Member;
+import studyon.app.layer.domain.member.repository.MemberRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +30,7 @@ import java.util.Optional;
  * @author khj00
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -34,6 +38,7 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
 
     private final LectureQuestionRepository lectureQuestionRepository;
     private final LectureRepository lectureRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public List<LectureQuestionDTO.Read> readAllQuestions() {
@@ -62,11 +67,18 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
     public void register(LectureQuestionDTO.Write rq) {
 
         Lecture lecture = lectureRepository.findById(rq.getLectureId()).orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+        Member member = memberRepository.findById(rq.getMemberId()).orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
+        log.info("register service 실행");
         LectureQuestion entity = LectureQuestion.builder()
                 .title(rq.getTitle())
                 .content(rq.getContent())
                 .lecture(lecture)
+                .isSolved(false)
+                .member(member)
                 .build();
+
+        lectureQuestionRepository.save(entity);
+        log.info("register service 완료");
 
     }
 
