@@ -1,5 +1,6 @@
 package studyon.app.layer.domain.lecture.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.Subject;
 import studyon.app.common.enums.View;
+import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture.service.LectureService;
+import studyon.app.layer.domain.member.MemberProfile;
 
 /*
  * [수정 이력]
@@ -45,5 +48,13 @@ public class LectureController {
         model.addAttribute("subject", subject);
         // [2] 뷰 리턴
         return ViewUtils.returnView(model, View.LECTURE,"lecture_recommend");
+    }
+
+    @GetMapping("/search")
+    public String lectureSearchView(HttpSession session,Model model){
+        MemberProfile profile = SessionUtils.getProfile(session);
+
+        return ViewUtils.returnView(model, View.LECTURE, "lecture_search");
+
     }
 }

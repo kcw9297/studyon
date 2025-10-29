@@ -27,4 +27,6 @@ public interface LectureQuestionService {
 
     /** 질문 삭제 */
     void deleteQuestion(Long id);
+    void register(LectureQuestionDTO.Write rq);
+
 }
