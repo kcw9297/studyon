@@ -157,6 +157,7 @@ public class LectureServiceImpl implements LectureService {
                 .subject(dto.getSubject())
                 .lectureTarget(dto.getTarget() != null ? dto.getTarget() : LectureTarget.HIGH1)
                 .description(dto.getDescription())
+                .subjectDetail(dto.getSubjectDetail())
                 .build();
 
         lectureRepository.save(lecture);

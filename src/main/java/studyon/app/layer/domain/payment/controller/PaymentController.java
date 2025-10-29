@@ -68,4 +68,11 @@ public class PaymentController {
         model.addAttribute("data", data);
         return ViewUtils.returnView(model, View.PAYMENT, "enroll-complete");
     }
+
+    @GetMapping("/test")
+    public String showTestView(Model model, HttpSession session) {
+        return ViewUtils.returnView(model, View.PAYMENT, "test");
+    }
+
+
 }

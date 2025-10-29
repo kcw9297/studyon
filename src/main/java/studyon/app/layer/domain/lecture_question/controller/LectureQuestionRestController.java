@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import studyon.app.common.constant.Url;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
@@ -25,7 +26,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/lecture/question")
+@RequestMapping(Url.LECTURE)
 @RequiredArgsConstructor
 public class LectureQuestionRestController {
 
@@ -36,7 +37,7 @@ public class LectureQuestionRestController {
      * - 세션 회원 ID 자동 주입
      * - FormData 또는 JSON Body로 lectureId, indexId, question 전달
      */
-    @PostMapping("/register")
+    @PostMapping("/question/register")
     public ResponseEntity<?> registerQuestion(LectureQuestionDTO.Write rq, HttpSession session) {
         // [1] 회원 ID 세션에서 주입
         Long memberId = SessionUtils.getMemberId(session);
@@ -50,21 +51,14 @@ public class LectureQuestionRestController {
     }
 
 
-//    /**
-//     * [GET] 특정 강의 인덱스별 질문 목록 조회
-//     */
-//    @GetMapping("/{lectureId}/{indexId}")
-//    public ResponseEntity<?> readQuestionsByLectureIndex(@PathVariable Long lectureId,
-//                                                         @PathVariable Long indexId) {
-//        log.info("✅ [GET] QnA 목록 조회 요청 - lectureId={}, indexId={}", lectureId, indexId);
+//    @GetMapping("/answer_and_question/{lectureId}/{indexId}")
+//    public ResponseEntity<?> readAllByLectureAndIndex(
+//            @PathVariable Long lectureId,
+//            @PathVariable Long indexId) {
 //
-//        // [1] 조회
-//        List<LectureQuestionDTO.Read> result = lectureQuestionService.readAllByLectureIndex(lectureId, indexId);
-//
-//        // [2] 응답 반환
+//        List<LectureQuestionDTO.Read> result = lectureQuestionService.readAllByLectureAndIndex(lectureId, indexId);
 //        return RestUtils.ok(result);
 //    }
-//
 //    /**
 //     * [DELETE] 특정 질문 삭제 (본인만 가능)
 //     */
