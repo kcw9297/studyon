@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.member.Member;
 
 @Entity
 @Getter
@@ -30,12 +31,17 @@ public class LectureQuestion extends BaseEntity {
     @JoinColumn(name = "lecture_id", nullable = false)
     private Lecture lecture;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
     @Builder
-    public LectureQuestion(String title, String content, Boolean isSolved, Lecture lecture) {
+    public LectureQuestion(String title, String content, Boolean isSolved, Lecture lecture, Member member) {
         this.title = title;
         this.content = content;
         this.isSolved = isSolved;
         this.lecture = lecture;
+        this.member = member;
     }
 
     /*

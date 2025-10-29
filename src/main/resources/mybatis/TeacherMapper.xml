@@ -32,13 +32,20 @@
                 <when test="rq.filter eq 'nickname'">
                     AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
+
+                <otherwise>
+                    AND (
+                    m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                    OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    )
+                </otherwise>
             </choose>
         </if>
-        <if test="rq.subject != null and rq.subject != ''">
-            AND t.subject = #{rq.subject}
+        <if test="rq.subject != null">
+            AND t.subject = '${rq.subject.name()}'
         </if>
         ORDER BY t.teacher_id DESC
-        LIMIT #{prq.startPage}, #{prq.size}
+        LIMIT #{prq.size} OFFSET #{prq.startPage}
     </select>
 
     <!-- ✅ 카운트 쿼리 -->
@@ -58,8 +65,8 @@
                 </when>
             </choose>
         </if>
-        <if test="rq.subject != null and rq.subject != ''">
-            AND t.subject = #{rq.subject}
+        <if test="rq.subject != null">
+            AND t.subject = '${rq.subject.name()}'
         </if>
     </select>
 

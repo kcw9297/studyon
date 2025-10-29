@@ -17,6 +17,7 @@
     <!-- 검색 바 -->
     <div class="member-search-bar">
         <select id="searchType" name="filter">
+            <option value="">전체</option>
             <option value="email">이메일</option>
             <option value="nickname">이름</option>
         </select>
@@ -120,7 +121,7 @@
 
 
 
-<div id="memberModal" class="modal-overlay">
+<div id="memberModal" class="modal-overlay" data-type="member">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
         <label class="modal-title">회원 상세정보</label>
@@ -148,3 +149,4 @@
 
 <script src="<c:url value='/js/page/admin/member_management.js'/>"></script>
 <script src="<c:url value='/js/page/admin/member_management_modal.js'/>"></script>
+<script src="<c:url value='/js/page/admin/management_toggle.js'/>"></script>

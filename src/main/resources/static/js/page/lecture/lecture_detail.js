@@ -6,11 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
         "MATH": "수학",
         "SCIENCE": "과학탐구",
         "SOCIAL": "사회탐구",
-        "BASIC": "초급",
-        "STANDARD": "중급",
-        "ADVANCED": "고급",
-        "EXPERT": "전문가",
-        "MASTER": "마스터",
+        "BASIC": "기초",
+        "STANDARD": "핵심",
+        "ADVANCED": "심화",
+        "EXPERT": "응용",
+        "MASTER": "최상급"
     };
 
     document.querySelectorAll("[data-en]").forEach(el => {

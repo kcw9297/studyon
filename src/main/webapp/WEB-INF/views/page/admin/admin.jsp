@@ -38,7 +38,7 @@
             <div class="card-sub">매출 ₩3,280,000 (10월 기준)</div>
         </div>
     </div>
-
+<!--
     <div class="dashboard-card loser">
         <div class="card-icon">💀</div>
         <div class="card-info">
@@ -47,7 +47,7 @@
             <div class="card-sub">매출 ₩0 (방출 후보)</div>
         </div>
     </div>
-
+-->
     <div class="dashboard-card loser">
         <div class="card-icon">💀</div>
         <div class="card-info">

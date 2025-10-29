@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const teacherId = document.getElementById("teacherBestLectures").dataset.teacherId;
+    const teacherId = document.getElementsByClassName("teacher-profile-wrapper").dataset.teacherId;
 
     const params = new URLSearchParams();
     params.append("teacherId", teacherId);

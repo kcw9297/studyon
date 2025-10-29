@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     params.append("teacherId", teacherId);
 
     fetch(`/api/teachers/profile/recentLecture`, {
-        method: "POST",
+        method: "GET",
         headers: { 'X-Requested-From': window.location.pathname + window.location.search } ,
         body: params
     })

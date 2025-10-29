@@ -76,7 +76,7 @@ public class TeacherDTO {
     public static class Search {
         private Long teacherId;
 
-        // private String filter; // "subject"
+        private String filter; // "subject"
         private String keyword;
         private Subject subject;
     }

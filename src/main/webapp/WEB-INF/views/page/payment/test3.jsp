@@ -13,28 +13,81 @@
     </div>
     <div class="lecture-price">₩35,000</div>
   </div>
-  <div class="divide-title-box">할인정보</div>
-  <div class="coupon-box">
-    <button class="coupon-button">쿠폰선택</button>
-    <div class="coupon-info">사용가능한 쿠폰이 없습니다.</div>
-  </div>
-  <div class="divide-title-box">결제수단</div>
-  <div class="payment-method-box">
-    <input type="radio" id="card" name="payment" value="card" checked>
-    <label>토스 페이먼츠</label>
-    <img src="resources/Toss_Logo.png" class="payment-logo" alt="토스페이먼츠로고">
-  </div>
-  <div class="divide-title-box">총 결제액</div>
-  <div class="payment-summary-box">
-    <div class="summary-item">
-      <div class="summary-title">총 결제금액</div>
-      <div class="summary-price">₩35,000</div>
-    </div>
-  </div>
+
+
+        <div class="member-info-box">
+            <label class="divide-title-box">구매자 정보</label>
+            <form id="payment-info">
+            <div class="member-info-item">
+                <label class="member-info-item-description" for="name">성함</label>
+                <input class="member-name-input" id="name" placeholder="이름을 입력하세요">
+            </div>
+            <div class="member-info-item">
+                <label class="member-info-item-description" for="phone">연락처</label>
+                <input class="member-phone-input" id="phone" placeholder="예: 010-1234-5678">
+            </div>
+
+            </form>
+        </div>
+
+
+
     <button id="pay-btn" class="pay-button">결제하기</button>
 </div>
 
 <style>
+
+    #content{
+        height:auto;
+    }
+
+    /* 구매자 정보 */
+    .member-info-box {
+        width: 800px;
+        margin: 40px;
+        padding: 30px 25px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .member-info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .member-info-item-description {
+        font-weight: 600;
+        color: #333;
+        font-size: 15px;
+    }
+
+    .member-name-input,
+    .member-phone-input {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .member-name-input:focus,
+    .member-phone-input:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
+    }
+
+
+
+
+
+
     .header-div{
         display:flex;
         width:100%;
@@ -54,7 +107,7 @@
         margin-top: 50px;
         flex-direction: row;
         width: 800px;
-        border:2px solid black;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
     .lecture-thumbnail{

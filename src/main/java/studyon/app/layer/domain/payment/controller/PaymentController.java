@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -31,8 +32,10 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
+    @Value("${payment.portone.id-code}")
+    private String idCode; // 가맹점 식별코드
 
-    @GetMapping("/write")
+    @GetMapping("/enroll")
     public String showWriteView(Model model, HttpSession session,
                                 @NotNull Long lectureId,
                                 @NotBlank String token) {
@@ -41,12 +44,14 @@ public class PaymentController {
         Long memberId = SessionUtils.getMemberId(session);
         PaymentSession paymentRq = paymentService.verify(memberId, lectureId, token);
 
+        // [2] 조회 데이터 반환
+        model.addAttribute("idCode", idCode); // Iamport 가맹점 코드
         model.addAttribute("data", paymentRq); // 결제 및 토큰정보 전달
-        return ViewUtils.returnView(model, View.PAYMENT, "payment");
+        return ViewUtils.returnView(model, View.PAYMENT, "enroll");
     }
 
 
-    @GetMapping("/payment/complete")
+    @GetMapping("/enroll-complete")
     public String showPaymentCompleteView(Model model, HttpSession session,
                                           @NotNull Long paymentId) {
 
@@ -61,6 +66,13 @@ public class PaymentController {
         // [3] 인증 값 제거 후, 완료 페이지로 리다이렉트
         session.removeAttribute(Param.VERIFIED);
         model.addAttribute("data", data);
-        return ViewUtils.returnView(model, View.PAYMENT, "payment-complete");
+        return ViewUtils.returnView(model, View.PAYMENT, "enroll-complete");
     }
+
+    @GetMapping("/test")
+    public String showTestView(Model model, HttpSession session) {
+        return ViewUtils.returnView(model, View.PAYMENT, "test");
+    }
+
+
 }
