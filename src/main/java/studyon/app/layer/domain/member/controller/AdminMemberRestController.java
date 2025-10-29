@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.member.controller;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +41,6 @@ public class AdminMemberRestController {
     @GetMapping("/list")
     public ResponseEntity<?> readAllMembers(MemberDTO.Search rq, Page.Request prq, HttpSession session) {
         MemberProfile profile = SessionUtils.getProfile(session);
-        log.info("🟦 [CONTROLLER] filter={}, keyword={}, page={}, size={}, startPage={}",
-                rq.getFilter(), rq.getKeyword(), prq.getPage(), prq.getSize(), prq.getStartPage());
         log.info("[ADMIN] 회원 목록 조회 요청 - 관리자: {}",
                 profile != null ? profile.getNickname() : "비로그인");
 
@@ -85,9 +84,22 @@ public class AdminMemberRestController {
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 
+    /**
+     * [POST] 회원 활성/비활성 상태 변경
+     * URL: GET /admin/members/export/pdf
+     * @param memberId 해당 멤버 ID
+     * @param session 세션 관리
+     */
     @PostMapping("/toggle/{memberId}")
-    public ResponseEntity<?> toggleActive(@PathVariable Long memberId) {
-        memberService.toggleActive(memberId);
-        return RestUtils.ok();
+    public ResponseEntity<?> toggleActive(@PathVariable("memberId") Long memberId, HttpServletRequest request, HttpSession session) {
+        Object attr = request.getAttribute("memberId");
+        MemberProfile profile = SessionUtils.getProfile(session);
+        log.warn("🧩 PathVariable={}, RequestAttr(memberId)={}, SessionMemberId={}",
+                memberId, attr, profile != null ? profile.getMemberId() : null);
+
+        MemberDTO.Read result = memberService.toggleActive(memberId);
+        log.info("[TOGGLE] 전달받은 memberId={}, (Session)={}",memberId, SessionUtils.getProfile(session).getMemberId());
+
+        return RestUtils.ok(result);
     }
 }

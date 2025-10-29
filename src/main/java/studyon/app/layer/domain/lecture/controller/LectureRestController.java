@@ -12,6 +12,7 @@ import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
+import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 

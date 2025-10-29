@@ -44,12 +44,6 @@
             </div>
         </c:if>
 
-        <%--
-        <button>
-            <img src="<c:url value='/img/png/list.png'/>" class="svg-list" alt="리스트">
-        </button>
-        --%>
-
         <c:if test="${not isLogin}">
             <a href="<c:url value='/login'/>" id="loginModalBtn" class="modal">
                 <img src="<c:url value='/img/png/login.png'/>" class="svg-login" alt="로그인">

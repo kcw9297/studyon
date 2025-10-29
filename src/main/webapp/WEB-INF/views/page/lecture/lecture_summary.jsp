@@ -59,7 +59,7 @@
                     <img src="/img/png/like1.png" alt="좋아요">
                     <span class="like-count">${lecture.likeCount}</span>
                 </button>
-                <button onclick="location.href='/payment/${lecture.lectureId}'" class="summary-purchase">
+                <button class="summary-purchase">
                     바로 구매하기
                 </button>
             </div>

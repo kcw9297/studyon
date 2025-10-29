@@ -1,4 +1,8 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType ="text/html;charset=utf-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

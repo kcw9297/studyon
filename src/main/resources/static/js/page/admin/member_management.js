@@ -8,13 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const pagination = document.getElementById("pagination");
 
     // [1] 메인 함수 - 회원 목록 불러오기
-    function loadMembers(page = 1) {
+    function loadMembers(page) {
+
+        // 페이지값 기본 보장
+        if (!page || isNaN(page) || page < 1) page = 1;
         // ✅ DOM 요소에서 값 읽기
         const searchType = document.getElementById("searchType")?.value || "";
         const keyword = document.getElementById("keyword")?.value.trim() || "";
         const role = document.getElementById("roleFilter")?.value || "";
         const isActive = document.getElementById("isActiveFilter")?.value || "";
-
         // ✅ 쿼리 파라미터 구성
         const params = new URLSearchParams({
             page,
@@ -32,7 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         fetch(url, {
             method: "GET",
-            headers: { "X-Requested-From": window.location.pathname + window.location.search },
+            headers: { "X-Requested-From": window.location.pathname + window.location.search ,
+            },
         })
             .then(res => res.json())
             .then(json => {
@@ -43,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const raw = json.data;
                 const members = Array.isArray(raw.data) ? raw.data : [];
-
+                console.log("[DEBUG] 서버에서 받은 member 리스트:", members);
 
                 currentPage = raw.currentPage || page;
                 const totalPages = raw.totalPage || 1;
@@ -105,12 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
         members.forEach((m, index) => {
             const tr = document.createElement("tr");
 
-            const lastLogin = m.isActive ? "🟢" : "🔴";
+            const rowNo = (currentPage - 1) * pageSize + index + 1;
+            const lastLogin = m.lastLoginAt ? trimDateTime(m.lastLoginAt) : "기록 없음";
             const joinDate = m.cdate ? new Date(m.cdate).toLocaleDateString() : "-";
             const status = m.isActive ? "활성" : "비활성";
 
             tr.innerHTML = `
-            <td>${(currentPage - 1) * pageSize + index + 1}</td>
+            <td>${rowNo}</td>
+            <td>${m.memberId}</td>
             <td>${m.nickname}</td>
             <td>${m.email ?? "-"}</td>
             <td>${convertRole(m.role)}</td>
@@ -143,18 +148,20 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!totalPages || totalPages <= 0) return;
 
         const maxVisible = 5;
-        let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-        let end = Math.min(totalPages, start + maxVisible - 1);
-
-        if (end - start < maxVisible - 1) {
-            start = Math.max(1, end - maxVisible + 1);
-        }
+        const currentGroup = Math.ceil(currentPage / maxVisible);
+        const start = (currentGroup - 1) * maxVisible + 1;
+        const end = Math.min(totalPages, start + maxVisible - 1);
 
         // 이전 버튼
         const prev = document.createElement("button");
         prev.textContent = "◀";
-        prev.className = `page-btn ${currentPage === 1 ? "disabled" : ""}`;
-        prev.onclick = () => currentPage > 1 && loadMembers(currentPage - 1);
+        prev.className = `page-btn ${currentGroup === 1 ? "disabled" : ""}`;
+        prev.onclick = () => {
+            if (currentGroup > 1) {
+                const prevGroupLastPage = (currentGroup - 2) * maxVisible + 1;
+                loadMembers(prevGroupLastPage);
+            }
+        };
         pagination.appendChild(prev);
 
         // 페이지 번호
@@ -166,11 +173,16 @@ document.addEventListener("DOMContentLoaded", () => {
             pagination.appendChild(btn);
         }
 
-        // 다음 버튼
+        // ▶ 다음 그룹 버튼
         const next = document.createElement("button");
         next.textContent = "▶";
-        next.className = `page-btn ${currentPage === totalPages ? "disabled" : ""}`;
-        next.onclick = () => currentPage < totalPages && loadMembers(currentPage + 1);
+        next.className = `page-btn ${end >= totalPages ? "disabled" : ""}`;
+        next.onclick = () => {
+            if (end < totalPages) {
+                const nextGroupFirstPage = end + 1;
+                loadMembers(nextGroupFirstPage);
+            }
+        };
         pagination.appendChild(next);
     }
 
@@ -190,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return new Date(dateStr).toLocaleDateString("ko-KR");
     }
 
-        // 초기 로드
+    // 초기 로드
     loadMembers(1);
 
     // 검색 버튼 이벤트
@@ -271,6 +283,12 @@ document.addEventListener("DOMContentLoaded", () => {
         pdfBtn.addEventListener("click", () => {
             renderPdf();
         });
+    }
+
+    // [7] ISO 형식 시간 문자열을 보기 좋게 포맷
+    function trimDateTime(datetime) {
+        if (!datetime) return "-";
+        return datetime.replace("T", " ").split(".")[0]; // "2025-10-28 20:45:11"
     }
 
 });

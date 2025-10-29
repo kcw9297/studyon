@@ -10,6 +10,7 @@
     <div class="main-container">
       <div class="sidebar-container">
         <div class="recommend-nav">
+            <a href="<c:url value='/lecture/search'/>" class="nav-item">전체검색</a>
             <a href="<c:url value='/lecture/recommend/MATH'/>" class="nav-item">수학</a>
             <a href="<c:url value='/lecture/recommend/ENGLISH'/>" class="nav-item">영어</a>
             <a href="<c:url value='/lecture/recommend/KOREAN'/>" class="nav-item">국어</a>

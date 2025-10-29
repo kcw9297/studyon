@@ -130,8 +130,43 @@ public class RedisCacheManager implements CacheManager {
 
 
     @Override
-    public boolean removeAuthRequest(String token) {
-        return stringRedisTemplate.delete(RedisUtils.createIdKey(Cache.AUTH, token));
+    public void removeAuthRequest(String token) {
+        stringRedisTemplate.delete(RedisUtils.createIdKey(Cache.AUTH, token));
+    }
+
+
+    @Override
+    public void recordPaymentRequest(Long memberId, Long lectureId, Object paymentRequest) {
+
+        // [1] Key
+        String key = RedisUtils.createIdKey(Cache.PAYMENT, memberId, lectureId);
+
+        // [2] 저장 수행
+        stringRedisTemplate.opsForValue().set(key, StrUtils.toJson(paymentRequest), Duration.ofMinutes(3));
+    }
+
+
+    @Override
+    public <T> T getPaymentRequest(Long memberId, Long lectureId, Class<T> dataType) {
+
+        // [1] Key
+        String key = RedisUtils.createIdKey(Cache.PAYMENT, memberId, lectureId);
+
+        // [2] 요청 조회 후, 역직렬화 하여 반환 (조회 시 TTL 연장)
+        String jsonCache = stringRedisTemplate.opsForValue().getAndExpire(key, Duration.ofMinutes(3));
+        return Objects.isNull(jsonCache) ? null : StrUtils.fromJson(jsonCache, dataType);
+    }
+
+
+    @Override
+    public <T> T getAndDeletePaymentRequest(Long memberId, Long lectureId, Class<T> dataType) {
+
+        // [1] Key
+        String key = RedisUtils.createIdKey(Cache.PAYMENT, memberId, lectureId);
+
+        // [2] 요청 조회 및 삭제 후, 역직렬화 하여 반환
+        String jsonCache = stringRedisTemplate.opsForValue().getAndDelete(key);
+        return Objects.isNull(jsonCache) ? null : StrUtils.fromJson(jsonCache, dataType);
     }
 
 

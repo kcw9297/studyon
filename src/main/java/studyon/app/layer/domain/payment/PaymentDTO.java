@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.payment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,20 @@ public class PaymentDTO {
         private String keyword;
         private Boolean isRefunded;
         private String orderBy;
+        private Long memberId; // 관리자가 아닌 경우, 해당 회원의 목록만 조회
+        private Boolean isAdmin; // 서버에서 삽입하는 값 (관리자 여부에 따라 다르게 조회)
+
+        // 일반 학생 검색
+        public void setStudentSearch(Long memberId) {
+            this.memberId = memberId;
+            this.isAdmin = false;
+        }
+
+        // 관리자 검색
+        public void setAdminSearch() {
+            this.memberId = null;
+            this.isAdmin = true;
+        }
     }
 
 
@@ -68,11 +83,23 @@ public class PaymentDTO {
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class Pay {
 
+        // 결제 시 제공되는 정보
         private String paymentUid;
         private Double paidAmount;
         private String paymentApiResult;
+
+        // 서버에서 조달 가능한 번호 정보
         private Long memberId;
         private Long lectureId;
+
+        // 결제 시에만 임시 활용 정보 (실제 엔티티 저장 시 미사용)
+        private String token;
+
+        @NotBlank(message = "구매자 성함을 입력해 주세요.")
+        private String buyerName;
+
+        @NotBlank(message = "구매자 연락처를 입력해 주세요.")
+        private String buyerPhoneNumber;
     }
 
     @Data

@@ -23,12 +23,6 @@ public class LectureQuestion extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private Long answerCount;
-
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private Long viewCount;
-
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isSolved;
 

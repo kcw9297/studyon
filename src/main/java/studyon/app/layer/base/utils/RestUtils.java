@@ -21,11 +21,12 @@ import java.util.Map;
  *  ▶ ver 1.0 (2025-10-13) : kcw97 최초 작성
  *  ▶ ver 1.1 (2025-10-24) : kcw97 정적 메소드 버그 수정 및 파라미터 변경
  *  ▶ ver 1.2 (2025-10-25) : kcw97 jsonOK, jsonFail 메소드명 변경
+ *  ▶ ver 1.3 (2025-10-29) : kcw97 ok 오버로딩 메소드 추가
  */
 
 /**
  * REST API 응답 유틸 클래스
- * @version 1.2
+ * @version 1.3
  * @author kcw97
  */
 
@@ -119,6 +120,10 @@ public class RestUtils {
 
     public static ResponseEntity<?> ok(AppStatus appStatus, String redirect) {
         return new ResponseEntity<>(Rest.Response.ok(appStatus, redirect), HttpStatus.OK);
+    }
+
+    public static ResponseEntity<?> ok(AppStatus appStatus, String redirect, Object data) {
+        return new ResponseEntity<>(Rest.Response.ok(appStatus, redirect, data), HttpStatus.OK);
     }
 
     public static ResponseEntity<?> fail(AppStatus appStatus) {

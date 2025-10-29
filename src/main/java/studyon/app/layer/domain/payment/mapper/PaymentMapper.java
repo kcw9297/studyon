@@ -22,5 +22,4 @@ public interface PaymentMapper {
                                    @Param("prq") Page.Request prq);
 
     Integer countAll(@Param("rq") PaymentDTO.Search rq);
-
 }

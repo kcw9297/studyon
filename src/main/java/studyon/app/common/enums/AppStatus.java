@@ -23,6 +23,7 @@ public enum AppStatus {
     SERVER_ERROR(500, "서버 오류가 발생했습니다. 잠시 후에 다시 시도해 주세요."),
     SESSION_EXPIRED(403, "세션이 만료되었습니다."),
     CACHE_EXPIRED(403, "정보가 만료되었습니다."),
+    ACCESS_DENIED(403, "잘못된 요청입니다."), // 시큐리티 외 비즈니스적 상황으로 접근을 제한하는 경우
 
     /* 검증 및 인증 상태 */
     VALIDATION_INVALID_PARAMETER(400, "입력하신 값을 다시 확인해 주세요."),
@@ -43,6 +44,8 @@ public enum AppStatus {
     PAYMENT_LOGIC_FAILED(500, "결제에 실패했습니다. 잠시 후에 다시 시도해 주세요."),
     PAYMENT_ALREADY_REFUNDED(400, "이미 환불이 완료된 결제입니다."),
     PAYMENT_REFUND_NOT_AVAILABLE(400, "환불 가능 기간이 경과하였습니다.\n(결제일로부터 1년 이내에만 가능)"),
+    PAYMENT_INVALID_REQUEST(403, "유효하지 않은 결제 요청입니다."),
+    PAYMENT_ALREADY_PAYED(403, "이미 결제한 강의입니다."),
 
     /* Spring Security 처리 상태 */
     SECURITY_INCORRECT_USERNAME_PASSWORD(400, "이메일과 비밀번호가 일치하지 않습니다"),
@@ -74,7 +77,8 @@ public enum AppStatus {
     FILE_NOT_FOUND(500, "파일이 존재하지 않습니다."),
 
     /* 강의(Lecture) 상태*/
-    LECTURE_NOT_FOUND(500,"강의 정보가 존재하지 않습니다"),
+    LECTURE_NOT_FOUND(500,"존재하지 않거나 판매중이 아닌 강의입니다."),
+    LECTURE_NOT_ON_SALE(500,"현재 강의는 판매 중이 아닙니다.\n잠시 후에 다시 시도해 주세요."),
     LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다.");
 
 

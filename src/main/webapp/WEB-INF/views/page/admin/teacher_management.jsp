@@ -9,21 +9,24 @@
 </jsp:include>
 
 <div class="admin-content-container">
-    <h2 class="admin-page-title">강사 관리</h2>
+    <div class="admin-header-bar">
+        <h2 class="admin-page-title">강사 관리</h2>
+        <!-- <button id="downloadPdfBtn" class="btn-download">PDF로 저장</button> -->
+    </div>
 
     <!-- 검색 바 -->
     <div class="member-search-bar">
-        <select id="roleFilter">
-            <option value="USER">이메일</option>
-            <option value="TEACHER">이름</option>
+        <select id="searchType">
+            <option value="email">이메일</option>
+            <option value="nickname">이름</option>
         </select>
-        <select id="roleFilter">
+        <select id="subjectFilter">
             <option value="">전체과목</option>
             <option value="KOREAN">국어</option>
             <option value="ENGLISH">영어</option>
             <option value="MATH">수학</option>
             <option value="SOCIAL">사회탐구</option>
-            <option value="SCIENCE"과학탐구</option>
+            <option value="SCIENCE">과학탐구</option>
         </select>
         <input type="text" id="keyword" placeholder="회원 이름 또는 이메일 검색..." />
 
@@ -45,6 +48,10 @@
                 <th>관리</th>
             </tr>
             </thead>
+            <tbody id="teachersTableBody">
+            <!-- JS 회원 목록 렌더링 -->
+            </tbody>
+            <!--
             <tbody>
             <tr>
                 <td>1</td>
@@ -98,7 +105,9 @@
                 </tr>
             </c:forEach>
             </tbody>
+            -->
         </table>
+        <div id="pagination" class="pagination"></div>
     </div>
 </div>
 
@@ -123,212 +132,9 @@
     </div>
 </div>
 
-<style>
-    .admin-content-container {
-        display:flex;
-        flex-direction: column;
-        border:2px solid black;
-        min-height: 600px;
-        height:auto;
-        width:100%;
-
-    }
-    .admin-page-title {
-        font-size: 22px;
-        font-weight: bold;
-        color: #333;
-        padding:10px;
-    }
-
-    /* 검색바 */
-    .member-search-bar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        width: 100%;
-        padding: 10px;
-    }
-
-    .member-search-bar input {
-        flex: 7; /* 4 비율 */
-        padding: 8px 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-    .member-search-bar select {
-        flex: 1; /* 4 비율 */
-        padding: 8px 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-    .member-search-bar button {
-        flex: 1; /* 1 비율 */
-        background: #4a90e2;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .member-search-bar button:hover {
-        background: #357ac8;
-    }
-
-    /* 테이블 */
-    .member-table-wrapper {
-        width: 100%;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-
-    .member-table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: center;
-    }
-
-    /* 전체 공통 스타일 */
-    .member-table th {
-        background-color: #f5f6fa;
-        color: #444;
-        font-family: "Noto Sans KR", sans-serif;
-        font-size: 16px;
-        padding: 12px;
-        border-bottom: 1px solid #ccc;
-    }
-    .member-table td {
-        text-align: center;
-        padding: 10px 12px;
-        border-bottom: 1px solid #f0f0f0;
-        color: #333;
-    }
-
-    .member-table th:nth-child(1) { width: 5%; }   /* No */
-    .member-table th:nth-child(2) { width: 15%; }  /* 이름 */
-    .member-table th:nth-child(3) { width: 20%; }  /* 이메일 */
-    .member-table th:nth-child(4) { width: 10%; }  /* 권한 */
-    .member-table th:nth-child(5) { width: 10%; }  /* 상태 */
-    .member-table th:nth-child(6) { width: 15%; }  /* 가입일 */
-    .member-table th:nth-child(7) { width: 10%; }  /* 관리 */
-
-    .member-table tr:hover {
-        background: #f9f9fc;
-    }
-
-    /* 상태 */
-    .status-active {
-        color: #27ae60;
-        font-weight: bold;
-    }
-
-    .status-banned {
-        color: #e74c3c;
-        font-weight: bold;
-    }
-
-    /* 버튼 */
-    .btn-view, .btn-ban {
-        padding: 6px 10px;
-        border: none;
-        border-radius: 5px;
-        color: white;
-        cursor: pointer;
-        font-size: 13px;
-        transition: all 0.2s ease;
-    }
-
-    .btn-view {
-        background: #4a90e2;
-    }
-    .btn-view:hover {
-        background: #357ac8;
-    }
-
-    .btn-ban {
-        background: #e74c3c;
-        margin-left: 5px;
-    }
-    .btn-ban:hover {
-        background: #c0392b;
-    }
-
-    .management-button{
-        color:pink;
-    }
-
-    .modal-overlay {
-        display: none; /* 기본 숨김 */
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 999;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* 모달 본체 */
-    .modal-content {
-        background: #fff;
-        padding: 25px 30px;
-        border-radius: 10px;
-        width: 800px;
-        height:600px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        position: relative;
-        animation: fadeIn 0.3s ease;
-    }
-
-    /* 닫기버튼 */
-    .close-btn {
-        position: absolute;
-        right: 15px;
-        top: 10px;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    /* 내용 */
-    .modal-info p {
-        margin: 10px 0;
-        font-size: 15px;
-    }
-
-    /* 버튼 영역 */
-    .modal-buttons {
-        margin-top: 20px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
-
-    /* 애니메이션 */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .modal-title{
-        font-size:40px;
-        font-weight: bold;
-    }
-
-    .modal-info p {
-        font-size: 16px; /* ✅ 원하는 크기로 조정 (예: 14px~18px 권장) */
-        color: #333;     /* 글자색도 변경 가능 */
-    }
-</style>
-
 <script src="<c:url value='/js/page/admin/teacher_management.js'/>"></script>
 
+<!--
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const modal = document.getElementById("memberModal");
@@ -369,6 +175,5 @@
             if (e.target === modal) modal.style.display = "none";
         });
     });
-
-
 </script>
+-->

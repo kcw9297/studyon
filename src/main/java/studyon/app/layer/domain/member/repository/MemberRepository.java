@@ -29,6 +29,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByMemberIdAndIsActive(Long memberId, Boolean isActive);
 
+    boolean existsByMemberIdAndIsActive(Long memberId, Boolean isActive);
+
+
     /** ✅ 오늘 가입한 회원 수 조회 */
     @Query("""
         SELECT COUNT(m)
