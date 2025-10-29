@@ -105,10 +105,10 @@ button{all:unset;}
 .reviews-god, .reviews-god.empty{color:var(--light-gray);}
 .reviews-god.filled{color:var(--star);}
 .reviews-day{margin-left:20px; font-size:16px; color:var(--deep-gray);}
-.reviews-bottom{white-space:pre-line;}
+.reviews-bottom{white-space:pre-line; height:100%}
 .reviews-more{margin-top:50px; padding:20px; border:1px solid var(--light-gray); border-radius:10px; font-weight:var(--bold); text-align:center;}
 .reviews-more:hover{background-color:var(--hover-gray); cursor:pointer;}
-.reviews-hidden {display:none !important;}
+.reviews-hidden{display:none !important;}
 
 
 /* ===== algorithm(알고리즘) ===== */

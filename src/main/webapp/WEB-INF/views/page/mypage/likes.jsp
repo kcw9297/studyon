@@ -12,13 +12,11 @@
                     <a class="likes-item" href="/lecture/detail/${like.lecture.lectureId}">
                         <div class="likes-thumbnail">
                             <img src="<c:url value='/img/png/thumbnail1.png'/>">
-                            <div class="likes-deleteIcon">
-                                <form action="/mypage/likes/delete/${like.lecture.lectureId}" method="get" style="display:inline;">
-                                    <button type="submit" class="likes-deleteIcon">
-                                        <img src="<c:url value='/img/png/delete.png'/>">
-                                    </button>
-                                </form>
-                            </div>
+                            <form class="likes-deleteIcon" action="/mypage/likes/delete/${like.lecture.lectureId}" method="get">
+                                <button type="submit">
+                                    <img src="<c:url value='/img/png/delete.png'/>">
+                                </button>
+                            </form>
                         </div>
                         <div class="likes-lecture">${like.lecture.title}</div>
                         <div class="likes-teacher">${like.lecture.teacher.member.nickname} 강사</div>
