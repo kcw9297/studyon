@@ -22,7 +22,7 @@ public class MemberLectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long memberLectureId;
         private Long lectureId;
@@ -41,7 +41,7 @@ public class MemberLectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private Long memberId;
         private Long lectureId;
@@ -56,7 +56,7 @@ public class MemberLectureDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long memberLectureId;
         private int progress;

@@ -21,7 +21,7 @@ public class LectureQuestionDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long lectureQuestionId;
         private String title;
@@ -39,7 +39,7 @@ public class LectureQuestionDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private Long lectureQuestionId;
         private Long lectureId;
@@ -53,7 +53,7 @@ public class LectureQuestionDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long lectureQuestionId;
         private Long lectureId;

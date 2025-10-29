@@ -15,13 +15,13 @@ import java.io.Serializable;
  * @author kcw97
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class FileDTO {
 
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read implements Serializable {
 
         @Serial
@@ -41,7 +41,7 @@ public class FileDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Upload implements Serializable {
 
         @Serial

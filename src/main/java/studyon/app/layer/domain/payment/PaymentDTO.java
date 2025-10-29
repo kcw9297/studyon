@@ -26,7 +26,7 @@ public class PaymentDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Search {
 
         private String filter; // 결제번호, 강의명, 강사명
@@ -54,7 +54,7 @@ public class PaymentDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
 
         private Long paymentId;
@@ -82,7 +82,7 @@ public class PaymentDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Pay {
 
         // 결제 시 제공되는 정보
@@ -105,7 +105,7 @@ public class PaymentDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Refund {
 
         private Long paymentId;

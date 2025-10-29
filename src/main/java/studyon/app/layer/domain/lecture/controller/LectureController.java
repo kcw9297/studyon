@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
-import studyon.app.common.enums.Subject;
-import studyon.app.common.enums.View;
-import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.common.enums.*;
+import studyon.app.common.enums.search.LectureKeywordFilter;
+import studyon.app.common.enums.search.LectureSort;
+import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.ViewUtils;
+import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
-import studyon.app.layer.domain.member.MemberProfile;
 
 /*
  * [수정 이력]
@@ -50,11 +51,23 @@ public class LectureController {
         return ViewUtils.returnView(model, View.LECTURE,"lecture_recommend");
     }
 
-    @GetMapping("/search")
-    public String lectureSearchView(HttpSession session,Model model){
-        MemberProfile profile = SessionUtils.getProfile(session);
+    @GetMapping("/list")
+    public String lectureSearchView(Model model, LectureDTO.Search rq, Page.Request prq) {
 
-        return ViewUtils.returnView(model, View.LECTURE, "lecture_search");
+        // [1] 필터를 위한 데이터 삽입
+        model.addAttribute("subjects", Subject.values());
+        model.addAttribute("subjectDetails", SubjectDetail.values());
+        model.addAttribute("difficulties", Difficulty.values());
+        model.addAttribute("filters", LectureKeywordFilter.values());
+        model.addAttribute("sorts", LectureSort.values());
+
+        // [2] 검색된 파라미터 중, 선택된 파라미터 삽입
+        model.addAttribute("selectedSubjects", rq.getSubjects());
+        model.addAttribute("selectedSubjectDetails", rq.getSubjectDetails());
+        model.addAttribute("selectedDifficulties", rq.getDifficulties());
+
+        // [3] view 반환 (검색 상세는 비동기로 처리)
+        return ViewUtils.returnView(model, View.LECTURE, "lecture_list");
 
     }
 }

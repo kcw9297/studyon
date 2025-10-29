@@ -53,7 +53,7 @@ import java.util.Objects;
  * @author kcw97
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class DTOMapper {
 
     /**

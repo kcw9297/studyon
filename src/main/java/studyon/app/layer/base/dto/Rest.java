@@ -21,7 +21,7 @@ public class Rest {
 
     @Data
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Response {
 
         private Boolean success;
