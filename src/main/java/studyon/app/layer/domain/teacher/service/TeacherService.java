@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.teacher.service;
 
 import studyon.app.common.enums.Subject;
+import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.List;
@@ -19,9 +20,9 @@ import java.util.List;
 public interface TeacherService {
     /**
      * 모든 선생님 조회
-     * @return 선생님 리스트
+     * @return 선생님 페이징 리스트
      */
-    List<TeacherDTO.Read> readAllTeachers();
+    Page.Response<TeacherDTO.Read> readPagedList(TeacherDTO.Search rq, Page.Request prq);
     /**
      * 과목별 선생님 조회
      * @return 해당 선생님 리스트

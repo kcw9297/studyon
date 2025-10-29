@@ -90,11 +90,11 @@
 .member-table th:nth-child(1) { width: 5%; }   /* No */
 .member-table th:nth-child(2) { width: 7%; }   /* ID */
 .member-table th:nth-child(3) { width: 13%; }  /* 이름 */
-.member-table th:nth-child(4) { width: 20%; }  /* 이메일 */
+.member-table th:nth-child(4) { width: 13%; }  /* 이메일 */
 .member-table th:nth-child(5) { width: 10%; }  /* 권한 */
 .member-table th:nth-child(6) { width: 10%; }  /* 상태 */
 .member-table th:nth-child(7) { width: 13%; }  /* 가입일 */
-.member-table th:nth-child(8) { width: 12%; }  /* 최근 로그인 일시 */
+.member-table th:nth-child(8) { width: 19%; }  /* 최근 로그인 일시 */
 .member-table th:nth-child(9) { width: 10%; }  /* 관리 버튼 */
 
 .member-table tr:hover {
