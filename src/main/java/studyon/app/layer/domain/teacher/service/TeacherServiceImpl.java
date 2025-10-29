@@ -9,6 +9,7 @@ import studyon.app.common.enums.Difficulty;
 import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
 import studyon.app.common.exception.BusinessLogicException;
+import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
@@ -16,6 +17,7 @@ import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
+import studyon.app.layer.domain.teacher.mapper.TeacherMapper;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
 import java.util.List;
@@ -40,6 +42,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final LectureRepository lectureRepository;
+    private final TeacherMapper teacherMapper;
 
     /**
      * 모든 선생님 조회
@@ -47,13 +50,13 @@ public class TeacherServiceImpl implements TeacherService {
      */
 
     @Override
-    public List<TeacherDTO.Read> readAllTeachers() {
-//        // [0] 리스팅 카운트용 변수
-//        Pageable pageable = PageRequest.of(0, count);
-        // [1] 레포지토리에서 모든 선생님 정보 가져오기
-        return teacherRepository.findAll().stream()
-                .map(DTOMapper::toReadDTO)
-                .collect(Collectors.toList());
+    public Page.Response<TeacherDTO.Read> readPagedList(TeacherDTO.Search rq, Page.Request prq) {
+        // [1] 리스팅 카운트용 변수
+        log.info("[SERVICE] 강사 목록 조회 요청 - keyword={}, subject={}", rq.getKeyword(), rq.getSubject());
+        List<TeacherDTO.Read> list = teacherMapper.findBySearch(rq, prq);
+        Integer totalCount = teacherMapper.countBySearch(rq);
+        // [2] 레포지토리에서 모든 선생님 정보 가져오기
+        return Page.Response.create(list, prq.getPage(), prq.getSize(), totalCount);
     }
 
     /**

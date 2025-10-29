@@ -41,12 +41,14 @@ document.addEventListener("DOMContentLoaded", () => {
             item.classList.add("recent-lecture-item");
 
             item.innerHTML = `
+             <a href="${detailUrl}">
                 <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                 <div class="lecture-info">
                   <p class="lecture-title">${teacher.nickname}</p>
                   <p class="lecture-info-text">${teacher.description || "소개가 없습니다."}</p>
                   <!-- <p class="lecture-info-text">⭐${teacher.averageRating ?? "0.0"}</p> -->
                 </div>
+             </a>
             `;
             container.appendChild(item);
         })
