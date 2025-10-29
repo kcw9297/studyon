@@ -31,6 +31,7 @@ public interface LectureLikeService {
 
     // 목록 조회
     List<LectureLike> getLikesByMember(Long memberId);
+    List<LectureLike> getLikesByMemberAndSubject(Long memberId, String subject);
 
     // 목록에서 삭제
     void deleteLike(Long memberId, Long lectureId);

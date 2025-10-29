@@ -1,11 +1,12 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <div class="category">
-    <a href="/mypage/likes?subject=all" class="subject" id="all">전체</a>
-    <a href="/mypage/likes?subject=math" class="subject" id="math">수학</a>
-    <a href="/mypage/likes?subject=english" class="subject" id="english">영어</a>
-    <a href="/mypage/likes?subject=korean" class="subject" id="korean">국어</a>
-    <a href="/mypage/likes?subject=science" class="subject" id="science">과학탐구</a>
-    <a href="/mypage/likes?subject=social" class="subject" id="social">사회탐구</a>
+    <a href="<c:url value='/mypage/likes'/>" class="subject" id="all">전체</a>
+    <a href="<c:url value='/mypage/likes?subject=MATH'/>" class="subject" id="math">수학</a>
+    <a href="<c:url value='/mypage/likes?subject=ENGLISH'/>" class="subject" id="english">영어</a>
+    <a href="<c:url value='/mypage/likes?subject=KOREAN'/>" class="subject" id="korean">국어</a>
+    <a href="<c:url value='/mypage/likes?subject=SCIENCE'/>" class="subject" id="science">과학탐구</a>
+    <a href="<c:url value='/mypage/likes?subject=SOCIAL'/>" class="subject" id="social">사회탐구</a>
 </div>
 
 

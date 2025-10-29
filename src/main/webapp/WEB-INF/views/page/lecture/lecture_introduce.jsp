@@ -156,7 +156,7 @@
             <c:forEach var="review" items="${reviews}">
                 <li class="reviews-comment">
                     <div class="reviews-user">
-                        <img src="<c:url value='/img/png/user.png'/>">${review.member.nickname}
+                        <img src="<c:url value='${review.member.profileImage}'/>">${review.member.nickname}
                     </div>
                     <div class="reviews-content">
                         <div class="reviews-top">
