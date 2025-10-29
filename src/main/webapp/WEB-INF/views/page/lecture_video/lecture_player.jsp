@@ -45,6 +45,7 @@
         </div>
 
         <div class="qna-title">QNA</div>
+        <label class="index-name">index</label>
         <%-- 여기가 이제 질문글 등록하는 곳 --%>
         <%-- 여기가 이제 이전에 학생들이 질문 올렸던 QNA 올리는 곳--%>
 
@@ -79,8 +80,17 @@
     /* QNA SECTION CSS*/
 
     /* QNA 질답쪽*/
-    .qna-item-text-question{
+
+    .index-name{
         margin-bottom:5px;
+    }
+    .qna-item-text-question{
+        display:flex;
+        margin-bottom:5px;
+        width:100%;
+        height:auto;
+        white-space: pre-wrap;   /* ✅ 줄바꿈 + 공백 그대로 표시 */
+        word-break: break-word;
     }
 
     .qnaForm-style{
@@ -273,7 +283,6 @@
         flex-direction: row;
         justify-content: flex-end;
         height:29px;
-
     }
 
     .qna-button {
@@ -311,6 +320,9 @@
         justify-content: center;
 
     }
+
+    /* Curriculum Section */
+
     .curriculum-item {
         color: white;
         font-size: 16px;
@@ -351,6 +363,10 @@
         height:auto;
     }
 
+    .curriculum-item-box{
+
+    }
+
 </style>
 
 <script>
@@ -382,7 +398,8 @@
             qnaSection.style.display = isHidden ? "flex" : "none";
             curriculumSection.style.display = "none";
             // 버튼 텍스트도 토글되게
-            qnaBtn.textContent = isHidden ? "QNA 닫기" : "QNA";
+            qnaBtn.textContent = isHidden ? "QNA" : "QNA";
+            loadQNA();
         });
 
         curriculumBtn.addEventListener("click", () => {
@@ -443,6 +460,11 @@
             const indexList = json.data || [];
             console.log("🎬 목차 데이터:", indexList);
 
+            //강의제목설정
+            if (indexList.length > 0 && indexList[0].lectureTitle) {
+                document.querySelector(".lecture-title").textContent = indexList[0].lectureTitle;
+            }
+
             // ✅ 2. HTML 요소 참조
             const list = document.querySelector(".curriculum-list");
             const video = document.querySelector("video");
@@ -497,29 +519,33 @@
             const qnaItem = document.querySelector(".qna-item");
             const teacher = document.querySelector(".qna-item-teachername");
             const answer = document.querySelector(".qna-item-answer");
-            const questionInput = document.getElementById(".qna-input");
+            const questionInput = document.getElementById("qna-input");
+            const indexName = document.querySelector(".index-name");
 
-            if(!response) throw new Error("QNA 불러오기 실패")
-            const jsondata = await response.json();
-            const qnaDATA = jsondata.data || [] ;
-
+            questionInput.value = "";
+            indexName.value = "";
             list.innerHTML="";
             questionInput.textContent = "";
 
             console.log("List 지우기");
 
             try{
-                const response = await fetch("/api/lecture/answer_and_question/"+currentLectureId+"/" + currentIndexId)
-                if(!response.ok) throw new Error("QNA 불러오기 실패");
+                console.log("try시작");
+                const response = await fetch(
+                    "/lecture/question_and_answer?lectureId=" + currentLectureId + "&lectureIndexId=" + currentIndexId
+                );
                 const jsonData = await response.json();
                 const qnaData = jsonData.data || [];
+                console.log("qnaDATA : ",qnaData);
+                console.log(currentIndexId);
 
-                if(qnaDATA.length === 0 ){
-                    list.innerHTML = `<div>등록된 질문이 없습니다.</div>`
-                    return;
+                const currentQna = qnaData.find(q => q.lectureIndexId === currentIndexId);
+                if (currentQna) {
+                    indexName.textContent = currentQna.indexTitle;
+                } else {
+                    indexName.textContent = "이 목차에는 QnA가 없습니다.";
                 }
 
-                console.log(qnaData);
 
                 qnaData.forEach(q => {
                     const item = document.createElement("div");
@@ -531,19 +557,19 @@
 
                     const title = document.createElement("div");
                     title.classList.add("qna-item-title");
-                    title.textContent = "📘 " + q.title;
+                    title.textContent = "Q : " + q.title;
 
                     const content = document.createElement("div");
                     content.classList.add("qna-item-text-question");
                     content.textContent = q.content;
 
-                    const meta = document.createElement("div");
-                    meta.classList.add("qna-item-meta");
-                    meta.textContent = `작성자: ${q.memberName || "익명"} • 상태: ${q.isSolved ? "✅ 답변 완료" : "⌛ 대기 중"}`;
+                    <%--const meta = document.createElement("div");--%>
+                    <%--meta.classList.add("qna-item-meta");--%>
+                    <%--meta.textContent = `작성자: ${q.memberName || "익명"} • 상태: ${q.isSolved ? "✅ 답변 완료" : "⌛ 대기 중"}`;--%>
 
                     questionBox.appendChild(title);
                     questionBox.appendChild(content);
-                    questionBox.appendChild(meta);
+                    // questionBox.appendChild(meta);
 
                     // 답변이 존재하는 경우
                     if (q.answerContent) {
@@ -563,6 +589,7 @@
                     list.appendChild(questionBox);
                     list.appendChild(divider);
                 });
+                console.log("qnadata쓰기완료");
 
                 console.log("✅ QNA 데이터 렌더링 완료");
 
@@ -577,37 +604,41 @@
 
         async function registerQuestion(lectureId,indexId){
             const textarea = document.getElementById("qna-input");
+            const titleInput = document.getElementById("title");
+            const titleContent = titleInput.value.trim();
+
             const question = textarea.value.trim();
 
-            if(question === ""){
-                alert("질문을 입력해주세요");
-                return 0;
+            if (question === "" || titleContent === "") {
+                alert("질문 제목과 내용을 모두 입력해주세요.");
+                return;
             }
 
             try{
                 const form = new FormData();
                 form.append("lectureId", lectureId);
-                form.append("indexId", indexId);
+                form.append("lectureIndexId", indexId);
                 form.append("content", question);
-                form.append("title", title);
+                form.append("title", titleContent);
                 console.log("1");
 
-                const res = await fetch("lecture/question/register", {
+                const res = await fetch("/lecture/question/register", {
                     headers: { 'X-Requested-From': window.location.pathname + window.location.search },
                     method: "POST",
                     body: form
                 });
-                console.log("서버 응답:");
+                console.log("서버 응답:" + res);
 
                 textarea.value = "";
-                await loadQNA(currentIndexId);
+                titleInput.value = "";
+                await loadQNA();
             }catch(error){
                 console.error("질문 등록 실패");
             }
         }
 
 
-
+        await loadQNA();
 
 
         //DOM RENDER END

@@ -43,7 +43,7 @@ public class LectureAnswer extends BaseEntity {
     private LectureAnswer parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_qna_id", nullable = false)
+    @JoinColumn(name = "lecture_question_id", nullable = false)
     private LectureQuestion lectureQuestion;
 
     @ManyToOne(fetch = FetchType.LAZY)

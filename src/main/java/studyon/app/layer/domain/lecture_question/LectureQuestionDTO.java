@@ -48,6 +48,7 @@ public class LectureQuestionDTO {
         private Long memberId;
         private String memberNickname;
         private LocalDateTime createdAt;
+        private Long lectureIndexId;
     }
 
     @Data
@@ -60,4 +61,24 @@ public class LectureQuestionDTO {
         private String title;
         private String content;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ReadQna {
+
+        // 질문 정보
+        private Long questionId;
+        private String title;
+        private String content;
+        private boolean isSolved;
+        private LocalDateTime questionCreatedAt;
+        private String answerContent;
+        private LocalDateTime answerCreatedAt;
+        private Long lectureId;
+        private Long lectureIndexId;
+        private String indexTitle;
+    }
+
 }

@@ -6,10 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
+import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.layer.domain.lecture_question.LectureQuestion;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_question.service.LectureQuestionService;
+import studyon.app.layer.domain.payment.PaymentDTO;
 
 import java.util.List;
 
@@ -45,9 +48,21 @@ public class LectureQuestionRestController {
 
         // [2] 질문 등록 수행
         lectureQuestionService.register(rq);
+        log.info("qna register success");
 
         // [3] 성공 응답 반환
         return RestUtils.ok("질문이 성공적으로 등록되었습니다.");
+    }
+
+    @GetMapping("/question_and_answer")
+    public ResponseEntity<?> getQuestionAndAnswer(LectureQuestionDTO.ReadQna rq) {
+
+        List<LectureQuestionDTO.ReadQna> response =
+                lectureQuestionService.readQuestionAndAnswer(rq.getLectureId(), rq.getLectureIndexId());
+        log.info("getQNA동작");
+        log.info("getQNA데이터" + response);
+
+        return RestUtils.ok(response);
     }
 
 
