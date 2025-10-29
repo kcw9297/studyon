@@ -83,6 +83,11 @@ public class LectureLikeServiceImpl implements LectureLikeService {
     }
 
     @Override
+    public List<LectureLike> getLikesByMemberAndSubject(Long memberId, String subject) {
+        return lectureLikeRepository.findByMemberIdWithLectureAndSubject(memberId, subject);
+    }
+
+    @Override
     public void deleteLike(Long memberId, Long lectureId) {
         lectureLikeRepository.findByMember_MemberIdAndLecture_LectureId(memberId, lectureId)
                 .ifPresent(lectureLikeRepository::delete);
