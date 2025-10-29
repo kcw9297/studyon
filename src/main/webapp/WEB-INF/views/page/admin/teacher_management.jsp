@@ -17,10 +17,11 @@
     <!-- 검색 바 -->
     <div class="member-search-bar">
         <select id="searchType">
+            <option value="">전체</option>
             <option value="email">이메일</option>
             <option value="nickname">이름</option>
         </select>
-        <select id="subjectFilter">
+        <select id="subjectFilter" name="subject">
             <option value="">전체과목</option>
             <option value="KOREAN">국어</option>
             <option value="ENGLISH">영어</option>
@@ -30,7 +31,7 @@
         </select>
         <input type="text" id="keyword" placeholder="회원 이름 또는 이메일 검색..." />
 
-        <button id="searchBtn">검색</button>
+        <button id="teacherSearchBtn">검색</button>
     </div>
 
     <!-- 회원 테이블 -->
@@ -41,7 +42,7 @@
                 <th>No</th>
                 <th>이름</th>
                 <th>이메일</th>
-                <th>권한</th>
+                <th>담당과목</th>
                 <th>상태</th>
                 <th>가입일</th>
                 <th>로그인</th>
@@ -111,7 +112,7 @@
     </div>
 </div>
 
-<div id="memberModal" class="modal-overlay">
+<div id="memberModal" class="modal-overlay data-type="teacher">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
         <label class="modal-title">강사 상세정보</label>
@@ -119,21 +120,22 @@
         <div class="modal-info">
             <p><strong>이름:</strong> <span id="modalName">-</span></p>
             <p><strong>이메일:</strong> <span id="modalEmail">-</span></p>
-            <p><strong>권한:</strong> <span id="modalRole">-</span></p>
+            <p><strong>담당 과목:</strong> <span id="modalSubject">-</span></p>
             <p><strong>상태:</strong> <span id="modalStatus">-</span></p>
             <p><strong>가입일:</strong> <span id="modalDate">-</span></p>
-            <p><strong>담당 과목:</strong> <span id="modalDate">-</span></p>
+            <p><strong>최근 로그인 일시:</strong> <span id="modalLoginDate">-</span></p>
         </div>
 
         <div class="modal-buttons">
-            <button id="banMemberBtn" class="btn-ban">정지</button>
+            <button id="toggleBtn"  class="btn-ban">비활성</button>
             <button id="closeModalBtn" class="btn-view">닫기</button>
         </div>
     </div>
 </div>
 
 <script src="<c:url value='/js/page/admin/teacher_management.js'/>"></script>
-
+<script src="<c:url value='/js/page/admin/teacher_management_modal.js'/>"></script>
+<script src="<c:url value='/js/page/admin/management_toggle.js'/>"></script>
 <!--
 <script>
     document.addEventListener("DOMContentLoaded", () => {

@@ -86,12 +86,16 @@ public class AdminMemberRestController {
 
     /**
      * [POST] 회원 활성/비활성 상태 변경
-     * URL: GET /admin/members/export/pdf
+     * URL: - POST /admin/api/toggle/members/{id}
+     *      - POST /admin/api/toggle/teachers/{id}
      * @param memberId 해당 멤버 ID
      * @param session 세션 관리
      */
-    @PostMapping("/toggle/{memberId}")
-    public ResponseEntity<?> toggleActive(@PathVariable("memberId") Long memberId, HttpServletRequest request, HttpSession session) {
+    @PostMapping("/toggle/{entity}/{memberId}")
+    public ResponseEntity<?> toggleActive(@PathVariable("memberId") Long memberId,
+                                          @PathVariable("entity") String entity,
+                                          HttpServletRequest request,
+                                          HttpSession session) {
         Object attr = request.getAttribute("memberId");
         MemberProfile profile = SessionUtils.getProfile(session);
         log.warn("🧩 PathVariable={}, RequestAttr(memberId)={}, SessionMemberId={}",
