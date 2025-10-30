@@ -21,7 +21,6 @@ import java.util.List;
 public enum LectureKeywordFilter {
 
     TITLE("강의명"),
-    CONTENT("내용"),
     TEACHER("선생님");
 
     private final String value;

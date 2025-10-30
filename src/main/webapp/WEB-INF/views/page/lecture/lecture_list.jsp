@@ -9,12 +9,10 @@
     <div class="main-container">
         <div class="sidebar-container">
             <div class="recommend-nav">
-                <a href="<c:url value='/lecture/recommend/SEARCH'/>" class="nav-item">전체검색</a>
-                <a href="<c:url value='/lecture/recommend/MATH'/>" class="nav-item">수학</a>
-                <a href="<c:url value='/lecture/recommend/ENGLISH'/>" class="nav-item">영어</a>
-                <a href="<c:url value='/lecture/recommend/KOREAN'/>" class="nav-item">국어</a>
-                <a href="<c:url value='/lecture/recommend/SCIENCE'/>" class="nav-item">과학탐구</a>
-                <a href="<c:url value='/lecture/recommend/SOCIAL'/>" class="nav-item">사회탐구</a>
+                <a href="<c:url value='/lecture/list'/>" class="nav-item">전체</a>
+                <c:forEach var="subject" items="${subjects}">
+                    <a href="<c:url value='/lecture/recommend/${subject}'/>" class="nav-item">${subject.value}</a>
+                </c:forEach>
             </div>
         </div>
 
@@ -100,55 +98,6 @@
             </div>
 
             <div class ="search-lecture-container">
-                <div class="search-lecture-item">
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" class="lecture-thumbnail">
-                    <div class="search-lecture-info">
-                        <label class="search-lecture-title">일 잘하는 사람은 '이렇게' 말합니다</label>
-                        <label class="search-lecture-teacher">고창우</label>
-                    </div>
-                </div>
-                <div class="search-lecture-item">
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" class="lecture-thumbnail">
-                    <div class="search-lecture-info">
-                        <label class="search-lecture-title">일 잘하는 사람은 '이렇게' 말합니다</label>
-                        <label class="search-lecture-teacher">고창우</label>
-                    </div>
-                </div>
-                <div class="search-lecture-item">
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" class="lecture-thumbnail">
-                    <div class="search-lecture-info">
-                        <label class="search-lecture-title">일 잘하는 사람은 '이렇게' 말합니다</label>
-                        <label class="search-lecture-teacher">고창우</label>
-                    </div>
-                </div>
-                <div class="search-lecture-item">
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" class="lecture-thumbnail">
-                    <div class="search-lecture-info">
-                        <label class="search-lecture-title">일 잘하는 사람은 '이렇게' 말합니다</label>
-                        <label class="search-lecture-teacher">고창우</label>
-                    </div>
-                </div>
-                <div class="search-lecture-item">
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" class="lecture-thumbnail">
-                    <div class="search-lecture-info">
-                        <label class="search-lecture-title">일 잘하는 사람은 '이렇게' 말합니다</label>
-                        <label class="search-lecture-teacher">고창우</label>
-                    </div>
-                </div>
-                <div class="search-lecture-item">
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" class="lecture-thumbnail">
-                    <div class="search-lecture-info">
-                        <label class="search-lecture-title">일 잘하는 사람은 '이렇게' 말합니다</label>
-                        <label class="search-lecture-teacher">고창우</label>
-                    </div>
-                </div>
-                <div class="search-lecture-item">
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" class="lecture-thumbnail">
-                    <div class="search-lecture-info">
-                        <label class="search-lecture-title">일 잘하는 사람은 '이렇게' 말합니다</label>
-                        <label class="search-lecture-teacher">고창우</label>
-                    </div>
-                </div>
 
             </div>
 
@@ -246,15 +195,53 @@
 </style>
 
 <script>
+    let currentPage = 1;
+    let isLoading = false;
+    let isLastPage = false;
+
     document.addEventListener("DOMContentLoaded", () => {
 
+        // 매핑 객체
+        const SUBJECT_MAP = {
+            <c:forEach var="subject" items="${subjects}" varStatus="status">
+                "${subject}": "${subject.value}"${!status.last ? ',' : ''}
+            </c:forEach>
+        };
+
+        const SUBJECT_DETAIL_MAP = {
+            <c:forEach var="subjectDetail" items="${subjectDetails}" varStatus="status">
+            "${subjectDetail}": "${subjectDetail.name}"${!status.last ? ',' : ''}
+            </c:forEach>
+        };
+
+
+        const DIFFICULTY_MAP = {
+            <c:forEach var="difficulty" items="${difficulties}" varStatus="status">
+                "${difficulty}": "${difficulty.value}"${!status.last ? ',' : ''}
+            </c:forEach>
+        };
+
         loadLectures();
+
+        // 무한 스크롤 이벤트
+        window.addEventListener('scroll', () => {
+            if (isLoading || isLastPage) return;
+
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            // 스크롤이 하단에 도달하면 다음 페이지 로드
+            if (scrollTop + windowHeight >= documentHeight - 100) {
+                currentPage++;
+                loadLectures();
+            }
+        });
 
         // 검색 버튼 클릭
         document.getElementById("search-btn").addEventListener("click", async (e) => {
             e.preventDefault();
 
-            // 검색어 필터 추출
             const form = document.getElementById('lecture-search-form');
             const formData = new FormData(form);
             const params = new URLSearchParams();
@@ -262,39 +249,100 @@
             for (let [key, value] of formData.entries())
                 if (value) params.append(key, value);
 
-            // 쿼리 조합
             const queryString = params.toString();
-            window.location.href = window.location.pathname + "?page=1&" + queryString; // 검색 수행
-        })
-    });
+
+            // 검색 시 페이지 초기화
+            currentPage = 1;
+            isLastPage = false;
+            window.location.href = window.location.pathname + "?" + queryString;
+        });
 
 
-    async function loadLectures() {
 
-        try {
 
-            // 현재 url 검색 파라미터, 경로
-            const pathname = "/api/lectures"
-            const params = window.location.search;
-            const url = pathname + params;
+        async function loadLectures() {
+            if (isLoading) return;
+            isLoading = true;
 
-            const res = await fetch(url, {
-                method: "GET"
+            try {
+                const pathname = "/api/lectures";
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('page', currentPage);
+                const url = pathname + "?" + urlParams.toString();
+
+                const res = await fetch(url, {
+                    method: "GET"
+                });
+
+                const rp = await res.json();
+                console.log("서버 응답:", rp);
+
+                if (res.ok && rp.success) {
+                    const lectures = rp.data.data;
+                    const container = document.querySelector('.search-lecture-container');
+
+                    // 첫 페이지면 기존 내용 제거
+                    if (currentPage === 1) {
+                        container.innerHTML = '';
+                    }
+
+                    // 강의 목록 렌더링
+                    lectures.forEach(lecture => {
+                        const lectureItem = createLectureItem(lecture);
+                        container.appendChild(lectureItem);
+                    });
+
+                    // 마지막 페이지 확인
+                    isLastPage = rp.data.endPage;
+
+                }
+
+            } catch (error) {
+                console.error('검색 실패 오류:', error);
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function createLectureItem(lecture) {
+            const item = document.createElement('div');
+            item.className = 'search-lecture-item';
+
+            const thumbnailSrc = lecture.thumbnailImagePath
+                ? `${fileDomain}/\${lecture.thumbnailImagePath}`
+                : `<c:url value='/img/png/default_member_profile_image.png'/>`;
+
+            item.innerHTML = `
+            <img src="\${thumbnailSrc}" class="lecture-thumbnail" />
+            <div class="search-lecture-info">
+                <label class="search-lecture-title">\${lecture.title}</label>
+                <label class="search-lecture-title">\${SUBJECT_MAP[lecture.subject]}</label>
+                <label class="search-lecture-title">\${SUBJECT_DETAIL_MAP[lecture.subjectDetail]}</label>
+                <label class="search-lecture-title">\${DIFFICULTY_MAP[lecture.difficulty]}</label>
+                <label class="search-lecture-teacher">\${lecture.teacherNickname}</label>
+                <label class="search-lecture-teacher">\${lecture.price}</label>
+                <label class="search-lecture-teacher">\${lecture.totalStudents}</label>
+                <label class="search-lecture-teacher">\${lecture.totalDuration}</label>
+                <label class="search-lecture-teacher">\${lecture.averageRate}</label>
+                <label class="search-lecture-teacher">\${lecture.likeCount}</label>
+            </div>
+        `;
+
+            // 클릭 이벤트 (상세 페이지로 이동)
+            item.addEventListener('click', () => {
+                window.location.href = `/lecture/\${lecture.lectureId}`;
             });
 
-            // 서버 JSON 응답 문자열 파싱
-            const rp = await res.json();
-            console.log("서버 응답:", rp);
-
-            // 요청 성공시에 최근 검색어 출력
-            if (res.ok && rp.success) {
-
-            }
-
-        } catch (error) {
-            console.error('검색 실패 오류:', error);
+            return item;
         }
-    }
+
+
+
+
+
+
+
+    });
 
 
 </script>

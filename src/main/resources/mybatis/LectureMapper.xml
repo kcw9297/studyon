@@ -3,36 +3,94 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="studyon.app.layer.domain.member.mapper.LectureMapper">
+<mapper namespace="studyon.app.layer.domain.lecture.mapper.LectureMapper">
     <select id="selectAll" resultType="studyon.app.layer.domain.lecture.LectureDTO$Read">
         SELECT
+        f.file_path AS thumbnail_image_path,
         l.lecture_id,
         l.title,
-        l.description,
         l.price,
+        t.teacher_id,
+        m.nickname AS teacher_nickname,
+        l.difficulty,
+        l.video_count,
+        l.total_duration,
+        l.total_students,
         l.average_rate,
         l.like_count,
-        l.total_students,
         l.publish_date,
-        l.difficulty,
-        l.on_sale,
-        t.teacher_id,
-        t.subject,
-        t.average_rating AS teacher_rating
+        l.subject,
+        l.subject_detail
+        <if test="rq.role neq 'ROLE_STUDENT'">
+            , l.on_sale, l.lecture_register_status
+        </if>
         FROM lecture l
-        JOIN teacher t ON l.teacher_id = t.teacher_id
+        LEFT JOIN teacher t ON l.teacher_id = t.teacher_id
+        LEFT JOIN member m ON t.member_id = m.member_id
+        LEFT JOIN files f ON l.thumbnail_file_id = f.file_id
         <where>
-            <if test="rq.filter eq 'title'">
-                l.title Like CONCAT('%', #{rq.keyword}, '%')
+            <if test="rq.filter neq null and rq.filter neq '' and rq.keyword neq null and rq.keyword neq ''">
+                <if test="rq.filter eq 'TITLE'">
+                    AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+                </if>
+                <if test="rq.filter eq 'CONTENT'">
+                    AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
+                </if>
+                <if test="rq.filter eq 'TEACHER'">
+                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                </if>
+                <if test="rq.filter eq 'TEACHER'">
+                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                </if>
             </if>
-            <if test="rq.filter eq ''difficulty'">
-                l.difficulty = #{rq.keyword}
+            <if test="rq.minPrice neq null and rq.minPrice neq 0">
+                AND l.price >= ${rq.minPrice}
             </if>
-            <if test="rq.filter eq 'teacher'">
-                t.subject LIKE CONCAT('%', #{rq.keyword}, '%')
+            <if test="rq.maxPrice neq null and rq.maxPrice neq 0">
+                AND l.price &lt;= ${rq.maxPrice}
+            </if>
+
+            <if test="rq.subjects neq null and rq.subjects.size() > 0">
+                AND l.subject IN
+                <foreach collection="rq.subjects" item="subject" open="(" close=")" separator=",">
+                    #{subject}
+                </foreach>
+            </if>
+            <if test="rq.subjectDetails neq null and rq.subjectDetails.size() > 0">
+                AND l.subject_detail IN
+                <foreach collection="rq.subjectDetails" item="detail" open="(" close=")" separator=",">
+                    #{detail}
+                </foreach>
+            </if>
+            <if test="rq.difficulties neq null and rq.difficulties.size() > 0">
+                AND l.difficulty IN
+                <foreach collection="rq.difficulties" item="difficulty" open="(" close=")" separator=",">
+                    #{difficulty}
+                </foreach>
+            </if>
+            <if test="rq.role eq 'ROLE_TEACHER'">
+                AND m.member_id = #{rq.memberId}
+            </if>
+            <if test="rq.role eq 'ROLE_STUDENT'">
+                AND l.on_sale IS TRUE
+                AND l.lecture_register_status = 'REGISTERED'
             </if>
         </where>
-        ORDER BY l.lecture_id DESC
+        ORDER BY
+        <choose>
+            <when test="rq.sort eq 'LATEST'">
+                l.cdate DESC
+            </when>
+            <when test="rq.sort eq 'RATING'">
+                l.average_rate DESC
+            </when>
+            <when test="rq.sort eq 'POPULAR'">
+                l.total_student DESC
+            </when>
+            <otherwise>
+                l.cdate DESC
+            </otherwise>
+        </choose>
         LIMIT #{prq.size} OFFSET #{prq.startPage}
     </select>
 
@@ -40,16 +98,54 @@
     <select id="countAll" resultType="Integer">
         SELECT COUNT(*)
         FROM lecture l
-        JOIN teacher t ON l.teacher_id = t.teacher_id
+        LEFT JOIN teacher t ON l.teacher_id = t.teacher_id
+        LEFT JOIN member m ON t.member_id = m.member_id
         <where>
-            <if test="rq.filter eq 'title'">
-                l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+            <if test="rq.filter neq null and rq.filter neq '' and rq.keyword neq null and rq.keyword neq ''">
+                <if test="rq.filter eq 'TITLE'">
+                    AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+                </if>
+                <if test="rq.filter eq 'CONTENT'">
+                    AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
+                </if>
+                <if test="rq.filter eq 'TEACHER'">
+                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                </if>
+                <if test="rq.filter eq 'TEACHER'">
+                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                </if>
             </if>
-            <if test="rq.filter eq 'difficulty'">
-                l.difficulty = #{rq.keyword}
+            <if test="rq.minPrice neq null and rq.minPrice neq 0">
+                AND l.price >= ${rq.minPrice}
             </if>
-            <if test="rq.filter eq 'teacher'">
-                t.subject LIKE CONCAT('%', #{rq.keyword}, '%')
+            <if test="rq.maxPrice neq null and rq.maxPrice neq 0">
+                AND l.price &lt;= ${rq.maxPrice}
+            </if>
+
+            <if test="rq.subjects neq null and rq.subjects.size() > 0">
+                AND l.subject IN
+                <foreach collection="rq.subjects" item="subject" open="(" close=")" separator=",">
+                    #{subject}
+                </foreach>
+            </if>
+            <if test="rq.subjectDetails neq null and rq.subjectDetails.size() > 0">
+                AND l.subject_detail IN
+                <foreach collection="rq.subjectDetails" item="detail" open="(" close=")" separator=",">
+                    #{detail}
+                </foreach>
+            </if>
+            <if test="rq.difficulties neq null and rq.difficulties.size() > 0">
+                AND l.difficulty IN
+                <foreach collection="rq.difficulties" item="difficulty" open="(" close=")" separator=",">
+                    #{difficulty}
+                </foreach>
+            </if>
+            <if test="rq.role eq 'ROLE_TEACHER'">
+                AND m.member_id = #{rq.memberId}
+            </if>
+            <if test="rq.role eq 'ROLE_STUDENT'">
+                AND l.on_sale IS TRUE
+                AND l.lecture_register_status = 'REGISTERED'
             </if>
         </where>
     </select>

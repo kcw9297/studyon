@@ -27,9 +27,9 @@ public interface LectureService {
      * 강의 검색
      * @param rq 강의 검색 요청
      * @param prq 페이징 요청
-     * @return 최근 문자열 리스트
+     * @return 페이징된 강의 리스트
      */
-    List<LectureDTO.Read> readPagedList(LectureDTO.Search rq, Page.Request prq);
+    Page.Response<LectureDTO.Read> readPagedList(LectureDTO.Search rq, Page.Request prq);
 
 
     /**

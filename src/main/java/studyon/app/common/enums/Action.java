@@ -22,8 +22,6 @@ public enum Action {
     WITHDRAWAL("탈퇴"),
     PAY("결제"),
     REFUND("환불"),
-    COUPON_ISSUE("쿠폰발급"),
-    COUPON_USE("쿠폰사용"),
     UNKNOWN("불명");
 
     private final String value;
