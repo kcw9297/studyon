@@ -43,8 +43,8 @@ public final class Url {
     public static final String EDIT_PASSWORD = "/edit-password";
     public static final String LOGIN_PROCESS = LOGIN + "/process";
     public static final String LOGOUT = "/logout";
-    public static final String NOTICE = "/notice";
     public static final String NOTICES = "/notices";
+    public static final String BANNERS = "/banners";
     public static final String PAYMENT = "/payment";
     public static final String PAYMENTS = "/payments";
     public static final String AUTH = "/auth";
@@ -78,6 +78,10 @@ public final class Url {
     /* NOTICE */
     public static final String NOTICES_API = API + NOTICES;    //  "/api/home"
     public static final String ADMIN_NOTICES_API = ADMIN + NOTICES_API;    //  "/api/home"
+
+    /* BANNER */
+    public static final String BANNERS_API = API + BANNERS;    //  "/api/home"
+    public static final String ADMIN_BANNERS_API = ADMIN + BANNERS_API;    //  "/api/home"
 
     /* PAYMENT */
     public static final String PAYMENTS_API = API + PAYMENTS;

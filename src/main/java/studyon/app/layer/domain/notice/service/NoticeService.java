@@ -27,33 +27,33 @@ public interface NoticeService {
 
     /**
      * 공지사항 제목 수정 (관리자 구별용)
-     * @param index 대상 공지 번호
+     * @param idx 대상 공지 번호
      * @param title 변경 제목
      */
-    void editTitle(Integer index, String title);
+    void editTitle(Integer idx, String title);
 
     /**
      * 공지사항 이미지 수정 (실제로 사용자에게 보임)
-     * @param index 대상 공지 번호
+     * @param idx 대상 공지 번호
      * @param noticeImageFile 변경 이미지
      */
-    void editNoticeImage(Integer index, MultipartFile noticeImageFile);
+    void editNoticeImage(Integer idx, MultipartFile noticeImageFile);
 
     /**
      * 공지사항 활성화 (사용자에게 표시)
-     * @param index 대상 공지 번호
+     * @param idx 대상 공지 번호
      */
-    void activate(Integer index);
+    void activate(Integer idx);
 
     /**
      * 공지사항 비활성화 (사용자에게 미표시)
-     * @param index 대상 공지 번호
+     * @param idx 대상 공지 번호
      */
-    void inactivate(Integer index);
+    void inactivate(Integer idx);
 
     /**
      * 공지사항 초기화 (이미지, 제목, 활성상태 모두 초기화)
-     * @param index 대상 공지 번호
+     * @param idx 대상 공지 번호
      */
-    void initialize(Integer index);
+    void initialize(Integer idx);
 }

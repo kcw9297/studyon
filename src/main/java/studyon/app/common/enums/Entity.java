@@ -28,6 +28,7 @@ public enum Entity {
     REFUND("refund"),
     UNKNOWN("unknown"),
     NOTICE("notice"),
+    BANNER("banner"),
     PAYMENT("payment"),
     LECTURE_VIDEO("lecture_video"),
     TEMP("temp");

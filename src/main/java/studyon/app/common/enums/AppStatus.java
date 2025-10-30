@@ -70,6 +70,11 @@ public enum AppStatus {
     NOTICE_NOT_EXIST_TITLE_AND_IMAGE(400, "공지사항 제목 혹은 이미지가 등록되지 않았습니다.\n이미지와 제목을 등록 후 다시 시도해 주세요."),
     NOTICE_OK_INITIALIZE(200, "공지사항을 초기화 했습니다."),
 
+    /* 배너 상태 */
+    BANNER_NOT_FOUND(500, "이미 삭제되었거나 존재하지 않는 배너입니다."),
+    BANNER_NOT_EXIST_TITLE_AND_IMAGE(400, "배너 제목 혹은 이미지가 등록되지 않았습니다.\n이미지와 제목을 등록 후 다시 시도해 주세요."),
+    BANNER_OK_INITIALIZE(200, "배너를 초기화 했습니다."),
+
     /* 선생님 상태 */
     TEACHER_NOT_FOUND(500, "선생님 정보가 존재하지 않습니다."),
 
