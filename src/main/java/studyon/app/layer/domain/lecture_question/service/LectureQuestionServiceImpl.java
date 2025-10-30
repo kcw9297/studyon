@@ -129,8 +129,25 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
     }
 
 
+    @Override
+    public List<LectureQuestionDTO.ReadTeacherQnaDTO> getAllQnaList(Long teacherId) {
+        List<LectureQuestion> list = lectureQuestionRepository.findAllWithAnswerByTeacherId(teacherId);
 
-
+        return list.stream()
+                .map(q -> LectureQuestionDTO.ReadTeacherQnaDTO.builder()
+                        .lectureQuestionId(q.getLectureQuestionId())
+                        .title(q.getTitle())
+                        .content(q.getContent())
+                        .studentName(q.getMember().getNickname())
+                        .indexTitle(q.getLectureIndex() != null
+                                ? q.getLectureIndex().getIndexTitle()
+                                : "미지정 목차")
+                        .answered(q.getLectureAnswer() != null)
+                        .createdAt(q.getCreatedAt())
+                        .answeredAt(q.getLectureAnswer() != null ? q.getLectureAnswer().getCreatedAt() : null)
+                        .build())
+                .toList();
+    }
 
 
     public static class Write {

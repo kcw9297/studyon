@@ -81,18 +81,27 @@
 
     /* QNA 질답쪽*/
 
+    .qna-item-question-box{
+        cursor:pointer;
+        transition:background 0.3s ease;
+    }
+
+    .qna-item-question-box:hover{
+        background: rgba(255,255,255,0.05);
+    }
+
     .index-name{
         margin-bottom:5px;
     }
-    .qna-item-text-question{
-        display:flex;
-        margin-bottom:5px;
-        width:100%;
-        height:auto;
-        white-space: pre-wrap;   /* ✅ 줄바꿈 + 공백 그대로 표시 */
-        word-break: break-word;
-    }
 
+    .qna-item-text-question {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;     /* 최대 3줄까지만 보이기 */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+    }
     .qnaForm-style{
         margin-bottom:0px;
     }
@@ -325,7 +334,7 @@
 
     .curriculum-item {
         color: white;
-        font-size: 16px;
+        font-size: 20px;
         margin: 8px 0;
     }
 
@@ -363,8 +372,10 @@
         height:auto;
     }
 
-    .curriculum-item-box{
-
+    .curriculum-item-box {
+        display:flex;
+        height:50px;
+        align-items:center;
     }
 
 </style>
@@ -487,7 +498,7 @@
 
                 const titleSpan = document.createElement("span");
                 titleSpan.classList.add("curriculum-item");
-                titleSpan.textContent = (item.indexNumber || i + 1) + "강. " + item.indexTitle;
+                titleSpan.textContent = (item.indexNumber || i + 1) + "강 - " + item.indexTitle;
 
                 // ✅ 클릭 시 영상 변경
                 itemBox.addEventListener("click", () => {

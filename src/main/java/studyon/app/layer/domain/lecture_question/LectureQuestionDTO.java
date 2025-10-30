@@ -81,4 +81,24 @@ public class LectureQuestionDTO {
         private String indexTitle;
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReadTeacherQnaDTO {
+
+        private Long lectureQuestionId;   // 질문 ID
+        private String title;             // 질문 제목
+        private String content;           // 질문 내용
+        private String studentName;       // 질문 작성자 (익명처리 가능)
+        private String indexTitle;        // 목차명 (예: "3강 - 오리엔테이션")
+        private boolean answered;         // 답변 여부
+        private LocalDateTime createdAt;  // 질문 등록일
+        private LocalDateTime answeredAt; // 답변일 (없으면 null)
+
+        // UI 표시용 필드 (optional)
+        public String getStatusLabel() {
+            return answered ? "답변 완료" : "미답변";
+        }
+    }
 }

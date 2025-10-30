@@ -128,12 +128,32 @@ public class TeacherController {
     @GetMapping("/management/lectureinfo/{lectureId}")
     public String lectureinfo(Model model, HttpSession session) {
         MemberProfile profile = SessionUtils.getProfile(session);
-        if (Objects.isNull(profile)) {
-            log.warn("⚠️ 로그인되지 않은 접근 → redirect to /");
-            return "redirect:%s".formatted(Url.INDEX);
-        }
         log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
         model.addAttribute("profile", profile);
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture_info");
+    }
+
+    @GetMapping("/management/qna")
+    public String qna(Model model, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.TEACHER, "management_lecture_qna");
+    }
+
+    @GetMapping("/management/qna/answer")
+    public String qnaAnswer(Model model, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.TEACHER, "management_lecture_qna_answer");
+    }
+
+    @GetMapping("/management/qna/detail")
+    public String qnaDetail(Model model, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.TEACHER, "management_lecture_qna_detail");
     }
 }
