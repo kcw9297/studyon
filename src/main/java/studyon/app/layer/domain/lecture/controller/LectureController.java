@@ -45,8 +45,11 @@ public class LectureController {
      */
     @GetMapping("/recommend/{subject}")
     public String lectureRecommendView(@PathVariable Subject subject, Model model, @RequestParam(defaultValue = "4") int count) {
+
         // [1] 모델에 변수 바인딩
+        model.addAttribute("subjects", Subject.values());
         model.addAttribute("subject", subject);
+
         // [2] 뷰 리턴
         return ViewUtils.returnView(model, View.LECTURE,"lecture_recommend");
     }

@@ -28,7 +28,7 @@ public class Page {
         // 기본 생성자
         public Request() {
             this.page = 0;
-            this.size = 3;
+            this.size = 8;
         }
 
         public void setPage(Integer page) {

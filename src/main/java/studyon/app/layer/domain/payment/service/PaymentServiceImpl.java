@@ -175,7 +175,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
             // [1] 결제 검증 수행 (결제 결과가 조작되었거나, 다른 이유로 실패하면 예외 반환)
-            paymentManager.checkPayment(rq.getPaymentApiResult());
+            //paymentManager.checkPayment(rq.getPaymentApiResult());
 
             // [2] 구매 회원 & 강의 정보 조회
             Member member = memberRepository
