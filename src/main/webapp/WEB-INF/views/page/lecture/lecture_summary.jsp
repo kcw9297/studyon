@@ -1,6 +1,7 @@
 <%@ page contentType ="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +35,13 @@
             </div>
         </div>
         <div class="summary-thumbnail">
-            <img src="<c:url value='${lecture.thumbnailFile}'/>">
+            <c:choose>
+                <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
+                </c:when>
+                <c:otherwise>
+                    <img src="<c:url value='/img/png/thumbnail1.png'/>" alt="기본 이미지">
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
     <div class="summary-bottom">

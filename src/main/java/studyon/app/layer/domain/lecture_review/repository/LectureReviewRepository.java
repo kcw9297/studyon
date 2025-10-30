@@ -63,16 +63,14 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
      */
     List<LectureReview> findByLecture_LectureId(Long lectureId);
 
-    /* 강의 정보 조회 - 강의소개 페이지 */
+    /* 리뷰 조회 - 강의소개 페이지 */
     @Query("""
-        select lr
-        from LectureReview lr
-        join fetch lr.member m
-        left join fetch m.profileImage
-        where lr.lecture.lectureId = :lectureId
-        order by lr.rating desc
+        SELECT r FROM LectureReview r
+        JOIN FETCH r.member m
+        LEFT JOIN FETCH m.profileImage
+        WHERE r.lecture.lectureId = :lectureId
     """)
-    List<LectureReview> findByLectureIdWithMemberOrderByRatingDesc(@Param("lectureId") Long lectureId);
+    List<LectureReview> findReviewsWithMemberAndProfile(@Param("lectureId") Long lectureId);
     Long countByLecture_LectureId(Long lectureId);
 
     /* 별점 퍼센트 */
