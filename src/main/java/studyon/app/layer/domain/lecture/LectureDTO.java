@@ -7,6 +7,7 @@ import studyon.app.common.enums.Difficulty;
 import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
+import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;
@@ -48,6 +49,8 @@ public class LectureDTO {
         private String nickname;
 
         private List<LectureIndexDTO.Read> lectureIndexes;
+
+        private File thumbnailFile;
     }
 
     @Data

@@ -25,8 +25,13 @@
         <c:forEach var="lecture" items="${recommendedByTeacher}">
             <a class="algorithm-item" href="/lecture/detail/${lecture.lectureId}">
                 <div class="algorithm-thumbnail">
-                        <%--                    <img src="<c:url value='${lecture.thumbnailUrl}'/>" alt="썸네일">--%>
-                    <img src="<c:url value='/img/png/thumbnail1.png'/>">
+                    <c:choose>
+                        <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
+                        </c:when>
+                        <c:otherwise>
+                            <img src="<c:url value='/img/png/thumbnail1.png'/>" alt="기본 이미지">
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <div class="algorithm-lecture">${lecture.title}</div>
                 <div class="algorithm-teacher">${lecture.nickname} 강사</div>
@@ -49,8 +54,13 @@
         <c:forEach var="lecture" items="${recommendedBySubject}">
             <a class="algorithm-item" href="/lecture/detail/${lecture.lectureId}">
                 <div class="algorithm-thumbnail">
-                        <%--                    <img src="<c:url value='${lecture.thumbnailUrl}'/>" alt="썸네일">--%>
-                    <img src="<c:url value='/img/png/thumbnail4.png'/>">
+                    <c:choose>
+                        <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
+                        </c:when>
+                        <c:otherwise>
+                            <img src="<c:url value='/img/png/thumbnail1.png'/>" alt="기본 이미지">
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <div class="algorithm-lecture">${lecture.title}</div>
                 <div class="algorithm-teacher">${lecture.nickname} 강사</div>
