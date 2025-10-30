@@ -11,7 +11,7 @@
     <div class="resister-title">강의 등록</div>
 
     <!-- ✅ 폼 형식으로 변경 -->
-    <form action="/api/teachers/lecture/register" method="post">
+    <form id="lectureForm" action="/api/teachers/lecture/register" method="post">
         <!-- 제목 -->
         <label class="resister-description" for="title">강의 제목</label>
         <div>
@@ -265,8 +265,7 @@
                 const json = await res.json();
                 if (res.ok) {
                     alert(json.message || "강의 등록이 완료되었습니다!");
-                    form.reset();
-                    listBox.innerHTML = "";
+                    window.location.href="/teacher/management/lecturelist"
                 } else {
                     alert(json.message || "등록 실패");
                 }
@@ -452,6 +451,7 @@
         display: flex;
         justify-content: center;
         margin-top: 20px;
+        margin-bottom:10px;
     }
 
     .submit-button {

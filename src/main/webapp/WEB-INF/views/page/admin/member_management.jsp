@@ -121,7 +121,7 @@
 
 
 
-<div id="memberModal" class="modal-overlay" data-type="member">
+<div id="memberModal" class="modal-overlay">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
         <label class="modal-title">회원 상세정보</label>

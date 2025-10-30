@@ -329,10 +329,13 @@
             document.querySelectorAll("[id$='Error']").forEach(elem => {
                 elem.textContent = "";
             });
-            doPayment({
-                "buyerName" : buyerName,
-                "buyerPhoneNumber" : buyerPhoneNumber
-            });
+          
+            //doPayment({
+            //    "buyerName" : buyerName,
+            //    "buyerPhoneNumber" : buyerPhoneNumber
+            //});
+
+            await execute({});
 
 
         } catch (error) {
@@ -390,24 +393,19 @@
 
     async function execute(result) {
 
-        const formData = new FormData();
-        formData.append("paymentUid", result.imp_uid);
-        formData.append("paidAmount", result.paid_amount);
-        formData.append("paymentApiResult", JSON.stringify(result));
-        formData.append("lectureId", "${data.lectureId}")
-        formData.append("token", "${data.token}")
-
-
         try {
 
             // 전송을 위한 form 데이터
             const formData = new FormData();
-            formData.append("paymentUid", result.imp_uid);
-            formData.append("paidAmount", result.paid_amount);
-            formData.append("paymentApiResult", JSON.stringify(result));
-            formData.append("lectureId", "${data.lectureId}")
-            formData.append("token", "${data.token}")
-
+            //formData.append("paymentUid", result.imp_uid);
+            //formData.append("paidAmount", result.paid_amount);
+            //formData.append("paymentApiResult", JSON.stringify(result));
+            formData.append("paymentUid", "IMP000000");
+            formData.append("paidAmount", "${data.price}");
+            formData.append("paymentApiResult", JSON.stringify(""));
+            formData.append("lectureId", "${data.lectureId}");
+            formData.append("token", "${data.token}");
+          
             // REST API 요청 (3단계 : 클라이언트 결제 후 검증)
             const res = await fetch("/api/payments", {
                 method: "POST",
@@ -427,7 +425,7 @@
             }
 
             // 성공 시 성공 결제 페이지로 이동
-            window.location.href = rp.redirect || "/payment/enroll-complete";
+            window.location.href = rp.redirect || "/";
 
 
         } catch (error) {

@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture_answer.LectureAnswer;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.member.Member;
 
@@ -52,6 +53,9 @@ public class LectureQuestion extends BaseEntity {
     @JoinColumn(name = "lecture_index_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private LectureIndex lectureIndex;
+
+    @OneToOne(mappedBy = "lectureQuestion", fetch = FetchType.LAZY)
+    private LectureAnswer lectureAnswer;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

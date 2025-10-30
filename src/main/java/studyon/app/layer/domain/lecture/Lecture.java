@@ -124,7 +124,7 @@ public class Lecture extends BaseEntity {
         this.totalStudents = 0L;
         this.averageRate = 0.00;
         this.likeCount = 0L;
-        this.onSale = false;
+        this.onSale = true;
     }
 
 

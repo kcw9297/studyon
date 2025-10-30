@@ -17,6 +17,7 @@ import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.service.MemberService;
+import studyon.app.layer.domain.teacher.TeacherDTO;
 
 
 /**
@@ -91,9 +92,8 @@ public class AdminMemberRestController {
      * @param memberId 해당 멤버 ID
      * @param session 세션 관리
      */
-    @PostMapping("/toggle/{entity}/{memberId}")
+    @PostMapping("/toggle/{memberId}")
     public ResponseEntity<?> toggleActive(@PathVariable("memberId") Long memberId,
-                                          @PathVariable("entity") String entity,
                                           HttpServletRequest request,
                                           HttpSession session) {
         Object attr = request.getAttribute("memberId");
@@ -105,5 +105,21 @@ public class AdminMemberRestController {
         log.info("[TOGGLE] 전달받은 memberId={}, (Session)={}",memberId, SessionUtils.getProfile(session).getMemberId());
 
         return RestUtils.ok(result);
+    }
+
+    /**
+     * [POST] 관리자 신규 강사 등록
+     * URL: POST /admin/api/members/teacher/register
+     */
+    @PostMapping("/teacher/register")
+    public ResponseEntity<?> createTeacher(MemberDTO.Join mrq,
+                                           TeacherDTO.Write trq,
+                                           HttpSession session) {
+        MemberProfile admin = SessionUtils.getProfile(session);
+        log.info("[ADMIN] 신규 강사 등록 요청 by {}",
+                admin != null ? admin.getNickname() : "비로그인");
+
+        Long teacherId = memberService.createTeacherAccount(mrq, trq);
+        return RestUtils.ok(teacherId);
     }
 }

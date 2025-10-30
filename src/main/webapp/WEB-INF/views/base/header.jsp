@@ -146,7 +146,7 @@
 
                         // 새로운 div 삽입
                         recentKeywords.forEach(keyword => {
-                            keywordBar.innerHTML += `<div class="search-result-item">\${keyword}</div>`;
+                            keywordBar.innerHTML += `<div class="search-result-item" onclick="window.location.href='/lecture/list?keyword=\${keyword}'" >\${keyword}</div>`;
                         });
                         isLoaded = true; // 이후엔 요청 중단
                     }
@@ -192,8 +192,9 @@
 
         function searchLecture() {
             const keyword = searchInput?.value.trim();
-            if (keyword) window.location.href = "/lecture/list?sort=LATEST&keyword=" + encodeURIComponent(keyword);
-            window.location.href = keyword ? "/lecture/list?sort=LATEST&keyword=" + encodeURIComponent(keyword) : "/lecture/list?sort=LATEST"
+            window.location.href = keyword
+                ? "/lecture/list?keyword=" + encodeURIComponent(keyword)
+                : window.location.href = "/lecture/list";
         }
 
         // input 외부 클릭 시 닫기

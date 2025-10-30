@@ -9,6 +9,7 @@
     <a href="<c:url value='/teacher/management/statistics'/>" class="nav-item">강의 통계</a>
     <a href="<c:url value='/teacher/management/lecturelist'/>" class="nav-item">내 강의관리</a>
     <a href="<c:url value='/teacher/management/reviews'/>" class="nav-item">수강평 관리</a>
+    <a href="<c:url value='/teacher/management/qna'/>" class="nav-item">QNA 관리</a>
 </div>
 
 <style>

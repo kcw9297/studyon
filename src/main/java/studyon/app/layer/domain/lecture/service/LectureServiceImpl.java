@@ -17,6 +17,7 @@ import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.file.repository.FileRepository;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
+import studyon.app.layer.domain.lecture.mapper.LectureMapper;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
 public class LectureServiceImpl implements LectureService {
 
     private final LectureRepository lectureRepository;
+    private final LectureMapper lectureMapper;
     private final TeacherRepository teacherRepository;
     private final LectureIndexRepository lectureIndexRepository;
     private final LectureVideoRepository lectureVideoRepository;
@@ -59,17 +61,18 @@ public class LectureServiceImpl implements LectureService {
 
 
     @Override
-    public List<LectureDTO.Read> readPagedList(LectureDTO.Search rq, Page.Request prq) {
+    public Page.Response<LectureDTO.Read> readPagedList(LectureDTO.Search rq, Page.Request prq) {
 
         // [1] 최근 검색어 기록
         if (Objects.nonNull(rq.getMemberId()) && !rq.getKeyword().isBlank())
             cacheManager.recordRecentKeyword(rq.getMemberId(), rq.getKeyword());
 
         // [2] 검색 수행
+        List<LectureDTO.Read> page = lectureMapper.selectAll(rq, prq);
+        Integer count = lectureMapper.countAll(rq);
 
-
-
-        return List.of();
+        // [3] 검색 결과 반환
+        return Page.Response.create(page, prq.getPage(), prq.getSize(), count);
     }
 
 

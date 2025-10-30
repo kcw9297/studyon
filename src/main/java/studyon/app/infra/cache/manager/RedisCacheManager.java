@@ -57,7 +57,7 @@ public class RedisCacheManager implements CacheManager {
         stringRedisTemplate.opsForList().leftPush(key, keyword); // 리스트 맨 처음에 삽입
 
         // [3] 최대 저장 검색어 개수를 초과하는 경우, 맨 마지막 검색어 제거
-        stringRedisTemplate.opsForList().trim(key, 0, 9); // 최대 10개
+        stringRedisTemplate.opsForList().trim(key, 0, 4); // 최대 5개
     }
 
 

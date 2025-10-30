@@ -75,6 +75,7 @@ public class TeacherDTO {
     @NoArgsConstructor
     public static class Search {
         private Long teacherId;
+        private Long memberId;
 
         private String filter; // "subject"
         private String keyword;

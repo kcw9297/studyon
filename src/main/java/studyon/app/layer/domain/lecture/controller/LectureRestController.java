@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
+import studyon.app.common.enums.Role;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
@@ -70,14 +71,14 @@ public class LectureRestController {
         log.warn("강의 검색 - rq = {}, prq = {}", rq, prq);
 
         // [1] 검색 회원정보 조회
-        Long memberId = SessionUtils.getMemberIdOrNull(session);
-        if (Objects.nonNull(memberId)) rq.setMemberId(memberId); // 회원인 경우, 최근 검색어 삽입을 위한 회원번호 정보 삽입
+        MemberProfile profile = SessionUtils.getProfileOrNull(session);
+        if (Objects.nonNull(profile)) rq.setSearchTarget(profile.getMemberId(), Role.ROLE_STUDENT); // 회원인 경우, 최근 검색어 삽입을 위한 회원번호 정보 삽입
 
         // [2] 검색 수행
-        lectureService.readPagedList(rq, prq);
+        Page.Response<LectureDTO.Read> page = lectureService.readPagedList(rq, prq);
 
         // [3] 검색된 정보 반환
-        return RestUtils.ok();
+        return RestUtils.ok(page);
     }
 
 
@@ -106,8 +107,10 @@ public class LectureRestController {
                                               @RequestParam(defaultValue = "4") int count) {
         // [1] 인기 강의 조회 로그
         log.info("✅ [GET] 인기 강의 조회 요청");
+
         // [2] 인기 강의 조회
         List<LectureDTO.Read> result = lectureService.readBestLectures(rq.getSubject(), count);
+
         // [3] 성공 응답 반환
         return RestUtils.ok(result);
     }
