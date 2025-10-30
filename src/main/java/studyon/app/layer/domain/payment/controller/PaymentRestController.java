@@ -77,7 +77,8 @@ public class PaymentRestController {
 
         // [3] 결제 결과 및 결제 결과를 확인할 수 있는 주소 반환
         session.setAttribute(Param.VERIFIED, true);
-        return RestUtils.ok(AppStatus.OK, "/payment/enroll-complete", result);
+        String redirect = "/payment/enroll-complete?lectureId=%s".formatted(result.getPaymentId());
+        return RestUtils.ok(AppStatus.OK, redirect, result);
     }
 
 

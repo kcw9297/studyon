@@ -83,10 +83,6 @@ class Pointcuts {
     @Pointcut("execution(* *..Admin*.*(..))")
     public void adminCls() {}
 
-    // "Coupon~" 가 앞에 오는 클래스
-    @Pointcut("execution(* *..Coupon*.*(..))")
-    public void couponCls() {}
-
     // "File~" 가 앞에 오는 클래스
     @Pointcut("execution(* *..File*.*(..))")
     public void fileCls() {}
@@ -130,10 +126,6 @@ class Pointcuts {
     // "refund" 으로 시작하는 메소드
     @Pointcut("execution(* *..refund*(..))")
     public void refundMeth() {}
-
-    // "issue" 으로 시작하는 메소드
-    @Pointcut("execution(* *..issue*(..))")
-    public void issueMeth() {}
 
     // "upload" 으로 시작하는 메소드
     @Pointcut("execution(* *..upload*(..))")
@@ -187,10 +179,6 @@ class Pointcuts {
     // domain 패키지 내 "refund" 메소드
     @Pointcut("domainPack() && svcAnno() && refundMeth()")
     public void domainPackSvcAnnoRefundMeth() {}
-
-    // domain 패키지 내 "issue" 메소드
-    @Pointcut("domainPack() && svcAnno() && couponCls() && issueMeth()")
-    public void domainPackSvcAnnoCouponClsIssueMeth() {}
 
     // domain 패키지 내 "upload" 메소드
     @Pointcut("domainPack() && svcAnno() && uploadMeth()")
