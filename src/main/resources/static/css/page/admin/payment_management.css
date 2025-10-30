@@ -7,6 +7,16 @@
     width:100%;
 }
 
+/* 페이징 관련 CSS */
+.admin-content-container {
+    display:flex;
+    flex-direction: column;
+    border:2px solid black;
+    min-height: 600px;
+    height:auto;
+    width:100%;
+}
+
 .admin-page-title {
     font-size: 22px;
     font-weight: bold;
@@ -15,7 +25,7 @@
 }
 
 /* 검색바 */
-.member-search-bar {
+.payment-search-bar {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -23,7 +33,7 @@
     padding: 10px;
 }
 
-.member-search-bar input {
+.payment-search-bar input {
     flex: 7; /* 4 비율 */
     padding: 8px 10px;
     border: 1px solid #ccc;
@@ -31,7 +41,7 @@
     font-size: 14px;
 }
 
-.member-search-bar select {
+.payment-search-bar select {
     flex: 1; /* 4 비율 */
     padding: 8px 10px;
     border: 1px solid #ccc;
@@ -39,7 +49,7 @@
     font-size: 14px;
 }
 
-.member-search-bar button {
+.payment-search-bar button {
     flex: 1; /* 1 비율 */
     background: #4a90e2;
     color: white;
@@ -50,12 +60,12 @@
     transition: 0.2s;
 }
 
-.member-search-bar button:hover {
+.payment-search-bar button:hover {
     background: #357ac8;
 }
 
 /* 테이블 */
-.member-table-wrapper {
+.payment-table-wrapper {
     width: 100%;
     background: #fff;
     border-radius: 10px;
@@ -63,14 +73,14 @@
     overflow: hidden;
 }
 
-.member-table {
+.payment-table {
     width: 100%;
     border-collapse: collapse;
     text-align: center;
 }
 
 /* 전체 공통 스타일 */
-.member-table th {
+.payment-table th {
     background-color: #f5f6fa;
     color: #444;
     font-family: "Noto Sans KR", sans-serif;
@@ -78,22 +88,22 @@
     padding: 12px;
     border-bottom: 1px solid #ccc;
 }
-.member-table td {
+.payment-table td {
     text-align: center;
     padding: 10px 12px;
     border-bottom: 1px solid #f0f0f0;
     color: #333;
 }
 
-.member-table th:nth-child(1) { width: 5%; }   /* No */
-.member-table th:nth-child(2) { width: 15%; }  /* 이름 */
-.member-table th:nth-child(3) { width: 20%; }  /* 이메일 */
-.member-table th:nth-child(4) { width: 10%; }  /* 권한 */
-.member-table th:nth-child(5) { width: 10%; }  /* 상태 */
-.member-table th:nth-child(6) { width: 15%; }  /* 가입일 */
-.member-table th:nth-child(7) { width: 10%; }  /* 관리 */
+.payment-table th:nth-child(1) { width: 5%; }   /* No */
+.payment-table th:nth-child(2) { width: 15%; }  /* 이름 */
+.payment-table th:nth-child(3) { width: 20%; }  /* 이메일 */
+.payment-table th:nth-child(4) { width: 10%; }  /* 권한 */
+.payment-table th:nth-child(5) { width: 10%; }  /* 상태 */
+.payment-table th:nth-child(6) { width: 15%; }  /* 가입일 */
+.payment-table th:nth-child(7) { width: 10%; }  /* 관리 */
 
-.member-table tr:hover {
+.payment-table tr:hover {
     background: #f9f9fc;
 }
 
@@ -276,4 +286,36 @@
 
 .create-teacher-btn:hover {
     background-color: #b6aa3d;
+}
+
+#pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 30px 0 50px 0;
+}
+
+.page-btn {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    color: #555;
+}
+
+.page-btn:hover {
+    background: #f3f3f3;
+}
+
+.page-btn.active {
+    background: #4caf50;
+    color: #fff;
+    font-weight: bold;
+    border-color: #4caf50;
+}
+
+.page-btn.disabled {
+    color: #bbb;
+    cursor: not-allowed;
 }

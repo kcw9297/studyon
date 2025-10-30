@@ -57,6 +57,12 @@ public class AdminHomeController {
         return ViewUtils.returnView(model, View.ADMIN, "teacher_management");
     }
 
+    @GetMapping("/teacher_management/new")
+    public String adminTeacherCreate(Model model, HttpSession session) {
+
+        return ViewUtils.returnView(model, View.ADMIN, "teacher_register");
+    }
+
     @GetMapping("/member_management")
     public String adminMemberManagement(Model model, HttpSession session) {
 
@@ -135,4 +141,16 @@ public class AdminHomeController {
         return ViewUtils.returnView(model, View.ADMIN, "report_management");
     }
 
+    @GetMapping("/payment_management")
+    public String adminPaymentManagement(Model model, HttpSession session) {
+
+        // [1] 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
+
+        // 프로필이 없으면 홈으로
+        if (Objects.isNull(profile)) return "redirect:%s".formatted(Url.INDEX);
+
+        // [2] view 반환
+        return ViewUtils.returnView(model, View.ADMIN, "payment_management"); // 오타 그대로 있으면 leture로
+    }
 }
