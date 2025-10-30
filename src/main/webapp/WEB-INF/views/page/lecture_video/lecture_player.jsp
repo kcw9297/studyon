@@ -453,7 +453,7 @@
 
         try {
             // ✅ 1. API 호출
-            const response = await fetch("/api/lecture/video/lectureindex/" + lectureId);
+            const response = await fetch("/api/lectures/video/lectureindex/" + lectureId);
             if (!response.ok) throw new Error("강의를 불러올 수 없습니다.");
 
             const json = await response.json();

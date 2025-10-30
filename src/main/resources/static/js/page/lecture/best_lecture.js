@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
     const count = 4;
 
-    fetch(`/api/lecture/best?subject=${subjectFromJSP}&count=${count}`, {
+    fetch(`/api/lectures/best?subject=${subjectFromJSP}&count=${count}`, {
         method: "GET",
         headers: { 'X-Requested-From': window.location.pathname + window.location.search }
     })
