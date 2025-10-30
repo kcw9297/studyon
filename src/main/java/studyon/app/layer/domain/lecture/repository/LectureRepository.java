@@ -143,6 +143,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
         SELECT l FROM Lecture l
         LEFT JOIN FETCH l.teacher t
         LEFT JOIN FETCH t.member m
+        LEFT JOIN FETCH l.thumbnailFile
         WHERE l.lectureId = :id
         """)
     Optional<Lecture> findWithTeacherById(@Param("id") Long lectureId);
