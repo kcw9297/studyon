@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                 <div class="lecture-info">
                     <p class="lecture-title">${bestLecture.title}</p>
-                    <p class="lecture-info-text">${bestLecture.nickname}</p>
+                    <p class="lecture-info-text">${bestLecture.teacherNickname}</p>
                     <p class="lecture-info-text">₩${Number(bestLecture.price).toLocaleString()}</p>
                     <p class="lecture-info-text">
                          <!--⭐${bestLecture.averageRate}-->
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                         <div class="lecture-info">
                             <p class="lecture-title">${recentLecture.title}</p>
-                            <p class="lecture-info-text">${recentLecture.nickname}</p>
+                            <p class="lecture-info-text">${recentLecture.teacherNickname}</p>
                             <p class="lecture-info-text">₩${Number(recentLecture.price).toLocaleString()}</p>
                             <p class="lecture-info-text">
                                  <!--⭐${recentLecture.averageRate}-->

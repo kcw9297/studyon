@@ -74,14 +74,14 @@ public class AdminPaymentRestController {
 
 
     /**
-     * [PATCH] 실제 결제 전 검증 (유효성 검사는 생략)
+     * [PATCH] 실제 결제 전 검증 (유효성 검사는 생략) - 환불
      * <br>유효성 검증, 로그인 및 권한 검증, 주문세션 검증, 강의 구매가능 상태 검증 등
      */
     @PatchMapping("/{paymentId}/refund")
     public ResponseEntity<?> refund(HttpSession session,
                                     @PathVariable Long paymentId,
                                     @Title(max=15) String refundReason) {
-
+        log.info("[PATCH] 환불 요청: paymentId={}, refundReason='{}'", paymentId, refundReason);
         // [1] 환불 수행 (현재는 단 하나씩만 주문하기 때문에, 전액 환불)
         paymentService.refund(paymentId, refundReason);
 
@@ -99,5 +99,6 @@ public class AdminPaymentRestController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }
+
 
 }

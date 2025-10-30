@@ -1,27 +1,27 @@
 .admin-content-container {
-    display:flex;
+    display: flex;
     flex-direction: column;
-    border:2px solid black;
+    border: 2px solid black;
     min-height: 600px;
-    height:auto;
-    width:100%;
+    height: auto;
+    width: 100%;
 }
 
 /* 페이징 관련 CSS */
 .admin-content-container {
-    display:flex;
+    display: flex;
     flex-direction: column;
-    border:2px solid black;
+    border: 2px solid black;
     min-height: 600px;
-    height:auto;
-    width:100%;
+    height: auto;
+    width: 100%;
 }
 
 .admin-page-title {
     font-size: 22px;
     font-weight: bold;
     color: #333;
-    padding:10px;
+    padding: 10px;
 }
 
 /* 검색바 */
@@ -69,7 +69,7 @@
     width: 100%;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
@@ -88,6 +88,7 @@
     padding: 12px;
     border-bottom: 1px solid #ccc;
 }
+
 .payment-table td {
     text-align: center;
     padding: 10px 12px;
@@ -95,13 +96,41 @@
     color: #333;
 }
 
-.payment-table th:nth-child(1) { width: 5%; }   /* No */
-.payment-table th:nth-child(2) { width: 15%; }  /* 이름 */
-.payment-table th:nth-child(3) { width: 20%; }  /* 이메일 */
-.payment-table th:nth-child(4) { width: 10%; }  /* 권한 */
-.payment-table th:nth-child(5) { width: 10%; }  /* 상태 */
-.payment-table th:nth-child(6) { width: 15%; }  /* 가입일 */
-.payment-table th:nth-child(7) { width: 10%; }  /* 관리 */
+.payment-table th:nth-child(1) {
+    width: 5%;
+}
+
+/* No */
+.payment-table th:nth-child(2) {
+    width: 15%;
+}
+
+/* 이름 */
+.payment-table th:nth-child(3) {
+    width: 20%;
+}
+
+/* 이메일 */
+.payment-table th:nth-child(4) {
+    width: 10%;
+}
+
+/* 권한 */
+.payment-table th:nth-child(5) {
+    width: 10%;
+}
+
+/* 상태 */
+.payment-table th:nth-child(6) {
+    width: 15%;
+}
+
+/* 가입일 */
+.payment-table th:nth-child(7) {
+    width: 10%;
+}
+
+/* 관리 */
 
 .payment-table tr:hover {
     background: #f9f9fc;
@@ -132,6 +161,7 @@
 .btn-view {
     background: #4a90e2;
 }
+
 .btn-view:hover {
     background: #357ac8;
 }
@@ -140,19 +170,22 @@
     background: #e74c3c;
     margin-left: 5px;
 }
+
 .btn-ban:hover {
     background: #c0392b;
 }
 
-.management-button{
-    color:pink;
+.management-button {
+    color: pink;
 }
 
 .modal-overlay {
     display: none; /* 기본 숨김 */
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.4);
     z-index: 999;
     justify-content: center;
@@ -165,8 +198,8 @@
     padding: 25px 30px;
     border-radius: 10px;
     width: 800px;
-    height:600px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    height: 600px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     position: relative;
     animation: fadeIn 0.3s ease;
 }
@@ -196,18 +229,24 @@
 
 /* 애니메이션 */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.modal-title{
-    font-size:40px;
+.modal-title {
+    font-size: 40px;
     font-weight: bold;
 }
 
 .modal-info p {
     font-size: 16px; /* ✅ 원하는 크기로 조정 (예: 14px~18px 권장) */
-    color: #333;     /* 글자색도 변경 가능 */
+    color: #333; /* 글자색도 변경 가능 */
 }
 
 .admin-content-container {
@@ -215,6 +254,7 @@
     flex-direction: column;
     border: 2px solid black;
 }
+
 .admin-header-bar {
     display: flex;
     align-items: center;
@@ -234,6 +274,7 @@
     cursor: pointer;
     transition: 0.2s;
 }
+
 .btn-download:hover {
     background-color: #357ac8;
 }
@@ -326,6 +367,7 @@
     margin-bottom: 12px;
     align-items: center;
 }
+
 .payment-search-bar select,
 .payment-search-bar input {
     height: 34px;
@@ -333,6 +375,7 @@
     padding: 4px 8px;
     font-size: 14px;
 }
+
 .payment-search-bar button {
     height: 34px;
     padding: 0 12px;
@@ -342,4 +385,109 @@
     border-radius: 6px;
     cursor: pointer;
 }
+
+.refund-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.refund-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    text-align: center;
+}
+
+/*  환불 모달 본체 */
+.refund-modal .modal-content {
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    width: 420px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+/*  타이틀 */
+.refund-modal h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/*  textarea */
+.refund-modal textarea {
+    width: 100%;
+    height: 90px;
+    resize: none;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* 포커스 시 강조 */
+.refund-modal textarea:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 4px rgba(74, 144, 226, 0.4);
+}
+
+/*  버튼 컨테이너 - 가로 정렬 */
+.refund-modal .modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;   /* 가운데 정렬 */
+    gap: 12px;                 /* 버튼 간 간격 */
+}
+
+/*  버튼 스타일 */
+.refund-modal button {
+    min-width: 120px;          /* 버튼 너비 고정 */
+    padding: 10px 0;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 환불하기 버튼 */
+.refund-modal .btn-confirm {
+    background-color: #4a90e2;
+    color: white;
+}
+.refund-modal .btn-confirm:hover {
+    background-color: #357ac8;
+}
+
+/* 취소 버튼 */
+.refund-modal .btn-cancel {
+    background-color: #777;
+    color: white;
+}
+.refund-modal .btn-cancel:hover {
+    background-color: #555;
+}
+
+
+.refund-modal-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-around;
+}
+
 
