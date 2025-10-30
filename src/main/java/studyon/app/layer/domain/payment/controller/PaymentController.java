@@ -56,8 +56,8 @@ public class PaymentController {
                                           @NotNull Long paymentId) {
 
         // [1] 유효한 접근이 아닌경우 접근 불가 VIEW로 안내
-        if (Objects.isNull(session.getAttribute(Param.VERIFIED)))
-            return ViewUtils.return403(); // 결제 완료 외의 접근인 경우 불가 처리
+        //if (Objects.isNull(session.getAttribute(Param.VERIFIED)))
+        //    return ViewUtils.return403(); // 결제 완료 외의 접근인 경우 불가 처리
 
         // [2] 프로필 조회 후, 결제정보 조회
         MemberProfile profile = SessionUtils.getProfile(session);

@@ -329,13 +329,13 @@
             document.querySelectorAll("[id$='Error']").forEach(elem => {
                 elem.textContent = "";
             });
-
+          
             //doPayment({
             //    "buyerName" : buyerName,
             //    "buyerPhoneNumber" : buyerPhoneNumber
             //});
 
-            await execute();
+            await execute({});
 
 
         } catch (error) {
@@ -403,9 +403,9 @@
             formData.append("paymentUid", "IMP000000");
             formData.append("paidAmount", "${data.price}");
             formData.append("paymentApiResult", JSON.stringify(""));
-            formData.append("lectureId", "${data.lectureId}")
-            formData.append("token", "${data.token}")
-
+            formData.append("lectureId", "${data.lectureId}");
+            formData.append("token", "${data.token}");
+          
             // REST API 요청 (3단계 : 클라이언트 결제 후 검증)
             const res = await fetch("/api/payments", {
                 method: "POST",

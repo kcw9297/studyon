@@ -29,5 +29,5 @@ public interface LectureQuestionService {
     void deleteQuestion(Long id);
     void register(LectureQuestionDTO.Write rq);
     List<LectureQuestionDTO.ReadQna> readQuestionAndAnswer(Long lectureId, Long lectureIndexId);
-
+    List<LectureQuestionDTO.ReadTeacherQnaDTO> getAllQnaList(Long teacherId);
 }

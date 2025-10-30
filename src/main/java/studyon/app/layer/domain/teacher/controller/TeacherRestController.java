@@ -20,8 +20,11 @@ import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
+import studyon.app.layer.domain.lecture_answer.LectureAnswerDTO;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
+import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
+import studyon.app.layer.domain.lecture_question.service.LectureQuestionService;
 import studyon.app.layer.domain.lecture_video.LectureVideo;
 import studyon.app.layer.domain.lecture_video.LectureVideoDTO;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
@@ -58,6 +61,7 @@ public class TeacherRestController {
     private final CacheManager cacheManager;
     private final LectureIndexService lectureIndexService;
     private final LectureVideoService lectureVideoService;
+    private final LectureQuestionService lectureQuestionService;
 
     /**
      * [GET] 모든 선생님 정보 가져오기
@@ -294,6 +298,10 @@ public class TeacherRestController {
         return RestUtils.ok(videos);
     }
 
-
-
+    @GetMapping("/management/qna")
+    public ResponseEntity<?> getQna(HttpSession session) {
+        Long teacherId = SessionUtils.getTeacherId(session);
+        List<LectureQuestionDTO.ReadTeacherQnaDTO> response = lectureQuestionService.getAllQnaList(teacherId);
+        return RestUtils.ok(response);
+    }
 }
