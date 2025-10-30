@@ -1,0 +1,108 @@
+.admin-content-container {
+    display:flex;
+    flex-direction: column;
+    border:2px solid black;
+    min-height: 600px;
+    height:auto;
+    width:100%;
+}
+
+/* === 강사 등록 폼 === */
+.teacher-create-form {
+    width: 70%;
+    max-width: 900px;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.form-section h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    border-left: 5px solid #f5e347;
+    padding-left: 10px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    font-weight: 600;
+    color: #444;
+    font-size: 15px;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+    border-color: #f5e347;
+    outline: none;
+    box-shadow: 0 0 4px rgb(182, 170, 61);
+}
+
+.form-row small.hint {
+    color: #777;
+    font-size: 12px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.form-buttons {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.create-teacher-btn {
+    background-color: #fae84f;
+    color: #000000;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.create-teacher-btn:hover {
+    background-color: #b6aa3d;
+}
+
+.btn-reset {
+    background-color: #ccc;
+    color: #333;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-reset:hover {
+    background-color: #aaa;
+}

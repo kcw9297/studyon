@@ -12,6 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
         SCIENCE: "과학탐구"
     };
 
+    // 선생님 프로필로 보내는 링크
+    const contextPath = document.getElementById("pageRoot").dataset.contextPath || "";
+
+
     const subjectFilter = document.getElementById("subjectFilter");
     if (subjectFilter) {
         subjectFilter.addEventListener("change", () => {
@@ -164,12 +168,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${(currentPage - 1) * pageSize + idx + 1}</td>
-                <td>${t.nickname || "-"}</td>
+                <td>
+                    <a href="${contextPath}/teacher/profile/${t.teacherId}">
+                    ${t.nickname || "-"}
+                    </a>
+                </td>
                 <td>${t.email || "-"}</td>
                 <td>${subjectMap[t.subject] || "-"}</td>
-                <td>${t.active ? "<span class='status-active'>활성</span>" : "<span class='status-banned'>비활성</span>"}</td>
-                <td>${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : "-"}</td>
-                <td>${t.lastLoginAt ? new Date(t.lastLoginAt).toLocaleDateString() : "-"}</td>
+                <td>${t.totalReview ? t.totalReview : 0}</td>
+                <td>${t.averageRating ? t.averageRating : "-"}</td>
+                <td>${t.totalStudents ? t.totalStudents : 0}</td>
                 <td><a href="#" class="management-button" data-teacher-id="${t.memberId}">상세정보</a></td>
             `;
             tbody.appendChild(row);
@@ -192,16 +200,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const name = row.children[1].innerText;
                 const email = row.children[2].innerText;
                 const subjectName = row.children[3].innerText;
-                const status = row.children[4].innerText;
-                const date = row.children[5].innerText;
-                const loginDate = row.children[6].innerText;
+                const reviews = row.children[4].innerText;
+                const rating = row.children[5].innerText;
+                const totalStudents = row.children[6].innerText;
 
                 document.getElementById("modalName").innerText = name;
                 document.getElementById("modalEmail").innerText = email;
                 document.getElementById("modalSubject").innerText = subjectName;
-                document.getElementById("modalStatus").innerText = status;
-                document.getElementById("modalDate").innerText = date;
-                document.getElementById("modalLoginDate").innerText = loginDate;
+                document.getElementById("modalReviews").innerText = reviews;
+                document.getElementById("modalRating").innerText = rating;
+                document.getElementById("modalTotalStudents").innerText = totalStudents;
 
                 modal.style.display = "flex";
                 // 닫기 버튼
