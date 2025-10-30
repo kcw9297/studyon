@@ -13,31 +13,25 @@
     <!-- ✅ 질문 카드 -->
     <div class="qna-detail-card">
         <div class="qna-question-meta">
-            <span class="student-name">질문자: 홍길동</span>
-            <span class="qna-date">2025-10-30</span>
+            <span class="student-name"></span>
+            <span class="qna-date"></span>
         </div>
 
         <div class="qna-question-title">
-            Q. 3강에서 예시 데이터는 어디서 확인할 수 있나요?
         </div>
 
         <div class="qna-question-content">
-            강의 영상에서 데이터셋을 사용하신다고 하셨는데, 다운로드 링크를 받을 수 있을까요?
         </div>
     </div>
 
     <!-- ✅ 답변 카드 -->
     <div class="qna-answer-card">
         <div class="answer-meta">
-            <span class="teacher-name">👩‍🏫 작성 강사: 김효상</span>
-            <span class="answer-date">2025-10-31</span>
+            <span class="teacher-name"></span>
+            <span class="answer-date"></span>
         </div>
 
         <div class="answer-content">
-            안녕하세요 😊
-            강의에서 사용된 데이터셋은 구글 드라이브에 업로드되어 있습니다.
-            강의 자료실 메뉴 → "3강_데이터셋.zip" 파일을 통해 다운로드하실 수 있습니다.
-            추가 문의가 있다면 QnA에 남겨주세요!
         </div>
 
         <div class="answer-manage-box">
@@ -203,6 +197,21 @@
     document.addEventListener("DOMContentLoaded", async function() {
         const params = new URLSearchParams(window.location.search);
         const questionId = params.get("id");
+
+        const deleteBtn = document.querySelector(".answer-delete")
+
+        deleteBtn.addEventListener("click",async () =>{
+            await fetch("/api/teachers/management/qna/deleteQuestion/" + questionId, {
+                method: "DELETE"
+            });
+            alert("강의가 삭제되었습니다.");
+            //window.location.href="/teacher/management/qna";
+        })
+        console.log("삭제이후");
+
+
+
+
 
         if (!questionId) {
             alert("잘못된 접근입니다.");

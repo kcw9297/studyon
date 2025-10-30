@@ -305,6 +305,7 @@ public class TeacherRestController {
         MemberProfile profile = SessionUtils.getProfile(session);
         Long teacherId = profile.getTeacherId();
         log.info("Session Profile = {}", profile);
+        log.info("QNA TEACHERID = {}", teacherId);
         List<LectureQuestionDTO.ReadTeacherQnaDTO> response = lectureQuestionService.getAllQnaList(teacherId);
         return RestUtils.ok(response);
     }
@@ -326,10 +327,19 @@ public class TeacherRestController {
     }
 
     @PostMapping("/management/qna/answer")
-    public ResponseEntity<?> saveAnswer(LectureAnswerDTO.Write dto){
+    public ResponseEntity<?> saveAnswer(@ModelAttribute LectureAnswerDTO.Write dto,HttpSession session) {
         log.info("saveAnswer Method ");
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long memberId = profile.getMemberId();
+        dto.setMemberId(memberId);
         lectureAnswerService.saveAnswer(dto);
         return RestUtils.ok("답변이 등록 되었습니다.");
     }
 
+    @DeleteMapping("/management/qna/deleteQuestion/{questionId}")
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId) {
+        log.info("deleteQuestion Method 호출");
+        lectureQuestionService.deleteQuestion(questionId);
+        return RestUtils.ok("질문이 성공적으로 삭제되었습니다.");
+    }
 }

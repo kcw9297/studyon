@@ -18,35 +18,24 @@ import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_question.repository.LectureQuestionRepository;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.repository.MemberRepository;
-import studyon.app.layer.domain.teacher.TeacherDTO;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-/*
- * [수정 이력]
- *  ▶ ver 1.0 (2025-10-17) : khj00 최초 작성
- */
-
-/**
- * 강의 질문 서비스 인터페이스 구현 클래스
- * @version 1.0
- * @author khj00
- */
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class LectureQuestionServiceImpl implements LectureQuestionService {
+
     private final LectureAnswerRepository lectureAnswerRepository;
     private final LectureQuestionRepository lectureQuestionRepository;
     private final LectureRepository lectureRepository;
     private final MemberRepository memberRepository;
-    private final LectureIndexRepository  lectureIndexRepository;
+    private final LectureIndexRepository lectureIndexRepository;
 
+    // ✅ 모든 질문 조회
     @Override
     public List<LectureQuestionDTO.Read> readAllQuestions() {
         return lectureQuestionRepository.findAll()
@@ -55,60 +44,45 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
                 .toList();
     }
 
+    // ✅ 특정 질문 조회
     @Override
     public Optional<LectureQuestionDTO.Read> readQuestion(Long id) {
-        return Optional.empty();
+        return lectureQuestionRepository.findById(id).map(DTOMapper::toReadDTO);
     }
 
-    @Override
-    public LectureQuestionDTO.Read createQuestion(LectureQuestionDTO.Write dto) {
-        return null;
-    }
-
-    @Override
-    public void deleteQuestion(Long id) {
-
-    }
-
+    // ✅ 질문 등록
     @Override
     public void register(LectureQuestionDTO.Write rq) {
-
-        Lecture lecture = lectureRepository.findById(rq.getLectureId()).orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
-        Member member = memberRepository.findById(rq.getMemberId()).orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
+        Lecture lecture = lectureRepository.findById(rq.getLectureId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+        Member member = memberRepository.findById(rq.getMemberId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
         LectureIndex lectureIndex = lectureIndexRepository.findById(rq.getLectureIndexId())
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
 
-        log.info("register service 실행");
         LectureQuestion entity = LectureQuestion.builder()
                 .title(rq.getTitle())
                 .content(rq.getContent())
-                .lecture(lecture)
-                .lectureIndex(lectureIndex)
                 .isSolved(false)
+                .lecture(lecture)
                 .member(member)
+                .lectureIndex(lectureIndex)
                 .build();
 
         lectureQuestionRepository.save(entity);
-        log.info("register service 완료");
-
+        log.info("✅ 질문 등록 완료: {}", entity.getLectureQuestionId());
     }
 
+    // ✅ 질문 + 답변 조회 (커리큘럼 기준)
     @Override
-    @Transactional
     public List<LectureQuestionDTO.ReadQna> readQuestionAndAnswer(Long lectureId, Long lectureIndexId) {
-
-        // 1️⃣ 질문 목록 조회
         List<LectureQuestion> questions =
                 lectureQuestionRepository.findByLecture_LectureIdAndLectureIndex_LectureIndexId(lectureId, lectureIndexId);
 
         List<LectureQuestionDTO.ReadQna> result = new ArrayList<>();
 
-        // 2️⃣ 각 질문마다 답변 1개씩 가져와 DTO로 변환
         for (LectureQuestion q : questions) {
-            LectureAnswer answer = lectureAnswerRepository
-                    .findFirstByLectureQuestion_LectureQuestionId(q.getLectureQuestionId())
-                    .orElse(null);
-
+            LectureAnswer answer = q.getLectureAnswer(); // 질문이 답변 참조
             LectureQuestionDTO.ReadQna dto = LectureQuestionDTO.ReadQna.builder()
                     .questionId(q.getLectureQuestionId())
                     .title(q.getTitle())
@@ -116,19 +90,17 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
                     .isSolved(q.getIsSolved())
                     .questionCreatedAt(q.getCreatedAt())
                     .lectureId(q.getLecture().getLectureId())
-                    .indexTitle(q.getLectureIndex().getIndexTitle())
-                    .lectureIndexId(q.getLectureIndex().getLectureIndexId())
+                    .indexTitle(q.getLectureIndex() != null ? q.getLectureIndex().getIndexTitle() : "미지정 목차")
+                    .lectureIndexId(q.getLectureIndex() != null ? q.getLectureIndex().getLectureIndexId() : null)
                     .answerContent(answer != null ? answer.getContent() : null)
                     .answerCreatedAt(answer != null ? answer.getCreatedAt() : null)
                     .build();
-
             result.add(dto);
         }
-
         return result;
     }
 
-
+    // ✅ 강사별 QnA 목록 조회
     @Override
     public List<LectureQuestionDTO.ReadTeacherQnaDTO> getAllQnaList(Long teacherId) {
         List<LectureQuestion> list = lectureQuestionRepository.findAllWithAnswerByTeacherId(teacherId);
@@ -138,13 +110,9 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
                         .lectureQuestionId(q.getLectureQuestionId())
                         .title(q.getTitle())
                         .content(q.getContent())
-                        .studentName(q.getMember().getNickname())
-                        .lectureIndexId(q.getLectureIndex() != null
-                                ? q.getLectureIndex().getLectureIndexId()
-                                : null) // ✅ 추가
-                        .indexTitle(q.getLectureIndex() != null
-                                ? q.getLectureIndex().getIndexTitle()
-                                : "미지정 목차")
+                        .studentName(q.getMember() != null ? q.getMember().getNickname() : "(알 수 없음)")
+                        .lectureIndexId(q.getLectureIndex() != null ? q.getLectureIndex().getLectureIndexId() : null)
+                        .indexTitle(q.getLectureIndex() != null ? q.getLectureIndex().getIndexTitle() : "미지정 목차")
                         .answered(q.getIsSolved())
                         .createdAt(q.getCreatedAt())
                         .answeredAt(q.getLectureAnswer() != null ? q.getLectureAnswer().getCreatedAt() : null)
@@ -152,19 +120,22 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
                 .toList();
     }
 
-    //Question Detail Service
+    // ✅ QnA 상세보기
     @Override
     public LectureQuestionDTO.TeacherQnaDetail readTeacherQnaDetail(Long questionId) {
-        LectureQuestion q = lectureQuestionRepository.findById(questionId)
+        LectureQuestion q = lectureQuestionRepository.findByIdWithAnswer(questionId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
 
-        LectureAnswer answer = q.getLectureAnswer();
+        LectureAnswer answer = q.getLectureAnswer(); // fetch join으로 미리 로드됨
+
+        log.info("📘 [QnA 조회] questionId={}, answer={}", q.getLectureQuestionId(),
+                (answer != null ? answer.getContent() : "null"));
 
         return LectureQuestionDTO.TeacherQnaDetail.builder()
                 .lectureQuestionId(q.getLectureQuestionId())
                 .title(q.getTitle())
                 .content(q.getContent())
-                .studentName(q.getMember().getNickname())
+                .studentName(q.getMember() != null ? q.getMember().getNickname() : "(알 수 없음)")
                 .createdAt(q.getCreatedAt())
                 .indexTitle(q.getLectureIndex() != null ? q.getLectureIndex().getIndexTitle() : "미지정 목차")
                 .lectureId(q.getLecture().getLectureId())
@@ -173,5 +144,46 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
                 .answerContent(answer != null ? answer.getContent() : null)
                 .answeredAt(answer != null ? answer.getCreatedAt() : null)
                 .build();
+    }
+
+
+
+    // ✅ 질문 삭제
+    @Override
+    public void deleteQuestion(Long id) {
+        LectureQuestion question = lectureQuestionRepository.findById(id)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
+
+        // ✅ 1. 질문이 참조하고 있는 답변 null 처리
+        question.updateQuestion(question.getTitle(), question.getContent(), false);
+        question = lectureQuestionRepository.save(question);
+
+        // ✅ 2. 질문 삭제 (연관관계 OnDelete에 따라 Answer는 SET_NULL or 유지됨)
+        lectureQuestionRepository.delete(question);
+
+        log.info("🗑️ 질문 삭제 완료 - questionId={}", id);
+    }
+
+    @Override
+    public LectureQuestionDTO.Read createQuestion(LectureQuestionDTO.Write dto) {
+        Lecture lecture = lectureRepository.findById(dto.getLectureId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+        Member member = memberRepository.findById(dto.getMemberId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
+        LectureIndex lectureIndex = lectureIndexRepository.findById(dto.getLectureIndexId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        LectureQuestion question = LectureQuestion.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .isSolved(false)
+                .lecture(lecture)
+                .member(member)
+                .lectureIndex(lectureIndex)
+                .build();
+
+        LectureQuestion saved = lectureQuestionRepository.save(question);
+
+        return DTOMapper.toReadDTO(saved);
     }
 }

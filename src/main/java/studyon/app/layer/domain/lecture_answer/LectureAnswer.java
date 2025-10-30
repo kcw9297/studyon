@@ -2,9 +2,7 @@ package studyon.app.layer.domain.lecture_answer;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture_question.LectureQuestion;
 import studyon.app.layer.domain.member.Member;
@@ -38,25 +36,22 @@ public class LectureAnswer extends BaseEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private LectureAnswer parent;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_question_id", nullable = false)
-    private LectureQuestion lectureQuestion;
-
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
 
 
 
 
     @Builder
-    public LectureAnswer(String content, LectureQuestion lectureQuestion, Member member) {
+    public LectureAnswer(String content, Member member) {
         this.content = content;
-        this.lectureQuestion = lectureQuestion;
         this.member = member;
     }
 

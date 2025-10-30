@@ -227,23 +227,19 @@
     document.addEventListener("DOMContentLoaded", async function() {
         // ✅ URL에서 questionId 파라미터 추출
         const params = new URLSearchParams(window.location.search);
-        const questionId = params.get("id");
+        const lectureQuestionId = params.get("id"); // ✅ OK
+        console.log("📘 lectureQuestionId =", lectureQuestionId);
 
-        if (!questionId) {
-            alert("잘못된 접근입니다.");
+        if (!lectureQuestionId || lectureQuestionId === "null") {
+            alert("잘못된 접근입니다. (질문 ID가 없습니다)");
+            window.location.href = "/teacher/management/qna";
             return;
         }
 
         try {
             // ✅ 질문 상세 데이터 불러오기
-            const res = await fetch("/api/teachers/management/qna/detail/" + questionId);
+            const res = await fetch("/api/teachers/management/qna/answer/" + lectureQuestionId);
             const json = await res.json();
-
-            if (!res.ok || !json.data) {
-                alert("질문 정보를 불러올 수 없습니다.");
-                return;
-            }
-
             const data = json.data;
             console.log("📘 QnA Detail:", data);
 
@@ -253,63 +249,59 @@
             document.querySelector(".qna-question-title").textContent = "Q. " + data.title;
             document.querySelector(".qna-question-content").textContent = data.content;
 
-            // ✅ “해당 강의로 이동” 버튼
+            // ✅ 해당 강의로 이동 버튼
             const moveBtn = document.querySelector(".video-move-button");
             moveBtn.addEventListener("click", function() {
-                if (!data.lectureId || !data.indexId) {
+                if (!data.lectureId || !data.indexTitle) {
                     alert("강의 정보가 없습니다.");
                     return;
                 }
-                window.location.href = "/lecture/player?lectureId=" + data.lectureId + "&index=" + data.indexId;
+                window.location.href = "/lecture/player?lectureId=" + data.lectureId + "&index=" + data.indexTitle;
             });
+
+            console.log(lectureQuestionId);
+            console.log(content);
 
             // ✅ 답변 등록 버튼 클릭 이벤트
             const submitBtn = document.querySelector(".answer-submit");
             const textarea = document.querySelector(".answer-textarea");
             const cancelBtn = document.querySelector(".answer-cancel");
 
-            submitBtn.addEventListener("click", async function() {
+            submitBtn.addEventListener("click", async function(event) {
+                event.preventDefault();
                 const content = textarea.value.trim();
                 if (content.length === 0) {
                     alert("답변 내용을 입력하세요.");
                     return;
                 }
 
-                // ✅ FormData로 전달 (백틱 금지 규칙 준수)
                 const formData = new FormData();
-                formData.append("questionId", questionId);
-                formData.append("answerContent", content);
+                console.log(lectureQuestionId);
+                console.log(content);
+                formData.append("lectureQuestionId", lectureQuestionId);
+                formData.append("content", content);
 
                 try {
-                    const res2 = await fetch("/api/teachers/management/qna/answer/" + questionId, {
+                    const res2 = await fetch("/api/teachers/management/qna/answer", {
                         method: "POST",
                         body: formData
                     });
+                    window.location.href = "/teacher/management/qna/detail?id="+lectureQuestionId;
 
-                    const json2 = await res2.json();
-
-                    if (res2.ok) {
-                        alert(json2.message || "답변이 성공적으로 등록되었습니다!");
-                        window.location.href = "/teacher/management/qna";
-                    } else {
-                        alert(json2.message || "등록 실패");
-                    }
                 } catch (err) {
-                    console.error("🚨 답변 등록 실패:", err);
-                    alert("서버 오류가 발생했습니다.");
                 }
             });
 
             // ✅ 취소 버튼
             cancelBtn.addEventListener("click", function() {
                 if (confirm("답변 작성을 취소하시겠습니까?")) {
-                    window.location.href = "/teacher/management/qna";
+                    window.location.href = "/teacher/management/qna/detail?id=" + lectureQuestionId;
                 }
             });
 
         } catch (err) {
             console.error("🚨 상세 데이터 불러오기 실패:", err);
-            alert("QnA 정보를 불러올 수 없습니다.");
         }
     });
+
 </script>
