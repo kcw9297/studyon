@@ -192,8 +192,9 @@
 
         function searchLecture() {
             const keyword = searchInput?.value.trim();
-            if (keyword) window.location.href = "/lecture/list" + encodeURIComponent(keyword);
-            window.location.href = keyword ? "/lecture/list" + encodeURIComponent(keyword) : "/lecture/list"
+            window.location.href = keyword
+                ? "/lecture/list?keyword=" + encodeURIComponent(keyword)
+                : window.location.href = "/lecture/list";
         }
 
         // input 외부 클릭 시 닫기

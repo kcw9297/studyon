@@ -29,19 +29,20 @@
         LEFT JOIN member m ON t.member_id = m.member_id
         LEFT JOIN files f ON l.thumbnail_file_id = f.file_id
         <where>
-            <if test="rq.filter neq null and rq.filter neq '' and rq.keyword neq null and rq.keyword neq ''">
-                <if test="rq.filter eq 'TITLE'">
-                    AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
-                </if>
-                <if test="rq.filter eq 'CONTENT'">
-                    AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
-                </if>
-                <if test="rq.filter eq 'TEACHER'">
-                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
-                </if>
-                <if test="rq.filter eq 'TEACHER'">
-                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
-                </if>
+            <if test="rq.keyword neq null and rq.keyword neq ''">
+                <choose>
+                    <when test="rq.filter neq null and rq.filter neq ''">
+                        <if test="rq.filter eq 'TITLE'">
+                            AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+                        </if>
+                        <if test="rq.filter eq 'TEACHER'">
+                            AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                        </if>
+                    </when>
+                     <otherwise>
+                         AND (l.title LIKE CONCAT('%', #{rq.keyword}, '%') OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%'))
+                     </otherwise>
+                </choose>
             </if>
             <if test="rq.minPrice neq null and rq.minPrice neq 0">
                 AND l.price >= ${rq.minPrice}
