@@ -15,30 +15,6 @@
         <div class="intro-text">
             강의소개 설명
         </div>
-        <div class="intro-recommend">
-            <div class="intro-chapter">
-                <img src="<c:url value='/img/png/recommend.png'/>">
-                <p>이런 분께 추천해요</p>
-            </div>
-            <ul class="intro-list">
-                <li>수능에서 미적분 선택자 중 고득점을 목표로 하는 학생</li>
-                <li>개념은 알지만 실전 적용이 부족한 학생</li>
-                <li>기출을 완벽히 정리하고 싶거나, 최신 출제 트렌드에 맞춰 대비하고 싶은 학생</li>
-                <li>제한된 시간에 효율적으로 전 범위를 학습하고 싶은 학생</li>
-            </ul>
-        </div>
-        <div class="intro-study">
-            <div class="intro-chapter">
-                <img src="<c:url value='/img/png/study.png'/>">
-                <p>이런 걸 배울 수 있어요</p>
-            </div>
-            <ul class="intro-list">
-                <li>수능에서 미적분 선택자 중 고득점을 목표로 하는 학생</li>
-                <li>개념은 알지만 실전 적용이 부족한 학생</li>
-                <li>기출을 완벽히 정리하고 싶거나, 최신 출제 트렌드에 맞춰 대비하고 싶은 학생</li>
-                <li>제한된 시간에 효율적으로 전 범위를 학습하고 싶은 학생</li>
-            </ul>
-        </div>
     </div>
     <div id="curriculum" class="introduce-content" >
         <div class="introduce-title">커리큘럼</div>
@@ -86,7 +62,7 @@
         <div class="introduce-title">강사이력</div>
         <div class="instructor">
             <div class="instructor-teacher">
-                <img src="<c:url value='/img/png/teacher1.png'/>">
+                <img src="<c:url value='${teacher.member.profileImage}'/>">
                 <div>
                     <strong>${teacher.member.nickname}</strong>
                     <p>강사</p>

@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="summary-thumbnail">
-            <img src="<c:url value='/img/png/thumbnail1.png'/>" alt="썸네일">
+            <img src="<c:url value='${lecture.thumbnailFile}'/>">
         </div>
     </div>
     <div class="summary-bottom">
@@ -55,7 +55,7 @@
         <div class="summary-pay">
             <div class="summary-money"><fmt:formatNumber value="${lecture.price}" type="number"/>원</div>
             <div class="summary-buttons">
-                <button class="summary-like" data-lecture-id="${lecture.lectureId}">
+                <button class="summary-like" data-lecture-id="${lecture.lectureId}" data-member-id="${loginMember.memberId}">
                     <img src="/img/png/like1.png" alt="좋아요">
                     <span class="like-count">${lecture.likeCount}</span>
                 </button>

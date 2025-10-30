@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!likeButton) return;
 
     const lectureId = likeButton.dataset.lectureId;
-    const memberId = 93; // 로그인 유저 ID
+    const memberId = likeButton.dataset.memberId;
     const likeImg = likeButton.querySelector("img");
     const likeCountElem = likeButton.querySelector(".like-count");
 

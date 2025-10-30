@@ -11,8 +11,9 @@
                 <c:forEach var="like" items="${likeList}">
                     <a class="likes-item" href="/lecture/detail/${like.lecture.lectureId}">
                         <div class="likes-thumbnail">
-                            <img src="<c:url value='/img/png/thumbnail1.png'/>">
+                            <img src="<c:url value='${like.lecture.thumbnailFile}'/>">
                             <form class="likes-deleteIcon" action="/mypage/likes/delete/${like.lecture.lectureId}" method="get">
+                                <input type="hidden" name="subject" value="${selectedSubject}">
                                 <button type="submit">
                                     <img src="<c:url value='/img/png/delete.png'/>">
                                 </button>
