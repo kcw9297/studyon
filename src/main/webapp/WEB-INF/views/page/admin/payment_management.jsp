@@ -21,12 +21,12 @@
                 <option value="">전체</option>
                 <option value="paymentUid">결제번호</option>
                 <option value="lectureTitle">강의명</option>
-                <option value="nickname">결제자명</option>
+                <option value="nickname">결제자(닉네임)</option>
             </select>
-            <select id="isRefund">
+            <select id="isRefunded">
                 <option value="">환불여부(전체)</option>
-                <option value="1">환불</option>
-                <option value="0">미환불</option>
+                <option value="1">환불완료</option>
+                <option value="0">결제완료</option>
             </select>
             <select id="orderBy">
                 <option value="">정렬기준(기본)</option>
