@@ -44,7 +44,7 @@ public class Lecture extends BaseEntity {
 
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id", nullable = false)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @OnDelete(action = OnDeleteAction.SET_NULL)

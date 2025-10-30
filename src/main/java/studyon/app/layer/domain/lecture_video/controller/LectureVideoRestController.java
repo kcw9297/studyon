@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/lecture/video")
+@RequestMapping("/api/lectures/video")
 @RequiredArgsConstructor
 public class LectureVideoRestController {
 
