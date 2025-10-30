@@ -183,13 +183,84 @@
     }
 </style>
 <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const response = await fetch("/api/teachers/management/qna");
-        const jsondata = await response.json(); // ✅ await 추가!
+    document.addEventListener("DOMContentLoaded", async function() {
+        const qnaListContainer = document.querySelector(".qna-list");
+        const filterSelect = document.getElementById("filterOption");
 
-        console.log(jsondata);        // 전체 응답 확인
-        const list = jsondata.data;   // RestUtils.ok(response) 구조면 여기에 데이터가 있음
-        console.log(list);
+        try {
+            const response = await fetch("/api/teachers/management/qna");
+            const json = await response.json();
+            const list = json.data || [];
+
+            console.log("📡 QNA 데이터:", list);
+
+            // ✅ 초기 렌더링
+            renderList(list);
+
+            // ✅ 필터 변경 시 렌더링
+            filterSelect.addEventListener("change", function() {
+                const value = filterSelect.value;
+                if (value === "answered") {
+                    renderList(list.filter(function(q) { return q.answered === true; }));
+                } else if (value === "unanswered") {
+                    renderList(list.filter(function(q) { return q.answered === false; }));
+                } else {
+                    renderList(list);
+                }
+            });
+
+            // ✅ 렌더링 함수
+            function renderList(data) {
+                qnaListContainer.innerHTML = "";
+
+                if (data.length === 0) {
+                    qnaListContainer.innerHTML =
+                        '<div style="text-align:center; color:#777;">등록된 질문이 없습니다.</div>';
+                    return;
+                }
+
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    var statusClass = item.answered ? "answered" : "pending";
+                    var statusText = item.answered ? "✅ 답변 완료" : "⌛ 미답변";
+                    var date = new Date(item.createdAt).toLocaleDateString("ko-KR");
+
+                    var div = document.createElement("div");
+                    div.classList.add("qna-item");
+
+                    // ✅ 클릭 시 이동
+                    div.onclick = function(q) {
+                        return function() {
+                            var url = q.answered
+                                ? '/teacher/management/qna/detail?id=' + q.lectureQuestionId
+                                : '/teacher/management/qna/answer?id=' + q.lectureQuestionId;
+                            window.location.href = url;
+                        };
+                    }(item);
+
+                    // ✅ 내부 HTML 구성 (백틱 X)
+                    var html = ''
+                        + '<div class="qna-item-header">'
+                        + '    <div class="qna-item-left">'
+                        + '        <span class="qna-status ' + statusClass + '">' + statusText + '</span>'
+                        + '        <span class="qna-item-title">' + item.title + '</span>'
+                        + '    </div>'
+                        + '    <span class="qna-item-date">' + date + '</span>'
+                        + '</div>'
+                        + '<div class="qna-item-meta">'
+                        + '    <span class="qna-item-writer">' + item.studentName + '</span> · '
+                        + '    <span class="qna-item-index">[' + item.indexTitle + ']</span>'
+                        + '</div>';
+
+                    div.innerHTML = html;
+                    qnaListContainer.appendChild(div);
+                }
+            }
+
+        } catch (err) {
+            console.error("🚨 QNA 로드 실패:", err);
+            qnaListContainer.innerHTML =
+                '<div style="text-align:center; color:red;">Q&A 데이터를 불러오지 못했습니다.</div>';
+        }
     });
-
 </script>

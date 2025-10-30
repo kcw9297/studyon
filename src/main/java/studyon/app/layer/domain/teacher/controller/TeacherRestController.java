@@ -21,6 +21,7 @@ import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
 import studyon.app.layer.domain.lecture_answer.LectureAnswerDTO;
+import studyon.app.layer.domain.lecture_answer.service.LectureAnswerService;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
@@ -62,6 +63,7 @@ public class TeacherRestController {
     private final LectureIndexService lectureIndexService;
     private final LectureVideoService lectureVideoService;
     private final LectureQuestionService lectureQuestionService;
+    private final LectureAnswerService lectureAnswerService;
 
     /**
      * [GET] 모든 선생님 정보 가져오기
@@ -300,8 +302,34 @@ public class TeacherRestController {
 
     @GetMapping("/management/qna")
     public ResponseEntity<?> getQna(HttpSession session) {
-        Long teacherId = SessionUtils.getTeacherId(session);
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        log.info("Session Profile = {}", profile);
         List<LectureQuestionDTO.ReadTeacherQnaDTO> response = lectureQuestionService.getAllQnaList(teacherId);
         return RestUtils.ok(response);
     }
+
+    @GetMapping("/management/qna/detail/{questionId}")
+    public ResponseEntity<?> getQnaDetail(@PathVariable Long questionId) {
+        LectureQuestionDTO.TeacherQnaDetail response =
+                lectureQuestionService.readTeacherQnaDetail(questionId);
+        log.info(response.toString());
+        return RestUtils.ok(response);
+    }
+
+    @GetMapping("/management/qna/answer/{questionId}")
+    public ResponseEntity<?> getQnaAnswerPage(@PathVariable Long questionId) {
+        LectureQuestionDTO.TeacherQnaDetail response =
+                lectureQuestionService.readTeacherQnaDetail(questionId);
+        log.info(response.toString());
+        return RestUtils.ok(response);
+    }
+
+    @PostMapping("/management/qna/answer")
+    public ResponseEntity<?> saveAnswer(LectureAnswerDTO.Write dto){
+        log.info("saveAnswer Method ");
+        lectureAnswerService.saveAnswer(dto);
+        return RestUtils.ok("답변이 등록 되었습니다.");
+    }
+
 }

@@ -29,7 +29,7 @@
                     <img src="<c:url value='/img/png/thumbnail1.png'/>">
                 </div>
                 <div class="algorithm-lecture">${lecture.title}</div>
-                <div class="algorithm-teacher">${lecture.nickname} 강사</div>
+                <div class="algorithm-teacher">${lecture.teacherNickname} 강사</div>
                 <div class="algorithm-price"><fmt:formatNumber value="${lecture.price}" type="number"/>원</div>
                 <div class="algorithm-report">
                     <div class="algorithm-review">
@@ -53,7 +53,7 @@
                     <img src="<c:url value='/img/png/thumbnail4.png'/>">
                 </div>
                 <div class="algorithm-lecture">${lecture.title}</div>
-                <div class="algorithm-teacher">${lecture.nickname} 강사</div>
+                <div class="algorithm-teacher">${lecture.teacherNickname} 강사</div>
                 <div class="algorithm-price"><fmt:formatNumber value="${lecture.price}" type="number"/>원</div>
                 <div class="algorithm-report">
                     <div class="algorithm-review">

@@ -139,27 +139,39 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
                         .title(q.getTitle())
                         .content(q.getContent())
                         .studentName(q.getMember().getNickname())
+                        .lectureIndexId(q.getLectureIndex() != null
+                                ? q.getLectureIndex().getLectureIndexId()
+                                : null) // ✅ 추가
                         .indexTitle(q.getLectureIndex() != null
                                 ? q.getLectureIndex().getIndexTitle()
                                 : "미지정 목차")
-                        .answered(q.getLectureAnswer() != null)
+                        .answered(q.getIsSolved())
                         .createdAt(q.getCreatedAt())
                         .answeredAt(q.getLectureAnswer() != null ? q.getLectureAnswer().getCreatedAt() : null)
                         .build())
                 .toList();
     }
 
+    //Question Detail Service
+    @Override
+    public LectureQuestionDTO.TeacherQnaDetail readTeacherQnaDetail(Long questionId) {
+        LectureQuestion q = lectureQuestionRepository.findById(questionId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
 
-    public static class Write {
-        private Long lectureQuestionId;
-        private Long lectureId;
-        private String title;
-        private String content;
-        private Long memberId;
-        private String memberNickname;
-        private LocalDateTime createdAt;
+        LectureAnswer answer = q.getLectureAnswer();
+
+        return LectureQuestionDTO.TeacherQnaDetail.builder()
+                .lectureQuestionId(q.getLectureQuestionId())
+                .title(q.getTitle())
+                .content(q.getContent())
+                .studentName(q.getMember().getNickname())
+                .createdAt(q.getCreatedAt())
+                .indexTitle(q.getLectureIndex() != null ? q.getLectureIndex().getIndexTitle() : "미지정 목차")
+                .lectureId(q.getLecture().getLectureId())
+                .lectureTitle(q.getLecture().getTitle())
+                .teacherName(q.getLecture().getTeacher().getMember().getNickname())
+                .answerContent(answer != null ? answer.getContent() : null)
+                .answeredAt(answer != null ? answer.getCreatedAt() : null)
+                .build();
     }
-
-
-
 }
