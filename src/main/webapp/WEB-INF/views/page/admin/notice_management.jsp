@@ -17,161 +17,33 @@
 
         <!-- 카드 6개 영역 (3열 2행) -->
         <div class="notice-card-grid">
-            <!-- 카드 1 -->
-            <div class="notice-card" data-card-idx="1">
-                <div class="notice-image-wrapper">
-                    <img src=""
-                         class="notice-image"
-                         alt="공지사항 1" />
-                    <div class="notice-image-overlay">
-                        <span>공지 이미지 변경</span>
-                    </div>
-                    <input type="file" class="notice-image-input" accept="image/*" style="display: none;" />
-                </div>
-                <div class="notice-info-box">
-                    <div class="notice-title-box">
-                        <div class="notice-title-with-edit">
-                            <span class="notice-title">공지사항 제목 1</span>
-                            <button class="notice-title-edit-btn" onclick="editNoticeTitle(1)">✏️</button>
+            <!-- 카드 1~6 반복 -->
+            <c:forEach begin="1" end="6" var="i">
+                <div class="notice-card" data-card-idx="${i}">
+                    <div class="notice-image-wrapper">
+                        <img src=""
+                             class="notice-image"
+                             alt="공지사항 ${i}" />
+                        <div class="notice-image-overlay">
+                            <span>공지 이미지 변경</span>
                         </div>
-                        <button class="notice-reset-btn" onclick="initialize(1)">🗑️</button>
+                        <input type="file" class="notice-image-input" accept="image/*" style="display: none;" />
                     </div>
-                    <div class="notice-status-box">
-                        <span class="notice-status-label">게시 상태:</span>
-                        <button class="notice-status-btn inactive" onclick="toggleNoticeStatus(1)">비활성</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 카드 2 -->
-            <div class="notice-card" data-card-idx="2">
-                <div class="notice-image-wrapper">
-                    <img src=""
-                         class="notice-image"
-                         alt="공지사항 2" />
-                    <div class="notice-image-overlay">
-                        <span>공지 이미지 변경</span>
-                    </div>
-                    <input type="file" class="notice-image-input" accept="image/*" style="display: none;" />
-                </div>
-                <div class="notice-info-box">
-                    <div class="notice-title-box">
-                        <div class="notice-title-with-edit">
-                            <span class="notice-title">공지사항 제목 2</span>
-                            <button class="notice-title-edit-btn" onclick="editNoticeTitle(2)">✏️</button>
+                    <div class="notice-info-box">
+                        <div class="notice-title-box">
+                            <div class="notice-title-with-edit">
+                                <span class="notice-title">공지사항 제목 ${i}</span>
+                                <button class="notice-title-edit-btn" onclick="editNoticeTitle(${i})">✏️</button>
+                            </div>
+                            <button class="notice-reset-btn" onclick="initialize(${i})">🗑️</button>
                         </div>
-                        <button class="notice-reset-btn" onclick="initialize(2)">🗑️</button>
-                    </div>
-                    <div class="notice-status-box">
-                        <span class="notice-status-label">게시 상태:</span>
-                        <button class="notice-status-btn inactive" onclick="toggleNoticeStatus(2)">비활성</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 카드 3 -->
-            <div class="notice-card" data-card-idx="3">
-                <div class="notice-image-wrapper">
-                    <img src=""
-                         class="notice-image"
-                         alt="공지사항 3" />
-                    <div class="notice-image-overlay">
-                        <span>공지 이미지 변경</span>
-                    </div>
-                    <input type="file" class="notice-image-input" accept="image/*" style="display: none;" />
-                </div>
-                <div class="notice-info-box">
-                    <div class="notice-title-box">
-                        <div class="notice-title-with-edit">
-                            <span class="notice-title">공지사항 제목 3</span>
-                            <button class="notice-title-edit-btn" onclick="editNoticeTitle(3)">✏️</button>
+                        <div class="notice-status-box">
+                            <span class="notice-status-label">게시 상태:</span>
+                            <button class="notice-status-btn inactive" onclick="toggleNoticeStatus(${i})">비활성</button>
                         </div>
-                        <button class="notice-reset-btn" onclick="initialize(3)">🗑️</button>
-                    </div>
-                    <div class="notice-status-box">
-                        <span class="notice-status-label">게시 상태:</span>
-                        <button class="notice-status-btn inactive" onclick="toggleNoticeStatus(3)">비활성</button>
                     </div>
                 </div>
-            </div>
-
-            <!-- 카드 4 -->
-            <div class="notice-card" data-card-idx="4">
-                <div class="notice-image-wrapper">
-                    <img src=""
-                         class="notice-image"
-                         alt="공지사항 4" />
-                    <div class="notice-image-overlay">
-                        <span>공지 이미지 변경</span>
-                    </div>
-                    <input type="file" class="notice-image-input" accept="image/*" style="display: none;" />
-                </div>
-                <div class="notice-info-box">
-                    <div class="notice-title-box">
-                        <div class="notice-title-with-edit">
-                            <span class="notice-title">공지사항 제목 4</span>
-                            <button class="notice-title-edit-btn" onclick="editNoticeTitle(4)">✏️</button>
-                        </div>
-                        <button class="notice-reset-btn" onclick="initialize(4)">🗑️</button>
-                    </div>
-                    <div class="notice-status-box">
-                        <span class="notice-status-label">게시 상태:</span>
-                        <button class="notice-status-btn inactive" onclick="toggleNoticeStatus(4)">비활성</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 카드 5 -->
-            <div class="notice-card" data-card-idx="5">
-                <div class="notice-image-wrapper">
-                    <img src=""
-                         class="notice-image"
-                         alt="공지사항 5" />
-                    <div class="notice-image-overlay">
-                        <span>공지 이미지 변경</span>
-                    </div>
-                    <input type="file" class="notice-image-input" accept="image/*" style="display: none;" />
-                </div>
-                <div class="notice-info-box">
-                    <div class="notice-title-box">
-                        <div class="notice-title-with-edit">
-                            <span class="notice-title">공지사항 제목 5</span>
-                            <button class="notice-title-edit-btn" onclick="editNoticeTitle(5)">✏️</button>
-                        </div>
-                        <button class="notice-reset-btn" onclick="initialize(5)">🗑️</button>
-                    </div>
-                    <div class="notice-status-box">
-                        <span class="notice-status-label">게시 상태:</span>
-                        <button class="notice-status-btn inactive" onclick="toggleNoticeStatus(5)">비활성</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 카드 6 -->
-            <div class="notice-card" data-card-idx="6">
-                <div class="notice-image-wrapper">
-                    <img src=""
-                         class="notice-image"
-                         alt="공지사항 6" />
-                    <div class="notice-image-overlay">
-                        <span>공지 이미지 변경</span>
-                    </div>
-                    <input type="file" class="notice-image-input" accept="image/*" style="display: none;" />
-                </div>
-                <div class="notice-info-box">
-                    <div class="notice-title-box">
-                        <div class="notice-title-with-edit">
-                            <span class="notice-title">공지사항 제목 6</span>
-                            <button class="notice-title-edit-btn" onclick="editNoticeTitle(6)">✏️</button>
-                        </div>
-                        <button class="notice-reset-btn" onclick="initialize(6)">🗑️</button>
-                    </div>
-                    <div class="notice-status-box">
-                        <span class="notice-status-label">게시 상태:</span>
-                        <button class="notice-status-btn inactive" onclick="toggleNoticeStatus(6)">비활성</button>
-                    </div>
-                </div>
-            </div>
+            </c:forEach>
         </div>
     </div>
 </div>

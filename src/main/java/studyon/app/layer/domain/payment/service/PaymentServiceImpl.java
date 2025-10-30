@@ -1,5 +1,10 @@
 package studyon.app.layer.domain.payment.service;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +31,11 @@ import studyon.app.layer.domain.payment.PaymentSession;
 import studyon.app.layer.domain.payment.mapper.PaymentMapper;
 import studyon.app.layer.domain.payment.repository.PaymentRepository;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,7 +72,7 @@ public class PaymentServiceImpl implements PaymentService {
         Integer count = paymentMapper.countAll(rq);
 
         // 페이지 응답 포맷 구성
-        return Page.Response.create(payments, prq.getPage(), prq.getPage(), count);
+        return Page.Response.create(payments, prq.getPage(), prq.getSize(), count);
     }
 
 
@@ -253,5 +261,120 @@ public class PaymentServiceImpl implements PaymentService {
         paymentManager.refundAll(payment.getPaymentUid(), refundReason);
     }
 
+
+    @Override
+    public byte[] generatePaymentListPdf(PaymentDTO.Search rq) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+
+            // [1] 모든 결제 데이터 조회 (페이징 제한 해제)
+            List<PaymentDTO.Read> payments =
+                    paymentMapper.selectAll(rq, new Page.Request(0, Integer.MAX_VALUE));
+
+            // [2] PDF 문서 설정
+            Document document = new Document(PageSize.A4);
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            // [3] 폰트 설정
+            BaseFont baseFont = BaseFont.createFont("fonts/malgun.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font titleFont = new Font(baseFont, 16, Font.BOLD);
+            Font infoFont = new Font(baseFont, 11, Font.NORMAL);
+            Font headerFont = new Font(baseFont, 12, Font.BOLD);
+            Font bodyFont = new Font(baseFont, 10, Font.NORMAL);
+
+            // [4] 생성 시각 표시
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = LocalDateTime.now().format(formatter);
+
+            // [5] 필터 상태 표시 (검색, 환불, 정렬 등)
+            String filterLabel = switch (rq.getFilter() == null ? "" : rq.getFilter()) {
+                case "paymentUid" -> "결제번호";
+                case "lectureTitle" -> "강의명";
+                case "nickname" -> "결제자";
+                default -> "전체";
+            };
+
+            String refundLabel = switch (String.valueOf(rq.getIsRefunded())) {
+                case "true" -> "환불완료";
+                case "false" -> "결제완료";
+                default -> "전체";
+            };
+
+            String orderLabel = switch (rq.getOrderBy() == null ? "" : rq.getOrderBy()) {
+                case "date" -> "결제일순(최신)";
+                case "amount" -> "금액순(높은 금액)";
+                case "refund" -> "환불우선";
+                default -> "기본정렬";
+            };
+
+            String keywordText = (rq.getKeyword() != null && !rq.getKeyword().isBlank())
+                    ? rq.getKeyword()
+                    : "없음";
+
+            String filterSummary = String.format(
+                    "필터: 검색=%s / 환불=%s / 정렬=%s / 키워드=%s",
+                    filterLabel, refundLabel, orderLabel, keywordText
+            );
+
+            // [6] 제목 + 필터 정보 추가
+            document.add(new Paragraph("💳 Study On 결제 내역 목록", titleFont));
+            document.add(new Paragraph("생성시각: " + formattedDate, bodyFont));
+            document.add(new Paragraph(filterSummary, infoFont));
+            document.add(new Paragraph(" ")); // 줄 간격용
+
+            // [7] 표 생성
+            PdfPTable table = new PdfPTable(7);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10f);
+            table.setWidths(new float[]{1f, 3f, 4f, 3f, 2.5f, 3f, 2.5f});
+
+            // [8] 테이블 헤더
+            String[] headers = {"No", "결제번호", "강의명", "결제자", "결제금액", "결제일", "환불상태"};
+            for (String header : headers) {
+                PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPaddingTop(6f);
+                cell.setPaddingBottom(6f);
+                cell.setBackgroundColor(new BaseColor(230, 230, 230));
+                table.addCell(cell);
+            }
+
+            // [9] 결제 데이터 행 추가
+            int i = 1;
+            for (PaymentDTO.Read p : payments) {
+                table.addCell(centeredCell(String.valueOf(i++), bodyFont));
+                table.addCell(centeredCell(p.getPaymentUid(), bodyFont));
+                table.addCell(centeredCell(p.getLectureTitle(), bodyFont));
+                table.addCell(centeredCell(p.getNickname(), bodyFont));
+                table.addCell(centeredCell(
+                        String.format("%,d원", p.getPaidAmount().longValue()), bodyFont
+                ));
+                table.addCell(centeredCell(
+                        p.getCdate() != null ? p.getCdate().toLocalDate().toString() : "-", bodyFont
+                ));
+                table.addCell(centeredCell(p.getIsRefunded() ? "환불완료" : "결제완료", bodyFont));
+            }
+
+            // [10] PDF에 테이블 추가
+            document.add(table);
+            document.close();
+
+            log.info("✅ [SERVICE] 결제 내역 PDF 생성 완료 ({}건)", payments.size());
+            return out.toByteArray();
+
+        } catch (IOException | DocumentException e) {
+            throw new RuntimeException("결제 내역 PDF 생성 실패", e);
+        }
+    }
+
+    // [공통 셀 정렬 메소드]
+    private PdfPCell centeredCell(String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text != null ? text : "-", font));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(4f);
+        return cell;
+    }
 
 }

@@ -62,7 +62,13 @@
         <div class="introduce-title">강사이력</div>
         <div class="instructor">
             <div class="instructor-teacher">
-                <img src="<c:url value='${teacher.member.profileImage}'/>">
+                <c:choose>
+                    <c:when test="${not empty teacher.member.profileImage and teacher.member.profileImage.fileId ne 0}">
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<c:url value='/img/png/default_member_profile_image.png'/>" alt="기본 이미지">
+                    </c:otherwise>
+                </c:choose>
                 <div>
                     <strong>${teacher.member.nickname}</strong>
                     <p>강사</p>
@@ -128,35 +134,42 @@
             </div>
             <ul class="reviews-list">
 
-            <c:if test="${not empty reviews}">
-            <c:forEach var="review" items="${reviews}">
-                <li class="reviews-comment">
-                    <div class="reviews-user">
-                        <img src="<c:url value='${review.member.profileImage}'/>">${review.member.nickname}
-                    </div>
-                    <div class="reviews-content">
-                        <div class="reviews-top">
-                            <div class="reviews-god">
-
-                            <c:forEach begin="1" end="${review.rating}">
-                                <span class="reviews-god filled">★</span>
-                            </c:forEach>
-                            <c:forEach begin="1" end="${5 - review.rating}">
-                                <span class="reviews-god empty">★</span>
-                            </c:forEach>
-
+                <c:if test="${not empty reviews}">
+                    <c:forEach var="review" items="${reviews}">
+                        <li class="reviews-comment">
+                            <div class="reviews-user">
+                                <c:choose>
+                                    <c:when test="${not empty review.member.profileImage and review.member.profileImage.fileId ne 0}">
+                                        <img src="${fileDomain}/${review.member.profileImage.filePath}" alt="프로필 이미지">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="<c:url value='/img/png/default_member_profile_image.png'/>" alt="기본 이미지">
+                                    </c:otherwise>
+                                </c:choose>
+                                    ${review.member.nickname}
                             </div>
-                            <div class="reviews-day">
-                                <c:out value="${fn:substring(review.createdAt, 0, 10)}"/>
+                            <div class="reviews-content">
+                                <div class="reviews-top">
+                                    <div class="reviews-god">
+                                        <c:forEach begin="1" end="${review.rating}">
+                                            <span class="reviews-god filled">★</span>
+                                        </c:forEach>
+                                        <c:forEach begin="1" end="${5 - review.rating}">
+                                            <span class="reviews-god empty">★</span>
+                                        </c:forEach>
+                                    </div>
+                                    <div class="reviews-day">
+                                        <c:out value="${fn:substring(review.createdAt, 0, 10)}"/>
+                                    </div>
+                                </div>
+                                <div class="reviews-bottom">
+                                    <p>${review.content}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="reviews-bottom">
-                            <p>${review.content}</p>
-                        </div>
-                    </div>
-                </li>
-            </c:forEach>
-            </c:if>
+                        </li>
+                    </c:forEach>
+                </c:if>
+
 
             </ul>
             <button class="reviews-more">더보기</button>

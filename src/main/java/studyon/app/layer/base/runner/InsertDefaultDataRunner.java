@@ -10,12 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.constant.Env;
-import studyon.app.common.enums.Difficulty;
-import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
 import studyon.app.common.utils.EnvUtils;
 import studyon.app.common.utils.StrUtils;
-import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.banner.Banner;
+import studyon.app.layer.domain.banner.repository.BannerRepository;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 import studyon.app.layer.domain.notice.Notice;
@@ -43,6 +42,7 @@ public class InsertDefaultDataRunner implements ApplicationRunner {
     private final MemberRepository memberRepository;
     private final TeacherRepository teacherRepository;
     private final NoticeRepository noticeRepository;
+    private final BannerRepository bannerRepository;
     private final PasswordEncoder passwordEncoder;
     private final Random random = new Random();
 
@@ -112,6 +112,18 @@ public class InsertDefaultDataRunner implements ApplicationRunner {
 
                 // 저장
                 noticeRepository.saveAll(notices);
+            }
+
+
+            // [4] create 옵션일 시, 배너 카드 정보 새롭게 생성
+            if (isCreate) {
+                // 공지사항 엔티티 생성
+                List<Banner> notices = IntStream.rangeClosed(1, 9)
+                        .mapToObj(Banner::new)
+                        .toList();
+
+                // 저장
+                bannerRepository.saveAll(notices);
             }
 
         }

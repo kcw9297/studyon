@@ -34,7 +34,7 @@ public class LectureDetailController {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다. id=" + lectureId));
 
         /* 리뷰 */
-        List<LectureReview> reviews = lectureReviewRepository.findByLectureIdWithMemberOrderByRatingDesc(lectureId);
+        List<LectureReview> reviews = lectureReviewRepository.findReviewsWithMemberAndProfile(lectureId);
         long reviewCount = lectureReviewRepository.countByLecture_LectureId(lectureId);
         Map<Integer, Double> ratingPercent = lectureService.getRatingPercentage(lectureId);
 

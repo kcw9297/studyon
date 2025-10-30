@@ -81,4 +81,11 @@ public interface PaymentService {
      * @param refundReason 환불 사유
      */
     void refund(Long paymentId, String refundReason);
+
+
+    /**
+     * 결제 목록 PDF 생성
+     * @return PDF 바이트 배열
+     */
+    byte[] generatePaymentListPdf(PaymentDTO.Search rq);
 }

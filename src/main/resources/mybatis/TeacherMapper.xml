@@ -35,8 +35,8 @@
 
                 <otherwise>
                     AND (
-                    m.email LIKE CONCAT('%', #{rq.keyword}, '%')
-                    OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                        m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                     )
                 </otherwise>
             </choose>

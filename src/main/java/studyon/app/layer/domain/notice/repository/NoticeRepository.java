@@ -9,6 +9,8 @@ import java.util.Optional;
 
 /**
  * 공지사항 데이터 조회 JPA Repository 클래스
+ * @version 1.0
+ * @author kcw97
  */
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
@@ -18,7 +20,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
         FROM Notice n
         LEFT JOIN FETCH n.noticeImage
     """)
-    List<Notice> findAllWithFile();
+    List<Notice> findAllWithNoticeImage();
 
     @Query("""
         SELECT n
@@ -27,7 +29,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
         WHERE n.isActivate = :isActivate
         ORDER BY n.idx ASC
     """)
-    List<Notice> findAllWithFileByIsActivate(Boolean isActivate);
+    List<Notice> findAllWithNoticeImageByIsActivate(Boolean isActivate);
 
     Optional<Notice> findByIdx(Integer idx);
 }

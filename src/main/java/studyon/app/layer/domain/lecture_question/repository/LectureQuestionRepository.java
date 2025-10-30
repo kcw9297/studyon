@@ -1,10 +1,9 @@
 package studyon.app.layer.domain.lecture_question.repository;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import studyon.app.layer.domain.lecture_question.LectureQuestion;
-import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 
 import java.util.List;
 
@@ -23,13 +22,14 @@ import java.util.List;
 public interface LectureQuestionRepository extends JpaRepository<LectureQuestion, Long> {
     List<LectureQuestion> findByLecture_LectureIdAndLectureIndex_LectureIndexId(Long lectureId, Long lectureIndexId);
     @Query("""
-    SELECT q 
+    SELECT q
     FROM LectureQuestion q
-    JOIN FETCH q.lecture l
-    JOIN FETCH l.teacher t
+    JOIN q.lecture l
+    JOIN l.teacher t
     LEFT JOIN FETCH q.lectureAnswer a
     LEFT JOIN FETCH q.lectureIndex i
     WHERE t.teacherId = :teacherId
+    ORDER BY q.createdAt DESC
 """)
     List<LectureQuestion> findAllWithAnswerByTeacherId(@Param("teacherId") Long teacherId);
 }

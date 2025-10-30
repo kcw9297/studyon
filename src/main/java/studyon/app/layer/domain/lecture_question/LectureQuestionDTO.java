@@ -95,10 +95,30 @@ public class LectureQuestionDTO {
         private boolean answered;         // 답변 여부
         private LocalDateTime createdAt;  // 질문 등록일
         private LocalDateTime answeredAt; // 답변일 (없으면 null)
+        private Long lectureIndexId;
 
         // UI 표시용 필드 (optional)
         public String getStatusLabel() {
             return answered ? "답변 완료" : "미답변";
         }
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeacherQnaDetail {
+        private Long lectureQuestionId;
+        private String title;
+        private String content;
+        private String studentName;
+        private String indexTitle;
+        private String lectureTitle;
+        private Long lectureId;
+        private String teacherName;
+        private String answerContent;
+        private LocalDateTime createdAt;
+        private LocalDateTime answeredAt;
+    }
+
 }

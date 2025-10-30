@@ -6,6 +6,8 @@ import studyon.app.common.enums.Entity;
 import studyon.app.common.enums.FileType;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.domain.auth.AuthDTO;
+import studyon.app.layer.domain.banner.Banner;
+import studyon.app.layer.domain.banner.BannerDTO;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.lecture.Lecture;
@@ -377,4 +379,15 @@ public class DTOMapper {
                 .build();
     }
 
+    public static BannerDTO.Read toReadDTO(Banner entity) {
+
+        File bannerImage = entity.getBannerImage();
+
+        return BannerDTO.Read.builder()
+                .title(entity.getTitle())
+                .idx(entity.getIdx())
+                .isActivate(entity.getIsActivate())
+                .bannerImage(Objects.isNull(bannerImage) ? null : toReadDTO(bannerImage))
+                .build();
+    }
 }

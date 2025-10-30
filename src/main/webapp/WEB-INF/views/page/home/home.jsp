@@ -11,10 +11,12 @@
     <a href="<c:url value='/lecture/recommend/SOCIAL'/>">사회탐구</a>
     <a href="<c:url value='/teacher/find/MATH'/>">강사리스트</a>
 </div>
-<div class="main-banner-container">
-    <img src="<c:url value='/img/png/banner1.png'/>" class="main-banner fade active" alt="배너1">
-    <img src="<c:url value='/img/png/banner2.png'/>" class="main-banner fade" alt="배너2">
-</div>
+
+<%-- 홈 베너 모달 --%>
+<jsp:include page="/WEB-INF/views/page/home/home_banner.jsp" />
+
+<%-- 공지사항 팝업 모달 --%>
+<jsp:include page="/WEB-INF/views/page/home/home_notice_popup_modal.jsp" />
 
 
 <!-- ✅ 최근 등록된 강의 -->
@@ -28,9 +30,6 @@
 <div class="recent-lecture-container" id="popularLectureContainer">
     <!-- JS에서 렌더링될 영역 -->
 </div>
-
-<%-- 공지사항 팝업 모달 --%>
-<jsp:include page="/WEB-INF/views/page/home/notice_popup_modal.jsp" />
 
 <style>
     .home-nav {
@@ -167,16 +166,5 @@
 
 <%-- Local Script --%>
 <script src="<c:url value='/js/page/home/home_lectures_view.js'/>"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const banners = document.querySelectorAll(".main-banner");
-        let current = 0;
 
-        setInterval(() => {
-            banners[current].classList.remove("active");
-            current = (current + 1) % banners.length;
-            banners[current].classList.add("active");
-        }, 4000); // 4초마다 전환
-    });
-</script>
 

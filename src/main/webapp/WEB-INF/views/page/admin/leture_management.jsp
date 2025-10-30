@@ -4,7 +4,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/admin/lecture_management.css'/>">
 
 <jsp:include page="/WEB-INF/views/page/admin/navbar.jsp">
-    <jsp:param name="active" value="report"/>
+    <jsp:param name="active" value="lecture"/>
 </jsp:include>
 
 <div class="admin-content-container">
