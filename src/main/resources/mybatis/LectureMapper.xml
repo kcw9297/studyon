@@ -19,6 +19,7 @@
         l.average_rate,
         l.like_count,
         l.publish_date,
+        l.lecture_target,
         l.subject,
         l.subject_detail
         <if test="rq.role neq 'ROLE_STUDENT'">
@@ -35,12 +36,19 @@
                         <if test="rq.filter eq 'TITLE'">
                             AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
                         </if>
+                        <if test="rq.filter eq 'CONTENT'">
+                            AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
+                        </if>
                         <if test="rq.filter eq 'TEACHER'">
                             AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                         </if>
                     </when>
                      <otherwise>
-                         AND (l.title LIKE CONCAT('%', #{rq.keyword}, '%') OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%'))
+                         AND (
+                            l.title LIKE CONCAT('%', #{rq.keyword}, '%') OR
+                            l.description LIKE CONCAT('%', #{rq.keyword}, '%') OR
+                            m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                         )
                      </otherwise>
                 </choose>
             </if>
@@ -61,6 +69,12 @@
                 AND l.subject_detail IN
                 <foreach collection="rq.subjectDetails" item="detail" open="(" close=")" separator=",">
                     #{detail}
+                </foreach>
+            </if>
+            <if test="rq.targets neq null and rq.targets.size() > 0">
+                AND l.lecture_target IN
+                <foreach collection="rq.targets" item="target" open="(" close=")" separator=",">
+                    #{target}
                 </foreach>
             </if>
             <if test="rq.difficulties neq null and rq.difficulties.size() > 0">
