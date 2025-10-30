@@ -41,13 +41,18 @@ public interface LectureLikeRepository extends JpaRepository<LectureLike, Long> 
     List<LectureLike> findByMemberIdWithLectureTeacherMember(@Param("memberId") Long memberId);
 
     @Query("""
-        SELECT ll
-        FROM LectureLike ll
-        JOIN FETCH ll.lecture lec
-        WHERE ll.member.memberId = :memberId
-        AND lec.subject = :subject
-    """)
-    List<LectureLike> findByMemberIdWithLectureAndSubject(@Param("memberId") Long memberId,
-                                                          @Param("subject") String subject);
+    SELECT ll
+    FROM LectureLike ll
+    JOIN FETCH ll.lecture l
+    JOIN FETCH l.teacher t
+    JOIN FETCH t.member m
+    WHERE ll.member.memberId = :memberId
+      AND UPPER(l.subject) = :subject
+""")
+    List<LectureLike> findByMemberIdWithLectureAndSubjectString(
+            @Param("memberId") Long memberId,
+            @Param("subject") String subject
+    );
+
 
 }

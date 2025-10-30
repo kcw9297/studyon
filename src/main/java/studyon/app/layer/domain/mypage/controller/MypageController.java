@@ -38,24 +38,31 @@ public class MypageController {
     }
 
     @GetMapping("/likes")
-    public String likes(Model model, HttpSession session) {
+    public String likes(@RequestParam(value = "subject", required = false, defaultValue = "all") String subject,
+                        Model model, HttpSession session) {
         Long memberId = (Long) session.getAttribute("memberId");
-        List<LectureLike> likeList = lectureLikeService.getLikesByMember(memberId);
+        List<LectureLike> likeList = lectureLikeService.getLikesByMemberAndSubject(memberId, subject);
 
         model.addAttribute("likeList", likeList);
+        model.addAttribute("selectedSubject", subject.toLowerCase());
         model.addAttribute("bodyPage", "/WEB-INF/views/page/mypage/likes.jsp");
+
         return ViewUtils.returnView(model, View.MYPAGE, "template");
     }
 
     // 좋아요 삭제
     @GetMapping("/likes/delete/{lectureId}")
-    public String deleteLike(@PathVariable Long lectureId, HttpSession session) {
+    public String deleteLike(
+            @PathVariable Long lectureId,
+            @RequestParam(value = "subject", required = false) String subject,
+            HttpSession session) {
         Long memberId = (Long) session.getAttribute("memberId");
-        if (memberId != null) {
-            lectureLikeService.deleteLike(memberId, lectureId);
-        }
+        if (memberId != null) {lectureLikeService.deleteLike(memberId, lectureId);}
+
+        if (subject != null && !subject.isEmpty()) {return "redirect:/mypage/likes?subject=" + subject;}
         return "redirect:/mypage/likes";
     }
+
 
     @GetMapping("/lecture_management")
     public String lecture_management(Model model) {

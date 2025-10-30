@@ -84,7 +84,13 @@ public class LectureLikeServiceImpl implements LectureLikeService {
 
     @Override
     public List<LectureLike> getLikesByMemberAndSubject(Long memberId, String subject) {
-        return lectureLikeRepository.findByMemberIdWithLectureAndSubject(memberId, subject);
+        if ("all".equalsIgnoreCase(subject)) {
+            // 전체 좋아요 조회
+            return lectureLikeRepository.findByMemberIdWithLectureTeacherMember(memberId);
+        } else {
+            // 특정 과목만 필터링
+            return lectureLikeRepository.findByMemberIdWithLectureAndSubjectString(memberId, subject.toUpperCase());
+        }
     }
 
     @Override
