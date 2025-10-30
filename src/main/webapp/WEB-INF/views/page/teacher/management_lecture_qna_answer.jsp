@@ -27,14 +27,19 @@
     </div>
 
     <!-- ✅ 답변 입력 영역 -->
-    <div class="qna-answer-box">
-        <label class="answer-label">👩‍🏫 강사 답변</label>
-        <textarea class="answer-textarea" placeholder="학생의 질문에 대한 답변을 입력하세요."></textarea>
-        <div class="answer-button-box">
-            <button class="answer-cancel">취소</button>
-            <button class="answer-submit">등록</button>
+    <form id="answerForm">
+        <div class="qna-answer-box">
+            <label class="answer-label">👩‍🏫 강사 답변</label>
+            <textarea class="answer-textarea" name="content" placeholder="학생의 질문에 대한 답변을 입력하세요." required></textarea>
+
+            <input type="hidden" name="lectureQuestionId" id="lectureQuestionId">
+
+            <div class="answer-button-box">
+                <button class="answer-cancel" type="button">취소</button>
+                <button class="answer-submit" type="submit">등록</button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
 <style>
@@ -216,3 +221,95 @@
     }
 
 </style>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        // ✅ URL에서 questionId 파라미터 추출
+        const params = new URLSearchParams(window.location.search);
+        const questionId = params.get("id");
+
+        if (!questionId) {
+            alert("잘못된 접근입니다.");
+            return;
+        }
+
+        try {
+            // ✅ 질문 상세 데이터 불러오기
+            const res = await fetch("/api/teachers/management/qna/detail/" + questionId);
+            const json = await res.json();
+
+            if (!res.ok || !json.data) {
+                alert("질문 정보를 불러올 수 없습니다.");
+                return;
+            }
+
+            const data = json.data;
+            console.log("📘 QnA Detail:", data);
+
+            // ✅ 화면 데이터 주입
+            document.querySelector(".student-name").textContent = "학생: " + data.studentName;
+            document.querySelector(".qna-date").textContent = new Date(data.createdAt).toLocaleDateString();
+            document.querySelector(".qna-question-title").textContent = "Q. " + data.title;
+            document.querySelector(".qna-question-content").textContent = data.content;
+
+            // ✅ “해당 강의로 이동” 버튼
+            const moveBtn = document.querySelector(".video-move-button");
+            moveBtn.addEventListener("click", function() {
+                if (!data.lectureId || !data.indexId) {
+                    alert("강의 정보가 없습니다.");
+                    return;
+                }
+                window.location.href = "/lecture/player?lectureId=" + data.lectureId + "&index=" + data.indexId;
+            });
+
+            // ✅ 답변 등록 버튼 클릭 이벤트
+            const submitBtn = document.querySelector(".answer-submit");
+            const textarea = document.querySelector(".answer-textarea");
+            const cancelBtn = document.querySelector(".answer-cancel");
+
+            submitBtn.addEventListener("click", async function() {
+                const content = textarea.value.trim();
+                if (content.length === 0) {
+                    alert("답변 내용을 입력하세요.");
+                    return;
+                }
+
+                // ✅ FormData로 전달 (백틱 금지 규칙 준수)
+                const formData = new FormData();
+                formData.append("questionId", questionId);
+                formData.append("answerContent", content);
+
+                try {
+                    const res2 = await fetch("/api/teachers/management/qna/answer/" + questionId, {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const json2 = await res2.json();
+
+                    if (res2.ok) {
+                        alert(json2.message || "답변이 성공적으로 등록되었습니다!");
+                        window.location.href = "/teacher/management/qna";
+                    } else {
+                        alert(json2.message || "등록 실패");
+                    }
+                } catch (err) {
+                    console.error("🚨 답변 등록 실패:", err);
+                    alert("서버 오류가 발생했습니다.");
+                }
+            });
+
+            // ✅ 취소 버튼
+            cancelBtn.addEventListener("click", function() {
+                if (confirm("답변 작성을 취소하시겠습니까?")) {
+                    window.location.href = "/teacher/management/qna";
+                }
+            });
+
+        } catch (err) {
+            console.error("🚨 상세 데이터 불러오기 실패:", err);
+            alert("QnA 정보를 불러올 수 없습니다.");
+        }
+    });
+</script>

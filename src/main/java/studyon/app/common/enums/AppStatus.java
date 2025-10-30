@@ -79,7 +79,10 @@ public enum AppStatus {
     /* 강의(Lecture) 상태*/
     LECTURE_NOT_FOUND(500,"존재하지 않거나 판매중이 아닌 강의입니다."),
     LECTURE_NOT_ON_SALE(500,"현재 강의는 판매 중이 아닙니다.\n잠시 후에 다시 시도해 주세요."),
-    LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다.");
+    LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다."),
+
+    /* QNA 상태*/
+    QUESTION_NOT_FOUND(500, "질문이 존재하지 않습니다.");
 
 
     private final int httpCode;     // HTTP 코드

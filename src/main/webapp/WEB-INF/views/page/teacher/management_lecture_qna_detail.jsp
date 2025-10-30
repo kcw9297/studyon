@@ -198,3 +198,41 @@
         transform: scale(0.98);
     }
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const params = new URLSearchParams(window.location.search);
+        const questionId = params.get("id");
+
+        if (!questionId) {
+            alert("잘못된 접근입니다.");
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/teachers/management/qna/detail/" + questionId);
+            const json = await res.json();
+            const data = json.data;
+            console.log(data);
+
+            document.querySelector(".student-name").textContent = "질문자: " + data.studentName;
+            document.querySelector(".qna-date").textContent = new Date(data.createdAt).toLocaleDateString();
+            document.querySelector(".qna-question-title").textContent = "Q. " + data.title;
+            document.querySelector(".qna-question-content").textContent = data.content;
+            document.querySelector(".teacher-name").textContent = "👩‍🏫 작성 강사: " + data.teacherName;
+            document.querySelector(".answer-date").textContent =
+                data.answeredAt ? new Date(data.answeredAt).toLocaleDateString() : "-";
+            document.querySelector(".answer-content").textContent =
+                data.answerContent || "아직 답변이 작성되지 않았습니다.";
+
+            const moveBtn = document.querySelector(".video-move-button");
+            moveBtn.addEventListener("click", function() {
+                window.location.href = "/lecture/player?lectureId=" + data.lectureId + "&index=" + data.indexTitle;
+            });
+
+        } catch (err) {
+            console.error("🚨 상세 데이터 불러오기 실패:", err);
+            alert("QnA 정보를 불러올 수 없습니다.");
+        }
+    });
+</script>
