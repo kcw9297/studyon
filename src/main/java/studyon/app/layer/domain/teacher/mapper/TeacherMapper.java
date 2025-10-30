@@ -17,7 +17,8 @@ import java.util.List;
 @Mapper
 @Repository
 public interface TeacherMapper {
-    List<TeacherDTO.Read> findBySearch(@Param("rq") TeacherDTO.Search rq, @Param("prq") Page.Request prq);
+    List<TeacherDTO.Read> findBySearch(@Param("rq") TeacherDTO.Search rq,
+                                       @Param("prq") Page.Request prq);
 
     Integer countBySearch(@Param("rq") TeacherDTO.Search rq);
 

@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -87,5 +89,15 @@ public class AdminPaymentRestController {
         return RestUtils.ok();
     }
 
+
+    @GetMapping("/export/pdf")
+    public ResponseEntity<byte[]> exportPaymentPdf(PaymentDTO.Search rq) {
+        byte[] pdfBytes = paymentService.generatePaymentListPdf(rq);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=payment_list.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
+    }
 
 }

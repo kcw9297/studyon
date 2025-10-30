@@ -36,9 +36,9 @@
                 <otherwise>
                     <!-- 전체 검색 -->
                     AND (
-                    p.payment_uid LIKE CONCAT('%', #{rq.keyword}, '%')
-                    OR l.title LIKE CONCAT('%', #{rq.keyword}, '%')
-                    OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                        p.payment_uid LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                     )
                 </otherwise>
             </choose>
@@ -57,6 +57,9 @@
             <when test="rq.orderBy eq 'date'">
                 ORDER BY p.cdate DESC
             </when>
+            <when test="rq.orderBy eq 'refund'">
+                ORDER BY p.is_refunded DESC, p.cdate DESC
+            </when>
             <otherwise>
                 ORDER BY p.payment_id DESC
             </otherwise>
@@ -65,7 +68,7 @@
         LIMIT #{prq.size} OFFSET #{prq.startPage}
     </select>
 
-    <select id="countAll" resultType="Integer">
+    <select id="countAll" resultType="int">
         SELECT COUNT(*)
         FROM payment p
         LEFT JOIN lecture l ON p.lecture_id = l.lecture_id
@@ -85,16 +88,18 @@
                 </when>
                 <otherwise>
                     AND (
-                    p.payment_uid LIKE CONCAT('%', #{rq.keyword}, '%')
-                    OR l.title LIKE CONCAT('%', #{rq.keyword}, '%')
-                    OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                        p.payment_uid LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                     )
                 </otherwise>
             </choose>
         </if>
+
+
         <!-- (3) 활성/비활성 필터 -->
         <if test="rq.isRefunded != null">
-            AND p.is_refunded = ${rq.isRefunded}
+            AND p.is_refunded = #{rq.isRefunded}
         </if>
     </select>
 

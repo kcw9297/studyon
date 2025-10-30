@@ -108,12 +108,12 @@
 }
 
 /* 상태 */
-.status-active {
+.status-paid {
     color: #27ae60;
     font-weight: bold;
 }
 
-.status-banned {
+.status-refunded {
     color: #e74c3c;
     font-weight: bold;
 }
@@ -319,3 +319,27 @@
     color: #bbb;
     cursor: not-allowed;
 }
+
+.payment-search-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+.payment-search-bar select,
+.payment-search-bar input {
+    height: 34px;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 14px;
+}
+.payment-search-bar button {
+    height: 34px;
+    padding: 0 12px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
