@@ -39,7 +39,7 @@
                 <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
                 </c:when>
                 <c:otherwise>
-                    <img src="<c:url value='/img/png/thumbnail1.png'/>" alt="기본 이미지">
+                    <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
                 </c:otherwise>
             </c:choose>
         </div>

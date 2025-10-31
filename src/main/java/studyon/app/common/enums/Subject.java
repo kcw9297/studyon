@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Getter
 public enum Subject {
+
     KOREAN("국어"),
     MATH("수학"),
     ENGLISH("영어"),

@@ -68,6 +68,18 @@
                         <input type="number" name="maxPrice" placeholder="최대 금액" min="0" value="${param.maxPrice}">
                     </div>
 
+                    <!-- 학년(대상) -->
+                    <div class="filter-row">
+                        <label>난이도:</label>
+                        <c:forEach var="target" items="${targets}">
+                            <label>
+                                <input type="checkbox" name="targets" value="${target}"
+                                       <c:if test="${fn:contains(selectedTargets, target.name())}">checked</c:if>>
+                                    ${target.value}
+                            </label>
+                        </c:forEach>
+                    </div>
+
                     <!-- 난이도 -->
                     <div class="filter-row">
                         <label>난이도:</label>
@@ -214,10 +226,15 @@
             </c:forEach>
         };
 
-
         const DIFFICULTY_MAP = {
             <c:forEach var="difficulty" items="${difficulties}" varStatus="status">
                 "${difficulty}": "${difficulty.value}"${!status.last ? ',' : ''}
+            </c:forEach>
+        };
+
+        const TARGET_MAP = {
+            <c:forEach var="target" items="${targets}" varStatus="status">
+            "${target}": "${target.value}"${!status.last ? ',' : ''}
             </c:forEach>
         };
 
@@ -325,6 +342,7 @@
                 <label class="search-lecture-teacher">\${lecture.totalDuration}</label>
                 <label class="search-lecture-teacher">\${lecture.averageRate}</label>
                 <label class="search-lecture-teacher">\${lecture.likeCount}</label>
+                <label class="search-lecture-teacher">\${TARGET_MAP[lecture.lectureTarget]}</label>
             </div>
         `;
 
@@ -335,12 +353,6 @@
 
             return item;
         }
-
-
-
-
-
-
 
     });
 

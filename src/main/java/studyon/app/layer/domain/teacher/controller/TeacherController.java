@@ -156,4 +156,12 @@ public class TeacherController {
         model.addAttribute("profile", profile);
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture_qna_detail");
     }
+
+    @GetMapping("/management/qna/updateQna")
+    public String qnaUpdate(Model model, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        log.info("🎓 [강의관리 페이지 진입] memberId={}, nickname={}", profile.getMemberId(), profile.getNickname());
+        model.addAttribute("profile", profile);
+        return ViewUtils.returnView(model, View.TEACHER, "management_lecture_qna_update");
+    }
 }

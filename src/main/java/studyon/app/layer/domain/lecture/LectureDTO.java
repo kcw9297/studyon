@@ -3,8 +3,8 @@ package studyon.app.layer.domain.lecture;
 
 import lombok.*;
 
+import studyon.app.layer.domain.file.File;
 import studyon.app.common.enums.*;
-import studyon.app.common.enums.search.LectureSort;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;
@@ -32,9 +32,14 @@ public class LectureDTO {
         private List<String> subjects;
         private List<String> subjectDetails;
         private List<String> difficulties;
+        private List<String> targets;
         private String sort;
         private Long minPrice;
         private Long maxPrice;
+
+        // 관리자 검색 시 사용하는 값
+        private List<String> onSales;
+        private List<String> statuses;
 
         // 서버 제공 값
         private Long memberId;
@@ -52,6 +57,9 @@ public class LectureDTO {
             this.subjects = new ArrayList<>();
             this.subjectDetails = new ArrayList<>();
             this.difficulties = new ArrayList<>();
+            this.targets = new ArrayList<>();
+            this.onSales = new ArrayList<>();
+            this.statuses = new ArrayList<>();
         }
 
         // 검색을 요청하는 대상 설정
@@ -83,6 +91,7 @@ public class LectureDTO {
         private Double averageRate;
         private Long likeCount;
         private LocalDateTime publishDate;
+        private LectureTarget lectureTarget;
         private Subject subject;
         private SubjectDetail subjectDetail;
         private List<LectureIndexDTO.Read> lectureIndexes;

@@ -1,6 +1,5 @@
 package studyon.app.layer.domain.lecture.controller;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -11,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.*;
-import studyon.app.common.enums.search.LectureKeywordFilter;
-import studyon.app.common.enums.search.LectureSort;
+import studyon.app.common.enums.filter.LectureKeyword;
+import studyon.app.common.enums.filter.LectureSort;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
@@ -61,13 +60,15 @@ public class LectureController {
         model.addAttribute("subjects", Subject.values());
         model.addAttribute("subjectDetails", SubjectDetail.values());
         model.addAttribute("difficulties", Difficulty.values());
-        model.addAttribute("filters", LectureKeywordFilter.values());
+        model.addAttribute("filters", LectureKeyword.values());
         model.addAttribute("sorts", LectureSort.values());
+        model.addAttribute("targets", LectureTarget.values());
 
         // [2] 검색된 파라미터 중, 선택된 파라미터 삽입
         model.addAttribute("selectedSubjects", rq.getSubjects());
         model.addAttribute("selectedSubjectDetails", rq.getSubjectDetails());
         model.addAttribute("selectedDifficulties", rq.getDifficulties());
+        model.addAttribute("selectedTargets", rq.getTargets());
 
         // [3] view 반환 (검색 상세는 비동기로 처리)
         return ViewUtils.returnView(model, View.LECTURE, "lecture_list");

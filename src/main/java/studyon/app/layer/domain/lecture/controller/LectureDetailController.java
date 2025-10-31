@@ -39,10 +39,8 @@ public class LectureDetailController {
         Map<Integer, Double> ratingPercent = lectureService.getRatingPercentage(lectureId);
 
         /* 알고리즘 - 리스트 */
-        LectureDTO.Search lectureSearch = LectureDTO.Search.builder().subject(lecture.getSubject()).build();
-        TeacherDTO.Search teacherSearch = TeacherDTO.Search.builder().teacherId(lecture.getTeacher().getTeacherId()).build();
-        List<LectureDTO.Read> recommendedBySubject = lectureService.readBestLectures(lectureSearch.getSubject(), 4);
-        List<LectureDTO.Read> recommendedByTeacher = lectureService.readBestLectures(teacherSearch.getTeacherId(), 4);
+        List<LectureDTO.Read> recommendedBySubject = lectureService.readBestLecturesBySubject(lecture.getSubject().name(), 4);
+        List<LectureDTO.Read> recommendedByTeacher = lectureService.readBestLecturesByTeacher(lecture.getTeacher().getTeacherId(), 4);
 
         /* 알고리즘 계산(강사&과목) */
         Map<Long, Long> reviewCountMap = new HashMap<>();

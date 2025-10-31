@@ -256,6 +256,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (payment.getRefundedAt().plusMonths(1).isAfter(LocalDateTime.now()))
             throw new BusinessLogicException(AppStatus.PAYMENT_REFUND_NOT_AVAILABLE);
 
+        payment.refund();
 
         // [3] 환불 수행
         paymentManager.refundAll(payment.getPaymentUid(), refundReason);

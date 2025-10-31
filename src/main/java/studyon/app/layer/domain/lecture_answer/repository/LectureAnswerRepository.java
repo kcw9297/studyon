@@ -1,7 +1,10 @@
 package studyon.app.layer.domain.lecture_answer.repository;
 
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import studyon.app.layer.domain.lecture_answer.LectureAnswer;
 
 import java.util.Optional;
@@ -13,8 +16,5 @@ import java.util.Optional;
  */
 
 public interface LectureAnswerRepository extends JpaRepository<LectureAnswer, Long> {
-
-    // ✅ 특정 질문(lectureQuestionId)에 대한 첫 번째 답변 조회
-    Optional<LectureAnswer> findFirstByLectureQuestion_LectureQuestionId(Long lectureQuestionId);
 }
 
