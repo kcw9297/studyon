@@ -39,8 +39,9 @@ import java.util.stream.Collectors;
 
 /**
  * 강의 서비스 인터페이스 구현체
- * @version 1.2
+ *
  * @author phj03
+ * @version 1.2
  */
 
 @Service
@@ -192,7 +193,7 @@ public class LectureServiceImpl implements LectureService {
     public Map<Integer, Double> getRatingPercentage(Long lectureId) {
         // 1. 총 리뷰 수
         long totalReviews = lectureReviewRepository.countByLecture_LectureId(lectureId);
-        if(totalReviews == 0) return Map.of(5,0.0,4,0.0,3,0.0,2,0.0,1,0.0);
+        if (totalReviews == 0) return Map.of(5, 0.0, 4, 0.0, 3, 0.0, 2, 0.0, 1, 0.0);
 
         // 2. 각 평점별 리뷰 개수
         Map<Integer, Long> countMap = Map.of(
@@ -208,7 +209,6 @@ public class LectureServiceImpl implements LectureService {
         countMap.forEach((star, count) -> percentMap.put(star, (count * 100.0) / totalReviews));
         return percentMap;
     }
-
 
 
     @Override
@@ -375,5 +375,27 @@ public class LectureServiceImpl implements LectureService {
                 .findById(lectureId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
                 .reject(rejectReason);
+    }
+
+
+    @Override
+    public Map<String, Long> readLectureCountBySubject() {
+        return lectureRepository.findLectureCountBySubject().stream()
+                .collect(Collectors.toMap(
+                        row -> row.get("subject").toString(),
+                        row -> (Long) row.get("cnt")));
+    }
+
+    /**
+     * 난이도별 강의 수 조회
+     * 관리자 통계용 (doughnut chart)
+     */
+    @Override
+    public Map<String, Long> readLectureCountByDifficulty() {
+        return lectureRepository.findLectureCountByDifficulty().stream()
+                .collect(Collectors.toMap(
+                        row -> Difficulty.valueOf(row.get("difficulty").toString()).getValue(),
+                        row -> (Long) row.get("cnt")
+                ));
     }
 }
