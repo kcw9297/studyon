@@ -19,6 +19,7 @@
         l.average_rate,
         l.like_count,
         l.publish_date,
+        l.lecture_target,
         l.subject,
         l.subject_detail
         <if test="rq.role neq 'ROLE_STUDENT'">
@@ -29,21 +30,32 @@
         LEFT JOIN member m ON t.member_id = m.member_id
         LEFT JOIN files f ON l.thumbnail_file_id = f.file_id
         <where>
+
+            <!-- 검색 키워드 & 필터 -->
             <if test="rq.keyword neq null and rq.keyword neq ''">
                 <choose>
                     <when test="rq.filter neq null and rq.filter neq ''">
                         <if test="rq.filter eq 'TITLE'">
                             AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
                         </if>
+                        <if test="rq.filter eq 'CONTENT'">
+                            AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
+                        </if>
                         <if test="rq.filter eq 'TEACHER'">
                             AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                         </if>
                     </when>
                      <otherwise>
-                         AND (l.title LIKE CONCAT('%', #{rq.keyword}, '%') OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%'))
+                         AND (
+                            l.title LIKE CONCAT('%', #{rq.keyword}, '%') OR
+                            l.description LIKE CONCAT('%', #{rq.keyword}, '%') OR
+                            m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                         )
                      </otherwise>
                 </choose>
             </if>
+
+            <!-- 최소/최대 가격 -->
             <if test="rq.minPrice neq null and rq.minPrice neq 0">
                 AND l.price >= ${rq.minPrice}
             </if>
@@ -51,31 +63,84 @@
                 AND l.price &lt;= ${rq.maxPrice}
             </if>
 
+            <!-- 과목 -->
             <if test="rq.subjects neq null and rq.subjects.size() > 0">
                 AND l.subject IN
                 <foreach collection="rq.subjects" item="subject" open="(" close=")" separator=",">
                     #{subject}
                 </foreach>
             </if>
+
+            <!-- 세부 과목 -->
             <if test="rq.subjectDetails neq null and rq.subjectDetails.size() > 0">
                 AND l.subject_detail IN
                 <foreach collection="rq.subjectDetails" item="detail" open="(" close=")" separator=",">
                     #{detail}
                 </foreach>
             </if>
+
+            <!-- 대상(학년) -->
+            <if test="rq.targets neq null and rq.targets.size() > 0">
+                AND l.lecture_target IN
+                <foreach collection="rq.targets" item="target" open="(" close=")" separator=",">
+                    #{target}
+                </foreach>
+            </if>
+
+            <!-- 난이도 -->
             <if test="rq.difficulties neq null and rq.difficulties.size() > 0">
                 AND l.difficulty IN
                 <foreach collection="rq.difficulties" item="difficulty" open="(" close=")" separator=",">
                     #{difficulty}
                 </foreach>
             </if>
-            <if test="rq.role eq 'ROLE_TEACHER'">
-                AND m.member_id = #{rq.memberId}
+
+            <!-- 판매 상태 -->
+            <if test="rq.onSales neq null and rq.onSales.size() > 0">
+                <choose>
+                    <!-- 둘 다 있는 경우: 조건 없음 -->
+                    <when test="rq.onSales.contains('ON_SALE') and rq.onSales.contains('NOT_SALE')">
+                    </when>
+                    <when test="rq.onSales.contains('ON_SALE')">
+                        AND l.on_sale IS TRUE
+                    </when>
+                    <when test="rq.onSales.contains('NOT_SALE')">
+                        AND l.on_sale IS FALSE
+                    </when>
+                </choose>
             </if>
-            <if test="rq.role eq 'ROLE_STUDENT'">
-                AND l.on_sale IS TRUE
-                AND l.lecture_register_status = 'REGISTERED'
-            </if>
+
+            <!-- 권한에 따른 추가 필터 (등록 상태 등) -->
+            <choose>
+                <!-- 관리자 -->
+                <when test="rq.role eq 'ROLE_ADMIN'">
+
+                    <!-- 판매 상태 -->
+                    <if test="rq.statuses neq null and rq.statuses.size() > 0">
+                        AND l.lecture_register_status IN
+                        <foreach collection="rq.statuses" item="status" open="(" close=")" separator=",">
+                            #{status}
+                        </foreach>
+                    </if>
+                </when>
+
+                <!-- 선생님 -->
+                <when test="rq.role eq 'ROLE_TEACHER'">
+                    AND m.member_id = #{rq.memberId}
+                </when>
+
+                <!-- 학생 -->
+                <when test="rq.role eq 'ROLE_STUDENT'">
+                    AND l.on_sale IS TRUE
+                    AND l.lecture_register_status = 'REGISTERED'
+                </when>
+
+                <!-- 그 외 -->
+                <otherwise>
+                    AND l.on_sale IS TRUE
+                    AND l.lecture_register_status = 'REGISTERED'
+                </otherwise>
+            </choose>
         </where>
         ORDER BY
         <choose>
@@ -86,7 +151,7 @@
                 l.average_rate DESC
             </when>
             <when test="rq.sort eq 'POPULAR'">
-                l.total_student DESC
+                l.total_students DESC
             </when>
             <otherwise>
                 l.cdate DESC
@@ -102,20 +167,32 @@
         LEFT JOIN teacher t ON l.teacher_id = t.teacher_id
         LEFT JOIN member m ON t.member_id = m.member_id
         <where>
-            <if test="rq.filter neq null and rq.filter neq '' and rq.keyword neq null and rq.keyword neq ''">
-                <if test="rq.filter eq 'TITLE'">
-                    AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
-                </if>
-                <if test="rq.filter eq 'CONTENT'">
-                    AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
-                </if>
-                <if test="rq.filter eq 'TEACHER'">
-                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
-                </if>
-                <if test="rq.filter eq 'TEACHER'">
-                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
-                </if>
+
+            <!-- 검색 키워드 & 필터 -->
+            <if test="rq.keyword neq null and rq.keyword neq ''">
+                <choose>
+                    <when test="rq.filter neq null and rq.filter neq ''">
+                        <if test="rq.filter eq 'TITLE'">
+                            AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+                        </if>
+                        <if test="rq.filter eq 'CONTENT'">
+                            AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
+                        </if>
+                        <if test="rq.filter eq 'TEACHER'">
+                            AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                        </if>
+                    </when>
+                    <otherwise>
+                        AND (
+                        l.title LIKE CONCAT('%', #{rq.keyword}, '%') OR
+                        l.description LIKE CONCAT('%', #{rq.keyword}, '%') OR
+                        m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                        )
+                    </otherwise>
+                </choose>
             </if>
+
+            <!-- 최소/최대 가격 -->
             <if test="rq.minPrice neq null and rq.minPrice neq 0">
                 AND l.price >= ${rq.minPrice}
             </if>
@@ -123,31 +200,84 @@
                 AND l.price &lt;= ${rq.maxPrice}
             </if>
 
+            <!-- 과목 -->
             <if test="rq.subjects neq null and rq.subjects.size() > 0">
                 AND l.subject IN
                 <foreach collection="rq.subjects" item="subject" open="(" close=")" separator=",">
                     #{subject}
                 </foreach>
             </if>
+
+            <!-- 세부 과목 -->
             <if test="rq.subjectDetails neq null and rq.subjectDetails.size() > 0">
                 AND l.subject_detail IN
                 <foreach collection="rq.subjectDetails" item="detail" open="(" close=")" separator=",">
                     #{detail}
                 </foreach>
             </if>
+
+            <!-- 대상(학년) -->
+            <if test="rq.targets neq null and rq.targets.size() > 0">
+                AND l.lecture_target IN
+                <foreach collection="rq.targets" item="target" open="(" close=")" separator=",">
+                    #{target}
+                </foreach>
+            </if>
+
+            <!-- 난이도 -->
             <if test="rq.difficulties neq null and rq.difficulties.size() > 0">
                 AND l.difficulty IN
                 <foreach collection="rq.difficulties" item="difficulty" open="(" close=")" separator=",">
                     #{difficulty}
                 </foreach>
             </if>
-            <if test="rq.role eq 'ROLE_TEACHER'">
-                AND m.member_id = #{rq.memberId}
+
+            <!-- 판매 상태 -->
+            <if test="rq.onSales neq null and rq.onSales.size() > 0">
+                <choose>
+                    <!-- 둘 다 있는 경우: 조건 없음 -->
+                    <when test="rq.onSales.contains('ON_SALE') and rq.onSales.contains('NOT_SALE')">
+                    </when>
+                    <when test="rq.onSales.contains('ON_SALE')">
+                        AND l.on_sale IS TRUE
+                    </when>
+                    <when test="rq.onSales.contains('NOT_SALE')">
+                        AND l.on_sale IS FALSE
+                    </when>
+                </choose>
             </if>
-            <if test="rq.role eq 'ROLE_STUDENT'">
-                AND l.on_sale IS TRUE
-                AND l.lecture_register_status = 'REGISTERED'
-            </if>
+
+            <!-- 권한에 따른 추가 필터 (등록 상태 등) -->
+            <choose>
+                <!-- 관리자 -->
+                <when test="rq.role eq 'ROLE_ADMIN'">
+
+                    <!-- 판매 상태 -->
+                    <if test="rq.statuses neq null and rq.statuses.size() > 0">
+                        AND l.lecture_register_status IN
+                        <foreach collection="rq.statuses" item="status" open="(" close=")" separator=",">
+                            #{status}
+                        </foreach>
+                    </if>
+                </when>
+
+                <!-- 선생님 -->
+                <when test="rq.role eq 'ROLE_TEACHER'">
+                    AND m.member_id = #{rq.memberId}
+                </when>
+
+                <!-- 학생 -->
+                <when test="rq.role eq 'ROLE_STUDENT'">
+                    AND l.on_sale IS TRUE
+                    AND l.lecture_register_status = 'REGISTERED'
+                </when>
+
+                <!-- 그 외 -->
+                <otherwise>
+                    AND l.on_sale IS TRUE
+                    AND l.lecture_register_status = 'REGISTERED'
+                </otherwise>
+            </choose>
         </where>
     </select>
 </mapper>

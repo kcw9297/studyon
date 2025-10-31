@@ -64,7 +64,9 @@
             <div class="qna-item">
                 <div class="qna-item-text-question">오리엔테이션 영상에서 사용된 프로그램 이름이 궁금합니다.</div>
                 <div class="qna-answer">
+                    <%--
                     <label class="qna-item-teachername">👩‍🏫 강사:</label>
+                    --%>
                     <label class="qna-item-answer">파워포인트 2021 버전입니다.</label>
                 </div>
             </div>

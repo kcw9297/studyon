@@ -74,9 +74,9 @@ public class LectureQuestion extends BaseEntity {
         this.lectureIndex = lectureIndex;
     }
 
-/*
-    강의 질문 수정 관련 로직
- */
+    /*
+        강의 질문 수정 관련 로직
+     */
 
     public void updateQuestion(String title, String content, Boolean isSolved) {
         this.title = title;
@@ -87,4 +87,5 @@ public class LectureQuestion extends BaseEntity {
     public void setLectureAnswer(LectureAnswer lectureAnswer) {
         this.lectureAnswer = lectureAnswer;
     }
+
 }

@@ -278,4 +278,101 @@ public class LectureServiceImpl implements LectureService {
         return lecture.getThumbnailFile().getFilePath();
     }
 
+    @Override
+    public List<LectureDTO.Read> readBestLecturesBySubject(String subject, int count) {
+        Pageable pageable = PageRequest.of(0, count);
+
+        return lectureRepository
+                .findBestLecturesBySubjectAlgorithm(Subject.valueOf(subject), LectureRegisterStatus.REGISTERED, pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO) // DTO 내부에서 teacher.member.profileImage 유지
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LectureDTO.Read> readBestLecturesByTeacher(Long teacherId, int count) {
+        Pageable pageable = PageRequest.of(0, count);
+
+        return lectureRepository
+                .findBestLecturesByTeacherAlgorithm(teacherId, LectureRegisterStatus.REGISTERED, pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO) // DTO 내부에서 teacher.member.profileImage 유지
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public void startSale(Long lectureId) {
+
+        // [1] 강의 정보 조회
+        Lecture lecture = lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        // [2] 현재 강의상태 검증
+        if (Objects.equals(lecture.getLectureRegisterStatus(), LectureRegisterStatus.REJECTED))
+            throw new BusinessLogicException(AppStatus.LECTURE_REJECT_NOW);
+
+        if (!Objects.equals(lecture.getLectureRegisterStatus(), LectureRegisterStatus.REGISTERED))
+            throw new BusinessLogicException(AppStatus.LECTURE_SALE_START_NOT_AVAILABLE);
+
+        // [3] 판매 상태로 변경
+        lecture.startSale();
+    }
+
+
+    @Override
+    public void stopSale(Long lectureId) {
+
+        lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .stopSale();
+    }
+
+
+    @Override
+    public void pending(Long lectureId) {
+
+        // [1] 강의 정보 조회
+        Lecture lecture = lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        // [2] 상태 검증 (의도하지 않은 방향으로 상태 갱신이 되는 경우)
+        if (!lecture.getLectureRegisterStatus().equals(LectureRegisterStatus.UNREGISTERED))
+            throw new BusinessLogicException(AppStatus.LECTURE_STATE_NOT_EDITABLE);
+
+        // [3] 상태갱신 수행
+        lecture.pending();
+    }
+
+    @Override
+    public void register(Long lectureId) {
+
+        // [1] 강의 정보 조회
+        Lecture lecture = lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        // [2] 상태 검증 (의도하지 않은 방향으로 상태 갱신이 되는 경우)
+        // 변경이 가능한 현재 상태
+        List<LectureRegisterStatus> available = List.of(LectureRegisterStatus.PENDING, LectureRegisterStatus.REJECTED);
+
+        // 리스트 외의 상태에서 등록 요청을 하는 경우 검증
+        if (available.contains(lecture.getLectureRegisterStatus()))
+            throw new BusinessLogicException(AppStatus.LECTURE_STATE_NOT_EDITABLE);
+
+        // [3] 상태갱신 수행
+        lecture.register();
+    }
+
+    @Override
+    public void reject(Long lectureId, String rejectReason) {
+
+        Lecture lecture = lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+    }
+
 }

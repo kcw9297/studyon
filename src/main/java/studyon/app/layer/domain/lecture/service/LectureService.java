@@ -12,7 +12,8 @@ import java.util.*;
 /*
  * [수정 이력]
  *  ▶ ver 1.0 (2025-10-17) : khj00 최초 작성
- *  ▶ ver 1.1 (2025-10-27) : phj : 리뷰 퍼센트 계산 - 강의페이지 추가
+ *  ▶ ver 1.1 (2025-10-27) : phj03 : 리뷰 퍼센트 계산 - 강의페이지 추가
+ *  ▶ ver 1.2 (2025-10-31) : kcw97 : 강의 상태변경 메소드 추가
  */
 
 /**
@@ -91,4 +92,17 @@ public interface LectureService {
     /* 리뷰 퍼센트 계산 - 강의페이지 */
     Map<Integer, Double> getRatingPercentage(Long lectureId);
 
+    /* 알고리즘용 특정 과목 Best 리스트 */
+    List<LectureDTO.Read> readBestLecturesBySubject(String subject, int count);
+    List<LectureDTO.Read> readBestLecturesByTeacher(Long teacherId, int count);
+
+    void startSale(Long lectureId);
+
+    void stopSale(Long lectureId);
+
+    void pending(Long lectureId);
+
+    void register(Long lectureId);
+
+    void reject(Long lectureId, String rejectReason);
 }

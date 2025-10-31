@@ -1,4 +1,4 @@
-package studyon.app.common.enums.search;
+package studyon.app.common.enums.filter;
 
 import lombok.Getter;
 
@@ -18,16 +18,17 @@ import java.util.List;
  */
 
 @Getter
-public enum LectureKeywordFilter {
+public enum LectureKeyword {
 
     TITLE("강의명"),
+    CONTENT("내용"),
     TEACHER("선생님");
 
     private final String value;
 
-    LectureKeywordFilter(String value) {this.value = value;}
+    LectureKeyword(String value) {this.value = value;}
 
-    public static List<LectureKeywordFilter> get() {
-        return Arrays.asList(LectureKeywordFilter.values());
+    public static List<LectureKeyword> get() {
+        return Arrays.asList(LectureKeyword.values());
     }
 }

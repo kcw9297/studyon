@@ -1,4 +1,4 @@
-package studyon.app.common.enums.search;
+package studyon.app.common.enums.filter;
 
 import lombok.Getter;
 

@@ -21,12 +21,13 @@ import java.time.LocalDateTime;
  *  ▶ ver 1.2 (2025-10-24) : khj00 LectureRegisterStatus 추가
  *  ▶ ver 1.3 (2025-10-28) : phj03 좋아요 카운트 기능 추가
  *  ▶ ver 1.4 (2025-10-28) : kcw97 @OneToMany 제거 및 엔티티 변수 위치 조정
- *  ▶ ver 1.5 (2025-10-29) : Subject detail 추가
+ *  ▶ ver 1.5 (2025-10-29) : phj03 Subject detail 추가
+ *  ▶ ver 1.6 (2025-10-31) : kcw97 rejectReason 환불 사유 컬럼 추가 및 상태변경 메소드 추가
  */
 
 /**
  * 강의 엔티티 클래스
- * @version 1.4
+ * @version 1.6
  * @author khj00
  */
 
@@ -98,6 +99,8 @@ public class Lecture extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LectureRegisterStatus lectureRegisterStatus;
+    
+    private String rejectReason;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -149,5 +152,30 @@ public class Lecture extends BaseEntity {
 
     public void updateLikeCount(Long likeCount) {
         this.likeCount = likeCount;
+    }
+
+    
+    /* 상태 변경 */
+
+    public void startSale() {
+        this.onSale = true;
+    }
+
+    public void stopSale() {
+        this.onSale = false;
+    }
+
+    public void pending() {
+        this.lectureRegisterStatus = LectureRegisterStatus.PENDING;
+    }
+    
+    public void reject(String rejectReason) {
+        this.lectureRegisterStatus = LectureRegisterStatus.REJECTED;
+        this.rejectReason = rejectReason;
+    }
+
+    public void register() {
+        this.lectureRegisterStatus = LectureRegisterStatus.REGISTERED;
+        this.rejectReason = "";
     }
 }

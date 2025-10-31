@@ -36,6 +36,7 @@ public class LectureAnswer extends BaseEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private LectureAnswer parent;
@@ -45,17 +46,17 @@ public class LectureAnswer extends BaseEntity {
     @JoinColumn(name = "lecture_question_id", nullable = false)
     private LectureQuestion lectureQuestion;
 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
 
 
 
 
     @Builder
-    public LectureAnswer(String content, LectureQuestion lectureQuestion, Member member) {
+    public LectureAnswer(String content, Member member) {
         this.content = content;
-        this.lectureQuestion = lectureQuestion;
         this.member = member;
     }
 

@@ -163,5 +163,38 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
         LEFT JOIN FETCH t.member m
         WHERE l.lectureId = :lectureId AND l.onSale = :onSale
         """)
+    Optional<Lecture> findWithThumbnailFileByLectureIdAndOnSale(Long lectureId, Boolean onSale);
+
+    /* 알고리즘용 Best 리스트 */
+    @Query("""
+        SELECT l FROM Lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH t.member m
+        LEFT JOIN FETCH l.thumbnailFile tf
+        LEFT JOIN FETCH t.member.profileImage pi
+        WHERE l.subject = :subject
+          AND l.lectureRegisterStatus = :status
+        ORDER BY l.totalStudents DESC
+    """)
+    List<Lecture> findBestLecturesBySubjectAlgorithm(@Param("subject") Subject subject,
+                                            @Param("status") LectureRegisterStatus status,
+                                            Pageable pageable);
+
+
+    @Query("""
+        SELECT l FROM Lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH t.member m
+        LEFT JOIN FETCH l.thumbnailFile tf
+        LEFT JOIN FETCH t.member.profileImage pi
+        WHERE t.teacherId = :teacherId
+            AND l.lectureRegisterStatus = :status
+        ORDER BY l.totalStudents DESC
+        """)
+    List<Lecture> findBestLecturesByTeacherAlgorithm(@Param("teacherId") Long teacherId,
+                                                              @Param("status") LectureRegisterStatus status,
+                                                              Pageable pageable);
+
+
     Optional<Lecture> findAllFetchByLectureIdAndOnSale(Long lectureId, Boolean onSale);
 }

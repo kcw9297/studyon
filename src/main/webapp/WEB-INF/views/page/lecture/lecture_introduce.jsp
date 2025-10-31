@@ -119,15 +119,15 @@
                 </div>
                 <div class="reviews-statistics">
 
-                <c:forEach var="entry" items="${ratingPercent}" varStatus="loop">
-                <div class="reviews-item">
-                    <div class="reviews-star">
-                        <c:forEach var="i" begin="1" end="${entry.key}">★</c:forEach>
+                <c:forEach var="i" begin="1" end="5">
+                    <div class="reviews-item">
+                        <div class="reviews-star">
+                            <c:forEach var="j" begin="1" end="${i}">★</c:forEach>
+                        </div>
+                        <div class="reviews-percent">
+                            <fmt:formatNumber value="${ratingPercent[i] != null ? ratingPercent[i] : 0}" pattern="0"/>%
+                        </div>
                     </div>
-                    <div class="reviews-percent">
-                        <fmt:formatNumber value="${entry.value}" pattern="0"/>%
-                    </div>
-                </div>
                 </c:forEach>
 
                 </div>
