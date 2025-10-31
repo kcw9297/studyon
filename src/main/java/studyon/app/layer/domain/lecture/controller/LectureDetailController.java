@@ -14,7 +14,6 @@ import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture.service.LectureService;
 import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
-import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.*;
 

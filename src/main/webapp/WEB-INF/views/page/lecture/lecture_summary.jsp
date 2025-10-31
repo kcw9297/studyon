@@ -35,13 +35,15 @@
             </div>
         </div>
         <div class="summary-thumbnail">
-            <c:choose>
-                <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
-                </c:when>
-                <c:otherwise>
-                    <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
-                </c:otherwise>
-            </c:choose>
+
+        <c:choose>
+            <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
+            </c:when>
+            <c:otherwise>
+                <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
+            </c:otherwise>
+        </c:choose>
+
         </div>
     </div>
     <div class="summary-bottom">
