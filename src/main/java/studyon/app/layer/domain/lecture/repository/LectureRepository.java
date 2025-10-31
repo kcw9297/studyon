@@ -90,7 +90,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
         SELECT l FROM Lecture l
         JOIN FETCH l.teacher t
         JOIN FETCH t.member m
-        WHERE t.subject = :subject
+        WHERE l.subject = :subject
             AND l.lectureRegisterStatus = :status
         ORDER BY l.totalStudents DESC
         """)
@@ -126,7 +126,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
         SELECT l FROM Lecture l
         JOIN FETCH l.teacher t
         JOIN FETCH t.member m
-        WHERE t.subject = :subject
+        WHERE l.subject = :subject
             AND l.lectureRegisterStatus = :status
         ORDER BY l.publishDate DESC
         """)

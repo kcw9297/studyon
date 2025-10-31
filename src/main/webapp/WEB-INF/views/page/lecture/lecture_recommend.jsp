@@ -44,7 +44,138 @@
     </div>
 </div>
 
-<script src="<c:url value='/js/page/lecture/recent_lecture.js'/>"></script>
-<script src="<c:url value='/js/page/lecture/best_lecture.js'/>"></script>
+<!-- best_lecture.js -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const lecturePage = document.getElementById("lecturePage");
+        const subjectFromJSP = lecturePage ? lecturePage.dataset.subject : "";
+        const count = 4;
+
+        fetch("/api/lectures/best?subject=" + subjectFromJSP + "&count=" + count, {
+            method: "GET",
+            headers: { "X-Requested-From": window.location.pathname + window.location.search }
+        })
+            .then(function(res) { return res.json(); })
+            .then(function(json) {
+                const parsedData = json.data;
+                console.log("✅ 최근 인기 강의 데이터:", parsedData);
+                renderBestLectures(parsedData);
+            })
+            .catch(function(err) {
+                console.error("강의 추천 페이지 주간 인기 강의 조회 실패 :", err);
+            });
+
+        function renderBestLectures(lectures) {
+            const titles = document.querySelectorAll(".recomment-lecture-title");
+            let container = null;
+
+            titles.forEach(function(title) {
+                if (title.textContent.trim().indexOf("주간 인기/추천 강의") !== -1) {
+                    container = title.nextElementSibling;
+                }
+            });
+
+            if (!container) {
+                console.error("강의 추천 페이지 인기 강의 컨테이너 조회 실패");
+                return;
+            }
+
+            container.innerHTML = "";
+
+            if (!lectures || lectures.length === 0) {
+                container.innerHTML = "<p>인기 강의가 없습니다.</p>";
+                return;
+            }
+
+            lectures.forEach(function(bestLecture) {
+                const item = document.createElement("div");
+                const detailUrl = "/lecture/detail/" + bestLecture.lectureId;
+
+                item.classList.add("recent-lecture-item");
+                item.innerHTML =
+                    "<a href='" + detailUrl + "'>" +
+                    "<img src='/img/png/sample1.png' alt='강의이미지' class='recent-lecture-thumbnail'>" +
+                    "<div class='lecture-info'>" +
+                    "<p class='lecture-title'>" + bestLecture.title + "</p>" +
+                    "<p class='lecture-info-text'>" + bestLecture.teacherNickname + "</p>" +
+                    "<p class='lecture-info-text'>₩" + Number(bestLecture.price).toLocaleString() + "</p>" +
+                    "<p class='lecture-info-text'>🧸 " + (bestLecture.totalStudents >= 10 ? "10+" : bestLecture.totalStudents) + "</p>" +
+                    "</div>" +
+                    "</a>";
+
+                container.appendChild(item);
+            });
+        }
+    });
+</script>
 <script src="<c:url value='/js/page/lecture/recent_reviews.js'/>"></script>
+<!-- recent_lecture.js -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const count = 4;
+        const lecturePage = document.getElementById("lecturePage");
+        const subjectFromJSP = lecturePage ? lecturePage.dataset.subject : "";
+
+        fetch("/api/lectures/recent?subject=" + subjectFromJSP + "&count=" + count, {
+            method: "GET",
+            headers: { "X-Requested-From": window.location.pathname + window.location.search }
+        })
+            .then(function(res) {
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                return res.json();
+            })
+            .then(function(json) {
+                const parsedData = json.data;
+                console.log("✅ 최근 강의 데이터:", parsedData);
+                renderRecentLectures(parsedData);
+            })
+            .catch(function(err) {
+                console.error("최근 강의 데이터 요청 실패:", err);
+            });
+
+        // ✅ DOM 렌더링 함수
+        function renderRecentLectures(lectures) {
+            const titles = document.querySelectorAll(".recomment-lecture-title");
+            let container = null;
+
+            titles.forEach(function(title) {
+                if (title.textContent.trim().indexOf("요새 뜨는 강의") !== -1) {
+                    container = title.nextElementSibling;
+                }
+            });
+
+            if (!container) {
+                console.error("최근 강의 조회 중 문제 발생");
+                return;
+            }
+
+            container.innerHTML = "";
+
+            if (!lectures || lectures.length === 0) {
+                container.innerHTML = "<p class='no-lecture'>최근 등록된 강의가 없습니다.</p>";
+                return;
+            }
+
+            lectures.forEach(function(recentLecture) {
+                const item = document.createElement("div");
+                const detailUrl = "/lecture/detail/" + recentLecture.lectureId;
+                item.classList.add("recent-lecture-item");
+
+                item.innerHTML =
+                    "<a href='" + detailUrl + "'>" +
+                    "<img src='/img/png/sample1.png' alt='강의이미지' class='recent-lecture-thumbnail'>" +
+                    "<div class='lecture-info'>" +
+                    "<p class='lecture-title'>" + recentLecture.title + "</p>" +
+                    "<p class='lecture-info-text'>" + recentLecture.teacherNickname + "</p>" +
+                    "<p class='lecture-info-text'>₩" + Number(recentLecture.price).toLocaleString() + "</p>" +
+                    "<p class='lecture-info-text'>⭐ " + (recentLecture.averageRate != null ? recentLecture.averageRate : "0.0") +
+                    " 🧸 " + (recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents) + "</p>" +
+                    "</div>" +
+                    "</a>";
+
+                container.appendChild(item);
+            });
+        }
+    });
+</script>
 <script src="<c:url value='/js/page/lecture/lecture_recommend.js'/>"></script>

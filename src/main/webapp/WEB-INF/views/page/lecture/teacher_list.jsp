@@ -24,7 +24,5 @@
 
 
 <%-- Local Script --%>
-<!-- teacher_list.js -->
-<script src="<c:url value='/js/page/lecture/teacher_list.js'/>"></script>
 <!-- teacher_list_by_subject.js -->
 <script src="<c:url value='/js/page/teacher/teacher_list_by_subject.js'/>"></script>
