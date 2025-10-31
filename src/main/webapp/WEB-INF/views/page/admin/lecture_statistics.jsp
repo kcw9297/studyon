@@ -33,6 +33,7 @@
     .admin-page-title {
         text-align: center;
         align-content: center;
+        padding: 10px 20px;
     }
 
     .chart-card {
