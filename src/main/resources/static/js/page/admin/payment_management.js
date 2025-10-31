@@ -171,6 +171,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 : `<span class="status-paid">결제완료</span>`;
 
             const tr = document.createElement("tr");
+
+            // 환불 버튼 상태 제어 (이미 환불된 경우 비활성화)
+            const refundButton = p.isRefunded
+                ? `<button class="btn-refund" disabled style="opacity:0.5; cursor:not-allowed;">환불완료</button>`
+                : `<button class="btn-refund" data-id="${p.paymentId}">환불</button>`;
+
             tr.innerHTML = `
                 <td>${(currentPage - 1) * pageSize + idx + 1}</td>
                 <td>${p.paymentUid || "-"}</td>
@@ -181,8 +187,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${refundStatus}</td>
                 <td>
                     <a href="${contextPath}/admin/payment/detail/${p.paymentId}" 
-                       class="management-button">상세보기</a>
+                       class="management-button">(구현예정)</a>
                 </td>
+                <td>${refundButton}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -320,5 +327,57 @@ document.addEventListener("DOMContentLoaded", () => {
             renderPdf();
         });
     }
+    // 환불 버튼 클릭 이벤트 등록
+    let currentRefundPaymentId = null;
+    // [1] 환불 버튼 클릭 시 모달 열기
+    tbody.addEventListener("click", (e) => {
+        if (e.target.classList.contains("btn-refund")) {
+            const paymentId = e.target.dataset.id;
+            currentRefundPaymentId = paymentId;
+            document.getElementById("refundModal").style.display = "flex";
+        }
+    });
 
+    // [2] 취소 버튼
+    document.getElementById("cancelRefundBtn").addEventListener("click", () => {
+        document.getElementById("refundModal").style.display = "none";
+        document.getElementById("refundReasonInput").value = "";
+        currentRefundPaymentId = null;
+    });
+
+    // [3] 확인 버튼 (PATCH 요청)
+    document.getElementById("confirmRefundBtn").addEventListener("click", async () => {
+        const reason = document.getElementById("refundReasonInput").value.trim();
+        if (!reason) return alert("환불 사유를 입력해주세요.");
+
+        if (reason.length > 15) return alert("15자 이내로 입력해주세요.");
+
+        if (!confirm("정말 환불 처리하시겠습니까?")) return;
+
+        try {
+            const formData = new URLSearchParams();      // ✅ Form 객체 생성
+            formData.append("refundReason", reason);     // key=value 형태로 추가
+
+            const res = await fetch(`/admin/api/payments/${currentRefundPaymentId}/refund`, {
+                method: "PATCH",
+                headers: {
+                "X-Requested-From": window.location.pathname + window.location.search,
+                },
+                body: formData,
+            });
+
+            const result = await res.json();
+            if (res.ok) {
+                alert("✅ 환불이 완료되었습니다.");
+                document.getElementById("refundModal").style.display = "none";
+                document.getElementById("refundReasonInput").value = "";
+                loadPayments(currentPage);
+            } else {
+                alert("❌ " + (result.message || "환불 처리 실패"));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("서버 오류가 발생했습니다.");
+        }
+    });
 });

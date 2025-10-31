@@ -59,4 +59,5 @@
     </form>
 </div>
 
+<!-- teacher_register.js -->
 <script src="<c:url value='/js/page/admin/teacher_register.js'/>"></script>
