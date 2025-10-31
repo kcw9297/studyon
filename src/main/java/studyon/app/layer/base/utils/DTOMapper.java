@@ -57,6 +57,22 @@ public class DTOMapper {
      *  !! toEntity() 메소드
      */
 
+    public static Lecture toEntity(LectureDTO.Create dto, Teacher teacher) {
+
+        return Lecture.builder()
+                .teacher(teacher)
+                .title(dto.getTitle())
+                .price(dto.getPrice())
+                .difficulty(dto.getDifficulty())
+                .subject(dto.getSubject())
+                .lectureTarget(dto.getTarget())
+                .description(dto.getDescription())
+                .subjectDetail(dto.getSubjectDetail())
+                .build();
+    }
+
+
+
     public static Member toEntity(MemberDTO.Join dto) {
         return Member.builder()
                 .email(dto.getEmail())
@@ -314,6 +330,7 @@ public class DTOMapper {
                 .email(member.getEmail())
                 .provider(member.getProvider())
                 .role(member.getRole())
+                .teacherSubject(teacher.getSubject())
                 .teacherId(teacher.getTeacherId());
 
         return Objects.isNull(member.getProfileImage()) ?
@@ -390,4 +407,5 @@ public class DTOMapper {
                 .bannerImage(Objects.isNull(bannerImage) ? null : toReadDTO(bannerImage))
                 .build();
     }
+
 }
