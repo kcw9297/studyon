@@ -230,11 +230,6 @@
         const editBtn = document.querySelector(".answer-edit");
         console.log("📘 lectureQuestionId =", lectureQuestionId);
 
-        if (!lectureQuestionId || lectureQuestionId === "null") {
-            alert("잘못된 접근입니다. (질문 ID가 없습니다)");
-            window.location.href = "/teacher/management/qna";
-            return;
-        }
 
         try{
             const res = await fetch("/api/teachers/management/qna/detail/" + questionId);
