@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.Role;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.dto.Rest;
@@ -149,5 +150,19 @@ public class LectureRestController {
 
         List<LectureIndexDTO.Read> response = lectureIndexService.readMemberAllByLectureId(lectureId);
         return RestUtils.ok(response);
+    }
+
+
+    /**
+     * [PATCH] 강의 등록 신청 (등록대기 상태로 변경)
+     */
+    @PatchMapping("/{lectureId}/pending")
+    public ResponseEntity<?> pending(@PathVariable Long lectureId) {
+
+        // [1] 상태 갱신 수행
+        lectureService.pending(lectureId);
+
+        // [2] 성공 응답 반환
+        return RestUtils.ok(AppStatus.LECTURE_OK_STOP_SALE);
     }
 }
