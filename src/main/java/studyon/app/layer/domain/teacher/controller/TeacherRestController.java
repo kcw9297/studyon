@@ -343,12 +343,11 @@ public class TeacherRestController {
         return RestUtils.ok("질문이 성공적으로 삭제되었습니다.");
     }
 
-    @PostMapping("/management/qna/updateQuestion/{questionId}")
-    public ResponseEntity<?> updateQuestion(@RequestBody LectureQuestionDTO.Write dto, @PathVariable Long questionId) {
-        log.info("updateQuestion Method ");
-        LectureQuestionDTO.TeacherQnaDetail response =
-                lectureQuestionService.updateQuestion(dto,questionId);
-        return RestUtils.ok(response);
+    @PutMapping("/management/qna/updateQuestion")
+    public ResponseEntity<?> updateQuestion(@ModelAttribute LectureAnswerDTO.Write dto) {
+        log.info("✅ updateQuestion Method 호출됨 / questionId={}, content={}", dto.getLectureQuestionId(), dto.getContent());
+        lectureAnswerService.updateAnswer(dto, dto.getLectureQuestionId());
+        return RestUtils.ok();
     }
 
 

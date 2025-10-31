@@ -146,12 +146,6 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
                 .build();
     }
 
-    @Override
-    public void updateQuestion(LectureQuestionDTO.Write rq ,Long questionId) {
-        LectureQuestion question = lectureQuestionRepository.findById(questionId)
-                .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
-    }
-
 
     // ✅ 질문 삭제
     @Override

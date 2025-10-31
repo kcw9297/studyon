@@ -16,5 +16,8 @@ import java.util.Optional;
  */
 
 public interface LectureAnswerRepository extends JpaRepository<LectureAnswer, Long> {
+    @Modifying
+    @Query("UPDATE LectureAnswer a SET a.content = :content WHERE a.lectureAnswerId = :answerId")
+    void updateAnswerContent(@Param("answerId") Long answerId, @Param("content") String content);
 }
 
