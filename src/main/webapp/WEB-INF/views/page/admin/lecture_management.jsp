@@ -176,13 +176,13 @@
             // 검색어
             searchParams.keyword = document.getElementById('keyword').value.trim();
 
-            // 과목 (체크박스)
+            // 과목
             searchParams.subjects = [];
             document.querySelectorAll('input[name="subjects"]:checked').forEach(checkbox => {
                 searchParams.subjects.push(checkbox.value);
             });
 
-            // 세부과목 (체크박스)
+            // 세부과목
             searchParams.subjectDetails = [];
             document.querySelectorAll('input[name="subjectDetails"]:checked').forEach(checkbox => {
                 searchParams.subjectDetails.push(checkbox.value);
@@ -249,7 +249,6 @@
                 params.append('subjectDetails', detail);
             });
 
-
             // 가격 범위
             if (searchParams.minPrice !== null) {
                 params.append('minPrice', searchParams.minPrice);
@@ -258,15 +257,15 @@
                 params.append('maxPrice', searchParams.maxPrice);
             }
 
-            // 판매 상태
-            if (searchParams.onSales) {
-                params.append('onSales', searchParams.onSales);
-            }
+            // 판매 상태 (배열)
+            searchParams.onSales.forEach(onSale => {
+                params.append('onSales', onSale);
+            });
 
-            // 등록 상태
-            if (searchParams.statuses) {
-                params.append('statuses', searchParams.status);
-            }
+            // 강의 상태 (배열)
+            searchParams.statuses.forEach(status => {
+                params.append('statuses', status);
+            });
 
             // 학년(대상)
             searchParams.targets.forEach(target => {
@@ -277,7 +276,6 @@
             searchParams.difficulties.forEach(difficulty => {
                 params.append('difficulties', difficulty);
             });
-
 
             // 정렬
             if (searchParams.sort) {

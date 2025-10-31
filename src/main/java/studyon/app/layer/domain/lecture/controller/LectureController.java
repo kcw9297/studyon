@@ -62,11 +62,13 @@ public class LectureController {
         model.addAttribute("difficulties", Difficulty.values());
         model.addAttribute("filters", LectureKeyword.values());
         model.addAttribute("sorts", LectureSort.values());
+        model.addAttribute("targets", LectureTarget.values());
 
         // [2] 검색된 파라미터 중, 선택된 파라미터 삽입
         model.addAttribute("selectedSubjects", rq.getSubjects());
         model.addAttribute("selectedSubjectDetails", rq.getSubjectDetails());
         model.addAttribute("selectedDifficulties", rq.getDifficulties());
+        model.addAttribute("selectedTargets", rq.getTargets());
 
         // [3] view 반환 (검색 상세는 비동기로 처리)
         return ViewUtils.returnView(model, View.LECTURE, "lecture_list");
