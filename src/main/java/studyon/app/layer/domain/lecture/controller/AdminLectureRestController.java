@@ -116,5 +116,17 @@ public class AdminLectureRestController {
         return RestUtils.ok(AppStatus.LECTURE_OK_REJECT);
     }
 
+    @GetMapping("/subjectCount")
+    public ResponseEntity<?> readSubjectCount() {
+        log.info("[API] 과목별 강의 수 조회 요청");
+        // [1] 성공 응답 반환
+        return ResponseEntity.ok(lectureService.readLectureCountBySubject());
+    }
 
+    @GetMapping("/difficultyCount")
+    public ResponseEntity<?> readDifficultyCount() {
+        log.info("[API] 난이도별 강의 수 조회 요청");
+        // [1] 성공 응답 반환
+        return ResponseEntity.ok(lectureService.readLectureCountByDifficulty());
+    }
 }
