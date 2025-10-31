@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -72,19 +74,30 @@ public class AdminPaymentRestController {
 
 
     /**
-     * [PATCH] 실제 결제 전 검증 (유효성 검사는 생략)
+     * [PATCH] 실제 결제 전 검증 (유효성 검사는 생략) - 환불
      * <br>유효성 검증, 로그인 및 권한 검증, 주문세션 검증, 강의 구매가능 상태 검증 등
      */
     @PatchMapping("/{paymentId}/refund")
     public ResponseEntity<?> refund(HttpSession session,
                                     @PathVariable Long paymentId,
                                     @Title(max=15) String refundReason) {
-
+        log.info("[PATCH] 환불 요청: paymentId={}, refundReason='{}'", paymentId, refundReason);
         // [1] 환불 수행 (현재는 단 하나씩만 주문하기 때문에, 전액 환불)
         paymentService.refund(paymentId, refundReason);
 
         // [2] 환불 성공요청 반환
         return RestUtils.ok();
+    }
+
+
+    @GetMapping("/export/pdf")
+    public ResponseEntity<byte[]> exportPaymentPdf(PaymentDTO.Search rq) {
+        byte[] pdfBytes = paymentService.generatePaymentListPdf(rq);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=payment_list.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
     }
 
 

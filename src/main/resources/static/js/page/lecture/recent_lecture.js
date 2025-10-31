@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = 4;
     const subjectFromJSP = document.getElementById("lecturePage").dataset.subject;
 
-    fetch(`/api/lecture/recent?subject=${subjectFromJSP}&count=${count}`, {
+    fetch(`/api/lectures/recent?subject=${subjectFromJSP}&count=${count}`, {
         method: "GET",
         headers: { 'X-Requested-From': window.location.pathname + window.location.search }
     })
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
                 <div class="lecture-info">
                   <p class="lecture-title">${recentLecture.title}</p>
-                  <p class="lecture-info-text">${recentLecture.nickname}</p>
+                  <p class="lecture-info-text">${recentLecture.teacherNickname}</p>
                   <p class="lecture-info-text">₩${Number(recentLecture.price).toLocaleString()}</p>
                   <p class="lecture-info-text">
                     ⭐ ${recentLecture.averageRate ?? "0.0"}

@@ -2,17 +2,26 @@ package studyon.app.layer.domain.lecture_question.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
+import studyon.app.layer.domain.lecture_answer.LectureAnswer;
+import studyon.app.layer.domain.lecture_answer.repository.LectureAnswerRepository;
+import studyon.app.layer.domain.lecture_index.LectureIndex;
+import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
 import studyon.app.layer.domain.lecture_question.LectureQuestion;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_question.repository.LectureQuestionRepository;
+import studyon.app.layer.domain.member.Member;
+import studyon.app.layer.domain.member.repository.MemberRepository;
+import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,13 +36,16 @@ import java.util.Optional;
  * @author khj00
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class LectureQuestionServiceImpl implements LectureQuestionService {
-
+    private final LectureAnswerRepository lectureAnswerRepository;
     private final LectureQuestionRepository lectureQuestionRepository;
     private final LectureRepository lectureRepository;
+    private final MemberRepository memberRepository;
+    private final LectureIndexRepository  lectureIndexRepository;
 
     @Override
     public List<LectureQuestionDTO.Read> readAllQuestions() {
@@ -62,24 +74,104 @@ public class LectureQuestionServiceImpl implements LectureQuestionService {
     public void register(LectureQuestionDTO.Write rq) {
 
         Lecture lecture = lectureRepository.findById(rq.getLectureId()).orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+        Member member = memberRepository.findById(rq.getMemberId()).orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
+        LectureIndex lectureIndex = lectureIndexRepository.findById(rq.getLectureIndexId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        log.info("register service 실행");
         LectureQuestion entity = LectureQuestion.builder()
                 .title(rq.getTitle())
                 .content(rq.getContent())
                 .lecture(lecture)
+                .lectureIndex(lectureIndex)
+                .isSolved(false)
+                .member(member)
                 .build();
 
+        lectureQuestionRepository.save(entity);
+        log.info("register service 완료");
+
     }
 
-    public static class Write {
-        private Long lectureQuestionId;
-        private Long lectureId;
-        private String title;
-        private String content;
-        private Long memberId;
-        private String memberNickname;
-        private LocalDateTime createdAt;
+    @Override
+    @Transactional
+    public List<LectureQuestionDTO.ReadQna> readQuestionAndAnswer(Long lectureId, Long lectureIndexId) {
+
+        // 1️⃣ 질문 목록 조회
+        List<LectureQuestion> questions =
+                lectureQuestionRepository.findByLecture_LectureIdAndLectureIndex_LectureIndexId(lectureId, lectureIndexId);
+
+        List<LectureQuestionDTO.ReadQna> result = new ArrayList<>();
+
+        // 2️⃣ 각 질문마다 답변 1개씩 가져와 DTO로 변환
+        for (LectureQuestion q : questions) {
+            LectureAnswer answer = lectureAnswerRepository
+                    .findFirstByLectureQuestion_LectureQuestionId(q.getLectureQuestionId())
+                    .orElse(null);
+
+            LectureQuestionDTO.ReadQna dto = LectureQuestionDTO.ReadQna.builder()
+                    .questionId(q.getLectureQuestionId())
+                    .title(q.getTitle())
+                    .content(q.getContent())
+                    .isSolved(q.getIsSolved())
+                    .questionCreatedAt(q.getCreatedAt())
+                    .lectureId(q.getLecture().getLectureId())
+                    .indexTitle(q.getLectureIndex().getIndexTitle())
+                    .lectureIndexId(q.getLectureIndex().getLectureIndexId())
+                    .answerContent(answer != null ? answer.getContent() : null)
+                    .answerCreatedAt(answer != null ? answer.getCreatedAt() : null)
+                    .build();
+
+            result.add(dto);
+        }
+
+        return result;
     }
 
 
+    @Override
+    public List<LectureQuestionDTO.ReadTeacherQnaDTO> getAllQnaList(Long teacherId) {
+        List<LectureQuestion> list = lectureQuestionRepository.findAllWithAnswerByTeacherId(teacherId);
 
+        return list.stream()
+                .map(q -> LectureQuestionDTO.ReadTeacherQnaDTO.builder()
+                        .lectureQuestionId(q.getLectureQuestionId())
+                        .title(q.getTitle())
+                        .content(q.getContent())
+                        .studentName(q.getMember().getNickname())
+                        .lectureIndexId(q.getLectureIndex() != null
+                                ? q.getLectureIndex().getLectureIndexId()
+                                : null) // ✅ 추가
+                        .indexTitle(q.getLectureIndex() != null
+                                ? q.getLectureIndex().getIndexTitle()
+                                : "미지정 목차")
+                        .answered(q.getIsSolved())
+                        .createdAt(q.getCreatedAt())
+                        .answeredAt(q.getLectureAnswer() != null ? q.getLectureAnswer().getCreatedAt() : null)
+                        .build())
+                .toList();
+    }
+
+    //Question Detail Service
+    @Override
+    public LectureQuestionDTO.TeacherQnaDetail readTeacherQnaDetail(Long questionId) {
+        LectureQuestion q = lectureQuestionRepository.findById(questionId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
+
+        LectureAnswer answer = q.getLectureAnswer();
+
+        return LectureQuestionDTO.TeacherQnaDetail.builder()
+                .lectureQuestionId(q.getLectureQuestionId())
+                .title(q.getTitle())
+                .content(q.getContent())
+                .studentName(q.getMember().getNickname())
+                .createdAt(q.getCreatedAt())
+                .indexTitle(q.getLectureIndex() != null ? q.getLectureIndex().getIndexTitle() : "미지정 목차")
+                .lectureId(q.getLecture().getLectureId())
+                .lectureTitle(q.getLecture().getTitle())
+                .teacherName(q.getLecture().getTeacher().getMember().getNickname())
+                .answerContent(answer != null ? answer.getContent() : null)
+                .answeredAt(answer != null ? answer.getCreatedAt() : null)
+                .build();
+    }
 }

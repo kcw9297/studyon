@@ -37,7 +37,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class WriteServiceLogAspect {
 
-    // TODO Purchase 쿠폰 사용, Coupon 메소드는 나중에 리스너로 처리
     private final LogService logService;
 
     // EntityType Value - EntityType Map
@@ -64,8 +63,7 @@ public class WriteServiceLogAspect {
                             "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoJoinMeth() || " +
                             "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoWithdrawMeth() || " +
                             "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoPayMeth() || " +
-                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoRefundMeth() || " +
-                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoCouponClsIssueMeth()",
+                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoRefundMeth() || ",
             returning = "result"
     )
     public void afterSuccess(JoinPoint joinPoint, Object result) {
@@ -82,7 +80,6 @@ public class WriteServiceLogAspect {
                             "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoWithdrawMeth() || " +
                             "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoPayMeth() || " +
                             "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoRefundMeth() || " +
-                            "studyon.app.infra.aop.aspect.Pointcuts.domainPackSvcAnnoCouponClsIssueMeth()" +
                             "studyon.app.infra.aop.Pointcuts.domainPackSvcAnnoUploadMeth()",
             throwing = "e"
     )
@@ -106,7 +103,6 @@ public class WriteServiceLogAspect {
         if (methodName.startsWith("withdraw")) return Action.WITHDRAWAL;
         if (methodName.startsWith("pay")) return Action.PAY;
         if (methodName.startsWith("refund")) return Action.REFUND;
-        if (methodName.startsWith("coupon")) return Action.COUPON_ISSUE;
         return Action.UNKNOWN;
     }
 

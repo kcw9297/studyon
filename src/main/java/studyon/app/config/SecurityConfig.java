@@ -66,7 +66,8 @@ public class SecurityConfig {
     private static final String TEACHERS_ALL = Url.TEACHERS + "/**";
     private static final String TEACHERS_API_ALL = Url.TEACHERS_API + "/**";
     private static final String ADMIN_ALL = Url.ADMIN + "/**";
-    private static final String LECTURES_ALL = Url.LECTURES + "/**";
+    private static final String LECTURE_ALL = Url.LECTURE + "/**";
+    private static final String LECTURES_ALL = Url.LECTURES_API + "/**";
     private static final String WEBSOCKET_ALL = "/ws" + "/**";
     private static final String MYPAGE_ALL = Url.MYPAGE + "/**";
     private static final String FILE_ALL = Url.FILE + "/**";
@@ -74,6 +75,7 @@ public class SecurityConfig {
     private static final String PAYMENT_ALL = Url.PAYMENT + "/**";
     private static final String PAYMENTS_API_ALL = Url.PAYMENTS_API + "/**";
     private static final String NOTICES_API_ALL = Url.NOTICES_API + "/**";
+    private static final String BANNERS_API_ALL = Url.BANNERS_API + "/**";
 
     // 결제
 
@@ -83,7 +85,9 @@ public class SecurityConfig {
     public static final String[] PERMIT_ALL =
             {
                     Url.INDEX, HOME_API_ALL, TEACHERS_API_ALL, // 선생님 API는 컨트롤러 애노테이션으로 세부권한 수정
-                    AUTH_ALL, AUTH_API_ALL, LECTURES_ALL, TEACHERS_ALL, TEACHER_ALL, FILE_ALL, WEBSOCKET_ALL, NOTICES_API_ALL,
+                    AUTH_ALL, AUTH_API_ALL, LECTURE_ALL, LECTURES_ALL,
+                    TEACHERS_ALL, TEACHER_ALL, FILE_ALL,
+                    WEBSOCKET_ALL, NOTICES_API_ALL, BANNERS_API_ALL
             };
 
 

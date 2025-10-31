@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
  * @author kcw97
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class MemberDTO {
 
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Search {
 
         private String filter;
@@ -32,7 +32,7 @@ public class MemberDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
 
         @JsonFormat(pattern = "#,###")
@@ -62,7 +62,7 @@ public class MemberDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Join {
 
         private String email;

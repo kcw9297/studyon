@@ -9,14 +9,12 @@
 <div id="content">
     <div class="main-container">
       <div class="sidebar-container">
-        <div class="recommend-nav">
-            <a href="<c:url value='/lecture/search'/>" class="nav-item">전체검색</a>
-            <a href="<c:url value='/lecture/recommend/MATH'/>" class="nav-item">수학</a>
-            <a href="<c:url value='/lecture/recommend/ENGLISH'/>" class="nav-item">영어</a>
-            <a href="<c:url value='/lecture/recommend/KOREAN'/>" class="nav-item">국어</a>
-            <a href="<c:url value='/lecture/recommend/SCIENCE'/>" class="nav-item">과학탐구</a>
-            <a href="<c:url value='/lecture/recommend/SOCIAL'/>" class="nav-item">사회탐구</a>
-      </div>
+          <div class="recommend-nav">
+              <a href="<c:url value='/lecture/list'/>" class="nav-item">전체</a>
+              <c:forEach var="subject" items="${subjects}">
+                  <a href="<c:url value='/lecture/recommend/${subject}'/>" class="nav-item">${subject.value}</a>
+              </c:forEach>
+          </div>
     </div>
     <div class="main-content-container">
         <div id="lecturePage" data-subject="${subject.name()}">

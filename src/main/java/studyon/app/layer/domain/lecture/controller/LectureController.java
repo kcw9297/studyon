@@ -1,6 +1,5 @@
 package studyon.app.layer.domain.lecture.controller;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -10,12 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
-import studyon.app.common.enums.Subject;
-import studyon.app.common.enums.View;
-import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.common.enums.*;
+import studyon.app.common.enums.filter.LectureKeyword;
+import studyon.app.common.enums.filter.LectureSort;
+import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.ViewUtils;
+import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
-import studyon.app.layer.domain.member.MemberProfile;
 
 /*
  * [수정 이력]
@@ -44,17 +44,34 @@ public class LectureController {
      */
     @GetMapping("/recommend/{subject}")
     public String lectureRecommendView(@PathVariable Subject subject, Model model, @RequestParam(defaultValue = "4") int count) {
+
         // [1] 모델에 변수 바인딩
+        model.addAttribute("subjects", Subject.values());
         model.addAttribute("subject", subject);
+
         // [2] 뷰 리턴
         return ViewUtils.returnView(model, View.LECTURE,"lecture_recommend");
     }
 
-    @GetMapping("/search")
-    public String lectureSearchView(HttpSession session,Model model){
-        MemberProfile profile = SessionUtils.getProfile(session);
+    @GetMapping("/list")
+    public String lectureSearchView(Model model, LectureDTO.Search rq, Page.Request prq) {
 
-        return ViewUtils.returnView(model, View.LECTURE, "lecture_search");
+        // [1] 필터를 위한 데이터 삽입
+        model.addAttribute("subjects", Subject.values());
+        model.addAttribute("subjectDetails", SubjectDetail.values());
+        model.addAttribute("difficulties", Difficulty.values());
+        model.addAttribute("filters", LectureKeyword.values());
+        model.addAttribute("sorts", LectureSort.values());
+        model.addAttribute("targets", LectureTarget.values());
+
+        // [2] 검색된 파라미터 중, 선택된 파라미터 삽입
+        model.addAttribute("selectedSubjects", rq.getSubjects());
+        model.addAttribute("selectedSubjectDetails", rq.getSubjectDetails());
+        model.addAttribute("selectedDifficulties", rq.getDifficulties());
+        model.addAttribute("selectedTargets", rq.getTargets());
+
+        // [3] view 반환 (검색 상세는 비동기로 처리)
+        return ViewUtils.returnView(model, View.LECTURE, "lecture_list");
 
     }
 }

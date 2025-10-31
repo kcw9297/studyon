@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams();
     params.append("teacherId", teacherId);
 
-    fetch("/api/lecture/reviews/teacher/{teacherId}" , {
+    fetch("/api/lectures/reviews/teacher/{teacherId}" , {
         method: "POST",
         headers: { "Content-Type" : "application/x-www-form-urlencoded" },
         body: params

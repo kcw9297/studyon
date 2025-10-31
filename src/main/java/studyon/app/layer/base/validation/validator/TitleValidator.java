@@ -28,11 +28,8 @@ public class TitleValidator implements ConstraintValidator<Title, String> {
         max = annotation.max();
 
         // 사용자 입력 오류 메세지
-        String message = annotation.message();
-        if (Objects.nonNull(message) && !message.isBlank()) {
-            this.message = message;
-
-        } else {
+        this.message = annotation.message();
+        if (Objects.isNull(message) || message.isBlank()) {
             if (Objects.equals(min, 0)) this.message = "최대 %d자 이내 한글/영문/숫자를 입력해야 합니다.".formatted(max);
             else this.message = "%d-%d자 사이 한글/영문/숫자를 입력해야 합니다.".formatted(min, max);
         }
@@ -48,7 +45,7 @@ public class TitleValidator implements ConstraintValidator<Title, String> {
         context.disableDefaultConstraintViolation();
 
         // [3] 검증 수행
-        if (Objects.isNull(value) || value.isBlank() || !value.matches(pattern)) {
+        if (Objects.isNull(value) || !value.matches(pattern)) {
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return false;
         }

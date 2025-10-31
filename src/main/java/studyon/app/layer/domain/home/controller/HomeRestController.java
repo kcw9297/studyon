@@ -35,6 +35,7 @@ import java.util.List;
 @RequestMapping(Url.HOME_API)
 @RequiredArgsConstructor
 public class HomeRestController {
+
     private final LectureService lectureService;
 
     /**

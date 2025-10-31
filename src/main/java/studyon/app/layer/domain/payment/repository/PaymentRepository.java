@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * 결제정보 조작 클래스
  * @version 1.3
- * @author khj00
+ * @author kcw97
  */
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {

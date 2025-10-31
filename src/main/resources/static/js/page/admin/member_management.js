@@ -8,13 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const pagination = document.getElementById("pagination");
 
     // [1] 메인 함수 - 회원 목록 불러오기
-    function loadMembers(page) {
+    function loadMembers(page, searchType, keyword) {
 
         // 페이지값 기본 보장
         if (!page || isNaN(page) || page < 1) page = 1;
         // ✅ DOM 요소에서 값 읽기
-        const searchType = document.getElementById("searchType")?.value || "";
-        const keyword = document.getElementById("keyword")?.value.trim() || "";
+
         const role = document.getElementById("roleFilter")?.value || "";
         const isActive = document.getElementById("isActiveFilter")?.value || "";
         // ✅ 쿼리 파라미터 구성
@@ -69,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        // ✅ 항상 최신 필터 상태 읽기
+        // 항상 최신 필터 상태 읽기
         const role = document.getElementById("roleFilter")?.value || "";
         const isActive = document.getElementById("isActiveFilter")?.value || "";
         const keyword = document.getElementById("keyword")?.value.trim() || "";
@@ -211,10 +210,17 @@ document.addEventListener("DOMContentLoaded", () => {
         searchBtn.addEventListener("click", () => {
             console.log("[SEARCH] 검색 버튼 클릭 감지됨");
             document.getElementById("keyword").blur();
-            tbody.innerHTML = "<tr><td colspan=\"8\" style=\"text-align:center; color:#777;\">불러오는 중...</td></tr>";
-            loadMembers(1);
+            tbody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#777;'>불러오는 중...</td></tr>";
+
+            // ✅ 현재 입력값 읽기
+            const searchType = document.getElementById("searchType")?.value || "";
+            const keyword = document.getElementById("keyword")?.value.trim() || "";
+
+            // ✅ 검색 조건 함께 전달 (전체 옵션 포함)
+            loadMembers(1, searchType, keyword);
         });
     }
+
 
     //  엔터키 검색
     const keywordInput = document.getElementById("keyword");
@@ -231,7 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (el) {
             el.addEventListener("change", () => {
                 console.log(`[FILTER] ${id} 변경됨 -> 자동 새로고침`);
-                loadMembers(1);
+                // 최신 검색 상태 유지 (전체 포함)
+                const searchType = document.getElementById("searchType")?.value || "";
+                const keyword = document.getElementById("keyword")?.value.trim() || "";
+                loadMembers(1, searchType, keyword);
             });
         }
     });

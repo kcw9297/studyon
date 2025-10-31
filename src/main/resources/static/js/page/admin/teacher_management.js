@@ -4,53 +4,109 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageSize = 10;
     const tbody = document.getElementById("teachersTableBody");
 
+    const subjectMap = {
+        KOREAN: "국어",
+        ENGLISH: "영어",
+        MATH: "수학",
+        SOCIAL: "사회탐구",
+        SCIENCE: "과학탐구"
+    };
+
+    // 선생님 프로필로 보내는 링크
+    const contextPath = document.getElementById("pageRoot").dataset.contextPath || "";
+
+
+    const subjectFilter = document.getElementById("subjectFilter");
+    if (subjectFilter) {
+        subjectFilter.addEventListener("change", () => {
+            console.log(`[과목 변경] ${subjectFilter.value}`);
+            // 기존 검색 상태 유지
+            const searchType = document.getElementById("searchType")?.value || "";
+            const keyword = document.getElementById("keyword")?.value.trim() || "";
+
+            loadTeachers(1, searchType, keyword);
+        });
+    }
 
     // [1] 메인 함수 - 강사 목록 불러오기
-    function loadTeachers(page) {
+    function loadTeachers(page, searchType, keyword) {
         if (!page || isNaN(page) || page < 1) page = 1;
 
-        const searchType = document.getElementById("searchType")?.value || "";
-        const keyword = document.getElementById("keyword")?.value.trim() || "";
-        const subject = document.getElementById("subjectFilter")?.value || "";
+        searchType = searchType ?? (document.getElementById("searchType")?.value || "");
+        keyword = keyword ?? (document.getElementById("keyword")?.value.trim() || "");
 
         const params = new URLSearchParams({
             page,
             size: pageSize
         });
 
+
+        const subject = document.getElementById("subjectFilter")?.value || "";
+        params.append("subject", subject);
+
         if (searchType) params.append("filter", searchType);
         if (keyword) params.append("keyword", keyword);
-        if (subject) params.append("subject", subject);
 
         const url = `/api/teachers?${params.toString()}`;
         console.log(`[FETCH] ${url}`);
 
         fetch(url, {
             method: "GET",
-            headers: { "X-Requested-From": window.location.pathname + window.location.search ,
+            headers: {
+                "X-Requested-From": window.location.pathname + window.location.search,
             },
         })
-            .then(res => res.json())
+            .then(async res => {
+                if (!res.ok) {
+                    throw new Error(`서버 오류 발생 (${res.status})`);
+                }
+                return await res.json();
+            })
             .then(json => {
+                // ✅ JSON 구조 안전 확인
+                if (!json || typeof json !== "object") {
+                    throw new Error("잘못된 서버 응답 구조입니다.");
+                }
+
                 if (!json.success) {
-                    console.error("[ERROR] 요청 실패:", json?.message);
+                    throw new Error(json.message || "요청 처리 중 오류가 발생했습니다.");
+                }
+
+                const raw = json.data || {};
+                const teachers = Array.isArray(raw.data) ? raw.data : [];
+
+                // ✅ 0건인 경우 화면 출력
+                if (!teachers || teachers.length === 0) {
+                    tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center; color:gray;">
+                    '${keyword || subject || "검색"}'에 해당하는 강사 정보가 없습니다.
+                </td>
+            </tr>`;
+                    console.warn("⚠️ 조회 결과 없음 - JS단 안전 처리");
+                    renderPagination(1);
                     return;
                 }
 
-                const raw = json.data;
-                const teachers = Array.isArray(raw.data) ? raw.data : [];
-                console.log("[DEBUG] 서버에서 받은 member 리스트:", teachers);
-
-                currentPage = raw.currentPage || page;
+                // ✅ 정상 데이터 렌더링
+                currentPage = raw.currentPage || 1;
                 const totalPages = raw.totalPage || 1;
-
-                const totalteachers = raw.dataCount || 0;
-
-                console.log(`[DATA] 회원 ${teachers.length}명 / 총 ${totalteachers}명`);
                 renderTeachersTable(teachers);
                 renderPagination(totalPages);
             })
-            .catch(err => console.error("[ERROR] fetch 실패:", err));
+            .catch(err => {
+                console.error("[ERROR] 요청 실패:", err);
+                tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align:center;">
+                        ❌ 오류가 발생했습니다.<br>
+                        ${err.message || "서버와의 통신에 실패했습니다."}
+                    </td>
+                </tr>`;
+                renderPagination(1);
+
+                return;
+            });
     }
 
     // [2] 페이지네이션 렌더링
@@ -112,13 +168,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${(currentPage - 1) * pageSize + idx + 1}</td>
-                <td>${t.nickname || "-"}</td>
+                <td>
+                    <a href="${contextPath}/teacher/profile/${t.teacherId}">
+                    ${t.nickname || "-"}
+                    </a>
+                </td>
                 <td>${t.email || "-"}</td>
-                <td>${t.role?.replace("ROLE_", "") || "강사"}</td>
-                <td>${t.active ? "<span class='status-active'>활성</span>" : "<span class='status-banned'>비활성</span>"}</td>
-                <td>${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : "-"}</td>
-                <td>${t.lastLoginAt ? new Date(t.lastLoginAt).toLocaleDateString() : "-"}</td>
-                <td><a href="#" class="management-button" data-id="${t.memberId}">상세정보</a></td>
+                <td>${subjectMap[t.subject] || "-"}</td>
+                <td>${t.totalReview ? t.totalReview : 0}</td>
+                <td>${t.averageRating ? t.averageRating : "-"}</td>
+                <td>${t.totalStudents ? t.totalStudents : 0}</td>
+                <td><a href="#" class="management-button" data-teacher-id="${t.memberId}">상세정보</a></td>
             `;
             tbody.appendChild(row);
         });
@@ -139,15 +199,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const name = row.children[1].innerText;
                 const email = row.children[2].innerText;
-                const role = row.children[3].innerText;
-                const status = row.children[4].innerText;
-                const date = row.children[5].innerText;
+                const subjectName = row.children[3].innerText;
+                const reviews = row.children[4].innerText;
+                const rating = row.children[5].innerText;
+                const totalStudents = row.children[6].innerText;
 
                 document.getElementById("modalName").innerText = name;
                 document.getElementById("modalEmail").innerText = email;
-                document.getElementById("modalRole").innerText = role;
-                document.getElementById("modalStatus").innerText = status;
-                document.getElementById("modalDate").innerText = date;
+                document.getElementById("modalSubject").innerText = subjectName;
+                document.getElementById("modalReviews").innerText = reviews;
+                document.getElementById("modalRating").innerText = rating;
+                document.getElementById("modalTotalStudents").innerText = totalStudents;
 
                 modal.style.display = "flex";
                 // 닫기 버튼
@@ -161,11 +223,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // [5] 검색 버튼 이벤트
-    const searchBtn = document.getElementById("searchBtn");
+    const searchBtn = document.getElementById("teacherSearchBtn");
     if (searchBtn) {
-        searchBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            loadTeachers(1);
+        searchBtn.addEventListener("click", () => {
+            console.log("[검색 클릭] 필터 다시 읽기 후 첫 페이지 로드");
+            document.getElementById("keyword").blur();
+
+            tbody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#777;'>불러오는 중...</td></tr>";
+            // 현재 입력값 읽기
+            const searchType = document.getElementById("searchType")?.value || "";
+            const keyword = document.getElementById("keyword")?.value.trim() || "";
+
+            loadTeachers(1, searchType, keyword);
         });
     }
 

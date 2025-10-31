@@ -18,12 +18,12 @@ import java.time.LocalDateTime;
  * @author khj00
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class MemberChatRoomDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long memberChatRoomId;
         private Long chatRoomId;
@@ -35,7 +35,7 @@ public class MemberChatRoomDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private Long chatRoomId;
         private String roomName;

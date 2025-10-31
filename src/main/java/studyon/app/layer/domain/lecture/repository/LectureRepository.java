@@ -158,7 +158,9 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     @Query("""
         SELECT l
         FROM Lecture l
-        LEFT JOIN FETCH l.thumbnailFile t
+        LEFT JOIN FETCH l.thumbnailFile
+        LEFT JOIN FETCH l.teacher t
+        LEFT JOIN FETCH t.member m
         WHERE l.lectureId = :lectureId AND l.onSale = :onSale
         """)
     Optional<Lecture> findWithThumbnailFileByLectureIdAndOnSale(Long lectureId, Boolean onSale);
@@ -194,4 +196,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
                                                               Pageable pageable);
 
 
+    Optional<Lecture> findAllFetchByLectureIdAndOnSale(Long lectureId, Boolean onSale);
 }

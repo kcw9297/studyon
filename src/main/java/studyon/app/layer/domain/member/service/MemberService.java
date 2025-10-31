@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.member.MemberDTO;
 import studyon.app.layer.domain.member.MemberProfile;
+import studyon.app.layer.domain.teacher.TeacherDTO;
 
 public interface MemberService {
 
@@ -88,4 +89,9 @@ public interface MemberService {
      * 회원 활성/비활성 컨트롤
      */
     MemberDTO.Read toggleActive(Long memberId);
+
+    /**
+     * 선생님 계정 생성
+     */
+    Long createTeacherAccount(MemberDTO.Join mrq, TeacherDTO.Write trq);
 }

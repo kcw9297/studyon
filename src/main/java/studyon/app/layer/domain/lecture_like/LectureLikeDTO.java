@@ -14,12 +14,12 @@ import lombok.*;
  * @author khj00
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class LectureLikeDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long lectureLikeId;
         private Long memberId;
@@ -29,7 +29,7 @@ public class LectureLikeDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private Long memberId;
         private Long lectureId;
@@ -38,7 +38,7 @@ public class LectureLikeDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Delete {
         private Long memberId;
         private Long lectureId;

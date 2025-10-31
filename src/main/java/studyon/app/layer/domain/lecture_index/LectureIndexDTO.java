@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
  * @author khj00
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class LectureIndexDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long lectureIndexId;
         private String indexTitle;
@@ -35,12 +35,13 @@ public class LectureIndexDTO {
         private LectureVideoDTO.Read lectureVideo;
         private String videoFileName;
         private String videoFilePath;
+        private String lectureTitle;
 
     }
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private String indexTitle;
         private Long indexNumber;
@@ -50,7 +51,7 @@ public class LectureIndexDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Edit {
         private Long lectureIndexId;
         private String indexTitle;

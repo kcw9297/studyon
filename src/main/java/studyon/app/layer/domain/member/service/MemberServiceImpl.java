@@ -28,6 +28,7 @@ import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.member.mapper.MemberMapper;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 import studyon.app.layer.domain.teacher.Teacher;
+import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
 import java.io.ByteArrayOutputStream;
@@ -261,6 +262,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberDTO.Read toggleActive(Long memberId) {
         log.info("[TOGGLE] memberId = {}", memberId);
         // [1] 값 제대로 받았는지 검증
@@ -389,5 +391,43 @@ public class MemberServiceImpl implements MemberService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setPadding(4f);
         return cell;
+    }
+
+    @Override
+    @Transactional
+    public Long createTeacherAccount(MemberDTO.Join mrq, TeacherDTO.Write trq) {
+
+        // [1] 이메일 중복 검증
+        if (memberRepository.existsByEmailAndProvider(mrq.getEmail(), Provider.NORMAL)) {
+            throw new BusinessLogicException(AppStatus.MEMBER_DUPLICATE_EMAIL);
+        }
+
+        // [2] 닉네임 중복 검증
+        if (memberRepository.findByNickname(mrq.getNickname()).isPresent()) {
+            throw new BusinessLogicException(AppStatus.MEMBER_DUPLICATE_NICKNAME);
+        }
+
+        Member member = Member.builder()
+                .email(mrq.getEmail())
+                .nickname(mrq.getNickname())
+                .password(passwordEncoder.encode(mrq.getPassword()))
+                .role(Role.ROLE_TEACHER)
+                .provider(Provider.NORMAL)
+                .build();
+
+        memberRepository.save(member);
+
+        // [3] Teacher 생성
+        Teacher teacher = Teacher.builder()
+                .member(member)
+                .subject(trq.getSubject())
+                .description(trq.getDescription())
+                .build();
+
+        teacherRepository.save(teacher);
+
+        log.info("✅ 신규 강사 생성 완료 (memberId={}, teacherId={})",
+                member.getMemberId(), teacher.getTeacherId());
+        return teacher.getTeacherId();
     }
 }

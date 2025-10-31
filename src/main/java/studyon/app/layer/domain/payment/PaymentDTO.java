@@ -3,6 +3,8 @@ package studyon.app.layer.domain.payment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import studyon.app.layer.base.validation.annotation.Name;
+import studyon.app.layer.base.validation.annotation.NumberString;
 
 import java.time.LocalDateTime;
 
@@ -24,7 +26,7 @@ public class PaymentDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Search {
 
         private String filter; // 결제번호, 강의명, 강사명
@@ -52,7 +54,7 @@ public class PaymentDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
 
         private Long paymentId;
@@ -80,32 +82,30 @@ public class PaymentDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Pay {
 
         // 결제 시 제공되는 정보
         private String paymentUid;
         private Double paidAmount;
         private String paymentApiResult;
-
-        // 서버에서 조달 가능한 번호 정보
-        private Long memberId;
         private Long lectureId;
+        private Long memberId; // 서버에서 조달
 
         // 결제 시에만 임시 활용 정보 (실제 엔티티 저장 시 미사용)
         private String token;
 
-        @NotBlank(message = "구매자 성함을 입력해 주세요.")
+        @Name
         private String buyerName;
 
-        @NotBlank(message = "구매자 연락처를 입력해 주세요.")
+        @NumberString(min = 10, max = 20)
         private String buyerPhoneNumber;
     }
 
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Refund {
 
         private Long paymentId;

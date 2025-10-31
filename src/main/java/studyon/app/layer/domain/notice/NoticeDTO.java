@@ -9,13 +9,13 @@ import studyon.app.layer.domain.file.FileDTO;
  * @author kcw97
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class NoticeDTO {
 
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
 
         private Integer idx;

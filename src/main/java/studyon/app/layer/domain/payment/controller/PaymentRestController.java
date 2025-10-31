@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import studyon.app.common.constant.Param;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.layer.base.dto.Page;
@@ -59,20 +60,25 @@ public class PaymentRestController {
         return RestUtils.ok(page);
     }
 
+
     /**
-     * [GET] 단일 조회
+     * [POST] 실제 결제 전 검증 (유효성 검사는 생략)
+     * <br>유효성 검증, 로그인 및 권한 검증, 주문세션 검증, 강의 구매가능 상태 검증 등
      */
-    @GetMapping("/{paymentId}")
-    public ResponseEntity<?> read(HttpSession session, @PathVariable Long paymentId) {
+    @PostMapping
+    public ResponseEntity<?> pay(HttpSession session, PaymentDTO.Pay rq) {
 
-        // [1] 회원 프로필 조회
-        MemberProfile profile = SessionUtils.getProfile(session);
+        // [1] 결제 회원정보 삽입
+        Long memberId = SessionUtils.getMemberId(session);
+        rq.setMemberId(memberId);
 
-        // [2] 조회 수행 (관리자 API가 아니면 본인만 정보 제공)
-        PaymentDTO.Read data = paymentService.read(paymentId, profile);
+        // [2] 결제 수행
+        PaymentDTO.Read result = paymentService.pay(rq);
 
-        // [3] 조회 결과 반환
-        return RestUtils.ok(data);
+        // [3] 결제 결과 및 결제 결과를 확인할 수 있는 주소 반환
+        session.setAttribute(Param.VERIFIED, true);
+        String redirect = "/payment/enroll-complete?lectureId=%s".formatted(result.getPaymentId());
+        return RestUtils.ok(AppStatus.OK, redirect, result);
     }
 
 
@@ -91,7 +97,8 @@ public class PaymentRestController {
         PaymentSession paymentRequest = paymentService.access(memberId, lectureId);
 
         // [3] 성공 응답 반환
-        return RestUtils.ok(paymentRequest);
+        String redirect = "%s/enroll?lectureId=%s&token=%s".formatted(Url.PAYMENT, paymentRequest.getLectureId(), paymentRequest.getToken());
+        return RestUtils.ok(AppStatus.OK, redirect);
     }
 
     /**
@@ -113,21 +120,19 @@ public class PaymentRestController {
 
 
     /**
-     * [POST] 실제 결제 전 검증 (유효성 검사는 생략)
-     * <br>유효성 검증, 로그인 및 권한 검증, 주문세션 검증, 강의 구매가능 상태 검증 등
+     * [GET] 단일 조회
      */
-    @PostMapping
-    public ResponseEntity<?> pay(HttpSession session, PaymentDTO.Pay rq) {
+    @GetMapping("/{paymentId:[0-9]+}") // 정수형 숫자만 매핑
+    public ResponseEntity<?> read(HttpSession session, @PathVariable Long paymentId) {
 
-        // [1] 결제 회원정보 삽입
-        Long memberId = SessionUtils.getMemberId(session);
-        rq.setMemberId(memberId);
+        // [1] 회원 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
 
-        // [2] 결제 수행
-        PaymentDTO.Read result = paymentService.pay(rq);
+        // [2] 조회 수행 (관리자 API가 아니면 본인만 정보 제공)
+        PaymentDTO.Read data = paymentService.read(paymentId, profile);
 
-        // [3] 결제 결과 및 결제 결과를 확인할 수 있는 주소 반환
-        return RestUtils.ok(AppStatus.OK, "/payment/payment-complete", result);
+        // [3] 조회 결과 반환
+        return RestUtils.ok(data);
     }
 
 

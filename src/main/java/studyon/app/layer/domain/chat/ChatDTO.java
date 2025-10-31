@@ -12,12 +12,12 @@ import java.util.function.LongFunction;
  */
 
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class ChatDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Read {
         private Long chatId;
         private Long chatRoomId;
@@ -28,7 +28,7 @@ public class ChatDTO {
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor
     public static class Write {
         private Long chatRoomId;
         private Long senderId;

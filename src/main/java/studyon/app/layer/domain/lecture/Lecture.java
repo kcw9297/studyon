@@ -44,7 +44,7 @@ public class Lecture extends BaseEntity {
 
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id", nullable = false)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @OnDelete(action = OnDeleteAction.SET_NULL)
@@ -124,7 +124,7 @@ public class Lecture extends BaseEntity {
         this.totalStudents = 0L;
         this.averageRate = 0.00;
         this.likeCount = 0L;
-        this.onSale = false;
+        this.onSale = true;
     }
 
 

@@ -37,7 +37,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional(readOnly = true)
     public List<NoticeDTO.Read> readAll() {
         return noticeRepository
-                .findAllWithFile()
+                .findAllWithNoticeImage()
                 .stream()
                 .map(DTOMapper::toReadDTO)
                 .toList();
@@ -47,7 +47,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public List<NoticeDTO.Read> readAllActivate() {
         return noticeRepository
-                .findAllWithFileByIsActivate(true) // 활성 상태만 조회
+                .findAllWithNoticeImageByIsActivate(true) // 활성 상태만 조회
                 .stream()
                 .map(DTOMapper::toReadDTO)
                 .toList();
@@ -55,20 +55,20 @@ public class NoticeServiceImpl implements NoticeService {
 
 
     @Override
-    public void editTitle(Integer index, String title) {
+    public void editTitle(Integer idx, String title) {
         noticeRepository
-                .findByIdx(index)
+                .findByIdx(idx)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND))
                 .updateTitle(title);
     }
 
 
     @Override
-    public void editNoticeImage(Integer index, MultipartFile noticeImageFile) {
+    public void editNoticeImage(Integer idx, MultipartFile noticeImageFile) {
 
         // [1] 공지사항 조회
         Notice notice = noticeRepository
-                .findByIdx(index)
+                .findByIdx(idx)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND));
 
 
@@ -106,11 +106,11 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public void activate(Integer index) {
+    public void activate(Integer idx) {
 
         // [1] 공지사항 조회
         Notice notice = noticeRepository
-                .findByIdx(index)
+                .findByIdx(idx)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND));
 
         // [2] 제목이 빈 칸이거나, 등록 이미지가 존재하지 않으면 예외 처리
@@ -122,19 +122,19 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public void inactivate(Integer index) {
+    public void inactivate(Integer idx) {
         noticeRepository
-                .findByIdx(index)
+                .findByIdx(idx)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND))
                 .inactivate();
     }
 
     @Override
-    public void initialize(Integer index) {
+    public void initialize(Integer idx) {
 
         // [1] 공지사항 조회
         Notice notice = noticeRepository
-                .findByIdx(index)
+                .findByIdx(idx)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.NOTICE_NOT_FOUND));
 
         // [2] 파일 정보 조회 후 삭제 & 공지 엔티티 갱신

@@ -5,8 +5,8 @@
     min-height: 600px;
     height:auto;
     width:100%;
-
 }
+
 .admin-page-title {
     font-size: 22px;
     font-weight: bold;
@@ -260,4 +260,20 @@
 .page-btn.disabled {
     color: #bbb;
     cursor: not-allowed;
+}
+
+.create-teacher-btn {
+    background-color: #f5e347;
+    color: #000000;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.create-teacher-btn:hover {
+    background-color: #b6aa3d;
 }

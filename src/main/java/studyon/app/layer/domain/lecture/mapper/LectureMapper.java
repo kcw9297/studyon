@@ -18,6 +18,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface LectureMapper {
+
     List<LectureDTO.Read> selectAll(@Param("rq") LectureDTO.Search rq,
                                     @Param("prq") Page.Request prq);
 

@@ -1,20 +1,17 @@
 package studyon.app.layer.base.utils;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.enums.FileType;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.domain.auth.AuthDTO;
-import studyon.app.layer.domain.category.Category;
-import studyon.app.layer.domain.category.CategoryDTO;
+import studyon.app.layer.domain.banner.Banner;
+import studyon.app.layer.domain.banner.BannerDTO;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
-import studyon.app.layer.domain.lecture_category.LectureCategory;
-import studyon.app.layer.domain.lecture_category.LectureCategoryDTO;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 import studyon.app.layer.domain.lecture_question.LectureQuestion;
@@ -53,7 +50,7 @@ import java.util.Objects;
  * @author kcw97
  */
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class DTOMapper {
 
     /**
@@ -94,11 +91,6 @@ public class DTOMapper {
                 .build();
     }
 
-    public static Category toEntity(CategoryDTO.Write dto, Lecture lecture) {
-        return Category.builder()
-                .name(dto.getName())
-                .build();
-    }
 
     public static Lecture toEntity(LectureDTO.Write dto, Teacher teacher) {
         return Lecture.builder()
@@ -116,13 +108,6 @@ public class DTOMapper {
                 .rating(dto.getRating())
                 .lecture(lecture)
                 .member(member)
-                .build();
-    }
-
-    public static LectureCategory toEntity(Lecture lecture, Category category) {
-        return LectureCategory.builder()
-                .lecture(lecture)
-                .category(category)
                 .build();
     }
 
@@ -200,12 +185,6 @@ public class DTOMapper {
                 .build();
     }
 
-    public static CategoryDTO.Read toReadDTO(Category entity) {
-        return CategoryDTO.Read.builder()
-                .categoryId(entity.getCategoryId())
-                .name(entity.getName())
-                .build();
-    }
 
     public static LectureDTO.Read toReadDTO(Lecture entity) {
         return LectureDTO.Read.builder()
@@ -222,7 +201,7 @@ public class DTOMapper {
                 .onSale(entity.getOnSale())
                 .publishDate(entity.getPublishDate())
                 .teacherId(entity.getTeacher().getTeacherId())
-                .nickname(entity.getTeacher().getMember().getNickname())
+                .teacherNickname(entity.getTeacher().getMember().getNickname())
                 .lectureRegisterStatus(entity.getLectureRegisterStatus())
                 .build();
     }
@@ -240,13 +219,6 @@ public class DTOMapper {
                 .build();
     }
 
-    public static LectureCategoryDTO.Read toReadDTO(LectureCategory entity) {
-        return LectureCategoryDTO.Read.builder()
-                .lectureCategoryId(entity.getLectureCategoryId())
-                .lectureId(entity.getLecture().getLectureId())
-                .categoryId(entity.getCategory().getCategoryId())
-                .build();
-    }
 
     public static LectureIndexDTO.Read toReadDTO(LectureIndex entity) {
         return LectureIndexDTO.Read.builder()
@@ -407,4 +379,15 @@ public class DTOMapper {
                 .build();
     }
 
+    public static BannerDTO.Read toReadDTO(Banner entity) {
+
+        File bannerImage = entity.getBannerImage();
+
+        return BannerDTO.Read.builder()
+                .title(entity.getTitle())
+                .idx(entity.getIdx())
+                .isActivate(entity.getIsActivate())
+                .bannerImage(Objects.isNull(bannerImage) ? null : toReadDTO(bannerImage))
+                .build();
+    }
 }

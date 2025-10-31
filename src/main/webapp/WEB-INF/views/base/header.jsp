@@ -8,7 +8,7 @@
     <div class="header-search">
 
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+            <input type="text" id="searchInput" placeholder="검색어를 입력하세요"/>
             <button id="searchBtn"><img src="<c:url value='/img/png/search.png'/>" class="svg-search" alt="image"></button>
         </div>
         <div id="searchResults" class="search-results">
@@ -112,3 +112,98 @@
     }
 
 </style>
+<script>
+
+    // 최근 검색어 로드 여부
+    let isLoaded = false;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("searchInput");
+        const searchResults = document.getElementById("searchResults");
+        const searchBtn = document.getElementById("searchBtn");
+
+        // 🔍 포커스 시 결과창 표시
+        searchInput.addEventListener("focus", async () => {
+
+            // 최초 1회만 서버 요청
+            if (!isLoaded) {
+                try {
+                    const res = await fetch(`/api/lectures/recent-keyword`, {
+                        method: "GET"
+                    });
+
+                    // 서버 JSON 응답 문자열 파싱
+                    const rp = await res.json();
+                    console.log("서버 응답:", rp);
+
+                    // 요청 성공시에 최근 검색어 출력
+                    if (res.ok && rp.success) {
+                        const recentKeywords = rp.data;
+                        const keywordBar = document.getElementById("searchResults");
+
+                        // 기존 내용 초기화
+                        keywordBar.innerHTML = '';
+
+                        // 새로운 div 삽입
+                        recentKeywords.forEach(keyword => {
+                            keywordBar.innerHTML += `<div class="search-result-item" onclick="window.location.href='/lecture/list?keyword=\${keyword}'" >\${keyword}</div>`;
+                        });
+                        isLoaded = true; // 이후엔 요청 중단
+                    }
+
+                } catch (error) {
+                    console.error('검색어 업로드 오류:', error);
+                }
+
+
+
+
+
+            }
+            searchResults.style.display = "flex";
+        });
+
+        // 🔍 입력 중일 때 (예: API 검색 연결 가능)
+        searchInput.addEventListener("input", (e) => {
+            const keyword = e.target.value.trim();
+            if (keyword === "") {
+                searchResults.style.display = "none";
+            } else {
+                searchResults.style.display = "flex";
+            }
+        });
+
+        // input 외부 클릭 시 닫기
+        document.addEventListener("click", (e) => {
+            if (!searchResults.contains(e.target) && e.target !== searchInput) {
+                searchResults.style.display = "none";
+            }
+        });
+
+        // 엔터 키 이벤트
+        searchInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") searchLecture();
+        });
+
+        // 검색 버튼 클릭 이벤트
+        searchBtn.addEventListener("click", () => {
+            searchLecture();
+        });
+
+        function searchLecture() {
+            const keyword = searchInput?.value.trim();
+            window.location.href = keyword
+                ? "/lecture/list?keyword=" + encodeURIComponent(keyword)
+                : window.location.href = "/lecture/list";
+        }
+
+        // input 외부 클릭 시 닫기
+        document.addEventListener("click", (e) => {
+            if (!searchResults.contains(e.target) && e.target !== searchInput) {
+                searchResults.style.display = "none";
+            }
+        });
+    });
+
+
+</script>

@@ -5,67 +5,101 @@
 
 <mapper namespace="studyon.app.layer.domain.payment.mapper.PaymentMapper">
 
-    <select id="selectAll" resultType="paymentRead">
-        SELECT *
-        FROM member m
+    <select id="selectAll" resultType="studyon.app.layer.domain.payment.PaymentDTO$Read">
+        SELECT
+        p.payment_id           AS paymentId,
+        p.payment_uid          AS paymentUid,
+        p.paid_amount          AS paidAmount,
+        p.cdate                AS cdate,
+        p.is_refunded          AS isRefunded,
+        p.refunded_at          AS refundedAt,
+        l.lecture_id           AS lectureId,
+        l.title                AS lectureTitle,
+        m.nickname             AS nickname,
+        m.email                AS email
+        FROM payment p
+        LEFT JOIN lecture l ON p.lecture_id = l.lecture_id
+        LEFT JOIN member m ON p.member_id = m.member_id
         WHERE 1=1
-            <if test="rq.keyword neq null and rq.keyword neq ''">
-                <choose>
-                    <!--
-                    <if test="rq.filter == 'name'">
-                        name LIKE CONCAT('%', #{rq.keyword}, '%')
-                    </if>
-                    -->
-                    <when test="rq.filter eq 'nickname'">
-                        AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
-                    </when>
-                    <when test="rq.filter eq 'email'">
-                        AND m.email LIKE CONCAT('%', #{rq.keyword}, '%')
-                    </when>
-                </choose>
-            </if>
-        ORDER BY m.member_id DESC LIMIT #{prq.size} OFFSET #{prq.startPage}
-    </select>
-
-    <select id="countAll" resultType="Integer">
-        SELECT COUNT(*)
-        FROM member m
-        WHERE 1=1
-            <!--
-            <if test="rq.filter == 'name'">
-                name LIKE CONCAT('%', #{rq.keyword}, '%')
-            </if>
-            -->
-        <!-- (1) 검색어 필터 -->
+        <!-- (1) 검색 조건 -->
         <if test="rq.keyword != null and rq.keyword != ''">
             <choose>
-                <when test="rq.filter eq 'email'">
-                    AND m.email LIKE CONCAT('%', #{rq.keyword}, '%')
+                <when test="rq.filter eq 'paymentUid'">
+                    AND p.payment_uid LIKE CONCAT('%', #{rq.keyword}, '%')
+                </when>
+                <when test="rq.filter eq 'lectureTitle'">
+                    AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
                 <when test="rq.filter eq 'nickname'">
                     AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
+                <otherwise>
+                    <!-- 전체 검색 -->
+                    AND (
+                        p.payment_uid LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    )
+                </otherwise>
             </choose>
         </if>
 
-        <!-- (2) 권한 필터 -->
-        <if test="rq.role != null and rq.role != ''">
+        <!-- (2) 환불 여부 필터 -->
+        <if test="rq.isRefunded != null">
+            AND p.is_refunded = #{rq.isRefunded}
+        </if>
+
+        <!-- ✅ (3) 정렬 -->
+        <choose>
+            <when test="rq.orderBy eq 'amount'">
+                ORDER BY p.paid_amount DESC
+            </when>
+            <when test="rq.orderBy eq 'date'">
+                ORDER BY p.cdate DESC
+            </when>
+            <when test="rq.orderBy eq 'refund'">
+                ORDER BY p.is_refunded DESC, p.cdate DESC
+            </when>
+            <otherwise>
+                ORDER BY p.payment_id DESC
+            </otherwise>
+        </choose>
+
+        LIMIT #{prq.size} OFFSET #{prq.startPage}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+        FROM payment p
+        LEFT JOIN lecture l ON p.lecture_id = l.lecture_id
+        LEFT JOIN member m ON p.member_id = m.member_id
+        WHERE 1=1
+
+        <if test="rq.keyword != null and rq.keyword != ''">
             <choose>
-                <when test="rq.role eq 'USER'">
-                    AND m.role = 'ROLE_STUDENT'
+                <when test="rq.filter eq 'paymentUid'">
+                    AND p.payment_uid LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
-                <when test="rq.role eq 'TEACHER'">
-                    AND m.role = 'ROLE_TEACHER'
+                <when test="rq.filter eq 'lectureTitle'">
+                    AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
-                <when test="rq.role eq 'ADMIN'">
-                    AND m.role = 'ROLE_ADMIN'
+                <when test="rq.filter eq 'nickname'">
+                    AND m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                 </when>
+                <otherwise>
+                    AND (
+                        p.payment_uid LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR l.title LIKE CONCAT('%', #{rq.keyword}, '%')
+                        OR m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
+                    )
+                </otherwise>
             </choose>
         </if>
+
 
         <!-- (3) 활성/비활성 필터 -->
-        <if test="rq.isActive != null and rq.isActive != ''">
-            AND m.is_active = ${rq.isActive}
+        <if test="rq.isRefunded != null">
+            AND p.is_refunded = #{rq.isRefunded}
         </if>
     </select>
 
