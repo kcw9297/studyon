@@ -1,11 +1,9 @@
 package studyon.app.layer.domain.lecture.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.lecture.LectureDTO;
-import studyon.app.layer.domain.member.MemberProfile;
 
 import java.util.*;
 
@@ -81,7 +79,7 @@ public interface LectureService {
      */
     List<LectureDTO.Read> readRecentLectures(Long teacherId, int count);
 
-    LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile, LectureRegisterStatus status);
+    Long create(LectureDTO.Create dto);
 
     LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId,Long teacherId);
 

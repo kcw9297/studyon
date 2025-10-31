@@ -4,7 +4,6 @@ package studyon.app.layer.domain.lecture;
 import lombok.*;
 
 import studyon.app.common.enums.filter.LectureSort;
-import studyon.app.layer.domain.file.File;
 import studyon.app.common.enums.*;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
@@ -135,15 +134,14 @@ public class LectureDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Register {
+    public static class Create {
         private Long teacherId;
         private String title;
         private String description;
         private LectureTarget target;
-        private Long price;
         private Difficulty difficulty;
-        private LectureRegisterStatus lectureRegisterStatus;
         private Subject subject;
+        private Long price;
         private List<String> curriculumTitles;
         private SubjectDetail subjectDetail;
     }

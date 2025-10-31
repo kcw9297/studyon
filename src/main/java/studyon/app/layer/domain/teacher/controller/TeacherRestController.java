@@ -108,15 +108,6 @@ public class TeacherRestController {
         return RestUtils.ok(response);
     }
 
-    @PostMapping("lecture/register")
-    public ResponseEntity<?> registerLecture(LectureDTO.Register dto, LectureRegisterStatus status, HttpSession session){
-        log.info("강의 등록 요청");
-        log.info(dto.toString());
-        MemberProfile profile = SessionUtils.getProfile(session);
-        lectureService.registerLecture(dto, profile, status);
-        return RestUtils.ok("강의가 등록되었습니다.");
-    }
-
     @GetMapping("/management/profile")
     public ResponseEntity<?> getTeacherProfile(HttpSession session) {
         MemberProfile profile = SessionUtils.getProfile(session);

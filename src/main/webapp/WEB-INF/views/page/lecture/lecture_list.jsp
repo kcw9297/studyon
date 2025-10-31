@@ -18,7 +18,7 @@
 
         <!--메인 컨텐츠 -->
         <div class="main-content-container">
-            <div class="search-box">
+            <div class="search-box" id="lecture-search-box">
                 <form id="lecture-search-form" method="get">
                     <!-- 검색 구분 -->
                     <div class="filter-row">
@@ -125,6 +125,7 @@
         height: auto;
         padding-right:20px;
     }
+    <%--
     .search-box {
         border: 1px solid #ccc;
         border-radius: 8px;
@@ -135,6 +136,20 @@
         margin-right:5px;
         width: 100%;
     }
+    --%>
+
+    #lecture-search-box{
+       border: 1px solid #ccc;
+       border-radius: 8px;
+       padding: 20px;
+       background: #fafafa;
+       margin-bottom: 20px;
+       margin-top:20px;
+       margin-right:5px;
+       width: 100%;
+
+   }
+
     .filter-row {
         display: flex;
         align-items: center;
@@ -193,14 +208,13 @@
         background-color: white;
         margin-bottom:10px;
     }
-    .search-lecture-info{
-        display:flex;
-        flex-direction:row;
-        gap:5px;
-        padding:5px;
-        width:100%;
-        height:100px;
-
+    .search-lecture-info {
+        display: flex;
+        flex-wrap: wrap;  /* 여러 줄로 부드럽게 줄바꿈 */
+        gap: 1px;
+        padding: 3px;
+        align-items: center;
+        justify-content: flex-start;
     }
     .search-lecture-title{
         font-weight:bold;
@@ -212,7 +226,7 @@
 
     .lecture-thumbnail{
         width:100%;
-        height:100%;
+        height:150px;
     }
 
     /* lecture-item 속성 ( ID 기반 ) */
@@ -240,14 +254,14 @@
         margin: 3px;
         border: 1px solid rgba(0, 0, 0, 0.1);
         transition: all 0.2s ease;
-        width:auto;
-        height:auto;
     }
 
     /* 개별 색상 — 연한 파스텔톤 */
     #title {
         background-color: #e7f1ff;   /* 파스텔 블루 */
         color: #1d3b8b;
+        width:100%;
+        text-align: center;
     }
     #subject {
         background-color: #eaf9e6;   /* 파스텔 그린 */
@@ -442,11 +456,11 @@
                 <label id="subjectDetail" class="search-lecture-title">\${SUBJECT_DETAIL_MAP[lecture.subjectDetail]}</label>
                 <label id="difficulty" class="search-lecture-title">\${DIFFICULTY_MAP[lecture.difficulty]}</label>
                 <label id="teacherNickname" class="search-lecture-teacher">\${lecture.teacherNickname}</label>
-                <label id="price" class="search-lecture-teacher">\${lecture.price}</label>
-                <label id="totalStudents" class="search-lecture-teacher">\${lecture.totalStudents}</label>
-                <label id="totalDuration" class="search-lecture-teacher">\${lecture.totalDuration}</label>
-                <label id="averageRate" class="search-lecture-teacher">\${lecture.averageRate}</label>
-                <label id="likeCount" class="search-lecture-teacher">\${lecture.likeCount}</label>
+                <label id="price" class="search-lecture-teacher">가격 : \${lecture.price}</label>
+                <label id="totalStudents" class="search-lecture-teacher">총 학생수 : \${lecture.totalStudents}</label>
+               <%-- <label id="totalDuration" class="search-lecture-teacher">\${lecture.totalDuration}</label>--%>
+                <label id="averageRate" class="search-lecture-teacher">평점 : \${lecture.averageRate}</label>
+                <%--<label id="likeCount" class="search-lecture-teacher">\${lecture.likeCount}</label>--%>
                 <label id="lectureTarget" class="search-lecture-teacher">\${TARGET_MAP[lecture.lectureTarget]}</label>
             </div>
         `;

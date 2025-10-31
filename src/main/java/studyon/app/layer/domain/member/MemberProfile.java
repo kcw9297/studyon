@@ -3,6 +3,7 @@ package studyon.app.layer.domain.member;
 import lombok.*;
 import studyon.app.common.enums.Provider;
 import studyon.app.common.enums.Role;
+import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.file.FileDTO;
 
 import java.io.Serial;
@@ -35,6 +36,7 @@ public final class MemberProfile implements Serializable {
     private String email;
     private Provider provider;
     private Role role;
+    private Subject teacherSubject;
     private FileDTO.Read profileImage;
 
     // 선생님 회원인 경우 추가 정보

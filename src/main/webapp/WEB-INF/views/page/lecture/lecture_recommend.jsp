@@ -44,6 +44,14 @@
     </div>
 </div>
 
+
+<style>
+    .lecture-info{
+        padding-left:4px;
+        margin-top:0px;
+    }
+</style>
+
 <!-- best_lecture.js -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
