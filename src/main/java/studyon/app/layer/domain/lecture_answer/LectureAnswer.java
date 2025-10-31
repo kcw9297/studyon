@@ -2,9 +2,7 @@ package studyon.app.layer.domain.lecture_answer;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.lecture_question.LectureQuestion;
 import studyon.app.layer.domain.member.Member;
@@ -42,6 +40,7 @@ public class LectureAnswer extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private LectureAnswer parent;
 
+    @OnDelete(action = OnDeleteAction.CASCADE) // 회원 삭제될 시 함께 삭제
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_question_id", nullable = false)
     private LectureQuestion lectureQuestion;

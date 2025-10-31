@@ -41,27 +41,31 @@ public class LectureQuestion extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isSolved;
 
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", nullable = false)
     private Lecture lecture;
 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
+
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_answer_id")
+    private LectureAnswer lectureAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_index_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private LectureIndex lectureIndex;
 
-    @OneToOne(mappedBy = "lectureQuestion", fetch = FetchType.LAZY)
-    private LectureAnswer lectureAnswer;
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Builder
-    public LectureQuestion(String title, String content, Boolean isSolved, Lecture lecture, Member member,LectureIndex lectureIndex) {
+    public LectureQuestion(String title, String content, Boolean isSolved, Lecture lecture, Member member, LectureIndex lectureIndex) {
         this.title = title;
         this.content = content;
         this.isSolved = isSolved;
@@ -70,13 +74,17 @@ public class LectureQuestion extends BaseEntity {
         this.lectureIndex = lectureIndex;
     }
 
-    /*
-        강의 질문 수정 관련 로직
-     */
+/*
+    강의 질문 수정 관련 로직
+ */
 
     public void updateQuestion(String title, String content, Boolean isSolved) {
         this.title = title;
         this.content = content;
         this.isSolved = isSolved;
+    }
+
+    public void setLectureAnswer(LectureAnswer lectureAnswer) {
+        this.lectureAnswer = lectureAnswer;
     }
 }
