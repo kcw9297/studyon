@@ -342,4 +342,8 @@ public class TeacherRestController {
         lectureQuestionService.deleteQuestion(questionId);
         return RestUtils.ok("질문이 성공적으로 삭제되었습니다.");
     }
+
+
+
+
 }

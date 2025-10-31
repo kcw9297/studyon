@@ -197,7 +197,7 @@
     document.addEventListener("DOMContentLoaded", async function() {
         const params = new URLSearchParams(window.location.search);
         const questionId = params.get("id");
-
+        const answerEditBtn = document.querySelector(".answer-edit")
         const deleteBtn = document.querySelector(".answer-delete")
 
         deleteBtn.addEventListener("click",async () =>{
@@ -205,13 +205,13 @@
                 method: "DELETE"
             });
             alert("강의가 삭제되었습니다.");
-            //window.location.href="/teacher/management/qna";
+            window.location.href="/teacher/management/qna";
         })
         console.log("삭제이후");
 
-
-
-
+        answerEditBtn.addEventListener("click", async() =>{
+            window.location.href="/teacher/management/qna/updateQna";
+        })
 
         if (!questionId) {
             alert("잘못된 접근입니다.");
