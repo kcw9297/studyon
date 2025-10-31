@@ -60,6 +60,7 @@ public class LectureLikeController {
         Map<String, Object> result = new HashMap<>();
         result.put("liked", liked);
         result.put("likeCount", likeCount);
+        log.info("like count: {}", result.get("likeCount"));
         return ResponseEntity.ok(result);
     }
 }

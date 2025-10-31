@@ -144,7 +144,7 @@
         margin-top: 5px;
     }
 
-    .answer-submit {
+    .answer-edit {
         padding: 10px 20px;
         font-size: 15px;
         font-weight: 600;
@@ -157,7 +157,7 @@
         transition: all 0.25s ease;
     }
 
-    .answer-submit:hover {
+    .answer-edit:hover {
         background: linear-gradient(135deg, #219150, #27ae60);
         transform: translateY(-2px);
     }
