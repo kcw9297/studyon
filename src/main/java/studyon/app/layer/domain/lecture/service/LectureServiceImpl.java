@@ -23,7 +23,6 @@ import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
-import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
@@ -155,24 +154,21 @@ public class LectureServiceImpl implements LectureService {
 
 
     @Override
-    public LectureDTO.Register registerLecture(LectureDTO.Register dto, MemberProfile profile, LectureRegisterStatus status) {
-        Teacher teacher = teacherRepository.findById(profile.getTeacherId()).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
-        Lecture lecture = Lecture.builder()
-                .teacher(teacher)
-                .title(dto.getTitle())
-                .price(dto.getPrice())
-                .difficulty(dto.getDifficulty())
-                .subject(dto.getSubject())
-                .lectureTarget(dto.getTarget() != null ? dto.getTarget() : LectureTarget.HIGH1)
-                .description(dto.getDescription())
-                .subjectDetail(dto.getSubjectDetail())
-                .build();
+    public Long create(LectureDTO.Create dto) {
 
-        lectureRepository.save(lecture);
+        // [1] 선생님 조회
+        Teacher teacher = teacherRepository
+                .findById(dto.getTeacherId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
+        // [2] 강의저장 수행
+        Lecture lecture = DTOMapper.toEntity(dto, teacher);
+        Lecture savedLecture = lectureRepository.save(lecture);
+
+        // [3] 강의 인덱스 저장
         if (dto.getCurriculumTitles() != null && !dto.getCurriculumTitles().isEmpty()) {
             List<LectureIndex> indexes = new ArrayList<>();
-            Long index = 1L;
+            long index = 1L;
 
             for (String title : dto.getCurriculumTitles()) {
                 indexes.add(LectureIndex.builder()
@@ -181,10 +177,11 @@ public class LectureServiceImpl implements LectureService {
                         .indexTitle(title)
                         .build());
             }
-
             lectureIndexRepository.saveAll(indexes);
         }
-        return dto;
+
+        // [4] 생성된 강의번호 반환
+        return savedLecture.getLectureId();
     }
 
 

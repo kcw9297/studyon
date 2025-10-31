@@ -93,6 +93,7 @@ public enum AppStatus {
     LECTURE_OK_PENDING(200, "강의 등록요청을 완료했습니다."),
     LECTURE_OK_REGISTER(200, "강의 등록처리를 완료했습니다."),
     LECTURE_OK_REJECT(200, "강의 반려처리를 완료했습니다."),
+    LECTURE_OK_CREATE(200, "강의 생성을 완료했습니다"),
 
     /* QNA 상태*/
     QUESTION_NOT_FOUND(500, "질문이 존재하지 않습니다.");

@@ -11,7 +11,7 @@
     <div class="resister-title">강의 등록</div>
 
     <!-- ✅ 폼 형식으로 변경 -->
-    <form id="lectureForm" action="/api/teachers/lecture/register" method="post">
+    <form id="lectureForm" action="/teacher/api/lectures" method="post">
         <!-- 제목 -->
         <label class="resister-description" for="title">강의 제목</label>
         <div>
@@ -51,6 +51,9 @@
         <!-- 과목 -->
         <label class="resister-description" for="subject">과목</label>
         <div>
+            <select class="resister-lecture-target" id="subject" name="subject">
+            </select>
+
             <select class="resister-lecture-target" id="subject" name="subject" required>
                 <option value="">선택하세요</option>
                 <option value="KOREAN">국어</option>
@@ -90,131 +93,6 @@
         const form = document.getElementById("lectureForm");
         const addBtn = document.getElementById("add-lecture-btn");
         const listBox = document.getElementById("lecture-list-box");
-        const subjectSelect = document.getElementById("subject");
-        const detailBox = document.getElementById("subject-detail-box");
-        const subjectDetails = {
-            KOREAN: [
-                { name: "공통 국어", value: "KOREAN_COMMON" },
-                { name: "화법과 작문", value: "KOREAN_SPEECH_WRITING" },
-                { name: "언어와 매체", value: "KOREAN_LANGUAGE_MEDIA" },
-                { name: "문학", value: "KOREAN_LITERATURE" },
-                { name: "비문학(독서)", value: "KOREAN_READING" },
-                { name: "문법", value: "KOREAN_GRAMMAR" }
-            ],
-            MATH: [
-                { name: "수학 I", value: "MATH_I" },
-                { name: "수학 II", value: "MATH_II" },
-                { name: "기하", value: "GEOMETRY" }
-            ],
-            ENGLISH: [
-                { name: "독해", value: "ENGLISH_READING" },
-                { name: "듣기", value: "ENGLISH_LISTENING" },
-                { name: "문법", value: "ENGLISH_GRAMMAR" },
-                { name: "어휘", value: "ENGLISH_VOCAB" },
-                { name: "회화", value: "ENGLISH_CONVERSATION" }
-            ],
-            SOCIAL: [
-                { name: "생활과 윤리", value: "SOCIAL_ETHICS_LIFE" },
-                { name: "윤리와 사상", value: "SOCIAL_ETHICS_THOUGHT" },
-                { name: "한국지리", value: "SOCIAL_KOREAN_GEOGRAPHY" },
-                { name: "세계지리", value: "SOCIAL_WORLD_GEOGRAPHY" },
-                { name: "동아시아사", value: "SOCIAL_EAST_ASIA_HISTORY" },
-                { name: "세계사", value: "SOCIAL_WORLD_HISTORY" },
-                { name: "경제", value: "SOCIAL_ECONOMY" },
-                { name: "정치와 법", value: "SOCIAL_POLITICS_LAW" },
-                { name: "사회·문화", value: "SOCIAL_CULTURE" }
-            ],
-            SCIENCE: [
-                { name: "물리 I", value: "SCIENCE_PHYSICS_I" },
-                { name: "화학 I", value: "SCIENCE_CHEMISTRY_I" },
-                { name: "생명과학 I", value: "SCIENCE_BIOLOGY_I" },
-                { name: "지구과학 I", value: "SCIENCE_EARTH_I" },
-                { name: "물리 II", value: "SCIENCE_PHYSICS_II" },
-                { name: "화학 II", value: "SCIENCE_CHEMISTRY_II" },
-                { name: "생명과학 II", value: "SCIENCE_BIOLOGY_II" },
-                { name: "지구과학 II", value: "SCIENCE_EARTH_II" }
-            ]
-        };
-
-
-
-
-        subjectSelect.addEventListener("change", (e) => {
-            const selected = e.target.value;
-            detailBox.innerHTML = ""; // 초기화
-
-            if (!selected) return;
-
-            const options = subjectDetails[selected] || [];
-
-            // ✅ 세부 과목 select 생성
-            const detailSelect = document.createElement("select");
-            detailSelect.id = "subjectDetail";
-            detailSelect.name = "subjectDetail";
-            detailSelect.required = true;
-            detailSelect.classList.add("resister-lecture-target");
-
-            // 기본 옵션
-            const defaultOpt = document.createElement("option");
-            defaultOpt.value = "";
-            defaultOpt.textContent = "세부 과목을 선택하세요";
-            detailSelect.appendChild(defaultOpt);
-
-            // 세부 과목 추가
-            options.forEach(detail => {
-                const opt = document.createElement("option");
-                opt.value = detail.toUpperCase().replace(/\s|\·/g, "_"); // ENUM 호환용
-                opt.textContent = detail;
-                detailSelect.appendChild(opt);
-            });
-
-            // ✅ 화면에 표시
-            const label = document.createElement("label");
-            label.classList.add("resister-description");
-            label.textContent = "세부 과목";
-
-            detailBox.appendChild(label);
-            detailBox.appendChild(detailSelect);
-        });subjectSelect.addEventListener("change", (e) => {
-            const selected = e.target.value;
-            detailBox.innerHTML = ""; // 초기화
-
-            if (!selected) return;
-
-            const options = subjectDetails[selected] || [];
-
-            // ✅ 세부 과목 select 생성
-            const detailSelect = document.createElement("select");
-            detailSelect.id = "subjectDetail";
-            detailSelect.name = "subjectDetail";
-            detailSelect.required = true;
-            detailSelect.classList.add("resister-lecture-target");
-
-            // 기본 옵션
-            const defaultOpt = document.createElement("option");
-            defaultOpt.value = "";
-            defaultOpt.textContent = "세부 과목을 선택하세요";
-            detailSelect.appendChild(defaultOpt);
-
-            // ✅ ENUM value (영문)으로 전송, 사용자에게는 한글 표시
-            options.forEach(detail => {
-                const opt = document.createElement("option");
-                opt.value = detail.value;       // 서버 ENUM과 동일
-                opt.textContent = detail.name;  // 사용자 표시용
-                detailSelect.appendChild(opt);
-            });
-
-            const label = document.createElement("label");
-            label.classList.add("resister-description");
-            label.textContent = "세부 과목";
-
-            detailBox.appendChild(label);
-            detailBox.appendChild(detailSelect);
-        });
-
-
-
-
 
 
 

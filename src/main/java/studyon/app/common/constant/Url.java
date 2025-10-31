@@ -65,11 +65,11 @@ public final class Url {
 
     /* TEACHER */
     public static final String TEACHERS_API = API + TEACHERS;   //  "/api/teachers"
-    public static final String LECTURE_TEACHER_API = TEACHER + TEACHERS_API;
 
     /* LECTURE */
     public static final String LECTURES_API = API + LECTURES;   //  "/api/lecture"
     public static final String LECTURES_ADMIN_API = ADMIN + LECTURES_API;   //  "/api/lecture"
+    public static final String LECTURES_TEACHER_API = TEACHER + LECTURES_API;
 
     /* MYPAGE */
     public static final String MYPAGE_API = API + MYPAGE;
