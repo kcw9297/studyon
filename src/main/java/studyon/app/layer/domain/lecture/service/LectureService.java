@@ -105,4 +105,5 @@ public interface LectureService {
     void register(Long lectureId);
 
     void reject(Long lectureId, String rejectReason);
+
 }

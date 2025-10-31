@@ -40,6 +40,12 @@
                             <span>구매 내역</span>
                         </li>
                     </a>
+                    <a href="../usersupport/startchat">
+                        <li class="sidebar-text">
+                            <input type="radio" name="mypage" value="구매 내역" id="support">
+                            <span>고객 상담</span>
+                        </li>
+                    </a>
                 </ui>
             </nav>
         </aside>

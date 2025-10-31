@@ -220,6 +220,7 @@ public class LectureServiceImpl implements LectureService {
                 .teacherName(teacher.getMember().getNickname())
                 .teacherId(teacherId)
                 .title(lecture.getTitle())
+                .lectureRegisterStatus(lecture.getLectureRegisterStatus())
                 .description(lecture.getDescription())
                 .target(lecture.getLectureTarget())
                 .difficulty(lecture.getDifficulty())
@@ -374,5 +375,4 @@ public class LectureServiceImpl implements LectureService {
                 .findById(lectureId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
     }
-
 }

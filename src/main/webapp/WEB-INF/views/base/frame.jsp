@@ -51,6 +51,8 @@
         </div>
     </body>
 
+    <jsp:include page="/WEB-INF/views/base/chatbot_floating.jsp" />
+
     <%-- 공용 Script --%>
     <script src="<c:url value='/js/base/header.js'/>"></script>
 </html>
