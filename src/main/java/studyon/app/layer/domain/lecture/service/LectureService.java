@@ -94,4 +94,5 @@ public interface LectureService {
     /* 알고리즘용 특정 과목 Best 리스트 */
     List<LectureDTO.Read> readBestLecturesBySubject(String subject, int count);
     List<LectureDTO.Read> readBestLecturesByTeacher(Long teacherId, int count);
+
 }

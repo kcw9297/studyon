@@ -180,7 +180,6 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
                                             @Param("status") LectureRegisterStatus status,
                                             Pageable pageable);
 
-
     @Query("""
         SELECT l FROM Lecture l
         JOIN FETCH l.teacher t
@@ -195,6 +194,12 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
                                                               @Param("status") LectureRegisterStatus status,
                                                               Pageable pageable);
 
+    @Query("""
+        SELECT l FROM Lecture l
+        LEFT JOIN FETCH l.thumbnailFile
+        WHERE l.lectureId = :lectureId
+    """)
+    Optional<Lecture> findWithThumbnailById(@Param("lectureId") Long lectureId);
 
     Optional<Lecture> findAllFetchByLectureIdAndOnSale(Long lectureId, Boolean onSale);
 }
