@@ -105,4 +105,8 @@ public interface LectureService {
     void register(Long lectureId);
 
     void reject(Long lectureId, String rejectReason);
+
+    Map<String, Long> readLectureCountBySubject();
+
+    Map<String, Long> readLectureCountByDifficulty();
 }

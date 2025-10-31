@@ -6,7 +6,7 @@
     <div class="title-modal-content">
         <h2>공지사항 제목 수정</h2>
         <input type="text" id="titleInput" name="title" placeholder="변경할 제목을 입력하세요">
-        <div class="asynchronous-message-wrong" id="titleError"></div>
+        <div class="text-error" id="titleError"></div>
         <div class="modal-buttons">
             <button id="saveTitleBtn" onclick="saveNoticeTitle()">저장</button>
             <button id="closeEditTitleBtn" onclick="closeTitleModal()">취소</button>

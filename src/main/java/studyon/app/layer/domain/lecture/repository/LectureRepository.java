@@ -11,6 +11,7 @@ import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.teacher.Teacher;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /*
@@ -180,7 +181,6 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
                                             @Param("status") LectureRegisterStatus status,
                                             Pageable pageable);
 
-
     @Query("""
         SELECT l FROM Lecture l
         JOIN FETCH l.teacher t
@@ -195,6 +195,40 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
                                                               @Param("status") LectureRegisterStatus status,
                                                               Pageable pageable);
 
+    @Query("""
+        SELECT l FROM Lecture l
+        LEFT JOIN FETCH l.thumbnailFile
+        WHERE l.lectureId = :lectureId
+    """)
+    Optional<Lecture> findWithThumbnailById(@Param("lectureId") Long lectureId);
 
     Optional<Lecture> findAllFetchByLectureIdAndOnSale(Long lectureId, Boolean onSale);
+
+
+
+    /**
+     * 등록 상태별 강의 수 조회
+     * REGISTERED / PENDING / REJECTED / IN_PROGRESS 등 상태 분포
+     */
+    @Query("SELECT l.lectureRegisterStatus AS status, COUNT(l) AS cnt FROM Lecture l GROUP BY l.lectureRegisterStatus")
+    List<Map<String, Object>> findLectureCountByStatus();
+
+    /**
+     * 과목별 강의 수 조회
+     * 과목(Subject) 기준으로 등록된 강의 개수를 계산
+     */
+    @Query("SELECT l.subject AS subject, COUNT(l) AS cnt FROM Lecture l GROUP BY l.subject")
+    List<Map<String, Object>> findLectureCountBySubject();
+
+
+    /**
+     * 난이도별 강의 수 조회
+     * 난이도 기준으로 등록된 강의 개수를 계산
+     */
+    @Query("""
+        SELECT l.difficulty AS difficulty, COUNT(l) AS cnt
+        FROM Lecture l
+        GROUP BY l.difficulty
+    """)
+    List<Map<String, Object>> findLectureCountByDifficulty();
 }

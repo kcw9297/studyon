@@ -350,4 +350,10 @@ public class TeacherRestController {
         return RestUtils.ok();
     }
 
+    @PostMapping("/management/lectureinfo/registerPending")
+    public ResponseEntity<?> requestLectureApproval(@RequestParam Long lectureId) {
+        log.info("승인요청된 강의 ID: {}", lectureId);
+        lectureService.pending(lectureId);
+        return RestUtils.ok("강의가 승인 대기 상태로 변경되었습니다.");
+    }
 }

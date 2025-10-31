@@ -83,7 +83,7 @@ public class ChatbotServiceImpl implements ChatbotService {
                 .map(l -> String.format(
                         "강의명: %s | 가격: %.0f원 | 난이도: %s | 평점: %.2f점 | 학생 수: %d명 | 영상 수: %d개",
                         l.getTitle(),
-                        l.getPrice(),  // Double이므로 %.0f로 처리
+                        l.getPrice().doubleValue(),  // Double이므로 %.0f로 처리
                         l.getDifficulty(),
                         l.getAverageRate(),
                         l.getTotalStudents() != null ? l.getTotalStudents() : 0,

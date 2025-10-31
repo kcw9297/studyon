@@ -22,7 +22,7 @@
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 재입력" required>
             </div>
 
-            <div class="asynchronous-message-wrong" id="passwordEditError"></div>
+            <div class="text-error" id="passwordEditError"></div>
             <div class="modal-buttons">
                 <button type="submit" class="edit-btn">변경하기</button>
                 <button type="button" class="close-btn" onclick="closeEditPasswordModal()">닫기</button>
@@ -223,7 +223,7 @@
         const modal = document.getElementById("passwordEditModal");
         modal.querySelectorAll('input').forEach(input => input.value = '');
         modal.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
-        modal.querySelectorAll('.asynchronous-message-wrong').forEach(textError => textError.textContent = '');
+        modal.querySelectorAll('.text-error').forEach(textError => textError.textContent = '');
         if (modal) modal.style.display = "none";
     }
 

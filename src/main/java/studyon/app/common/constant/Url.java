@@ -65,6 +65,7 @@ public final class Url {
 
     /* TEACHER */
     public static final String TEACHERS_API = API + TEACHERS;   //  "/api/teachers"
+    public static final String LECTURE_TEACHER_API = TEACHER + TEACHERS_API;
 
     /* LECTURE */
     public static final String LECTURES_API = API + LECTURES;   //  "/api/lecture"

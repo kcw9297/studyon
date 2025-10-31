@@ -6,6 +6,7 @@
     <jsp:include page="lecture_summary.jsp"/>
     <jsp:include page="lecture_navigation.jsp"/>
     <jsp:include page="lecture_introduce.jsp"/>
+    <jsp:include page="lecture_algorithm.jsp"/>
 </div>
 <script src="<c:url value='/js/page/lecture/lecture_detail.js'/>"></script>
 
