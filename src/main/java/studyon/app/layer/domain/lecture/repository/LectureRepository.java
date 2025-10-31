@@ -208,7 +208,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
     /**
      * 등록 상태별 강의 수 조회
-     * REGISTERED / PENDING / REJECTED / IN_PROGRESS 등 상태 분포
+     * REGISTERED / PENDING / REJECTED / UNREGISTERED 등 상태 분포
      */
     @Query("SELECT l.lectureRegisterStatus AS status, COUNT(l) AS cnt FROM Lecture l GROUP BY l.lectureRegisterStatus")
     List<Map<String, Object>> findLectureCountByStatus();
@@ -231,4 +231,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
         GROUP BY l.difficulty
     """)
     List<Map<String, Object>> findLectureCountByDifficulty();
+
 }

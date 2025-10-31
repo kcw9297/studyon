@@ -395,4 +395,36 @@ public class LectureServiceImpl implements LectureService {
                         row -> (Long) row.get("cnt")
                 ));
     }
+
+    /**
+     * 등록 상태별 강의 수 조회
+     * 관리자 통계용 (pie chart)
+     */
+    @Override
+    public Map<String, Long> readLectureCountByStatus() {
+        return lectureRepository.findLectureCountByStatus().stream()
+                .collect(Collectors.toMap(
+                        row -> LectureRegisterStatus.valueOf(row.get("status").toString()).getValue(),
+                        row -> (Long) row.get("cnt")
+                ));
+    }
+
+    /**
+     * 강의 평점 상위 TOP5 조회
+     * 관리자 통계용
+     */
+    @Override
+    public List<LectureDTO.Read> readTopRatedLectures(int count) {
+        // [1] DB 조회 (상위 n개)
+        Pageable pageable = PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "averageRate"));
+
+        return lectureRepository.findAll(pageable)
+                .getContent()
+                .stream()
+                .sorted(Comparator.comparing(Lecture::getAverageRate).reversed()) // 혹시 null-safe 정렬
+                .limit(count)
+                .map(DTOMapper::toReadDTO)
+                .collect(Collectors.toList());
+    }
+
 }
