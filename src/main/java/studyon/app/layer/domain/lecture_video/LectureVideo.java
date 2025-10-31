@@ -47,7 +47,8 @@ public class LectureVideo extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "lecture_index_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "lecture_index_id", nullable = false)
     private LectureIndex lectureIndex;
 
     @OnDelete(action = OnDeleteAction.SET_NULL)

@@ -76,4 +76,24 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
     /* 별점 퍼센트 */
     Long countByLecture_LectureIdAndRating(Long lectureId, Integer rating);
 
+    /**
+     * 평균 평점 계산 로직 (업데이트 전용)
+     * @param teacherId 선생님 ID
+     * @return 평균 평점
+     */
+
+    @Query("""
+        SELECT COALESCE(AVG(r.rating), 0)
+        FROM LectureReview r
+        JOIN r.lecture l
+        WHERE l.teacher.teacherId = :teacherId
+    """)
+    Double calculateTeacherAverageRating(@Param("teacherId") Long teacherId);
+
+    /**
+     * 리뷰 개수 계산 로직 (업데이트 전용)
+     * @param teacherId 선생님 ID
+     * @return 리뷰 개수
+     */
+    Long countByLecture_Teacher_TeacherId(Long teacherId);
 }

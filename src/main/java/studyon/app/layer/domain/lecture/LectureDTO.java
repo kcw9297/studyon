@@ -162,6 +162,7 @@ public class LectureDTO {
         private Subject subject;
         private List<LectureVideoInfo> videos;
         private String teacherName;
+        private LectureRegisterStatus lectureRegisterStatus;
     }
 
     @Data

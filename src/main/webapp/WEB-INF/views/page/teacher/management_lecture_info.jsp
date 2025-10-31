@@ -58,6 +58,9 @@
             <div id="lecture-list-box"></div>
         </div>
     </div>
+    <div class="lecture-register-button">
+        강의승인요청
+    </div>
 </div>
 <%--
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture_view.css'/>">
@@ -131,7 +134,18 @@
             const json = await response.json();
             const lecture = json.data;
 
-            // ✅ 강의 기본 정보 렌더링
+            //렌더링시 승인 요청/등록된 강좌는 버튼 X
+            if (lecture.lectureRegisterStatus === "PENDING" || lecture.lectureRegisterStatus === "REGISTERD") {
+                const registerBtn = document.querySelector(".lecture-register-button");
+                if (registerBtn) {
+                    registerBtn.style.display = "none"; // 버튼 숨기기
+                }
+            }
+
+            console.log("lecture 정보 = ", lecture);
+
+
+            // 강의 기본 정보 렌더링
             document.getElementById("teacherName").innerText = lecture.teacherName;
             document.getElementById("lecture-title").innerText = lecture.title;
             document.getElementById("lecture-description").innerText = lecture.description;
@@ -140,15 +154,14 @@
             document.getElementById("lecture-difficulty").innerText = lecture.difficulty;
             document.getElementById("lecture-price").innerText = "₩" + lecture.price.toLocaleString();
 
-            // ✅ 강의 목차 불러오기
+            // 강의 목차 불러오기
             const res = await fetch("/api/teachers/management/lectureindex/" + lectureId);
             const jsondata = await res.json();
             const indexList = jsondata.data || [];
-            console.log("목차정보");
-            console.log(indexList);
-
 
             listBox.innerHTML = "";
+
+            console.log("indexList = ", indexList);
 
             if (indexList.length === 0) {
                 listBox.innerHTML = "<div>등록된 목차가 없습니다.</div>";
@@ -169,18 +182,14 @@
                         '   <button class="upload-btn">📹 업로드</button>' +
                         '   <button class="delete-btn">✕</button>' +
                         '</div>' +
-                        // ✅ 영상 리스트 컨테이너 추가
+                        // 영상 리스트 컨테이너 추가
                         '<div id="video-list-' + item.lectureIndexId + '" class="video-list-container"></div>';
 
                     listBox.appendChild(div);
                 });
-
-
-
-
             }
 
-            /* ✅ [1] X버튼 삭제 이벤트 */
+            /* [1] X버튼 삭제 이벤트 */
             listBox.addEventListener("click", async function(e) {
                 if (e.target.classList.contains("delete-btn")) {
                     const item = e.target.closest(".lecture-item");
@@ -193,7 +202,7 @@
                             });
                             const json = await res.json();
 
-                            if (json.success === true || json.statusCode === 200) {
+                            if (json) {
                                 item.remove();
 
                                 const reordered = Array.from(listBox.querySelectorAll(".lecture-item")).map((item, i) => {
@@ -268,16 +277,8 @@
                         }
                     });
                 }
-
-
-
-
-
             });
-
-
-
-            /* ✅ [2] 드래그 앤 드롭 */
+            /*  [2] 드래그 앤 드롭 */
             let draggedItem = null;
 
             listBox.addEventListener("dragstart", function(e) {
@@ -314,7 +315,7 @@
                 }, { offset: Number.NEGATIVE_INFINITY }).element;
             }
 
-            /* ✅ [3] 순서 저장 버튼 */
+            /* [3] 순서 저장 버튼 */
             const saveOrderBtn = document.createElement("button");
             saveOrderBtn.textContent = "목차 순서 저장";
             saveOrderBtn.classList.add("list-change-btn");
@@ -349,7 +350,7 @@
         }
 
 
-        /* ✅ [4] 새 목차 추가 버튼 */
+        /* [4] 새 목차 추가 버튼 */
         const addBtn = document.createElement("button");
         addBtn.textContent = "새 목차 추가";
         addBtn.classList.add("list-change-btn");
@@ -381,10 +382,50 @@
                     alert(json.message || "추가 실패");
                 }
             } catch (err) {
-                console.error("🚨 목차 추가 실패:", err);
+                console.error(" 목차 추가 실패:", err);
             }
             location.reload();
         });
+
+        //강의 승인 요청 버튼 로직
+
+        const registerBtn = document.querySelector(".lecture-register-button");
+
+        registerBtn.addEventListener("click", async () => {
+            try {
+                // URL에서 lectureId 추출
+                const pathParts = window.location.pathname.split("/");
+                const lectureId = pathParts[pathParts.length - 1];
+                console.log("📘 lectureId =", lectureId);
+
+                // FormData 생성
+                const formData = new FormData();
+                formData.append("lectureId", lectureId);
+
+                // 서버 요청
+                const res = await fetch(`/api/teachers/management/lectureinfo/registerPending`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                // 응답 처리
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("등록 성공:", data);
+                    alert("강의 등록 요청이 완료되었습니다.");
+                    location.reload();
+                } else {
+                    console.error("서버 응답 오류:", res.status);
+                    alert("강의 등록 요청에 실패했습니다.");
+                }
+
+            } catch (err) {
+                console.error(" 강의 등록 중 오류:", err);
+                alert("강의 등록 중 문제가 발생했습니다.");
+            }
+        });
+
+        //DOMContentLoad End
     });
 
 </script>
@@ -416,24 +457,24 @@
     }
 
     .thumbnail-register-button {
-        display: flex;                /* Flexbox로 중앙정렬 */
+        display: flex;
         justify-content: center;
         align-items: center;
-        background: linear-gradient(135deg, #8fbc8f, #7fbf7f); /* 은은한 그라데이션 */
-        color: white;                 /* 글자색은 흰색으로 */
+        background: linear-gradient(135deg, #8fbc8f, #7fbf7f);
+        color: white;
         font-weight: bold;
-        padding: 8px 18px;            /* 여백 살짝 넓게 */
-        border-radius: 25px;          /* 둥글둥글하게 */
+        padding: 8px 18px;
+        border-radius: 25px;
         height: 36px;
-        border: none;                 /* 기본 테두리 제거 */
-        cursor: pointer;              /* 마우스 커서 변경 */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* 살짝 그림자 */
-        transition: all 0.2s ease-in-out;       /* 부드러운 애니메이션 */
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        transition: all 0.2s ease-in-out;
     }
 
     .thumbnail-register-button:hover {
         background: linear-gradient(135deg, #7fbf7f, #6fae6f);
-        transform: translateY(-2px);  /* 살짝 올라가는 효과 */
+        transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
@@ -449,10 +490,8 @@
     .view-content {
         width: 80%;
         max-width: 1000px;
-        background: #fafafa;
         border-radius: 12px;
         padding: 30px 40px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         margin-top: 30px;
     }
 
@@ -523,6 +562,7 @@
         cursor: pointer;
         font-weight: 500;
         transition: 0.2s;
+        margin-left:10px;
     }
 
     .edit-btn:hover { background: #d5f5e3; }
@@ -640,6 +680,39 @@
         display: flex;
         justify-content: center;
         gap: 8px;
+    }
+
+    /*강의등록 버튼*/
+
+    .lecture-register-button {
+        display: inline-block;
+        background: #4e73df; /* 기본 파랑 */
+        color: #fff;
+        font-weight: 600;
+        font-size: 15px;
+        padding: 10px 22px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    }
+
+    .lecture-register-button:hover {
+        background: #3b5cc3; /* hover 시 약간 진하게 */
+        transform: translateY(-1px);
+    }
+
+    .lecture-register-button:active {
+        background: #2e4ca8;
+        transform: translateY(0);
+    }
+
+    .lecture-register-button:disabled {
+        background: #ccc;
+        color: #666;
+        cursor: not-allowed;
+        box-shadow: none;
     }
 
 </style>

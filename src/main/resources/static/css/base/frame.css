@@ -351,3 +351,21 @@ a {
 .header-logo {
     cursor: pointer;
 }
+
+
+/* 애러 메세지 */
+
+.text-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    min-height: 20px;
+}
+
+.text-error-center {
+    color: red;
+    font-size: 18px;
+    margin-top: 10px;
+    min-height: 20px;
+    text-align: center;
+}

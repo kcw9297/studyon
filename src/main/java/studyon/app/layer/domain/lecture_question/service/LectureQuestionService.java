@@ -27,8 +27,12 @@ public interface LectureQuestionService {
 
     /** 질문 삭제 */
     void deleteQuestion(Long id);
+
     void register(LectureQuestionDTO.Write rq);
+
     List<LectureQuestionDTO.ReadQna> readQuestionAndAnswer(Long lectureId, Long lectureIndexId);
+
     List<LectureQuestionDTO.ReadTeacherQnaDTO> getAllQnaList(Long teacherId);
+
     LectureQuestionDTO.TeacherQnaDetail readTeacherQnaDetail(Long lectureQuestionId);
 }

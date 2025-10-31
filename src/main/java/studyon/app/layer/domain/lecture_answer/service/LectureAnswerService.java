@@ -9,5 +9,6 @@ import studyon.app.layer.domain.lecture_answer.LectureAnswerDTO;
  */
 
 public interface LectureAnswerService {
-    public void saveAnswer(LectureAnswerDTO.Write rq);
+    void saveAnswer(LectureAnswerDTO.Write rq);
+    void updateAnswer(LectureAnswerDTO.Write dto,Long questionId);
 }

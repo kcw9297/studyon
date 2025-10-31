@@ -39,8 +39,9 @@ import java.util.stream.Collectors;
 
 /**
  * 강의 서비스 인터페이스 구현체
- * @version 1.2
+ *
  * @author phj03
+ * @version 1.2
  */
 
 @Service
@@ -192,7 +193,7 @@ public class LectureServiceImpl implements LectureService {
     public Map<Integer, Double> getRatingPercentage(Long lectureId) {
         // 1. 총 리뷰 수
         long totalReviews = lectureReviewRepository.countByLecture_LectureId(lectureId);
-        if(totalReviews == 0) return Map.of(5,0.0,4,0.0,3,0.0,2,0.0,1,0.0);
+        if (totalReviews == 0) return Map.of(5, 0.0, 4, 0.0, 3, 0.0, 2, 0.0, 1, 0.0);
 
         // 2. 각 평점별 리뷰 개수
         Map<Integer, Long> countMap = Map.of(
@@ -210,7 +211,6 @@ public class LectureServiceImpl implements LectureService {
     }
 
 
-
     @Override
     public LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId, Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
@@ -220,6 +220,7 @@ public class LectureServiceImpl implements LectureService {
                 .teacherName(teacher.getMember().getNickname())
                 .teacherId(teacherId)
                 .title(lecture.getTitle())
+                .lectureRegisterStatus(lecture.getLectureRegisterStatus())
                 .description(lecture.getDescription())
                 .target(lecture.getLectureTarget())
                 .difficulty(lecture.getDifficulty())
@@ -282,7 +283,8 @@ public class LectureServiceImpl implements LectureService {
     public List<LectureDTO.Read> readBestLecturesBySubject(String subject, int count) {
         Pageable pageable = PageRequest.of(0, count);
 
-        return lectureRepository.findBestLecturesBySubjectAlgorithm(Subject.valueOf(subject), LectureRegisterStatus.REGISTERED, pageable)
+        return lectureRepository
+                .findBestLecturesBySubjectAlgorithm(Subject.valueOf(subject), LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // DTO 내부에서 teacher.member.profileImage 유지
                 .collect(Collectors.toList());
@@ -292,10 +294,108 @@ public class LectureServiceImpl implements LectureService {
     public List<LectureDTO.Read> readBestLecturesByTeacher(Long teacherId, int count) {
         Pageable pageable = PageRequest.of(0, count);
 
-        return lectureRepository.findBestLecturesByTeacherAlgorithm(teacherId, LectureRegisterStatus.REGISTERED, pageable)
+        return lectureRepository
+                .findBestLecturesByTeacherAlgorithm(teacherId, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // DTO 내부에서 teacher.member.profileImage 유지
                 .collect(Collectors.toList());
     }
 
+
+    @Override
+    public void startSale(Long lectureId) {
+
+        // [1] 강의 정보 조회
+        Lecture lecture = lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        // [2] 현재 강의상태 검증
+        if (Objects.equals(lecture.getLectureRegisterStatus(), LectureRegisterStatus.REJECTED))
+            throw new BusinessLogicException(AppStatus.LECTURE_REJECT_NOW);
+
+        if (!Objects.equals(lecture.getLectureRegisterStatus(), LectureRegisterStatus.REGISTERED))
+            throw new BusinessLogicException(AppStatus.LECTURE_SALE_START_NOT_AVAILABLE);
+
+        // [3] 판매 상태로 변경
+        lecture.startSale();
+    }
+
+
+    @Override
+    public void stopSale(Long lectureId) {
+
+        lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .stopSale();
+    }
+
+
+    @Override
+    public void pending(Long lectureId) {
+
+        // [1] 강의 정보 조회
+        Lecture lecture = lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        // [2] 상태 검증 (의도하지 않은 방향으로 상태 갱신이 되는 경우)
+        if (!lecture.getLectureRegisterStatus().equals(LectureRegisterStatus.UNREGISTERED))
+            throw new BusinessLogicException(AppStatus.LECTURE_STATE_NOT_EDITABLE);
+
+        // [3] 상태갱신 수행
+        lecture.pending();
+    }
+
+    @Override
+    public void register(Long lectureId) {
+
+        // [1] 강의 정보 조회
+        Lecture lecture = lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        // [2] 상태 검증 (의도하지 않은 방향으로 상태 갱신이 되는 경우)
+        // 변경이 가능한 현재 상태
+        List<LectureRegisterStatus> available = List.of(LectureRegisterStatus.PENDING, LectureRegisterStatus.REJECTED);
+
+        // 리스트 외의 상태에서 등록 요청을 하는 경우 검증
+        if (!available.contains(lecture.getLectureRegisterStatus()))
+            throw new BusinessLogicException(AppStatus.LECTURE_STATE_NOT_EDITABLE);
+
+        // [3] 상태갱신 수행
+        lecture.register();
+    }
+
+    @Override
+    public void reject(Long lectureId, String rejectReason) {
+
+        lectureRepository
+                .findById(lectureId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .reject(rejectReason);
+    }
+
+
+    @Override
+    public Map<String, Long> readLectureCountBySubject() {
+        return lectureRepository.findLectureCountBySubject().stream()
+                .collect(Collectors.toMap(
+                        row -> row.get("subject").toString(),
+                        row -> (Long) row.get("cnt")));
+    }
+
+    /**
+     * 난이도별 강의 수 조회
+     * 관리자 통계용 (doughnut chart)
+     */
+    @Override
+    public Map<String, Long> readLectureCountByDifficulty() {
+        return lectureRepository.findLectureCountByDifficulty().stream()
+                .collect(Collectors.toMap(
+                        row -> Difficulty.valueOf(row.get("difficulty").toString()).getValue(),
+                        row -> (Long) row.get("cnt")
+                ));
+    }
 }

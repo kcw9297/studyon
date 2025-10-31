@@ -54,72 +54,6 @@
             size: 5
         };
 
-        // 상세과목 선택 모달
-        const modal = document.getElementById('subjectDetailModal');
-        const openBtn = document.getElementById('openSubjectDetailModal');
-        const closeBtn = document.getElementById('closeSubjectDetailModal');
-        const confirmBtn = document.getElementById('confirmSubjectDetail');
-        const pagination = document.getElementById("pagination");
-
-        // 매핑 객체
-        const SUBJECT_MAP = {
-            <c:forEach var="subject" items="${subjects}" varStatus="status">
-            "${subject}": "${subject.value}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-        const SUBJECT_DETAIL_MAP = {
-            <c:forEach var="subjectDetail" items="${subjectDetails}" varStatus="status">
-            "${subjectDetail}": "${subjectDetail.name}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-        const DIFFICULTY_MAP = {
-            <c:forEach var="difficulty" items="${difficulties}" varStatus="status">
-            "${difficulty}": "${difficulty.value}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-        const TARGET_MAP = {
-            <c:forEach var="target" items="${targets}" varStatus="status">
-            "${target}": "${target.value}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-        const ON_SALE_MAP = {
-            true: "${onSales[0].value}",   // ON_SALE의 value
-            false: "${onSales[1].value}"   // NOT_SALE의 value
-        };
-
-        const STATUS_MAP = {
-            <c:forEach var="st" items="${statuses}" varStatus="status">
-            "${st}": "${st.value}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-
-
-        // 모달 열기
-        openBtn.addEventListener('click', () => {
-            modal.classList.add('active');
-        });
-
-        // 모달 닫기
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-
-        // 확인 버튼
-        confirmBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-
-        // 배경 클릭 시 닫기
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
 
         // 최초 로드 시 1회 검색
         search();
@@ -130,6 +64,7 @@
             searchParams.page = 1; // 검색 시 첫 페이지로
             search();
         });
+
 
         pagination.addEventListener('click', (e) => {
 
@@ -165,6 +100,8 @@
             // 검색 요청
             sendSearchRequest(url);
         }
+
+
 
 
 
@@ -314,82 +251,9 @@
                     renderPagination(page);
                 }
 
-
-
             } catch (error) {
                 console.error('검색 실패 오류:', error);
             }
-        }
-
-
-        // 강의 목록 렌더링 (추후 구현)
-        function createLectureItem(lecture) {
-            console.log('강의 목록 렌더링:', lecture);
-            const imgSrc = lecture.thumbnailImagePath
-                ? `${fileDomain}/\${lecture.thumbnailImagePath}`
-                : `<c:url value='/img/png/default_member_profile_image.png'/>`;
-
-            return `
-                <div class="lecture-item">
-                    <a href="#" class="lecture-thumbnail-link">
-                        <img src="\${imgSrc}" alt="썸네일" class="lecture-thumbnail">
-                    </a>
-                    <div class="lecture-info">
-                        <div class="lecture-title-row">
-                            <span class="lecture-target">🎓 \${TARGET_MAP[lecture.lectureTarget]}</span>
-                            <a href="#" class="lecture-title">\${lecture.title}</a>
-                        </div>
-                        <div class="lecture-meta">
-                            <span class="lecture-teacher">👤 \${lecture.teacherNickname}</span>
-                            <span class="lecture-subject">📚 \${SUBJECT_MAP[lecture.subject]} > \${SUBJECT_DETAIL_MAP[lecture.subjectDetail]}</span>
-                        </div>
-                    </div>
-                    <div class="lecture-stats">
-                        <span class="lecture-price">₩\${lecture.price.toLocaleString('ko-KR')}</span>
-                        <span class="lecture-students">👥 \${lecture.totalStudents.toLocaleString('ko-KR')}명</span>
-                    </div>
-                    <div class="lecture-status">
-                        <span class="badge badge-success">\${ON_SALE_MAP[lecture.onSale]}</span>
-                        <span class="badge badge-approved">\${STATUS_MAP[lecture.lectureRegisterStatus]}</span>
-                    </div>
-                    <div class="lecture-actions">
-                        <button class="btn-manage">관리</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // 페이징 렌더링
-        function renderPagination(page) {
-
-            // 페이지 데이터 분석
-            const isStart = page.startPage;
-            const isEnd = page.endPage;
-            const groupSize = page.groupSize;
-            const dataCount = page.dataCount;
-            const currentGroupStartPage = page.currentGroupStartPage;
-            const currentGroupEndPage = page.currentGroupEndPage;
-            const previousGroupPage = page.previousGroupPage;
-            const currentPage = page.currentPage;
-
-            // 버튼
-            const leftBtn = isStart
-                ? `<button class="page-btn disabled">◀</button>`
-                : `<button class="page-btn">◀</button>`;
-
-            const rightBtn = isEnd
-                ? `<button class="page-btn disabled">▶</button>`
-                : `<button class="page-btn">▶</button>`;
-
-            // 내부 버튼 (그룹)
-            const innerBtn = [];
-            for (let i = currentGroupStartPage; i <= currentGroupEndPage; i++) {
-                const activeClass = (i === currentPage) ? 'active' : '';
-                innerBtn.push(`<button class="page-btn \${activeClass}">\${i}</button>`);
-            }
-
-            pagination.innerHTML = '';
-            pagination.innerHTML = leftBtn + innerBtn.join('') + rightBtn;
         }
 
     });

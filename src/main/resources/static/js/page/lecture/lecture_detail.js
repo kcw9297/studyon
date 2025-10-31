@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let likeCount = parseInt(likeCountElem.textContent); // 초기 숫자
 
     // 1️⃣ 초기 상태 fetch
-    fetch(`/lecture-like/${lectureId}/status?memberId=${memberId}`)
+    fetch("/lecture-like/"+ lectureId + "/status?memberId=" + memberId)
         .then(res => res.json())
         .then(data => {
             liked = data.liked;
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 likeCountElem.textContent = likeCount;
             }
         })
-        .catch(err => console.error("좋아요 상태 불러오기 실패:", err));
+        //.catch(err => console.error("좋아요 상태 불러오기 실패:", err));
 
     // 2️⃣ 버튼 클릭 시 토글
     likeButton.addEventListener("click", () => {
