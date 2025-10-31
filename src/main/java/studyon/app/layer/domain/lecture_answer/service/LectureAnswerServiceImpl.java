@@ -10,6 +10,7 @@ import studyon.app.layer.domain.lecture_answer.LectureAnswer;
 import studyon.app.layer.domain.lecture_answer.LectureAnswerDTO;
 import studyon.app.layer.domain.lecture_answer.repository.LectureAnswerRepository;
 import studyon.app.layer.domain.lecture_question.LectureQuestion;
+import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_question.repository.LectureQuestionRepository;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.repository.MemberRepository;
@@ -50,6 +51,16 @@ public class LectureAnswerServiceImpl implements LectureAnswerService {
 
         log.info("✅ 답변 저장 및 연결 완료: Q={} / A={}",
                 question.getLectureQuestionId(), savedAnswer.getLectureAnswerId());
+    }
+
+    @Override
+    public void updateAnswer(LectureAnswerDTO.Write dto, Long questionId) {
+        LectureQuestion question = lectureQuestionRepository.findById(questionId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
+        LectureAnswer answer = question.getLectureAnswer();
+        lectureAnswerRepository.updateAnswerContent(answer.getLectureAnswerId(), dto.getContent());
+
+        log.info("답변 수정 완료");
     }
 
 }

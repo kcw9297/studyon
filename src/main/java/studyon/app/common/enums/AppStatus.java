@@ -85,6 +85,14 @@ public enum AppStatus {
     LECTURE_NOT_FOUND(500,"존재하지 않거나 판매중이 아닌 강의입니다."),
     LECTURE_NOT_ON_SALE(500,"현재 강의는 판매 중이 아닙니다.\n잠시 후에 다시 시도해 주세요."),
     LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다."),
+    LECTURE_REJECT_NOW(400, "현재 강의는 반려된 상태입니다.\n검토 후 다시 승인요청을 해 주세요."),
+    LECTURE_SALE_START_NOT_AVAILABLE(400, "승인되지 않은 강의는 판매할 수 없습니다."),
+    LECTURE_STATE_NOT_EDITABLE(400, "해당 상태로 변경할 수 없습니다\n잘못된 상태변경 요청입니다."),
+    LECTURE_OK_START_SALE(200, "판매 상태로 변경했습니다."),
+    LECTURE_OK_STOP_SALE(200, "미판매 상태로 변경했습니다."),
+    LECTURE_OK_PENDING(200, "강의 등록요청을 완료했습니다."),
+    LECTURE_OK_REGISTER(200, "강의 등록처리를 완료했습니다."),
+    LECTURE_OK_REJECT(200, "강의 반려처리를 완료했습니다."),
 
     /* QNA 상태*/
     QUESTION_NOT_FOUND(500, "질문이 존재하지 않습니다.");

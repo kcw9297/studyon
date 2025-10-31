@@ -12,11 +12,10 @@ import java.util.List;
 @Getter
 public enum LectureRegisterStatus {
 
-    REGISTERED("등록완료"),
-    PENDING("등록대기중"),
     UNREGISTERED("미등록"),
-    REJECTED("반려"),
-    IN_PROGRESS("등록중");
+    PENDING("등록대기중"),
+    REGISTERED("등록완료"),
+    REJECTED("반려");
 
     private final String value;
 

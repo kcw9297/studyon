@@ -95,43 +95,42 @@
     border-bottom: 1px solid #f0f0f0;
     color: #333;
 }
-
+/* No */
 .payment-table th:nth-child(1) {
     width: 5%;
 }
 
-/* No */
+/* 결제번호 */
 .payment-table th:nth-child(2) {
-    width: 15%;
+    width: 12%;
 }
 
-/* 이름 */
+/* 강의명 */
 .payment-table th:nth-child(3) {
-    width: 20%;
+    width: 23%;
 }
 
-/* 이메일 */
+/* 결제자 */
 .payment-table th:nth-child(4) {
     width: 10%;
 }
 
-/* 권한 */
+/* 결제금액 */
 .payment-table th:nth-child(5) {
     width: 10%;
 }
 
-/* 상태 */
+/* 결제일 */
 .payment-table th:nth-child(6) {
     width: 15%;
 }
 
-/* 가입일 */
+/* 결제상태 */
 .payment-table th:nth-child(7) {
     width: 10%;
 }
 
 /* 관리 */
-
 .payment-table tr:hover {
     background: #f9f9fc;
 }

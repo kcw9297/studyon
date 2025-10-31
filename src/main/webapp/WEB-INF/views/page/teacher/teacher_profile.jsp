@@ -10,7 +10,7 @@
 </div>
 
 <!-- ✅ 강사 프로필 영역 -->
-<div class="teacher-profile-wrapper">
+<div class="teacher-profile-wrapper" data-teacher-id="${teacher.teacherId}">
     <div class="teacher-img-area">
         <img src="<c:url value='/img/png/teacher_profile_img.png'/>" alt="강사이미지" class="teacher-img">
     </div>
@@ -53,13 +53,19 @@
             ${subject.value} 주간 인기/추천 강의
         </div>
         <div class="recent-lecture-container">
-            <!-- best_reviews.js -->
+            <!-- best_lectures.js -->
         </div>
         <div class="recomment-lecture-title">
             요새 뜨는 강의
         </div>
         <div class="recent-lecture-container">
             <!-- recent_lecture.js -->
+        </div>
+        <div class="recomment-lecture-title">
+            최근 수강평
+        </div>
+        <div class="lecture-comment-box">
+
         </div>
     </div>
 </div>
@@ -326,9 +332,204 @@
 </style>
 
 <%-- Local Script --%>
-<script src="<c:url value='/js/page/teacher_profile/best_lectures.js'/>"></script>
-<script src="<c:url value='/js/page/teacher_profile/recent_lectures.js'/>"></script>
-<script src="<c:url value='/js/page/teacher_profile/profile_reviews.js'/>"></script>
+<!-- best_lectures.js -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // ✅ teacherId 읽기
+        const wrapper = document.querySelector(".teacher-profile-wrapper");
+        const teacherId = wrapper ? wrapper.dataset.teacherId : "";
+
+        const params = new URLSearchParams();
+        params.append("teacherId", teacherId);
+
+        fetch("/api/teachers/profile/bestLecture", {
+            method: "POST",
+            headers: { "X-Requested-From": window.location.pathname + window.location.search },
+            body: params
+        })
+            .then(function(res) { return res.json(); })
+            .then(function(json) {
+                console.log("서버 응답:", json);
+                renderBestLectures(json.data);
+            })
+            .catch(function(err) {
+                console.error("수강평 불러오기 실패:", err);
+            });
+
+        function renderBestLectures(bestLectures) {
+            const teacherBestSection = document.getElementById("teacherBestLectures");
+            if (!teacherBestSection) {
+                console.error("teacherBestLectures 섹션을 찾을 수 없습니다.");
+                return;
+            }
+
+            const container = teacherBestSection.querySelector(".recent-lecture-container");
+            if (!container) {
+                console.error("recent-lecture-container 요소를 찾을 수 없습니다.");
+                return;
+            }
+
+            container.innerHTML = "";
+
+            if (!bestLectures || bestLectures.length === 0) {
+                container.innerHTML = "<p>강의 정보가 조회되지 않습니다.</p>";
+                return;
+            }
+
+            bestLectures.forEach(function(bestLecture) {
+                const item = document.createElement("div");
+                item.classList.add("recent-lecture-item");
+
+                // 🧩 변수로 미리 포맷팅
+                const price = bestLecture.price ? bestLecture.price.toLocaleString("ko-KR") : "0";
+                const students = bestLecture.totalStudents >= 10 ? "10+" : bestLecture.totalStudents;
+                const rating = (bestLecture.averageRate != null ? bestLecture.averageRate : "N/A");
+                const description = bestLecture.description || "강의 소개가 없습니다.";
+
+                // div 클릭 시 들어갈 링크
+                const detailUrl = "/lecture/detail/" + bestLecture.lectureId;
+
+                // ✅ innerHTML 안전 문자열로 작성
+                item.innerHTML =
+                    "<a href='" + detailUrl + "'>" +
+                    "<img src='/img/png/sample1.png' alt='강의이미지' class='recent-lecture-thumbnail'>" +
+                    "<div class='lecture-info'>" +
+                    "<p class='lecture-title'>" + bestLecture.title + "</p>" +
+                    "<p class='lecture-info-text'>" + description + "</p>" +
+                    "<p class='lecture-info-text'>₩" + price + "</p>" +
+                    "<p class='lecture-info-text'>⭐ " + rating + "</p>" +
+                    "<p class='lecture-info-text'>&#x1F9F8; " + students + "</p>" +
+                    "</div>" +
+                    "</a>";
+
+                container.appendChild(item);
+            });
+        }
+    });
+</script>
+
+<!-- recent_lectures.js -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const teacherRecentEl = document.getElementById("teacherRecentLectures");
+        const teacherId = teacherRecentEl ? teacherRecentEl.dataset.teacherId : "";
+
+        const params = new URLSearchParams();
+        params.append("teacherId", teacherId);
+
+        // ✅ GET 요청에는 body 사용하지 않도록 수정
+        fetch("/api/teachers/profile/recentLecture?" + params.toString(), {
+            method: "GET",
+            headers: { "X-Requested-From": window.location.pathname + window.location.search }
+        })
+            .then(function(res) { return res.json(); })
+            .then(function(json) {
+                console.log("서버 응답:", json);
+                renderRecentLectures(json.data);
+            })
+            .catch(function(err) {
+                console.error("최근 강의 불러오기 실패:", err);
+            });
+
+        function renderRecentLectures(recentLectures) {
+            const teacherRecentSection = document.getElementById("teacherRecentLectures");
+            if (!teacherRecentSection) {
+                console.error("teacherRecentLectures 요소를 찾을 수 없습니다.");
+                return;
+            }
+
+            const container = teacherRecentSection.querySelector(".recent-lecture-container");
+            if (!container) {
+                console.error("recent-lecture-container 요소를 찾을 수 없습니다.");
+                return;
+            }
+
+            container.innerHTML = "";
+
+            if (!recentLectures || recentLectures.length === 0) {
+                container.innerHTML = "<p>강의 정보가 조회되지 않습니다.</p>";
+                return;
+            }
+
+            recentLectures.forEach(function(recentLecture) {
+                const item = document.createElement("div");
+                item.classList.add("recent-lecture-item");
+
+                // 🧩 데이터 포맷팅
+                const price = recentLecture.price ? recentLecture.price.toLocaleString("ko-KR") : "0";
+                const students = recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents;
+                const rating = (recentLecture.averageRate != null ? recentLecture.averageRate : "N/A");
+                const description = recentLecture.description || "강의 소개가 없습니다.";
+                const detailUrl = "/lecture/detail/" + recentLecture.lectureId;
+
+                item.innerHTML =
+                    "<a href='" + detailUrl + "'>" +
+                    "<img src='/img/png/sample1.png' alt='강의이미지' class='recent-lecture-thumbnail'>" +
+                    "<div class='lecture-info'>" +
+                    "<p class='lecture-title'>" + recentLecture.title + "</p>" +
+                    "<p class='lecture-info-text'>" + description + "</p>" +
+                    "<p class='lecture-info-text'>₩" + price + "</p>" +
+                    "<p class='lecture-info-text'>⭐ " + rating + "</p>" +
+                    "<p class='lecture-info-text'>&#x1F9F8; " + students + "</p>" +
+                    "</div>" +
+                    "</a>";
+
+                container.appendChild(item);
+            });
+        }
+    });
+</script>
+
+<!-- profile_reviews.js -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const teacherEl = document.getElementById("teacherComment");
+        const teacherId = teacherEl ? teacherEl.dataset.teacherId : "";
+
+        const params = new URLSearchParams();
+        params.append("teacherId", teacherId);
+
+        // ✅ URL 내 {teacherId} 부분은 실제 값으로 치환 필요
+        fetch("/api/lectures/reviews/teacher/" + teacherId, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: params
+        })
+            .then(function(res) { return res.json(); })
+            .then(function(json) {
+                console.log("서버 응답:", json);
+                renderComments(json.data);
+            })
+            .catch(function(err) {
+                console.error("수강평 불러오기 실패:", err);
+            });
+
+        function renderComments(comments) {
+            const container = document.querySelector(".lecture-comment-box");
+            if (!container) {
+                console.error("lecture-comment-box 요소를 찾을 수 없습니다.");
+                return;
+            }
+
+            container.innerHTML = "";
+
+            if (!comments || comments.length === 0) {
+                container.innerHTML = "<p>아직 등록된 수강평이 없습니다.</p>";
+                return;
+            }
+
+            comments.forEach(function(comment) {
+                const item = document.createElement("div");
+                item.classList.add("lecture-comment-box-item");
+                item.innerHTML =
+                    "<div class='lecture-comment-username'>" + comment.nickname + "</div>" +
+                    "<div class='lecture-comment-comment'>" + comment.content + "</div>";
+                container.appendChild(item);
+            });
+        }
+    });
+</script>
+
 
 <script>
     // ✅ 배너 페이드 전환

@@ -11,7 +11,15 @@
                 <c:forEach var="like" items="${likeList}">
                     <a class="likes-item" href="/lecture/detail/${like.lecture.lectureId}">
                         <div class="likes-thumbnail">
-                            <img src="<c:url value='${like.lecture.thumbnailFile}'/>">
+
+                            <c:choose>
+                                <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
+                                </c:otherwise>
+                            </c:choose>
+
                             <form class="likes-deleteIcon" action="/mypage/likes/delete/${like.lecture.lectureId}" method="get">
                                 <input type="hidden" name="subject" value="${selectedSubject}">
                                 <button type="submit">

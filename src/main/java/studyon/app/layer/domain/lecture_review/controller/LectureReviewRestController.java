@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
@@ -47,5 +48,19 @@ public class LectureReviewRestController {
         List<LectureReviewDTO.Read> reviews = lectureReviewService.readRecentReview(rq.getTeacherId(), count);
         // [2] 리스팅한 정보 리턴하기
         return RestUtils.ok(reviews);
+    }
+
+    /**
+     * [POST] 특정 선생님의 수강평 조회
+     * @param dto 리뷰 DTO
+     */
+    @PostMapping("/create")
+    public ResponseEntity<?> createReview(@ModelAttribute LectureReviewDTO.Write dto) {
+        log.info("[API] 리뷰 등록 요청 - lectureId={}, memberId={}, rating={}",
+                dto.getLectureId(), dto.getMemberId(), dto.getRating());
+
+        lectureReviewService.createReview(dto, dto.getMemberId());
+
+        return RestUtils.ok();
     }
 }

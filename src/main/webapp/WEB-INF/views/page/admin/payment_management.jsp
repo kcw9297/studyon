@@ -52,7 +52,7 @@
                     <th>결제금액</th>
                     <th>결제일</th>
                     <th>결제상태</th>
-                    <th colspan="2">관리</th>
+                    <th>관리</th>
                 </tr>
                 </thead>
                 <tbody id="paymentTableBody">
@@ -231,7 +231,6 @@
                     "<td>" + (p.paidAmount ? p.paidAmount.toLocaleString() : "0") + "원</td>" +
                     "<td>" + (p.cdate || "-") + "</td>" +
                     "<td>" + refundStatus + "</td>" +
-                    "<td><a href='" + contextPath + "/admin/payment/detail/" + p.paymentId + "' class='management-button'>관리(X)</a></td>" +
                     "<td>" + refundButton + "</td>";
                 tbody.appendChild(tr);
             });

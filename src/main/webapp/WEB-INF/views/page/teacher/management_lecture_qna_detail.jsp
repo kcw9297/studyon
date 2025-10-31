@@ -210,7 +210,7 @@
         console.log("삭제이후");
 
         answerEditBtn.addEventListener("click", async() =>{
-            window.location.href="/teacher/management/qna/updateQna";
+            window.location.href="/teacher/management/qna/updateQna?id=" + questionId;
         })
 
         if (!questionId) {
