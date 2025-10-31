@@ -84,8 +84,11 @@
     /* QNA 질답쪽*/
 
     .qna-item-question-box{
+        display:flex;
+        flex-direction: column;
         cursor:pointer;
         transition:background 0.3s ease;
+        gap:5px;
     }
 
     .qna-item-question-box:hover{
@@ -588,12 +591,20 @@
                     if (q.answerContent) {
                         const answerBox = document.createElement("div");
                         answerBox.classList.add("qna-answer");
-                        answerBox.innerHTML = `
-                    <label class="qna-item-teachername">👩‍🏫 ${q.teacherName || "강사"} :</label>
-                    <label class="qna-item-answer">${q.answerContent}</label>
-                `;
+                        answerBox.innerHTML =
+                            '<label class="qna-item-teachername">👩‍🏫 ' + (q.teacherName || "답변") + ' : </label>' +
+                            '<label class="qna-item-answer">' + q.answerContent + '</label>';
                         questionBox.appendChild(answerBox);
+                    }else{
+                        const answerBox = document.createElement("div");
+                        answerBox.classList.add("qna-answer");
+                        answerBox.innerHTML =
+                            '<label class="qna-item-teachername">👩‍🏫 ' + (q.teacherName || "답변") + ' : </label>' +
+                            '<label class="qna-item-answer">' + "답변이 존재하지 않습니다." + '</label>';
+                        questionBox.appendChild(answerBox);
+
                     }
+
 
                     // 구분선
                     const divider = document.createElement("hr");

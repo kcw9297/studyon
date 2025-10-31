@@ -1,0 +1,33 @@
+registerBtn.addEventListener("click", async () => {
+            try {
+                // ✅ 1️⃣ URL에서 lectureId 추출
+                const pathParts = window.location.pathname.split("/");
+                const lectureId = pathParts[pathParts.length - 1];
+                console.log("📘 lectureId =", lectureId);
+
+                // ✅ 2️⃣ FormData 생성
+                const formData = new FormData();
+                formData.append("lectureId", lectureId);
+
+                // ✅ 3️⃣ 서버 요청
+                const res = await fetch(`/api/teachers/management/lectureinfo/registerPending`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                // ✅ 4️⃣ 응답 처리
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("✅ 등록 성공:", data);
+                    alert("강의 등록 요청이 완료되었습니다.");
+                    location.reload();
+                } else {
+                    console.error("❌ 서버 응답 오류:", res.status);
+                    alert("강의 등록 요청에 실패했습니다.");
+                }
+
+            } catch (err) {
+                console.error("🚨 강의 등록 중 오류:", err);
+                alert("강의 등록 중 문제가 발생했습니다.");
+            }
+        });

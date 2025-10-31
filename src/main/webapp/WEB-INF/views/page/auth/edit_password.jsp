@@ -19,7 +19,7 @@
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 재입력" required>
             </div>
 
-            <div class="asynchronous-message-wrong" id="passwordEditError" style="color: red;font-size: 14px;opacity: 0.7; margin-bottom: 10px;"></div>
+            <div class="text-error" id="passwordEditError" style="color: red;font-size: 14px;opacity: 0.7; margin-bottom: 10px;"></div>
             <button type="submit" class="edit-btn">비밀번호 변경</button>
         </form>
     </div>

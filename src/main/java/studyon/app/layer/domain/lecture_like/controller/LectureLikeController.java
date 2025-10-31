@@ -30,7 +30,7 @@ public class LectureLikeController {
 
     // 좋아요 등록
     @PostMapping("/{lectureId}/add")
-    public ResponseEntity<Map<String, Object>> addLike(@RequestBody LectureLikeDTO.Write dto) {
+    public ResponseEntity<?> addLike(@RequestBody LectureLikeDTO.Write dto) {
         lectureLikeService.addLike(dto);
         Map<String, Object> result = new HashMap<>();
         result.put("liked", true);
@@ -40,7 +40,7 @@ public class LectureLikeController {
 
     // 삭제
     @DeleteMapping("/{lectureId}/remove")
-    public ResponseEntity<Map<String, Object>> removeLike(@RequestBody LectureLikeDTO.Delete dto) {
+    public ResponseEntity<?> removeLike(@RequestBody LectureLikeDTO.Delete dto) {
         lectureLikeService.removeLike(dto);
         Map<String, Object> result = new HashMap<>();
         result.put("liked", false);
@@ -50,7 +50,7 @@ public class LectureLikeController {
 
     // 상태 조회
     @GetMapping("/{lectureId}/status")
-    public ResponseEntity<Map<String, Object>> checkLike(
+    public ResponseEntity<?> checkLike(
             @PathVariable Long lectureId,
             @RequestParam Long memberId) {
 
@@ -60,6 +60,7 @@ public class LectureLikeController {
         Map<String, Object> result = new HashMap<>();
         result.put("liked", liked);
         result.put("likeCount", likeCount);
+        log.info("like count: {}", result.get("likeCount"));
         return ResponseEntity.ok(result);
     }
 }

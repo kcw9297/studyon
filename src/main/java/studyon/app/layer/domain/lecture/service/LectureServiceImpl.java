@@ -220,6 +220,7 @@ public class LectureServiceImpl implements LectureService {
                 .teacherName(teacher.getMember().getNickname())
                 .teacherId(teacherId)
                 .title(lecture.getTitle())
+                .lectureRegisterStatus(lecture.getLectureRegisterStatus())
                 .description(lecture.getDescription())
                 .target(lecture.getLectureTarget())
                 .difficulty(lecture.getDifficulty())
@@ -360,7 +361,7 @@ public class LectureServiceImpl implements LectureService {
         List<LectureRegisterStatus> available = List.of(LectureRegisterStatus.PENDING, LectureRegisterStatus.REJECTED);
 
         // 리스트 외의 상태에서 등록 요청을 하는 경우 검증
-        if (available.contains(lecture.getLectureRegisterStatus()))
+        if (!available.contains(lecture.getLectureRegisterStatus()))
             throw new BusinessLogicException(AppStatus.LECTURE_STATE_NOT_EDITABLE);
 
         // [3] 상태갱신 수행
@@ -370,9 +371,10 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public void reject(Long lectureId, String rejectReason) {
 
-        Lecture lecture = lectureRepository
+        lectureRepository
                 .findById(lectureId)
-                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .reject(rejectReason);
     }
 
 

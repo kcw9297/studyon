@@ -29,7 +29,7 @@
             <img src="<c:url value='/img/png/eyeoff.png'/>" alt="비밀번호 보기" />
         </span>
     </div>
-    <div class="asynchronous-message-wrong" id="loginError"></div>
+    <div class="text-error" id="loginError"></div>
     <div class="divider-login"></div>
     <button type="submit">로그인</button>
 </form>
@@ -146,7 +146,7 @@
         const modal = document.getElementById("passwordEditModal");
         modal.querySelectorAll('input').forEach(input => input.value = '');
         modal.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
-        modal.querySelectorAll('.asynchronous-message-wrong').forEach(textError => textError.textContent = '');
+        modal.querySelectorAll('.text-error').forEach(textError => textError.textContent = '');
         if (modal) modal.style.display = "none";
     }
 

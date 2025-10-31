@@ -171,6 +171,7 @@ public class Lecture extends BaseEntity {
     
     public void reject(String rejectReason) {
         this.lectureRegisterStatus = LectureRegisterStatus.REJECTED;
+        this.onSale = false; // 판매 상태도 false
         this.rejectReason = rejectReason;
     }
 

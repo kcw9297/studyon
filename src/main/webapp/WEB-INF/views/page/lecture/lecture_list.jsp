@@ -194,7 +194,12 @@
         margin-bottom:10px;
     }
     .search-lecture-info{
+        display:flex;
+        flex-direction:row;
+        gap:5px;
         padding:5px;
+        width:100%;
+        height:100px;
 
     }
     .search-lecture-title{
@@ -204,6 +209,106 @@
     .search-lecture-teacher{
         color: black;
     }
+
+    .lecture-thumbnail{
+        width:100%;
+        height:100%;
+    }
+
+    /* lecture-item 속성 ( ID 기반 ) */
+    #title{
+        font-size:24px;
+    }
+
+    /* 공통 기본 스타일 */
+    #title,
+    #subject,
+    #subjectDetail,
+    #difficulty,
+    #teacherNickname,
+    #price,
+    #totalStudents,
+    #totalDuration,
+    #averageRate,
+    #likeCount,
+    #lectureTarget {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 18px;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        width:auto;
+        height:auto;
+    }
+
+    /* 개별 색상 — 연한 파스텔톤 */
+    #title {
+        background-color: #e7f1ff;   /* 파스텔 블루 */
+        color: #1d3b8b;
+    }
+    #subject {
+        background-color: #eaf9e6;   /* 파스텔 그린 */
+        color: #2d6a2e;
+    }
+    #subjectDetail {
+        background-color: #fff6e5;   /* 파스텔 오렌지 */
+        color: #9c6b00;
+    }
+    #difficulty {
+        background-color: #f8eaff;   /* 파스텔 퍼플 */
+        color: #5d3b88;
+    }
+    #teacherNickname {
+        background-color: #e6f4ff;   /* 하늘색 */
+        color: #005d99;
+    }
+    #price {
+        background-color: #fff0f0;   /* 핑크톤 */
+        color: #a33b3b;
+    }
+    #totalStudents {
+        background-color: #f5f5f5;   /* 연회색 */
+        color: #444;
+    }
+    #totalDuration {
+        background-color: #eaf7ff;   /* 밝은 민트 */
+        color: #006b6b;
+    }
+    #averageRate {
+        background-color: #e7ffe9;   /* 연한 초록 */
+        color: #2e7d32;
+    }
+    #likeCount {
+        background-color: #fff0f8;   /* 파스텔 핑크 */
+        color: #a13c75;
+    }
+    #lectureTarget {
+        background-color: #fffde7;   /* 파스텔 노랑 */
+        color: #8c7000;
+    }
+
+    /* hover 시 살짝 진하게 */
+    #title:hover,
+    #subject:hover,
+    #subjectDetail:hover,
+    #difficulty:hover,
+    #teacherNickname:hover,
+    #price:hover,
+    #totalStudents:hover,
+    #totalDuration:hover,
+    #averageRate:hover,
+    #likeCount:hover,
+    #lectureTarget:hover {
+        transform: scale(1.05);
+        filter: brightness(1.05);
+    }
+
+
+
+
 </style>
 
 <script>
@@ -332,17 +437,17 @@
             item.innerHTML = `
             <img src="\${thumbnailSrc}" class="lecture-thumbnail" />
             <div class="search-lecture-info">
-                <label class="search-lecture-title">\${lecture.title}</label>
-                <label class="search-lecture-title">\${SUBJECT_MAP[lecture.subject]}</label>
-                <label class="search-lecture-title">\${SUBJECT_DETAIL_MAP[lecture.subjectDetail]}</label>
-                <label class="search-lecture-title">\${DIFFICULTY_MAP[lecture.difficulty]}</label>
-                <label class="search-lecture-teacher">\${lecture.teacherNickname}</label>
-                <label class="search-lecture-teacher">\${lecture.price}</label>
-                <label class="search-lecture-teacher">\${lecture.totalStudents}</label>
-                <label class="search-lecture-teacher">\${lecture.totalDuration}</label>
-                <label class="search-lecture-teacher">\${lecture.averageRate}</label>
-                <label class="search-lecture-teacher">\${lecture.likeCount}</label>
-                <label class="search-lecture-teacher">\${TARGET_MAP[lecture.lectureTarget]}</label>
+                <label id="title" class="search-lecture-title">\${lecture.title}</label>
+                <label id="subject" class="search-lecture-title">\${SUBJECT_MAP[lecture.subject]}</label>
+                <label id="subjectDetail" class="search-lecture-title">\${SUBJECT_DETAIL_MAP[lecture.subjectDetail]}</label>
+                <label id="difficulty" class="search-lecture-title">\${DIFFICULTY_MAP[lecture.difficulty]}</label>
+                <label id="teacherNickname" class="search-lecture-teacher">\${lecture.teacherNickname}</label>
+                <label id="price" class="search-lecture-teacher">\${lecture.price}</label>
+                <label id="totalStudents" class="search-lecture-teacher">\${lecture.totalStudents}</label>
+                <label id="totalDuration" class="search-lecture-teacher">\${lecture.totalDuration}</label>
+                <label id="averageRate" class="search-lecture-teacher">\${lecture.averageRate}</label>
+                <label id="likeCount" class="search-lecture-teacher">\${lecture.likeCount}</label>
+                <label id="lectureTarget" class="search-lecture-teacher">\${TARGET_MAP[lecture.lectureTarget]}</label>
             </div>
         `;
 

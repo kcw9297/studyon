@@ -10,7 +10,7 @@
             비밀번호 재설정 링크를 보내드립니다.
         </p>
         <input type="text" id="editPasswordEmail" name="sendEmail" placeholder="이메일 주소 입력">
-        <div class="asynchronous-message-wrong" id="editPasswordError"></div>
+        <div class="text-error" id="editPasswordError"></div>
         <div class="modal-buttons">
             <button id="sendEditPasswordEmailBtn">메일 보내기</button>
             <button id="closePasswordModalBtn">취소</button>
