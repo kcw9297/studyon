@@ -193,7 +193,7 @@
                             });
                             const json = await res.json();
 
-                            if (json.success === true || json.statusCode === 200) {
+                            if (json) {
                                 item.remove();
 
                                 const reordered = Array.from(listBox.querySelectorAll(".lecture-item")).map((item, i) => {

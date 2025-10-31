@@ -18,11 +18,9 @@
         </div>
 
         <div class="qna-question-title">
-            Q. 3강에서 예시 데이터는 어디서 확인할 수 있나요?
         </div>
 
         <div class="qna-question-content">
-            영상에서 데이터셋을 사용한다고 하셨는데, 혹시 다운로드 링크를 받을 수 있을까요?
         </div>
     </div>
 
@@ -36,7 +34,7 @@
 
             <div class="answer-button-box">
                 <button class="answer-cancel" type="button">취소</button>
-                <button class="answer-submit" type="submit">등록</button>
+                <button class="answer-edit" type="submit">수정</button>
             </div>
         </div>
     </form>
@@ -228,6 +226,8 @@
         // ✅ URL에서 questionId 파라미터 추출
         const params = new URLSearchParams(window.location.search);
         const lectureQuestionId = params.get("id"); // ✅ OK
+        const cancelBtn = document.querySelector(".cancelBtn");
+        const editBtn = document.querySelector(".answer-edit");
         console.log("📘 lectureQuestionId =", lectureQuestionId);
 
         if (!lectureQuestionId || lectureQuestionId === "null") {
@@ -236,72 +236,55 @@
             return;
         }
 
-        try {
-            // ✅ 질문 상세 데이터 불러오기
-            const res = await fetch("/api/teachers/management/qna/answer/" + lectureQuestionId);
+        try{
+            const res = await fetch("/api/teachers/management/qna/detail/" + questionId);
             const json = await res.json();
             const data = json.data;
-            console.log("📘 QnA Detail:", data);
+            console.log(data)
 
-            // ✅ 화면 데이터 주입
-            document.querySelector(".student-name").textContent = "학생: " + data.studentName;
+            document.querySelector(".student-name").textContent = "질문자: " + data.studentName;
             document.querySelector(".qna-date").textContent = new Date(data.createdAt).toLocaleDateString();
             document.querySelector(".qna-question-title").textContent = "Q. " + data.title;
             document.querySelector(".qna-question-content").textContent = data.content;
+            document.querySelector(".teacher-name").textContent = "👩‍🏫 작성 강사: " + data.teacherName;
+            document.querySelector(".answer-date").textContent =
+                data.answeredAt ? new Date(data.answeredAt).toLocaleDateString() : "-";
+            document.querySelector(".answer-textarea").textContent =
+                data.answerContent || "아직 답변이 작성되지 않았습니다.";
 
-            // ✅ 해당 강의로 이동 버튼
-            const moveBtn = document.querySelector(".video-move-button");
-            moveBtn.addEventListener("click", function() {
-                if (!data.lectureId || !data.indexTitle) {
-                    alert("강의 정보가 없습니다.");
-                    return;
-                }
-                window.location.href = "/lecture/player?lectureId=" + data.lectureId + "&index=" + data.indexTitle;
-            });
 
-            console.log(lectureQuestionId);
-            console.log(content);
 
-            // ✅ 답변 등록 버튼 클릭 이벤트
-            const submitBtn = document.querySelector(".answer-submit");
-            const textarea = document.querySelector(".answer-textarea");
-            const cancelBtn = document.querySelector(".answer-cancel");
+        }catch{
 
-            submitBtn.addEventListener("click", async function(event) {
-                event.preventDefault();
-                const content = textarea.value.trim();
-                if (content.length === 0) {
-                    alert("답변 내용을 입력하세요.");
-                    return;
-                }
-
-                const formData = new FormData();
-                console.log(lectureQuestionId);
-                console.log(content);
-                formData.append("lectureQuestionId", lectureQuestionId);
-                formData.append("content", content);
-
-                try {
-                    const res2 = await fetch("/api/teachers/management/qna/answer", {
-                        method: "POST",
-                        body: formData
-                    });
-                    window.location.href = "/teacher/management/qna/detail?id="+lectureQuestionId;
-
-                } catch (err) {
-                }
-            });
-
-            // ✅ 취소 버튼
-            cancelBtn.addEventListener("click", function() {
-                if (confirm("답변 작성을 취소하시겠습니까?")) {
-                    window.location.href = "/teacher/management/qna/detail?id=" + lectureQuestionId;
-                }
-            });
-
-        } catch (err) {
-            console.error("🚨 상세 데이터 불러오기 실패:", err);
         }
-    });
+
+
+
+
+        cancelBtn.addEventListener("click", function () {
+            if (confirm("답변 작성을 취소하시겠습니까?")) {
+                window.location.href = "/teacher/management/qna/detail?id=" + lectureQuestionId;
+            }
+        });
+
+        editBtn.addEventListener("click", () =>{
+
+
+
+
+
+            alert("답변이 수정되었습니다.");
+            window.location.href="/teacher/management/qna/detail?id=" + lectureQuestionId;
+        })
+
+
+
+
+
+
+
+
+        //DOMContent End
+    })
 
 </script>
