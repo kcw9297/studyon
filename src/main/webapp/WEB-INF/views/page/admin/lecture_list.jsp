@@ -279,3 +279,76 @@
     <!-- 페이징 -->
     <div id="pagination" class="pagination"></div>
 </div>
+
+<script>
+
+    // 페이징 바
+    const pagination = document.getElementById("pagination");
+
+    // 상세과목 선택 모달
+    const modal = document.getElementById('subjectDetailModal');
+    const openBtn = document.getElementById('openSubjectDetailModal');
+    const closeBtn = document.getElementById('closeSubjectDetailModal');
+    const confirmBtn = document.getElementById('confirmSubjectDetail');
+
+
+    document.addEventListener("DOMContentLoaded", ()=> {
+
+        // 모달 열기
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        // 모달 닫기
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // 확인 버튼
+        confirmBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // 배경 클릭 시 닫기
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+    })
+
+    // 페이징 렌더링
+    function renderPagination(page) {
+
+        // 페이지 데이터 분석
+        const isStart = page.startPage;
+        const isEnd = page.endPage;
+        const groupSize = page.groupSize;
+        const dataCount = page.dataCount;
+        const currentGroupStartPage = page.currentGroupStartPage;
+        const currentGroupEndPage = page.currentGroupEndPage;
+        const previousGroupPage = page.previousGroupPage;
+        const currentPage = page.currentPage;
+
+        // 버튼
+        const leftBtn = isStart
+            ? `<button class="page-btn disabled">◀</button>`
+            : `<button class="page-btn">◀</button>`;
+
+        const rightBtn = isEnd
+            ? `<button class="page-btn disabled">▶</button>`
+            : `<button class="page-btn">▶</button>`;
+
+        // 내부 버튼 (그룹)
+        const innerBtn = [];
+        for (let i = currentGroupStartPage; i <= currentGroupEndPage; i++) {
+            const activeClass = (i === currentPage) ? 'active' : '';
+            innerBtn.push(`<button class="page-btn \${activeClass}">\${i}</button>`);
+        }
+
+        pagination.innerHTML = '';
+        pagination.innerHTML = leftBtn + innerBtn.join('') + rightBtn;
+    }
+
+</script>
