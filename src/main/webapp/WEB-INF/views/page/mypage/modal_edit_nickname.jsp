@@ -6,7 +6,7 @@
     <div class="nickname-modal-content">
         <h2>닉네임 수정</h2>
         <input type="text" id="nicknameInput" name="nickname" placeholder="변경할 닉네임을 입력하세요">
-        <div class="asynchronous-message-wrong" id="nicknameError"></div>
+        <div class="text-error" id="nicknameError"></div>
         <div class="modal-buttons">
             <button id="saveNicknameBtn" onclick="editNickname()">저장</button>
             <button id="closeEditNicknameBtn" onclick="closeNicknameModal()">취소</button>

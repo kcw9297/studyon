@@ -314,7 +314,7 @@
                         const errorElem = document.getElementById(`\${field}Error`);
                         if (errorElem) {
                             errorElem.textContent = message;
-                            errorElem.className = "asynchronous-message-wrong";
+                            errorElem.className = "text-error";
                         }
                     });
                     return;

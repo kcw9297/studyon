@@ -66,7 +66,7 @@ public class AdminLectureRestController {
     /**
      * [PATCH] 판매(ON_SALE, true) 상태로 변경
      */
-    @PatchMapping("/{lectureId}/on-sale/start")
+    @PatchMapping("/{lectureId:[0-9]+}/start-sale")
     public ResponseEntity<?> startSale(@PathVariable Long lectureId) {
 
         // [1] 상태 갱신 수행
@@ -79,7 +79,7 @@ public class AdminLectureRestController {
     /**
      * [PATCH] 판매(NON_SALE, false) 상태로 변경
      */
-    @PatchMapping("/{lectureId}/on-sale/stop")
+    @PatchMapping("/{lectureId:[0-9]+}/stop-sale")
     public ResponseEntity<?> stopSale(@PathVariable Long lectureId) {
 
         // [1] 상태 갱신 수행
@@ -92,7 +92,7 @@ public class AdminLectureRestController {
     /**
      * [PATCH] 강의 등록 처리
      */
-    @PatchMapping("/{lectureId}/register")
+    @PatchMapping("/{lectureId:[0-9]+}/register")
     public ResponseEntity<?> register(@PathVariable Long lectureId) {
 
         // [1] 상태 갱신 수행
@@ -105,7 +105,7 @@ public class AdminLectureRestController {
     /**
      * [PATCH] 강의 반려 처리
      */
-    @PatchMapping("/{lectureId}/reject")
+    @PatchMapping("/{lectureId:[0-9]+}/reject")
     public ResponseEntity<?> reject(@PathVariable Long lectureId,
                                     @Title(max=30) String rejectReason) {
 
