@@ -346,9 +346,8 @@ public class TeacherRestController {
     @PostMapping("/management/qna/updateQuestion/{questionId}")
     public ResponseEntity<?> updateQuestion(@RequestBody LectureQuestionDTO.Write dto, @PathVariable Long questionId) {
         log.info("updateQuestion Method ");
-        LectureQuestionDTO.TeacherQnaDetail response =
-                lectureQuestionService.updateQuestion(dto,questionId);
-        return RestUtils.ok(response);
+        lectureQuestionService.updateQuestion(dto,questionId);
+        return RestUtils.ok();
     }
 
 
