@@ -83,7 +83,8 @@ public class MypageController {
         if (until == null) until = now.withDayOfMonth(now.lengthOfMonth());
 
         // 내역 조회
-        List<Payment> paymentList = paymentRepository.findWithMemberAndLectureByMemberIdAndDateRange(memberId, since.atStartOfDay(), until.atTime(23,59,59));
+        List<Payment> paymentList =
+                paymentRepository.findWithMemberAndLectureByMemberIdAndDateRange(memberId, since.atStartOfDay(), until.atTime(23,59,59));
 
         model.addAttribute("paymentList", paymentList);
         model.addAttribute("sinceDate", since);

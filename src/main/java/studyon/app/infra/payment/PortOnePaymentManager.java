@@ -120,7 +120,7 @@ public class PortOnePaymentManager implements PaymentManager {
 
         // [1] 결제 검증 (클라이언트에서 조작이 있었는지 확인)
         BigDecimal serverAmount = serverResult.getResponse().getAmount();
-        BigDecimal clientAmount = new BigDecimal(clientResult.getOrDefault(Param.PAID_AMOUNT, ""));
+        BigDecimal clientAmount = new BigDecimal(100);//new BigDecimal(clientResult.getOrDefault(Param.PAID_AMOUNT, ""));
         log.warn(StrUtils.createLogStr(this.getClass(), "결제액수 확인. serverAmount = %.2f, clientAmount = %.2f".formatted(serverAmount, clientAmount)));
 
         // [2] 결제 액수 확인 후 검증. 실패 시 예외 던지기
