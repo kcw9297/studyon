@@ -41,6 +41,11 @@ public class LectureAnswer extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private LectureAnswer parent;
 
+    @OnDelete(action = OnDeleteAction.CASCADE) // 회원 삭제될 시 함께 삭제
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_question_id", nullable = false)
+    private LectureQuestion lectureQuestion;
+
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

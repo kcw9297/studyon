@@ -46,4 +46,11 @@ public interface LectureReviewService {
      * @return 평점 계산 결과
      */
     Double updateAverageRatings(Long lectureId);
+
+    /** 리뷰 생성 로직
+     * @param dto 강의 리뷰 DTO
+     * @param memberId 멤버 ID
+     * @return 평점 계산 결과
+     */
+    void createReview(LectureReviewDTO.Write dto, Long memberId);
 }

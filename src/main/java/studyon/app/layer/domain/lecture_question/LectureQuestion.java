@@ -87,4 +87,5 @@ public class LectureQuestion extends BaseEntity {
     public void setLectureAnswer(LectureAnswer lectureAnswer) {
         this.lectureAnswer = lectureAnswer;
     }
+
 }

@@ -5,10 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.Subject;
+import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.utils.DTOMapper;
+import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture.repository.LectureRepository;
+import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
+import studyon.app.layer.domain.member.Member;
+import studyon.app.layer.domain.member.repository.MemberRepository;
+import studyon.app.layer.domain.teacher.Teacher;
+import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +39,10 @@ import java.util.stream.Collectors;
 public class LectureReviewServiceImpl implements LectureReviewService {
 
     private final LectureReviewRepository lectureReviewRepository;
+    private final LectureRepository lectureRepository;
+    private final TeacherRepository teacherRepository;
+    private final MemberRepository memberRepository;
+
 
     /**
      * 특정 선생님의 모든 강의 리뷰를 최신순으로 조회
@@ -104,20 +117,46 @@ public class LectureReviewServiceImpl implements LectureReviewService {
      */
     @Override
     public Double updateAverageRatings(Long lectureId) {
-        // [1] 리뷰 DTO 리스트 조회
-        List<LectureReviewDTO.Read> reviews = lectureReviewRepository.findByLecture_LectureId(lectureId)
-                .stream()
-                .map(DTOMapper::toReadDTO)
-                .collect(Collectors.toList());
+        final double avgRating = Math.round(
+                (lectureReviewRepository.findByLecture_LectureId(lectureId)
+                        .stream()
+                        .map(DTOMapper::toReadDTO)
+                        .mapToInt(LectureReviewDTO.Read::getRating)
+                        .average()
+                        .orElse(0.0)) * 100.0
+        ) / 100.0;
 
-        // [2] 평균 평점 계산
-        Double avgRating = reviews.isEmpty()
-                ? 0.0
-                : reviews.stream().mapToInt(LectureReviewDTO.Read::getRating)
-                .average()
-                .orElse(0.0);
+        lectureRepository.findById(lectureId).ifPresent(lecture -> {
+            lecture.updateAverageRate(avgRating);
 
-        // [3] 소수점 둘째 자리 반올림 후 반환
-        return Math.round(avgRating * 100.0) / 100.0;
+            Teacher teacher = lecture.getTeacher();
+            if (teacher != null) {
+                long totalReviews = lectureReviewRepository.countByLecture_Teacher_TeacherId(teacher.getTeacherId());
+                Double teacherAvg = lectureReviewRepository.calculateTeacherAverageRating(teacher.getTeacherId());
+                teacherAvg = teacherAvg != null ? teacherAvg : 0.0;
+
+                teacher.updateAverageRating(Math.round(teacherAvg * 100.0) / 100.0);
+                teacherRepository.save(teacher);
+            }
+
+            lectureRepository.save(lecture);
+        });
+
+        return avgRating;
+    }
+
+    @Override
+    public void createReview(LectureReviewDTO.Write dto, Long memberId) {
+        Lecture lecture = lectureRepository.findById(dto.getLectureId())
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        LectureReview reviewEntity = DTOMapper.toEntity(dto, lecture, member);
+        lectureReviewRepository.save(reviewEntity);
+
+        updateAverageRatings(dto.getLectureId());
+
     }
 }

@@ -288,7 +288,13 @@
                     "<td>" + (t.email || "-") + "</td>" +
                     "<td>" + (subjectMap[t.subject] || "-") + "</td>" +
                     "<td>" + (t.totalReview ? t.totalReview : 0) + "</td>" +
-                    "<td>" + (t.averageRating ? t.averageRating : "-") + "</td>" +
+                    "<td>" +
+                    (t.averageRating !== null && t.averageRating !== undefined
+                            ? Number(t.averageRating).toFixed(1)
+                            : "-"
+                    ) +
+                    "</td>"
+                    +
                     "<td>" + (t.totalStudents ? t.totalStudents : 0) + "</td>" +
                     "<td><a href='#' class='management-button' data-teacher-id='" + t.memberId + "'>상세정보</a></td>";
                 tbody.appendChild(row);
