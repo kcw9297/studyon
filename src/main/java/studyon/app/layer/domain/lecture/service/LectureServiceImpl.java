@@ -278,4 +278,24 @@ public class LectureServiceImpl implements LectureService {
         return lecture.getThumbnailFile().getFilePath();
     }
 
+    @Override
+    public List<LectureDTO.Read> readBestLecturesBySubject(String subject, int count) {
+        Pageable pageable = PageRequest.of(0, count);
+
+        return lectureRepository.findBestLecturesBySubjectAlgorithm(Subject.valueOf(subject), LectureRegisterStatus.REGISTERED, pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO) // DTO 내부에서 teacher.member.profileImage 유지
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LectureDTO.Read> readBestLecturesByTeacher(Long teacherId, int count) {
+        Pageable pageable = PageRequest.of(0, count);
+
+        return lectureRepository.findBestLecturesByTeacherAlgorithm(teacherId, LectureRegisterStatus.REGISTERED, pageable)
+                .stream()
+                .map(DTOMapper::toReadDTO) // DTO 내부에서 teacher.member.profileImage 유지
+                .collect(Collectors.toList());
+    }
+
 }

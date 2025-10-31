@@ -91,4 +91,7 @@ public interface LectureService {
     /* 리뷰 퍼센트 계산 - 강의페이지 */
     Map<Integer, Double> getRatingPercentage(Long lectureId);
 
+    /* 알고리즘용 특정 과목 Best 리스트 */
+    List<LectureDTO.Read> readBestLecturesBySubject(String subject, int count);
+    List<LectureDTO.Read> readBestLecturesByTeacher(Long teacherId, int count);
 }

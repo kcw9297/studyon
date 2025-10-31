@@ -3,8 +3,8 @@ package studyon.app.layer.domain.lecture;
 
 import lombok.*;
 
+import studyon.app.layer.domain.file.File;
 import studyon.app.common.enums.*;
-import studyon.app.common.enums.filter.LectureSort;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;
