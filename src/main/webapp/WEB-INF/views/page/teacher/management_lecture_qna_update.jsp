@@ -226,12 +226,14 @@
         // ✅ URL에서 questionId 파라미터 추출
         const params = new URLSearchParams(window.location.search);
         const lectureQuestionId = params.get("id"); // ✅ OK
-        const cancelBtn = document.querySelector(".cancelBtn");
+        const cancelBtn = document.querySelector(".answer-cancel");
         const editBtn = document.querySelector(".answer-edit");
         console.log("📘 lectureQuestionId =", lectureQuestionId);
+        const questionId = lectureQuestionId;
 
 
         try{
+            console.log("try문 questionid = " , questionId);
             const res = await fetch("/api/teachers/management/qna/detail/" + questionId);
             const json = await res.json();
             const data = json.data;
@@ -246,9 +248,6 @@
                 data.answeredAt ? new Date(data.answeredAt).toLocaleDateString() : "-";
             document.querySelector(".answer-textarea").textContent =
                 data.answerContent || "아직 답변이 작성되지 않았습니다.";
-
-
-
         }catch{
 
         }
@@ -256,21 +255,38 @@
 
 
 
-        cancelBtn.addEventListener("click", function () {
+        cancelBtn.addEventListener("click",  function () {
             if (confirm("답변 작성을 취소하시겠습니까?")) {
                 window.location.href = "/teacher/management/qna/detail?id=" + lectureQuestionId;
             }
         });
 
-        editBtn.addEventListener("click", () =>{
+        editBtn.addEventListener("click", async (event) => {
+            console.log("edit 이후 lectureQuestionId = ", questionId);
+            event.preventDefault();
 
+            const Param = new URLSearchParams(window.location.search);
+            const realParam = Param.get("lectureQuestionId");
+            console.log("Param값 = ", realParam);
 
+            const content = document.querySelector(".answer-textarea").value.trim();
 
+            const formData = new FormData();
+            formData.append("lectureQuestionId", lectureQuestionId);
+            formData.append("content", content);
 
+            try {
+                const res = await fetch("/api/teachers/management/qna/updateQuestion", {
+                    method: "PUT",
+                    body: formData
+                });
+            } catch (err) {
+                console.error("🚨 서버 통신 실패:", err);
+                alert("서버와의 통신 중 오류가 발생했습니다.");
+            }
 
-            alert("답변이 수정되었습니다.");
-            window.location.href="/teacher/management/qna/detail?id=" + lectureQuestionId;
-        })
+            window.location.href = "/teacher/management/qna/detail?id=" + lectureQuestionId;
+        });
 
 
 
