@@ -347,16 +347,7 @@ public class TeacherRestController {
     public ResponseEntity<?> updateQuestion(@ModelAttribute LectureAnswerDTO.Write dto) {
         log.info("✅ updateQuestion Method 호출됨 / questionId={}, content={}", dto.getLectureQuestionId(), dto.getContent());
         lectureAnswerService.updateAnswer(dto, dto.getLectureQuestionId());
-    }
-  
-    @PostMapping("/management/qna/updateQuestion/{questionId}")
-    public ResponseEntity<?> updateQuestion(@RequestBody LectureQuestionDTO.Write dto, @PathVariable Long questionId) {
-        log.info("updateQuestion Method ");
-        lectureQuestionService.updateQuestion(dto,questionId);
         return RestUtils.ok();
     }
-
-
-
 
 }

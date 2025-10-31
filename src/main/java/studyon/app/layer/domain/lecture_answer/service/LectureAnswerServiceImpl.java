@@ -55,13 +55,12 @@ public class LectureAnswerServiceImpl implements LectureAnswerService {
 
     @Override
     public void updateAnswer(LectureAnswerDTO.Write dto, Long questionId) {
-            LectureQuestion question = lectureQuestionRepository.findById(questionId)
-                    .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
-            LectureAnswer answer = question.getLectureAnswer();
+        LectureQuestion question = lectureQuestionRepository.findById(questionId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
+        LectureAnswer answer = question.getLectureAnswer();
         lectureAnswerRepository.updateAnswerContent(answer.getLectureAnswerId(), dto.getContent());
 
-            log.info("답변 수정 완료");
-
+        log.info("답변 수정 완료");
     }
 
 }
