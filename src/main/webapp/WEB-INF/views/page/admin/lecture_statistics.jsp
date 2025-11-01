@@ -15,7 +15,8 @@
         <div class="summary-card-container">
             <div class="summary-card">총 강의수 <span id="totalLecture">0</span></div>
             <div class="summary-card">등록완료 <span id="registeredLecture">0</span></div>
-            <div class="summary-card">검수대기 <span id="pendingLecture">0</span></div>
+            <div class="summary-card">등록대기 <span id="pendingLecture">0</span></div>
+            <div class="summary-card">미등록 <span id="unregisteredLecture">0</span></div>
         </div>
     </header>
     <div class="chart-card">
@@ -34,6 +35,9 @@
 
     <div class="chart-card">
         <canvas id="targetChart"></canvas>
+    </div>
+    <div class="chart-card">
+        <canvas id="salesBySubjectChart"></canvas>
     </div>
 </div>
 
@@ -151,21 +155,101 @@
 <script src="<c:url value='/js/page/admin/lecture_statistics.js'/>"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            // 등록상태별 강의 수 불러오기
+            const res = await fetch("/admin/api/lectures/statusCount");
+            const json = await res.json();
+
+            const data = json.data || json; // RestUtils.ok 구조 고려
+            let total = 0;
+
+            for (const key in data) total += data[key];
+            document.getElementById("totalLecture").textContent = total;
+
+            document.getElementById("registeredLecture").textContent =
+                data["등록완료"] || 0;
+            document.getElementById("pendingLecture").textContent =
+                data["등록대기중"] || 0;
+            document.getElementById("unregisteredLecture").textContent =
+                data["미등록"] || 0;
+        } catch (err) {
+            console.error("[ERROR] 통계 데이터 불러오기 실패:", err);
+        }
+    });
+</script>
+
+<script>
+    // ✅ 모든 차트에서 공통으로 쓸 툴팁 설정
+    const commonTooltip = {
+        displayColors: false,
+        callbacks: {
+            label: (context) => {
+                // [0] raw 값 직접 가져오기
+                let value = context?.raw;
+
+                // [1] 객체라면 내부 숫자값 하나 찾기
+                if (value && typeof value === "object") {
+                    const firstNumeric = Object.values(value)
+                        .find(v => typeof v === "number" && !isNaN(v));
+                    value = firstNumeric ?? null;
+                }
+
+                // [2] 문자열 숫자면 변환 (JSP 대응)
+                if (typeof value === "string") {
+                    // JSP EL 오인 방지용 Number() → window["Number"]()
+                    const numeric = window["Number"](value.replace(/,/g, ""));
+                    if (!isNaN(numeric)) value = numeric;
+                }
+
+                // [3] 숫자면 단위 붙여서 반환
+                if (typeof value === "number" && !isNaN(value)) {
+                    const title = context.chart?.options?.plugins?.title?.text || "";
+                    const dsLabel = context.dataset?.label || "";
+
+                    const isRating =
+                        value <= 5 &&
+                        (title.includes("평점") || dsLabel.includes("평균 평점"));
+                    const isMoney =
+                        value >= 1000 &&
+                        (title.includes("매출") ||
+                            title.includes("금액") ||
+                            dsLabel.includes("원"));
+
+                    if (isRating) return `평점: \${value.toFixed(1)}점`;
+                    if (isMoney) return `\${value.toLocaleString()}원`;
+                    return `\${value.toLocaleString()}개`;
+                }
+
+                // [4] fallback - formattedValue 시도
+                const fv = context.formattedValue;
+                if (fv && !isNaN(window["Number"](fv))) {
+                    return `\${window["Number"](fv).toLocaleString()}개`;
+                }
+
+                // [5] 완전 예외 fallback
+                return `\${context.label || "데이터"}: \${String(value ?? "N/A")}`;
+            }
+        }
+    };
+
 
 </script>
+
 <script>
     fetch("/admin/api/lectures/subjectCount")
         .then(res => res.json())
         .then(json => {
             console.log("[Data Raw]", json);
 
-            const data = json.data; //실제 통계 데이터 추출
+            const data = json.data;
             if (!data) {
                 console.error("데이터 없음:", json);
                 return;
             }
-            // [1] 영어 → 한글 맵핑 테이블
+
             const subjectMap = {
                 ENGLISH: "영어",
                 KOREAN: "국어",
@@ -174,12 +258,10 @@
                 SOCIAL: "사회"
             };
 
-            // [2] 데이터 분리
             const labels = Object.keys(data).map(key => subjectMap[key] || key);
             const values = Object.values(data);
             const maxValue = Math.max(...values);
 
-            // [3] Chart.js 차트 생성
             const ctx = document.getElementById("lectureChart").getContext("2d");
             new Chart(ctx, {
                 type: "bar",
@@ -200,29 +282,29 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // 세로 길이 비율 고정 해제
+                    maintainAspectRatio: false,
                     scales: {
                         x: {
                             ticks: {
                                 color: "#333",
-                                font: {size: 14},
+                                font: { size: 14 }
                             },
                             title: {
                                 display: true,
                                 text: "과목명",
                                 color: "#555",
-                                font: {size: 16, weight: "bold"}
+                                font: { size: 16, weight: "bold" }
                             }
                         },
                         y: {
                             beginAtZero: true,
                             max: maxValue + 2,
-                            ticks: {stepSize: 1},
+                            ticks: { stepSize: 1 },
                             title: {
                                 display: true,
-                                text: "강의 개수",  // ✅ Y축 이름
+                                text: "강의 개수",
                                 color: "#555",
-                                font: {size: 16, weight: "bold"}
+                                font: { size: 16, weight: "bold" }
                             }
                         }
                     },
@@ -230,25 +312,19 @@
                         title: {
                             display: true,
                             text: "과목별 등록 강의 수 현황",
-                            font: {size: 25}
+                            font: { size: 25 }
                         },
-                        legend: {display: false},
-                        tooltip: {
-                            displayColors: false,
-                            callbacks: {
-                                title: (context) => context[0].label,
-                                label: (context) => context.parsed.y + "개",
-                            }
-                        },
-                        datalabels: { // ✅ 숫자 표시 설정
-                            anchor: 'end',     // 막대 상단 위치
+                        legend: { display: false },
+                        tooltip: commonTooltip,   // 쉼표로 구분 후 아래 datalabels 추가
+                        datalabels: {
+                            anchor: 'end',
                             align: 'top',
                             color: '#000000',
-                            font: {weight: 'bold', size: 18}
+                            font: { weight: 'bold', size: 18 }
                         }
                     }
                 },
-                plugins: [ChartDataLabels] // ✅ 플러그인 등록
+                plugins: [ChartDataLabels]
             });
         })
         .catch(err => {
@@ -296,16 +372,11 @@
                             display: true,
                             position: "bottom",
                             labels: {
-                                color: "#333",
+                                color: "#000222",
                                 font: { size: 18 }
                             }
                         },
-                        tooltip: {  // ✅ plugins 안쪽에 위치 (Chart.js v3 기준)
-                            displayColors: false,
-                            callbacks: {
-                                label: (context) => context.label + ": " + context.parsed + "개"
-                            }
-                        }
+                        tooltip: commonTooltip
                     }
                 }
             });
@@ -323,12 +394,27 @@
             console.log("[Data] 등록 상태별 강의 수:", data)
 
             // 모든 가능한 상태 정의
-            const allStatusLabels = ["등록완료", "검수대기", "반려", "미등록", "진행중"];
+            const statusMap = {
+                REGISTERED: "등록완료",
+                PENDING: "등록대기중",
+                REJECTED: "반려",
+                UNREGISTERED: "미등록",
+            };
+
+            const allStatusLabels = Object.values(statusMap);
+
+
+            // 영문 key를 한글로 변환한 새 객체 만들기
+            const localizedData = {};
+            for (const [key, value] of Object.entries(data)) {
+                const label = statusMap[key] || key;
+                localizedData[label] = value;
+            }
 
             // 없는 상태는 0으로 채워서 새 객체 생성
             const completeData = {};
             allStatusLabels.forEach(label => {
-                completeData[label] = data[label] || 0;
+                completeData[label] = localizedData[label] || 0;
             });
 
             const labels = Object.keys(completeData);
@@ -336,15 +422,25 @@
 
             const ctx = document.getElementById("statusChart").getContext("2d");
 
+            const colors = [
+                "#4bc0c0", "#fae84f", "#ff6384", "#9966ff",
+                "#36a2eb", "#ff9f40", "#a3e635", "#e879f9"
+            ];
+
+            // 데이터 길이에 맞게 slice (부족하면 랜덤)
+            const backgroundColors = colors.slice(0, labels.length);
+
+
+            console.log("📊 최종 labels:", labels);
+            console.log("📊 최종 values:", values);
+            console.log("📊 completeData:", completeData);
             new Chart(ctx, {
                 type: "pie",
                 data: {
                     labels: labels,
                     datasets: [{
                         data: values,
-                        backgroundColor: [
-                            "#4bc0c0", "#ffcd56", "#ff6384", "#9966ff"
-                        ],
+                        backgroundColor: backgroundColors,
                         borderWidth: 2
                     }]
                 },
@@ -359,14 +455,16 @@
                         },
                         legend: {
                             display: true,
-                            position: "bottom"
-                        },
-                        tooltip: {
-                            displayColors: false,
-                            callbacks: {
-                                label: (context) => context.label + ": " + context.parsed + "개"
+                            position: "bottom",
+                            labels: {
+                                color: "#000222",
+                                font: {
+                                    size: 16
+                                },
+                                padding: 20
                             }
-                        }
+                        },
+                        tooltip: commonTooltip
                     }
                 }
             });
@@ -432,18 +530,16 @@
                             font: { size: 25 }
                         },
                         legend: { display: false },
-                        tooltip: {
-                            displayColors: false,
-                            callbacks: {
-                                label: (ctx) => `평점 ${ctx.parsed.x.toFixed(1)}점`
-                            }
-                        },
+                        tooltip: commonTooltip,
                         datalabels: {
                             anchor: "end",
                             align: "right",
                             color: "#222",
                             font: { weight: "bold", size: 14 },
-                            formatter: (v) => v.toFixed(1)
+                            formatter: (v, ctx) => {
+                                const rating = ctx.parsed?.x ?? ctx.parsed;
+                                return typeof rating === "number" ? rating.toFixed(1) : "-";
+                            }
                         }
                     }
                 },
@@ -523,14 +619,70 @@
                             font: {size: 25}
                         },
                         legend: {display: false},
-                        tooltip: {
-                            displayColors: false,
-                            callbacks: {
-                                label: (context) => `${context.parsed.y}개`
+                        tooltip: commonTooltip
+
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            console.error("[ERROR] 대상 학년별 강의 수 분포 통계 로드 실패:", err);
+    });
+</script>
+<script>
+    fetch("/admin/api/lectures/salesBySubject")
+        .then(res => res.json())
+        .then(json => {
+            const data = json.data || json;
+            const subjectMap = {
+                ENGLISH: "영어",
+                KOREAN: "국어",
+                MATH: "수학",
+                SCIENCE: "과학",
+                SOCIAL: "사회"
+            };
+
+            const labels = Object.keys(data).map(k => subjectMap[k] || k);
+            const values = Object.values(data);
+
+            const ctx = document.getElementById("salesBySubjectChart").getContext("2d");
+
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "과목별 총 매출 (원)",
+                        data: values,
+                        backgroundColor: [
+                            "#4bc0c0", "#36a2eb", "#9966ff", "#ffcd56", "#ff6384"
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "과목별 강의 매출 통계",
+                            font: { size: 24 }
+                        },
+                        tooltip: commonTooltip,
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => value.toLocaleString() + "원"
                             }
                         }
                     }
                 }
             });
         })
+        .catch(err => {
+            console.error("[ERROR] 매출 통계 로드 실패:", err);
+        });
 </script>

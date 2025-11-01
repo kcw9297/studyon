@@ -26,6 +26,7 @@ import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
+import studyon.app.layer.domain.payment.repository.PaymentRepository;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
@@ -59,6 +60,7 @@ public class LectureServiceImpl implements LectureService {
     private final LectureVideoRepository lectureVideoRepository;
     private final LectureReviewRepository lectureReviewRepository;
     private final FileRepository fileRepository;
+    private final PaymentRepository paymentRepository;
 
     private final FileManager fileManager;
     private final CacheManager cacheManager;
@@ -431,7 +433,19 @@ public class LectureServiceImpl implements LectureService {
     public Map<String, Long> readLectureCountByStatus() {
         return lectureRepository.findLectureCountByStatus().stream()
                 .collect(Collectors.toMap(
-                        row -> LectureRegisterStatus.valueOf(row.get("status").toString()).getValue(),
+                        row -> {
+                            Object statusObj = row.get("status");
+                            // 이름 검증 로직
+                            if (statusObj instanceof LectureRegisterStatus s) {
+                                return s.getValue();
+                            } else {
+                                try {
+                                    return LectureRegisterStatus.valueOf(statusObj.toString()).getValue();
+                                } catch (Exception e) {
+                                    return null;
+                                }
+                            }
+                        },
                         row -> (Long) row.get("cnt")
                 ));
     }
@@ -441,7 +455,7 @@ public class LectureServiceImpl implements LectureService {
      * 관리자 통계용
      */
     @Override
-    public List<LectureDTO.Read> readTopRatedLectures(int count) {
+    public Map<String, Double> readTopRatedLectures(int count) {
         // [1] DB 조회 (상위 n개)
         Pageable pageable = PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "averageRate"));
 
@@ -451,8 +465,14 @@ public class LectureServiceImpl implements LectureService {
                 .sorted(Comparator.comparing(Lecture::getAverageRate).reversed()) // 혹시 null-safe 정렬
                 .limit(count)
                 .map(DTOMapper::toReadDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(
+                        dto -> dto.getTitle() + " (" + dto.getLectureId() + ")",  // 고유 key
+                        LectureDTO.Read::getAverageRate,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
     }
+
 
     @Override
     public Map<String, Long> readLectureCountByTarget() {
@@ -461,6 +481,16 @@ public class LectureServiceImpl implements LectureService {
                 .collect(Collectors.toMap(
                         row -> LectureTarget.valueOf(row.get("target").toString()).getValue(),
                         row -> (Long) row.get("cnt")
+                ));
+    }
+
+    @Override
+    public Map<String, Long> readSalesBySubject() {
+        return paymentRepository.findTotalSalesBySubject()
+                .stream()
+                .collect(Collectors.toMap(
+                        row -> row.get("subject").toString(),
+                        row -> ((Number) row.get("totalSales")).longValue()
                 ));
     }
 }

@@ -155,26 +155,18 @@ public class AdminLectureRestController {
      */
     @GetMapping("/topRated")
     public ResponseEntity<?> readTopRated(@RequestParam(defaultValue = "5") int count) {
-        Map<String, Double> topLectures = lectureService.readTopRatedLectures(count)
-                .stream()
-                .collect(Collectors.toMap(
-                        LectureDTO.Read::getTitle,        // key 매핑 (dto -> dto.getTitle())
-                        LectureDTO.Read::getAverageRate,  // value 매핑 (dto -> dto.getAverageRate())
-                         (a, b) -> a,        // key 충돌 시 기존 값 유지
-                        LinkedHashMap::new                // Map 구현체 지정 (순서 유지)
-                ));
+        Map<String, Double> topLectures = lectureService.readTopRatedLectures(count);
         return RestUtils.ok(topLectures);
-
-                        /*  key 충돌 시 병합 규칙
-                        if (keyAlreadyExists) {
-                           keep a; // 기존 값 유지
-                        }
-                         */
     }
 
     @GetMapping("/targetCount")
     public ResponseEntity<?> readTargetCount() {
         log.info("[API] 대상 학년별 강의 수 조회 요청");
         return RestUtils.ok(lectureService.readLectureCountByTarget());
+    }
+
+    @GetMapping("/salesBySubject")
+    public ResponseEntity<?> readSalesBySubject() {
+        return RestUtils.ok(lectureService.readSalesBySubject());
     }
 }
