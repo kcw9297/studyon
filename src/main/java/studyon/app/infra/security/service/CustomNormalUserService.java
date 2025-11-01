@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import studyon.app.common.constant.Msg;
+import studyon.app.common.enums.Provider;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member.repository.MemberRepository;
 
@@ -30,12 +28,12 @@ public class CustomNormalUserService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         // [1] 일반 로그인 회원 조회
         // 이메일로 조회되는 회원이 없으면 예외 반환
         Member member = memberRepository
-                .findByEmail(username)
+                .findByEmailAndProvider(email, Provider.NORMAL)
                 .map(UserServiceUtils::checkWithdrawal) // 탈퇴회원 검증
                 .orElseThrow(() -> new UsernameNotFoundException(""));
 

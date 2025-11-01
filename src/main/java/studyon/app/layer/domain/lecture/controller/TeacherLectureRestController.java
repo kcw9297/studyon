@@ -14,6 +14,7 @@ import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.validation.annotation.EditorContent;
+import studyon.app.layer.base.validation.annotation.LongRange;
 import studyon.app.layer.base.validation.annotation.Text;
 import studyon.app.layer.base.validation.annotation.Title;
 import studyon.app.layer.domain.editor.service.EditorService;
@@ -199,6 +200,24 @@ public class TeacherLectureRestController {
 
         // [3] 성공 응답 반환
         return RestUtils.ok(AppStatus.LECTURE_OK_EDIT_DIFFICULTY);
+    }
+
+    /**
+     * [PATCH] 강의 상세 소개 갱신
+     */
+    @PatchMapping("/{lectureId}/price")
+    public ResponseEntity<?> editPrice(@PathVariable Long lectureId,
+                                       @LongRange(min = 10000, max = 1000000) Long price,
+                                       HttpSession session) {
+
+        // [1] 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
+
+        // [2] 정보 수정
+        lectureService.editPrice(lectureId, profile.getTeacherId(), price);
+
+        // [3] 성공 응답 반환
+        return RestUtils.ok(AppStatus.LECTURE_OK_EDIT_PRICE);
     }
 
 

@@ -247,10 +247,10 @@
                                 });
 
                                 const json2 = await res2.json();
-                                console.log("update로직 실행됨 ✅", json2);
+                                console.log("update로직 실행됨", json2);
 
                                 if (json2.success === true || json2.statusCode === 200) {
-                                    console.log("✅ 삭제 후 순서 자동 업데이트 완료");
+                                    console.log("삭제 후 순서 자동 업데이트 완료");
                                     //location.reload();
                                 } else {
                                     console.warn("⚠ 삭제 후 순서 업데이트 실패:", json2.message);
@@ -285,7 +285,7 @@
 
                         try {
                             const res = await fetch("/api/teachers/management/lectureindex/" + indexId + "/video", {
-                                method: "POST", // ✅ PATCH → POST 로 수정
+                                method: "POST",
                                 body: form
                             });
                             const json = await res.json();
@@ -347,8 +347,8 @@
 
             saveOrderBtn.addEventListener("click", async function() {
                 const reordered = Array.from(listBox.querySelectorAll(".lecture-item")).map((item, i) => ({
-                    lectureIndexId: Number(item.dataset.id),   // ✅ 숫자로 변환
-                    indexNumber: Number(i + 1),                // ✅ 숫자로 변환
+                    lectureIndexId: Number(item.dataset.id),
+                    indexNumber: Number(i + 1),
                     indexTitle: item.querySelector(".lecture-title").innerText
                 }));
 
@@ -368,6 +368,9 @@
                     console.error("🚨 순서 저장 실패:", err);
                 }
             });
+
+            // 수정 버튼 렌더링
+            if (lecture.lectureRegisterStatus === "UNREGISTERED" || lecture.lectureRegisterStatus === "REJECTED") addEditButtons();
 
         } catch (err) {
             console.error("🚨 강의정보/목차 로드 실패:", err);
@@ -448,8 +451,8 @@
                 alert("강의 등록 중 문제가 발생했습니다.");
             }
         });
-
         //DOMContentLoad End
+
     });
 
 </script>
