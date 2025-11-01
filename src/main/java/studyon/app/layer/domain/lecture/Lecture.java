@@ -179,4 +179,9 @@ public class Lecture extends BaseEntity {
         this.lectureRegisterStatus = LectureRegisterStatus.REGISTERED;
         this.rejectReason = "";
     }
+
+    //비디오 갯수 갱신
+    public void setVideoCount(Long videoCount) {
+        this.videoCount = videoCount;
+    }
 }

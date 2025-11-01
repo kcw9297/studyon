@@ -96,4 +96,5 @@ public interface LectureReviewRepository extends JpaRepository<LectureReview, Lo
      * @return 리뷰 개수
      */
     Long countByLecture_Teacher_TeacherId(Long teacherId);
+    List<LectureReview> findByLecture_LectureIdOrderByCreatedAtDesc(Long lectureId);
 }

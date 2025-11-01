@@ -1,0 +1,8 @@
+addEventListener("DOMContentLoaded", async () => {
+
+        //수강평 읽기
+        const response = await fetch("/api/lectures/reviews" + lectureId);
+        const json = await response.json();
+        const lecture = json.data;
+        console.log(lecture);
+    })

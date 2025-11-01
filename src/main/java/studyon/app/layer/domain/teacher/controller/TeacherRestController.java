@@ -255,15 +255,17 @@ public class TeacherRestController {
     /**
      * [DELETE] 특정 목차 삭제
      */
-    @DeleteMapping("/management/lectureindex/{lectureIndexId}")
+    @DeleteMapping("/management/lectureIndex/{lectureIndexId}")
     public ResponseEntity<?> deleteLectureIndex(
             @PathVariable Long lectureIndexId,
             HttpSession session
     ) {
+        log.info("목차 삭제 Controller 호출");
         MemberProfile profile = SessionUtils.getProfile(session);
         Long teacherId = profile.getTeacherId();
         lectureIndexService.deleteIndex(lectureIndexId, teacherId);
-        return RestUtils.ok("강의 목차가 삭제되었습니다.");
+        log.info("목차 삭제 Controller 성공");
+        return RestUtils.ok();
     }
 
 
@@ -323,6 +325,7 @@ public class TeacherRestController {
         MemberProfile profile = SessionUtils.getProfile(session);
         Long memberId = profile.getMemberId();
         dto.setMemberId(memberId);
+        log.info("여기까지는 됨");
         lectureAnswerService.saveAnswer(dto);
         return RestUtils.ok("답변이 등록 되었습니다.");
     }

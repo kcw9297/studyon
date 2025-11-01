@@ -30,25 +30,26 @@ public class LectureAnswerServiceImpl implements LectureAnswerService {
     public void saveAnswer(LectureAnswerDTO.Write dto) {
         LectureQuestion question = lectureQuestionRepository.findById(dto.getLectureQuestionId())
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.QUESTION_NOT_FOUND));
-
+        log.info("1");
         Member member = memberRepository.findById(dto.getMemberId())
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
-
+        log.info("2");
         LectureAnswer entity = LectureAnswer.builder()
                 .content(dto.getContent())
                 .member(member)
+                .lectureQuestion(question)
                 .build();
 
         // 1️⃣ 답변 저장
         LectureAnswer savedAnswer = lectureAnswerRepository.save(entity);
-
+        log.info("3");
         // 2️⃣ 질문에 답변 연결
         question.setLectureAnswer(savedAnswer);
         question.updateQuestion(question.getTitle(), question.getContent(), true);
 
         // 3️⃣ 질문 업데이트 (FK 저장됨)
         lectureQuestionRepository.save(question);
-
+        log.info("4");
         log.info("✅ 답변 저장 및 연결 완료: Q={} / A={}",
                 question.getLectureQuestionId(), savedAnswer.getLectureAnswerId());
     }

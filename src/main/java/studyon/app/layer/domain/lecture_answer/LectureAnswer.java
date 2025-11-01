@@ -55,9 +55,10 @@ public class LectureAnswer extends BaseEntity {
 
 
     @Builder
-    public LectureAnswer(String content, Member member) {
+    public LectureAnswer(String content, Member member,LectureQuestion lectureQuestion) {
         this.content = content;
         this.member = member;
+        this.lectureQuestion = lectureQuestion;
     }
 
     /*

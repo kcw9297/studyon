@@ -1,0 +1,26 @@
+1.URL SEARCH PARAM
+
+// 현재 URL: https://studyon.com/lecture/detail?lectureId=5&teacherId=2
+
+const params = new URLSearchParams(window.location.search);
+
+const lectureId = params.get("lectureId");
+const teacherId = params.get("teacherId");
+
+console.log("lectureId:", lectureId);
+console.log("teacherId:", teacherId);
+
+2.SPLIT
+
+function getParam(key) {
+    const url = window.location.href;
+    const queryString = url.split("?")[1];
+    if (!queryString) return null;
+
+    const params = new URLSearchParams(queryString);
+    return params.get(key);
+}
+
+// 사용 예시
+const lectureId = getParam("lectureId");
+console.log(lectureId);
