@@ -149,6 +149,15 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
         """)
     Optional<Lecture> findWithTeacherById(@Param("id") Long lectureId);
 
+    /* 강의 정보 조회 - 강의소개 페이지 */
+    @Query("""
+        SELECT l FROM Lecture l
+        LEFT JOIN FETCH l.teacher t
+        WHERE l.lectureId = :lectureId AND t.teacherId = :teacherId
+        """)
+    Optional<Lecture> findWithTeacherByLectureIdAndTeacherId(Long lectureId, Long teacherId);
+
+
     List<Lecture> findByTeacherAndLectureRegisterStatus(Teacher teacher, LectureRegisterStatus status);
     Long countByTeacher_TeacherId(Long teacherId);
 
@@ -262,4 +271,13 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
             "WHERE l.lectureId = :lectureId")
     Optional<String> findThumbnailPathByLectureId(@Param("lectureId") Long lectureId);
 
+    //TeacherId로 프로필 사진 조회
+    @Query("""
+    SELECT f.filePath
+    FROM Teacher t
+    JOIN t.member m
+    LEFT JOIN m.profileImage f
+    WHERE t.teacherId = :teacherId
+    """)
+    Optional<String> findTeacherProfilePath(@Param("teacherId") Long teacherId);
 }

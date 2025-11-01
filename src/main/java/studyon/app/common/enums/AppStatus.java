@@ -86,7 +86,7 @@ public enum AppStatus {
     FILE_NOT_FOUND(500, "파일이 존재하지 않습니다."),
 
     /* 강의(Lecture) 상태*/
-    LECTURE_NOT_FOUND(500,"존재하지 않거나 판매중이 아닌 강의입니다."),
+    LECTURE_NOT_FOUND(500,"존재하지 않거나 접근할 수 없는 강의입니다."),
     LECTURE_NOT_ON_SALE(500,"현재 강의는 판매 중이 아닙니다.\n잠시 후에 다시 시도해 주세요."),
     LECTURE_THUMBNAIL_NOT_FOUND(500, "강의 썸네일이 존재하지 않습니다."),
     LECTURE_REJECT_NOW(400, "현재 강의는 반려된 상태입니다.\n검토 후 다시 승인요청을 해 주세요."),
@@ -97,7 +97,14 @@ public enum AppStatus {
     LECTURE_OK_PENDING(200, "강의 등록요청을 완료했습니다."),
     LECTURE_OK_REGISTER(200, "강의 등록처리를 완료했습니다."),
     LECTURE_OK_REJECT(200, "강의 반려처리를 완료했습니다."),
-    LECTURE_OK_CREATE(200, "강의 생성을 완료했습니다"),
+    LECTURE_OK_CREATE(200, "강의 생성을 완료했습니다."),
+    LECTURE_OK_EDIT_TITLE(200, "강의 제목을 수정했습니다."),
+    LECTURE_OK_EDIT_SUMMARY(200, "강의 소개를 수정했습니다."),
+    LECTURE_OK_EDIT_DESCRIPTION(200, "강의 상세 소개를 수정했습니다."),
+    LECTURE_OK_EDIT_LECTURE_TARGET(200, "강의 대상을 수정했습니다."),
+    LECTURE_OK_EDIT_SUBJECT_DETAIL(200, "강의 상세 과목을 수정했습니다."),
+    LECTURE_OK_EDIT_DIFFICULTY(200, "강의 난이도를 수정했습니다."),
+    LECTURE_OK_EDIT_PRICE(200, "강의 판매 가격을 수정했습니다."),
 
     /* QNA 상태*/
     QUESTION_NOT_FOUND(500, "질문이 존재하지 않습니다.");

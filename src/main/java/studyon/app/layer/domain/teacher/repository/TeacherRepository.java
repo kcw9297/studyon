@@ -50,5 +50,12 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 """)
     String findProfileImagePathByMemberId(@Param("memberId") Long memberId);
 
+    //TeacherId를 MemberId를 통해서 정보 추출
+    @Query("SELECT t FROM Teacher t " +
+            "JOIN FETCH t.member m " +
+            "LEFT JOIN FETCH m.profileImage " +
+            "WHERE t.teacherId = :teacherId")
+    Optional<Teacher> findByIdWithMemberAndProfileImage(@Param("teacherId") Long teacherId);
+
 
 }

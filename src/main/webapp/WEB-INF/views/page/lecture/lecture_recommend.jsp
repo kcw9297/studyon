@@ -49,6 +49,7 @@
     .lecture-info{
         padding-left:4px;
         margin-top:0px;
+        padding-bottom: 5px;
     }
 </style>
 
@@ -99,12 +100,18 @@
                 const item = document.createElement("div");
                 const detailUrl = "/lecture/detail/" + bestLecture.lectureId;
 
+                const fileDomain = "http://localhost:8080/upload";
+                const thumbnailSrc = bestLecture.thumbnailImagePath
+                    ? fileDomain + "/" + bestLecture.thumbnailImagePath
+                    : "/img/png/default_member_profile_image.png";
+
                 item.classList.add("recent-lecture-item");
                 item.innerHTML =
                     "<a href='" + detailUrl + "'>" +
-                    "<img src='/img/png/sample1.png' alt='강의이미지' class='recent-lecture-thumbnail'>" +
+                    "<img src='" + thumbnailSrc + "' alt='강의이미지' class='recent-lecture-thumbnail' " +
+                    "onerror=\"this.onerror=null; this.src='/img/png/default_member_profile_image.png';\">" +
                     "<div class='lecture-info'>" +
-                    "<p class='lecture-title'>" + bestLecture.title + "</p>" +
+                    "<strong class='lecture-title'>" + bestLecture.title + "</strong>" +
                     "<p class='lecture-info-text'>" + bestLecture.teacherNickname + "</p>" +
                     "<p class='lecture-info-text'>₩" + Number(bestLecture.price).toLocaleString() + "</p>" +
                     "<p class='lecture-info-text'>🧸 " + (bestLecture.totalStudents >= 10 ? "10+" : bestLecture.totalStudents) + "</p>" +
@@ -134,14 +141,14 @@
             })
             .then(function(json) {
                 const parsedData = json.data;
-                console.log("✅ 최근 강의 데이터:", parsedData);
+                console.log("최근 강의 데이터:", parsedData);
                 renderRecentLectures(parsedData);
             })
             .catch(function(err) {
                 console.error("최근 강의 데이터 요청 실패:", err);
             });
 
-        // ✅ DOM 렌더링 함수
+        // DOM 렌더링 함수
         function renderRecentLectures(lectures) {
             const titles = document.querySelectorAll(".recomment-lecture-title");
             let container = null;
@@ -167,13 +174,21 @@
             lectures.forEach(function(recentLecture) {
                 const item = document.createElement("div");
                 const detailUrl = "/lecture/detail/" + recentLecture.lectureId;
+                const fileDomain = "http://localhost:8080/upload";
+                const thumbnailSrc = recentLecture.thumbnailImagePath
+                    ? fileDomain + "/" + recentLecture.thumbnailImagePath
+                    : "/img/png/default_member_profile_image.png";
+
                 item.classList.add("recent-lecture-item");
+
+
 
                 item.innerHTML =
                     "<a href='" + detailUrl + "'>" +
-                    "<img src='/img/png/sample1.png' alt='강의이미지' class='recent-lecture-thumbnail'>" +
+                    "<img src='" + thumbnailSrc + "' alt='강의이미지' class='recent-lecture-thumbnail' " +
+                    "onerror=\"this.onerror=null; this.src='/img/png/default_member_profile_image.png';\">" +
                     "<div class='lecture-info'>" +
-                    "<p class='lecture-title'>" + recentLecture.title + "</p>" +
+                    "<strong class='lecture-title'>" + recentLecture.title + "</strong>" +
                     "<p class='lecture-info-text'>" + recentLecture.teacherNickname + "</p>" +
                     "<p class='lecture-info-text'>₩" + Number(recentLecture.price).toLocaleString() + "</p>" +
                     "<p class='lecture-info-text'>⭐ " + (recentLecture.averageRate != null ? recentLecture.averageRate : "0.0") +
@@ -187,3 +202,195 @@
     });
 </script>
 <script src="<c:url value='/js/page/lecture/lecture_recommend.js'/>"></script>
+
+<style>
+    /* MAIN + CONTAINER */
+    .main-container{
+        display: flex;
+        flex-direction:row;
+        width: 100%;
+        height:100%;
+        background-color: rgb(255, 255, 255);
+    }
+
+    .sidebar-container{
+        width: 20%;
+        height:100%;
+        background-color: rgb(255, 255, 255);
+    }
+
+    .main-content-container{
+        width: 80%;
+        height:100%;
+        padding-top:0px;
+        padding-left:20px;
+        background-color: rgb(255, 255, 255);
+
+    }
+
+    .nav{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nav-item {
+        padding: 15px;
+        border-bottom: 1px solid #ccc;
+        text-decoration: none;
+        color: black;
+        display: block;
+        transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+        background-color: #f5f5f5;
+        color: #0078ff;
+        border-bottom: 2px solid #0078ff;
+        font-weight: 600;
+    }
+
+    /* Lecture Review PART */
+
+    /* ✅ 전체 수강평 박스 */
+    .lecture-comment-box {
+        width: 100%;
+        background-color: #fff;
+        border: 2px solid #e0e0e0; /* 연한 회색 외곽선 */
+        border-radius: 16px;
+        padding: 20px 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03); /* 은은한 그림자 */
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* 아이템 간 간격 */
+    }
+
+    /* ✅ 개별 수강평 */
+    .lecture-comment-box-item {
+        display: flex;
+        align-items: flex-start;
+        background-color: #fafafa;
+        border: 1px solid #e6e6e6;
+        border-radius: 12px;
+        padding: 14px 18px;
+        transition: all 0.25s ease;
+    }
+
+    .lecture-comment-box-item:hover {
+        background-color: #fefefe;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+
+    /* ✅ 작성자 이름 */
+    .lecture-comment-username {
+        font-size: 16px;
+        font-weight: 600;
+        color: #00b894; /* 인프런 시그니처 초록 */
+        margin-right: 10px;
+    }
+
+    /* ✅ 코멘트 내용 */
+    .lecture-comment-comment {
+        font-size: 16px;
+        font-weight: 400;
+        color: #333;
+        line-height: 1.6;
+        word-break: keep-all;
+        border-bottom: 1px solid blanchedalmond;
+        margin-bottom:5px;
+        padding-bottom:5px;
+    }
+
+    /* ✅ 텍스트 배치 깔끔하게 */
+    .lecture-comment-box-item div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ✅ 프로필 이미지(optional) */
+    .comment-profile {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 14px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+    }
+
+    /* ✅ 반응형 */
+    @media (max-width: 768px) {
+        .lecture-comment-box {
+            padding: 14px;
+        }
+        .lecture-comment-box-item {
+            flex-direction: column;
+            padding: 12px;
+        }
+        .lecture-comment-username {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+    }
+
+    .recent-comment-box-item{
+        border-bottom-color: #333333;
+    }
+
+
+    /* RECENT LECTURE PART */
+
+    .recent-lecture-container {
+        display: grid;
+        height:auto;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: rgb(255, 255, 255);
+    }
+
+    .recent-lecture-item {
+        width: 260px;
+        height: auto;
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-sizing: border-box;
+    }
+
+    .recent-lecture-item:hover {
+        background-color: #bbb;
+        transform: translateY(-5px);
+        cursor: pointer;
+    }
+
+    .lecture-section-title{
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .recomment-lecture-title{
+        font-size:30px;
+        font-weight:bold;
+        text-align: left;
+        margin-top:10px;
+        margin-bottom:10px;
+    }
+
+    .recent-lecture-thumbnail {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-bottom: 1px solid #ddd;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+
+
+
+</style>

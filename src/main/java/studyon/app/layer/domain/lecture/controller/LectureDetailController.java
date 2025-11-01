@@ -70,6 +70,10 @@ public class LectureDetailController {
         long minutes = (total % 3600L) / 60L;
         long seconds = total % 60L;
 
+        //강사 프로필사진 로드
+        String teacherProfileImageUrl = lectureRepository.findTeacherProfilePath(
+                lecture.getTeacher().getTeacherId()
+        ).orElse(null);
 
         model.addAttribute("lecture", lecture);
         model.addAttribute("teacher", lecture.getTeacher());
@@ -80,11 +84,11 @@ public class LectureDetailController {
         model.addAttribute("recommendedByTeacher", recommendedByTeacher);
         model.addAttribute("reviewCountMap", reviewCountMap);
         model.addAttribute("thumbnailPath", thumbnailPath);
-
-        //강의시간 바로 사용
+        model.addAttribute("summary", lecture.getSummary());
         model.addAttribute("hours", hours);
         model.addAttribute("minutes", minutes);
         model.addAttribute("seconds", seconds);
+        model.addAttribute("teacherProfileImageUrl", teacherProfileImageUrl);
 
 
         return ViewUtils.returnView(model, View.LECTURE, "lecture_detail");

@@ -67,16 +67,15 @@ public class EditorCacheManagerImpl implements EditorCacheManager {
 
 
     @Override
-    public <T> T getAndRemoveCache(Object id, Class<T> clazz) {
+    public void setCacheWithShortExpired(Object id, Object cacheData) {
 
         // [1] key
         String key = RedisUtils.createIdKey(Cache.EDITOR, id);
         String backupKey = RedisUtils.createBackupKey(key);
 
-        // [2] 에디터 캐시데이터 조화 후 반환
-        String cacheObj = stringRedisTemplate.opsForValue().getAndDelete(key);
-        stringRedisTemplate.delete(backupKey);
-        return Objects.isNull(cacheObj) ? null : StrUtils.fromJson(cacheObj, clazz);
+        // [2] 에디터 캐시데이터 조회 후 반환
+        stringRedisTemplate.opsForValue().setIfPresent(key, StrUtils.toJson(cacheData), Duration.ofMillis(30));
+        stringRedisTemplate.opsForValue().setIfPresent(backupKey, StrUtils.toJson(cacheData), Duration.ofMinutes(30));
     }
 
 
@@ -90,6 +89,7 @@ public class EditorCacheManagerImpl implements EditorCacheManager {
         // [2] 키 목록 조회
         Set<String> originalKeys = stringRedisTemplate.keys(originalPattern);
         Set<String> backupKeys = stringRedisTemplate.keys(backupPattern);
+        log.warn("originalKeys: {}, backupKeys {}", originalKeys, backupKeys);
 
         // [3] 고아 상태의 backup key 필터 후 삭제
         List<String> orphanKeys = backupKeys.stream()

@@ -12,6 +12,7 @@ import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.teacher.Teacher;
 
+import java.lang.annotation.Target;
 import java.time.LocalDateTime;
 
 /*
@@ -185,5 +186,33 @@ public class Lecture extends BaseEntity {
     }
     public void setTotalDuration(Long totalDuration) {
         this.totalDuration = totalDuration;
+    }
+
+    public void editTitle(String title) {
+        this.title = title;
+    }
+
+    public void editSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public void editDescription(String description) {
+        this.description = description;
+    }
+
+    public void editLectureTarget(LectureTarget lectureTarget) {
+        this.lectureTarget = lectureTarget;
+    }
+
+    public void editSubjectDetail(SubjectDetail subjectDetail) {
+        this.subjectDetail = subjectDetail;
+    }
+
+    public void editDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void editPrice(Long price) {
+        this.price = price;
     }
 }

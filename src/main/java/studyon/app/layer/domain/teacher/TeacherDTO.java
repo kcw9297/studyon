@@ -121,4 +121,22 @@ public class TeacherDTO {
         private Long totalStudent;
         private Double averageRating;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReadDetail {
+        private Long teacherId;
+        private Long memberId;
+        private String email;
+        private String nickname;
+        private String description;
+        private Subject subject;
+        private Long lectureCount;
+        private Long totalStudents;
+        private Double averageRating;
+        private String profileImagePath;
+    }
+
 }

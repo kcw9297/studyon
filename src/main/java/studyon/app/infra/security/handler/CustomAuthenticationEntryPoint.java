@@ -31,7 +31,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         String requestURI = request.getRequestURI();
 
         // [2] API 요청 / 단순 View 페이지 접근 구분하여 처리
-        if (requestURI.startsWith(Url.API)) handleApiRequest(request, response); // api 요청 처리
+        if (requestURI.startsWith(Url.API) ||
+            requestURI.startsWith(Url.ADMIN_API) ||
+            requestURI.startsWith(Url.TEACHER_API))
+            handleApiRequest(request, response); // api 요청 처리
         else handleViewRequest(request, response); // view 요청 처리
     }
 

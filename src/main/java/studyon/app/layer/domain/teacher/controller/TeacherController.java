@@ -20,6 +20,10 @@ import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.editor.service.EditorService;
+import studyon.app.layer.domain.lecture.LectureDTO;
+import studyon.app.layer.domain.lecture.service.LectureService;
+import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
+import studyon.app.layer.domain.lecture_review.service.LectureReviewService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.service.TeacherService;
@@ -47,6 +51,9 @@ public class TeacherController {
 
     private final TeacherService teacherService;
     private final EditorService editorService;
+    private final LectureService lectureService;
+    private final LectureReviewService lectureReviewService;
+
 
     /**
      * [GET] 강의 생성 뷰
@@ -75,24 +82,40 @@ public class TeacherController {
         return ViewUtils.returnView(model, View.LECTURE, "teacher_list");
     }
 
-    /**
-     * [GET] 학생들에게 보여지는 선생님 프로필 페이지
-     * @param teacherId 선생님 ID
-     * @param count 보여지는 개수 조정을 위한 카운트 변수
-     * @return JSP 뷰
-     */
+//    /**
+//     * [GET] 학생들에게 보여지는 선생님 프로필 페이지
+//     * @param teacherId 선생님 ID
+//     * @param count 보여지는 개수 조정을 위한 카운트 변수
+//     * @return JSP 뷰
+//     */
+//    @GetMapping("/profile/{teacherId}")
+//    public String showProfile(@PathVariable Long teacherId, Model model, @RequestParam(defaultValue = "5") int count) {
+//
+//        // [1] 프로필 불러오기
+//        TeacherDTO.Read profile = teacherService.read(teacherId);
+//
+//        // [2] 모델 속성 설정
+//        model.addAttribute("teacherId", teacherId);
+//        model.addAttribute("teacherProfile", profile);
+//
+//        return ViewUtils.returnView(model, View.TEACHER, "teacher_profile");
+//    }
+
     @GetMapping("/profile/{teacherId}")
-    public String showProfile(@PathVariable Long teacherId, Model model, @RequestParam(defaultValue = "5") int count) {
+    public String showTeacherProfile(@PathVariable Long teacherId, Model model) {
+        TeacherDTO.ReadDetail teacher = teacherService.readDetail(teacherId);
+        List<LectureDTO.Read> bestLectures = lectureService.readBestLectures(teacherId, 5);
+        List<LectureDTO.Read> recentLectures = lectureService.readRecentLectures(teacherId, 5);
+        List<LectureReviewDTO.Read> recentReviews = lectureReviewService.readRecentReview(teacherId, 5);
 
-        // [1] 프로필 불러오기
-        TeacherDTO.Read profile = teacherService.read(teacherId);
-
-        // [2] 모델 속성 설정
-        model.addAttribute("teacherId", teacherId);
-        model.addAttribute("teacherProfile", profile);
-
-        return ViewUtils.returnView(model, View.TEACHER, "teacher_profile");
+        model.addAttribute("teacher", teacher);
+        model.addAttribute("bestLectures", bestLectures);
+        model.addAttribute("recentLectures", recentLectures);
+        model.addAttribute("recentReviews", recentReviews);
+        return ViewUtils.returnView(model, View.TEACHER,"teacher_profile");
     }
+
+
 
     @GetMapping("/management/profile")
     public String teacherManagementProfile(Model model, HttpSession session) {
@@ -113,7 +136,7 @@ public class TeacherController {
         model.addAttribute("targets", LectureTarget.get());
         model.addAttribute("difficulties", Difficulty.get());
 
-        // [3] 에디터 내용을 기록할 캐시 생성
+        // [3] 에디터 내용을 기록할 캐시 생성 후, 캐시 아이디 삽입
         String id = StrUtils.createUUID(); // 에디터 데이터를 기록할 ID
         editorService.recordEditorCache(id);
         model.addAttribute("editorId", id);
@@ -129,9 +152,13 @@ public class TeacherController {
     }
 
     @GetMapping("/management/lectureinfo/{lectureId}")
-    public String lectureinfo(Model model, HttpSession session) {
+    public String lectureinfo(@PathVariable Long lectureId,
+                              Model model, HttpSession session) {
 
-        // [1] 데이터 표시를 위한 삽입
+        // [1] 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
+
+        // [2] 데이터 표시를 위한 삽입
         model.addAttribute("subjects", Subject.values());
         model.addAttribute("subjectDetails", SubjectDetail.values());
         model.addAttribute("difficulties", Difficulty.values());
@@ -139,9 +166,10 @@ public class TeacherController {
         model.addAttribute("sorts", LectureSort.values());
         model.addAttribute("targets", LectureTarget.values());
         model.addAttribute("onSales", LectureOnSale.values());
-        model.addAttribute("statuses", LectureRegisterStatus.values());
+        model.addAttribute("subjectDetails", SubjectDetail.getByParent(profile.getTeacherSubject().name()));
 
-        // [2] view 반환
+        // [3] view 반환
+        model.addAttribute("lectureId", lectureId);
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture_info");
     }
 

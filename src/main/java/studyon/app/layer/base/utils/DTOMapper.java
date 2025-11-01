@@ -276,6 +276,7 @@ public class DTOMapper {
                 .lectureLikeId(entity.getLectureLikeId())
                 .memberId(entity.getMember().getMemberId())
                 .lectureId(entity.getLecture().getLectureId())
+                .lecture(toReadDTO(entity.getLecture()))
                 .build();
     }
 
@@ -417,6 +418,13 @@ public class DTOMapper {
                 .idx(entity.getIdx())
                 .isActivate(entity.getIsActivate())
                 .bannerImage(Objects.isNull(bannerImage) ? null : toReadDTO(bannerImage))
+                .build();
+    }
+
+    public static FileDTO.Remove toRemoveDTO(File entity) {
+        return FileDTO.Remove.builder()
+                .fileId(entity.getFileId())
+                .filePath(entity.getFilePath())
                 .build();
     }
 }

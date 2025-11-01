@@ -53,10 +53,10 @@ button{all:unset;}
 
 
 /* ===== introduce(본문) ===== */
-.introduce{display:grid; grid-template-rows:repeat(4,auto); gap:50px; padding:50px 0; font-family:"Inter",sans-serif; font-style:normal; font-size:18px;}
-#intro, #curriculum, #instructor, #reviews{scroll-margin-top:150px;}
-.introduce-title{font-size:22px; font-weight:var(--bold);}
-.introduce-content{display:flex; flex-direction:column; gap:10px;}
+/*.introduce{display:grid; grid-template-rows:repeat(4,auto); gap:50px; padding:50px 0; font-family:"Inter",sans-serif; font-style:normal; font-size:18px;}*/
+/*#intro, #curriculum, #instructor, #reviews{scroll-margin-top:150px;}*/
+/*.introduce-title{font-size:22px; font-weight:var(--bold);}*/
+/*.introduce-content{display:flex; flex-direction:column; gap:10px;}*/
 /* 강의소개 */
 .intro-recommend, .intro-study{display:grid; grid-template-columns:300px auto; gap:50px; margin-top:40px; padding:10px 30px; border:1px solid var(--light-gray); border-radius:20px; align-items:center;}
 .intro-chapter{display:grid; grid-template-rows:repeat(2,auto); gap:10px; place-items:center; font-size:20px;}
@@ -67,21 +67,21 @@ button{all:unset;}
 .curriculum th, td{padding:10px;}
 .curriculum-category{padding:10px 100px; background-color:var(--background-gray);}
 .curriculum-item{border-bottom:1px solid var(--light-gray);}
-/* 강사 소개 - 기본 정보(사진, 이름) */
-.instructor{display:grid; grid-template-columns:200px auto auto; gap:100px; margin-top:10px;}
-.instructor-teacher{place-items:center;}
-.instructor-teacher p{all:unset;}
-.instructor-teacher img{width:200px; height:200px; border:1px solid var(--light-gray); border-radius:500px;}
-/* 강사 소개 - 강사 총 데이터(강의, 수강생, 평점, 수강평) */
-.instructor-data{display:flex; flex-direction:column; gap:10px;}
-.instructor-category{display:grid; grid-template-columns:repeat(2,auto); grid-template-rows:repeat(2,auto); gap:20px; padding:20px 0; font-size:16px; font-weight:var(--bold);}
-.instructor-item{display:flex; flex-direction:row; gap:10px;}
-.instructor-name{color:var(--deep-gray);}
-.instructor-word{line-height:1.5; white-space:pre-line;}
-/* 강사 소개 - 이력 */
-.instructor-history{display:flex; flex-direction:column; gap:10px; padding-top:20px;}
-.instructor-history p{all:unset; font-weight:var(--bold);}
-.instructor-history ul{list-style:none; line-height:1.5;}
+/*!* 강사 소개 - 기본 정보(사진, 이름) *!*/
+/*.instructor{display:grid; grid-template-columns:200px auto auto; gap:100px; margin-top:10px;}*/
+/*.instructor-teacher{place-items:center;}*/
+/*.instructor-teacher p{all:unset;}*/
+/*.instructor-teacher img{width:200px; height:200px; border:1px solid var(--light-gray); border-radius:500px;}*/
+/*!* 강사 소개 - 강사 총 데이터(강의, 수강생, 평점, 수강평) *!*/
+/*.instructor-data{display:flex; flex-direction:column; gap:10px;}*/
+/*.instructor-category{display:grid; grid-template-columns:repeat(2,auto); grid-template-rows:repeat(2,auto); gap:20px; padding:20px 0; font-size:16px; font-weight:var(--bold);}*/
+/*.instructor-item{display:flex; flex-direction:row; gap:10px;}*/
+/*.instructor-name{color:var(--deep-gray);}*/
+/*.instructor-word{line-height:1.5; white-space:pre-line;}*/
+/*!* 강사 소개 - 이력 *!*/
+/*.instructor-history{display:flex; flex-direction:column; gap:10px; padding-top:20px;}*/
+/*.instructor-history p{all:unset; font-weight:var(--bold);}*/
+/*.instructor-history ul{list-style:none; line-height:1.5;}*/
 /* 리뷰 */
 .reviews{display:flex; flex-direction:column; margin-top:10px;}
 .reviews-sort{display:flex; flex-direction:row-reverse; margin-bottom:20px;}

@@ -61,4 +61,18 @@ public class FileDTO {
     }
 
 
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Remove implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        private Long fileId;
+        private String filePath;
+    }
+
+
 }

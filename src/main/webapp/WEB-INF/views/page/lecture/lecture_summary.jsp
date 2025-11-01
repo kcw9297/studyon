@@ -20,7 +20,9 @@
                 <div class="summary-tag" data-en="<c:out value='${lecture.subject}'/>"><c:out value="${lecture.subject}"/></div>
                 <div class="summary-name">${lecture.title}</div>
                 <div class="summary-explain">
-                    <p>${lecture.description}</p>
+
+                    <%--<p>${lecture.description}</p>--%>
+                    <p>${lecture.summary}</p>
                 </div>
             </div>
             <div class="summary-report">

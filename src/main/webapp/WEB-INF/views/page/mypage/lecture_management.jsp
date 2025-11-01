@@ -102,10 +102,26 @@
     .courses{min-height:900px; display:flex; flex-direction:column; padding:20px; border:1px solid var(--light-gray); border-radius:20px; font-family:"Inter",sans-serif; font-style:normal; font-size:16px;}
     /* 강의 목록 */
     .courses-list{display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px 40px; padding:10px;}
-    .courses-item{display:flex; flex-direction:column; width:320px; height:auto;}
+    .courses-item {
+        display: flex;
+        flex-direction: column;
+        width: 320px;
+        height: auto;
+        border: 2px solid #ddd;          /* 연한 회색 테두리 */
+        border-radius: 12px;             /* 살짝 둥근 모서리 */
+        padding: 12px;                   /* 내부 여백 */
+        background-color: #fff;          /* 흰 배경 */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);  /* 살짝 그림자 */
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .courses-item:hover {
+        transform: translateY(-4px);      /* hover 시 살짝 떠오름 */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
     .courses-thumbnail{position:relative;}
     .courses-thumbnail img{width:320px; height:180px; border-radius:15px;}
-    .courses-lecture{margin-bottom:8px; font-size:20px; font-weight:var(--bold);}
+    .courses-lecture{font-size:20px; font-weight:var(--bold);}
     .courses-teacher{margin-bottom:5px; font-size:18px;}
     /* 강의 목록 - 진행률 바 */
     .courses-percent{margin-bottom:10px; padding:0; line-height:0;}

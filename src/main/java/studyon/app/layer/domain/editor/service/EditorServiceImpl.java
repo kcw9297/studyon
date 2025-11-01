@@ -8,14 +8,12 @@ import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.Entity;
 import studyon.app.common.enums.FileType;
 import studyon.app.common.exception.BusinessLogicException;
-import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.EditorCacheManager;
 import studyon.app.infra.file.FileManager;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.editor.EditorCache;
 import studyon.app.layer.domain.file.FileDTO;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -52,7 +50,7 @@ public class EditorServiceImpl implements EditorService {
         if (Objects.isNull(editorCache)) throw new BusinessLogicException(AppStatus.EDITOR_CACHE_NOT_EXIST);
 
         // [3] 새롭게 등록한 파일 저장
-        editorCache.addFile(uploadFile, uploadFile.getStoreName());
+        editorCache.addUploadFile(uploadFile);
         editorCacheManager.updateEditorCache(id, editorCache);
 
         // [4] 새롭게 저장된 파일경로 변환
