@@ -119,11 +119,33 @@
         cursor: pointer;
         transition: all 0.2s;
         box-shadow: 0 2px 4px rgba(74, 144, 226, 0.3);
+        min-width: 80px;
     }
 
     .btn-search:hover {
         background: #357ac8;
         box-shadow: 0 4px 8px rgba(74, 144, 226, 0.4);
+        transform: translateY(-1px);
+    }
+
+    /* 초기화 버튼 */
+    .btn-reset {
+        background: #95a5a6;
+        color: white;
+        border: none;
+        padding: 12px 40px;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(149, 165, 166, 0.3);
+        min-width: 80px;
+    }
+
+    .btn-reset:hover {
+        background: #7f8c8d;
+        box-shadow: 0 4px 8px rgba(149, 165, 166, 0.4);
         transform: translateY(-1px);
     }
 
@@ -240,10 +262,28 @@
         font-weight: bold;
         cursor: pointer;
         transition: 0.2s;
+        min-width: 50px;
     }
 
     .btn-modal-confirm:hover {
         background: #357ac8;
+    }
+
+    .btn-modal-reset {
+        padding: 10px 25px;
+        background: #95a5a6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+        min-width: 50px;
+    }
+
+    .btn-modal-reset:hover {
+        background: #7f8c8d;
     }
 
 </style>
@@ -339,6 +379,7 @@
     </div>
 
     <div class="search-row" style="justify-content: flex-end;">
+        <button id="lectureResetBtn" type="button" class="btn-reset">초기화</button>
         <button id="lectureSearchBtn" type="button" class="btn-search">검색</button>
     </div>
 </div>
@@ -361,6 +402,7 @@
         </div>
 
         <div class="modal-actions">
+            <button class="btn-modal-reset" id="resetSubjectDetail">초기화</button>
             <button class="btn-modal-confirm" id="confirmSubjectDetail">확인</button>
         </div>
     </div>
@@ -373,6 +415,8 @@
         const openBtn = document.getElementById('openSubjectDetailModal');
         const closeBtn = document.getElementById('closeSubjectDetailModal');
         const confirmBtn = document.getElementById('confirmSubjectDetail');
+        const resetBtn = document.getElementById('lectureResetBtn');
+        const resetSubjectDetailBtn = document.getElementById('resetSubjectDetail');
 
         // 모달 열기
         openBtn.addEventListener('click', () => {
@@ -394,6 +438,38 @@
             if (e.target === modal) {
                 modal.classList.remove('active');
             }
+        });
+
+        // 세부과목 모달 내 초기화 버튼
+        resetSubjectDetailBtn.addEventListener('click', () => {
+            // 모달 내 모든 세부과목 체크박스 해제
+            document.querySelectorAll('input[name="subjectDetails"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        });
+
+        // 메인 초기화 버튼
+        resetBtn.addEventListener('click', () => {
+            // 검색 구분 select 초기화
+            document.getElementById('searchType').value = '';
+
+            // 검색어 input 초기화
+            document.getElementById('keyword').value = '';
+
+            // 모든 체크박스 해제 (과목, 판매상태, 등록상태, 학년, 난이도, 세부과목)
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // 모든 라디오 버튼 해제 (정렬)
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+
+            // 가격 범위 input 초기화
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.value = '';
+            });
         });
     });
 </script>
