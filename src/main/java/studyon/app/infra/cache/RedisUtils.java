@@ -39,10 +39,10 @@ public final class RedisUtils {
     }
 
     public static String createEditorPattern() {
-        return "%s:*".formatted(Cache.EDITOR);
+        return "%s:*".formatted(Cache.EDITOR.getBaseKey());
     }
 
     public static String createBackupPattern() {
-        return "%s:%s:*".formatted(Param.KEY_BACKUP, Cache.EDITOR);
+        return "%s:%s:*".formatted(Param.KEY_BACKUP, Cache.EDITOR.getBaseKey());
     }
 }

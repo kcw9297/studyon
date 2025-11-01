@@ -2,9 +2,16 @@ package studyon.app.infra.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import studyon.app.common.enums.Entity;
+import studyon.app.infra.cache.manager.EditorCacheManager;
+import studyon.app.infra.file.FileManager;
+import studyon.app.layer.domain.editor.EditorCache;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 @Transactional
@@ -12,6 +19,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class CacheSchedulingService {
+
+    private final EditorCacheManager editorCacheManager;
+    private final FileManager fileManager;
+
+    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
+    public void removeOrphanEditorCaches() {
+
+        // [1] 고아 상태의 에디터 캐시정보 일괄 조회
+        List<EditorCache> orphans =
+                editorCacheManager.getAndRemoveAllOrphanCache(EditorCache.class);
+        // [2] 내부의 업로드했던 파일 모두 삭제
+        orphans.stream()
+                .map(EditorCache::getUploadFileNames)
+                .flatMap(List::stream)
+                .forEach(orphanFileName -> fileManager.remove(orphanFileName, Entity.LECTURE.name()));
+    }
+
 
 /*
  @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)

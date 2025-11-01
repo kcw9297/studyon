@@ -13,17 +13,14 @@ import java.lang.annotation.*;
  */
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Constraint(validatedBy = IntRangeValidator.class)
 @Documented
 public @interface IntRange {
 
+    String message() default "";
+    int min() default 0;  // 양수 범위만
+    int max() default Integer.MAX_VALUE;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-
-    // 정수 최소값 (미지정 시 무제한)
-    int min() default Integer.MIN_VALUE;
-
-    // 정수 최대값 (미지정 시 무제한)
-    int max() default Integer.MAX_VALUE;
 }

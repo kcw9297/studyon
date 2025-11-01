@@ -2,7 +2,7 @@ package studyon.app.layer.base.validation.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import studyon.app.layer.base.validation.validator.EditorRangeValidator;
+import studyon.app.layer.base.validation.validator.EditorContentValidator;
 
 import java.lang.annotation.*;
 
@@ -13,11 +13,13 @@ import java.lang.annotation.*;
  */
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-@Constraint(validatedBy = EditorRangeValidator.class)  // Validator 클래스 지정
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Constraint(validatedBy = EditorContentValidator.class)  // Validator 클래스 지정
 @Documented
-public @interface EditorContentRange {
+public @interface EditorContent {
     String message() default "";
+    int min() default 1;
+    int max() default 2000;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

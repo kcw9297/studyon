@@ -42,7 +42,6 @@ public class LocalFileManager implements FileManager {
     private String fileDomain;
 
 
-    // TODO 여기 고쳐야함
     @Override
     public String upload(MultipartFile file, String storeName, String entityName) {
 

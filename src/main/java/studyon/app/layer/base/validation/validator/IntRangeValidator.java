@@ -15,26 +15,33 @@ import java.util.Objects;
 
 public class IntRangeValidator implements ConstraintValidator<IntRange, Integer> {
 
-    // 값 범위
+    // 사용자 오류 메세지
+    private String message;
     private int min;
     private int max;
 
     @Override
     public void initialize(IntRange annotation) {
-        this.min = annotation.min();
-        this.max = annotation.max();
+
+        // 최소, 최대 값 범위
+        this.min = Math.max(annotation.min(), 0);
+        this.max = Math.max(annotation.max(), 0);
+
+        // 사용자 입력 오류 메세지
+        this.message = annotation.message();
+        if (Objects.isNull(message) || message.isBlank()) {
+            if (Objects.equals(min, 0)) this.message = "최대 %d 이내의 양수를 입력해야 합니다.".formatted(max);
+            else this.message = "%d-%d 이내의 양수를 입력해야 합니다.".formatted(min, max);
+        }
     }
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
 
-        // [1] 오류 메세지
-        String message = Msg.VALIDATOR_LONG_RANGE.formatted(min, max);
-
-        // [2] 기본 메세지 비활성화
+        // [1] 기본 메세지 비활성화
         context.disableDefaultConstraintViolation();
 
-        // [3] 검증 수행
+        // [2] 검증 수행
         if (Objects.isNull(value) || value < min || value > max) {
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return false;
