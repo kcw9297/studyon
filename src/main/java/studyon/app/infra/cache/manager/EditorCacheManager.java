@@ -16,6 +16,14 @@ public interface EditorCacheManager {
 
 
     /**
+     * 캐시데이터 기록
+     * @param id            구별 가능한 아이디 값
+     * @param cacheData     캐시 데이터
+     */
+    void recordEditorCache(Object id, Object cacheData);
+
+
+    /**
      * 캐시데이터 갱신
      * @param id            구별 가능한 아이디 값
      * @param cacheData     캐시 데이터
@@ -42,8 +50,7 @@ public interface EditorCacheManager {
 
     /**
      * 원본 캐시 key가 만료된 고아 상태의 백업 캐시데이터 일괄 조회
-     * @param id 구별 가능한 아이디 값
      * @return 조회된 백업 캐시데이터 리스트
      */
-    <T> List<T> getAndRemoveAllOrphanCache(Object id, Class<T> clazz);
+    <T> List<T> getAndRemoveAllOrphanCache(Class<T> clazz);
 }

@@ -1,10 +1,15 @@
 package studyon.app.layer.domain.lecture;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import studyon.app.common.enums.filter.LectureSort;
 import studyon.app.common.enums.*;
+import studyon.app.layer.base.validation.annotation.EditorContent;
+import studyon.app.layer.base.validation.annotation.LectureIndex;
+import studyon.app.layer.base.validation.annotation.LongRange;
+import studyon.app.layer.base.validation.annotation.Title;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;
@@ -135,13 +140,30 @@ public class LectureDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Create {
+
+        private String editorId; // 에디터 작성 데이터를 기록하기 위해 임시 사용
+
         private Long teacherId;
+
+        @Title(min = 4, max = 20)
         private String title;
+
+        @EditorContent(min = 10, max = 100)
         private String description;
+
+        @NotNull(message = "강의 대상을 선택해야 합니다.")
         private LectureTarget target;
+
+        @NotNull(message = "강의 난이도를 선택해야 합니다.")
         private Difficulty difficulty;
+
+        @NotNull(message = "강의 세부 과목을 선택해야 합니다.")
         private SubjectDetail subjectDetail;
+
+        @LongRange(min = 10000, max = 1000000)
         private Long price;
+
+        @LectureIndex
         private List<String> curriculumTitles;
     }
 

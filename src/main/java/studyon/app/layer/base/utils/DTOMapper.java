@@ -68,6 +68,7 @@ public class DTOMapper {
                 .difficulty(dto.getDifficulty())
                 .lectureTarget(dto.getTarget())
                 .description(dto.getDescription())
+                .subject(teacher.getSubject())
                 .subjectDetail(dto.getSubjectDetail())
                 .build();
     }

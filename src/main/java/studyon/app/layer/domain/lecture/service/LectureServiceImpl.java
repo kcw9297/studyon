@@ -2,6 +2,7 @@ package studyon.app.layer.domain.lecture.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,9 +10,11 @@ import studyon.app.common.enums.*;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.infra.cache.manager.EditorCacheManager;
 import studyon.app.infra.file.FileManager;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.DTOMapper;
+import studyon.app.layer.domain.editor.EditorCache;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.file.repository.FileRepository;
@@ -43,6 +46,7 @@ import java.util.stream.Collectors;
  * @version 1.2
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -58,6 +62,7 @@ public class LectureServiceImpl implements LectureService {
 
     private final FileManager fileManager;
     private final CacheManager cacheManager;
+    private final EditorCacheManager editorCacheManager;
 
 
     @Override
@@ -156,16 +161,20 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public Long create(LectureDTO.Create dto) {
 
-        // [1] 선생님 조회
+        // [1] 저장할 에디터 내 내용 정화 (허용하지 않는 태그 제거)
+        String purifiedDescription = StrUtils.purifyHtml(dto.getDescription());
+        dto.setDescription(purifiedDescription);
+
+        // [2] 선생님 조회
         Teacher teacher = teacherRepository
                 .findById(dto.getTeacherId())
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
-        // [2] 강의저장 수행
+        // [3] 강의저장 수행
         Lecture lecture = DTOMapper.toEntity(dto, teacher);
         Lecture savedLecture = lectureRepository.save(lecture);
 
-        // [3] 강의 인덱스 저장
+        // [4] 강의 인덱스 저장
         if (dto.getCurriculumTitles() != null && !dto.getCurriculumTitles().isEmpty()) {
             List<LectureIndex> indexes = new ArrayList<>();
             long index = 1L;
@@ -180,7 +189,25 @@ public class LectureServiceImpl implements LectureService {
             lectureIndexRepository.saveAll(indexes);
         }
 
-        // [4] 생성된 강의번호 반환
+        // [5] 에디터 내 파일정보 추출 후, 파일정보 저장
+        List<String> uploadFileNames = StrUtils.purifyAndExtractFileNameFromHtml(dto.getDescription());
+        EditorCache editorCache = editorCacheManager.getAndRemoveCache(dto.getEditorId(), EditorCache.class);
+
+        // 캐시가 만료되어 등록 불가한 경우
+        if (Objects.isNull(editorCache)) throw new BusinessLogicException(AppStatus.EDITOR_CACHE_NOT_EXIST);
+
+        log.warn("uploadFileNames = {}, editorCache = {}",  uploadFileNames, editorCache);
+
+        List<File> uploadFiles = editorCache.getUploadFiles().stream()
+                .filter(uploadDto -> uploadFileNames.contains(uploadDto.getStoreName()))
+                .peek(uploadFile -> uploadFile.setEntityId(lecture.getLectureId()))
+                .map(DTOMapper::toEntity)
+                .toList();
+
+        fileRepository.saveAll(uploadFiles);
+
+
+        // [6] 생성된 강의번호 반환
         return savedLecture.getLectureId();
     }
 

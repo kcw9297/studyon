@@ -17,14 +17,16 @@
         <div>
             <input class="resister-lecture-title" type="text" id="title" name="title">
         </div>
+        <div class="text-error" id="titleError"></div>
 
         <!-- 소개 -->
         <label class="resister-description" for="description">강의 소개</label>
         <div class="editor-wrapper" style="width: 100%; max-width: 1003px;">
-            <textarea id="content" name="description" hidden></textarea>
+            <textarea id="content" name="description" style="display:none;"></textarea>
             <iframe style="width: 100%; height: 853px;"
-                    src="<c:url value="/editor?width=1000&height=800&action=CREATE&fileUploadUrl=/teacher/api/lectures/upload/description-image"/>"></iframe>
+                    src="<c:url value="/editor?width=1000&height=800&editorId=${editorId}&fileUploadUrl=/teacher/api/lectures/cache/description-image"/>"></iframe>
         </div>
+        <div class="text-error" id="descriptionError"></div>
 
         <!-- 대상 -->
         <label class="resister-description" for="target">강의 대상</label>
@@ -36,6 +38,7 @@
                 </c:forEach>
             </select>
         </div>
+        <div class="text-error" id="targetError"></div>
 
         <!-- 난이도 -->
         <label class="resister-description" for="difficulty">난이도</label>
@@ -47,20 +50,19 @@
                 </c:forEach>
             </select>
         </div>
+        <div class="text-error" id="difficultyError"></div>
 
-        <!-- 과목 -->
-        <label class="resister-description" for="subject">과목</label>
+        <!-- 세부 과목 -->
+        <label class="resister-description" for="subject">세부 과목</label>
         <div>
-            <select class="resister-lecture-target" id="subjectDetail" name="subject">
+            <select class="resister-lecture-target" id="subjectDetail" name="subjectDetail">
                 <option value="">선택하세요</option>
                 <c:forEach items="${subjectDetails}" var="detail">
                     <option value="${detail}">${detail.name}</option>
                 </c:forEach>
             </select>
         </div>
-
-        <!-- 서브 과목 -->
-        <div id="subject-detail-box" style="margin-top: 10px;"></div>
+        <div class="text-error" id="subjectDetailError"></div>
 
 
         <!-- 가격 -->
@@ -68,6 +70,7 @@
         <div>
             <input class="resister-lecture-price" type="number" id="price" name="price" min="0"> 원
         </div>
+        <div class="text-error" id="priceError"></div>
 
         <!-- 커리큘럼 -->
         <div>
@@ -75,6 +78,8 @@
         </div>
         <button type="button" id="add-lecture-btn">+ 강의 추가</button>
         <div id="lecture-list-box"></div>
+        <div class="text-error" id="curriculumTitlesError"></div>
+        <div>허용 특수문자 : _-.,/!?()[]{}</div>
 
         <!-- 제출 버튼 -->
         <div class="submit-box">
@@ -84,13 +89,15 @@
 </div>
 
 <script>
+
+    // 스크립트 상수
+    let isRunning = true;
+    let updateTimer = null;
+
     document.addEventListener("DOMContentLoaded", () => {
         const form = document.getElementById("lectureForm");
         const addBtn = document.getElementById("add-lecture-btn");
         const listBox = document.getElementById("lecture-list-box");
-
-
-
 
         // 🔹 강의 번호 재정렬
         function updateNumbers() {
@@ -106,7 +113,7 @@
             div.classList.add("lecture-item");
             div.innerHTML = `
             <label class="lecture-number"></label>
-            <input type="text" name="curriculumTitles" placeholder="강의 제목 입력" required>
+            <input type="text" name="curriculumTitles" placeholder="강의 제목 입력">
             <button type="button" class="remove-btn">✖</button>
         `;
             listBox.appendChild(div);
@@ -123,33 +130,82 @@
 
         // 🔹 폼 제출
         form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
 
             try {
-                const res = await fetch("/api/teachers/lecture/register", {
+                e.preventDefault();
+
+                // REST API 요청
+                form.querySelector('textarea[name="description"]').value = document.getElementById("content").value || "";
+                const formData = new FormData(form);
+                formData.append("editorId", "${editorId}");
+
+                const res = await fetch("/teacher/api/lectures", {
+                    headers: {'X-Requested-From': window.location.pathname + window.location.search},
                     method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: params
+                    body: formData
                 });
 
-                const json = await res.json();
-                if (res.ok) {
-                    alert(json.message || "강의 등록이 완료되었습니다!");
-                    window.location.href="/teacher/management/lecturelist"
-                } else {
-                    alert(json.message || "등록 실패");
+                // 서버 JSON 응답 문자열 파싱
+                const rp = await res.json();
+                console.log("서버 응답:", rp);
+
+                // 요청 실패 처리
+                if (!res.ok || !rp.success) {
+
+                    // 로그인이 필요한 경우
+                    if (rp.statusCode === 401) {
+
+                        // 로그인 필요 안내 전달
+                        if (confirm(rp.message || "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+                            window.location.href = rp.redirect || "/login";
+                        }
+
+                        // 로직 중단
+                        return;
+                    }
+
+                    // 권한이 부족한 경우
+                    if (rp.statusCode === 403) {
+                        alert(rp.message || "접근 권한이 없습니다.");
+                        return;
+                    }
+
+                    // 유효성 검사에 실패한 경우
+                    if (rp.inputErrors) {
+                        document.querySelectorAll(".text-error").forEach((el) => {el.textContent = "";});
+                        Object.entries(rp.inputErrors).forEach(([field, message]) => {
+                            const errorElem = document.getElementById(`\${field}Error`);
+                            if (errorElem) errorElem.textContent = message;
+                        });
+                        return;
+                    }
+
+
+                    // 기타 예기치 않은 오류가 발생한 경우
+                    alert(rp.message || "서버 오류가 발생했습니다. 잠시 후에 시도해 주세요.");
+                    return;
                 }
-            } catch (err) {
-                console.error("❌ 오류:", err);
-                alert("서버 오류가 발생했습니다.");
+
+                // 강의 등록 후, 강의 상세로 이동
+                alert(rp.message || "강의 등록이 완료되었습니다.");
+                window.location.href= rp.redirect || "/teacher/management/lecturelist";
+
+
+            } catch (error) {
+                console.error("프로필 로드 실패:", error);
             }
+
+
         });
+
+
     });
 
-
+    // 에디터 내용 변동 시 처리 함수
+    function onEditorContentChange(content) {
+        document.getElementById("content").value = content;
+        console.log(document.getElementById("content").value);
+    }
 
 
 </script>
