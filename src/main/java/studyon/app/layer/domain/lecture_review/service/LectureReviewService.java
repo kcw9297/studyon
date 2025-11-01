@@ -53,4 +53,5 @@ public interface LectureReviewService {
      * @return 평점 계산 결과
      */
     void createReview(LectureReviewDTO.Write dto, Long memberId);
+    List<LectureReviewDTO.Read> readLectureReviews(Long lectureId);
 }

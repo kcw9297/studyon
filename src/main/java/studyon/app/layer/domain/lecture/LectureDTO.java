@@ -140,10 +140,9 @@ public class LectureDTO {
         private String description;
         private LectureTarget target;
         private Difficulty difficulty;
-        private Subject subject;
+        private SubjectDetail subjectDetail;
         private Long price;
         private List<String> curriculumTitles;
-        private SubjectDetail subjectDetail;
     }
 
     @Data

@@ -67,8 +67,8 @@ public final class Url {
     public static final String TEACHERS_API = API + TEACHERS;   //  "/api/teachers"
 
     /* LECTURE */
-    public static final String LECTURES_API = API + LECTURES;   //  "/api/lecture"
-    public static final String LECTURES_ADMIN_API = ADMIN + LECTURES_API;   //  "/api/lecture"
+    public static final String LECTURES_API = API + LECTURES;   //  "/api/lectures"
+    public static final String LECTURES_ADMIN_API = ADMIN + LECTURES_API;   //  "/admin/api/lectures"
     public static final String LECTURES_TEACHER_API = TEACHER + LECTURES_API;
 
     /* MYPAGE */

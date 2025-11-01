@@ -27,7 +27,7 @@ public interface LectureLikeRepository extends JpaRepository<LectureLike, Long> 
     Optional<LectureLike> findByMember_MemberIdAndLecture_LectureId(Long memberId, Long lectureId);
 
     // 강의별 좋아요 수
-    long countByLecture_LectureId(Long lectureId);
+    Long countByLecture_LectureId(Long lectureId);
 
     // 회원별 좋아요 리스트 (관심목록)
     @Query("""
@@ -54,5 +54,42 @@ public interface LectureLikeRepository extends JpaRepository<LectureLike, Long> 
             @Param("subject") String subject
     );
 
+    /**
+     *  좋아요 삭제 (회원 + 강의 조합)
+     */
+    void deleteByMember_MemberIdAndLecture_LectureId(Long memberId, Long lectureId);
+
+    /**
+     * [1] 회원별 좋아요 목록 조회
+     */
+    @Query("""
+        SELECT ll
+        FROM LectureLike ll
+        JOIN FETCH ll.lecture lec
+        JOIN FETCH lec.teacher t
+        JOIN FETCH t.member m
+        WHERE ll.member.memberId = :memberId
+        ORDER BY lec.subject, lec.title
+    """)
+    List<LectureLike> findByMemberId(@Param("memberId") Long memberId);
+
+
+    /**
+     * 회원 + 과목별 좋아요 목록 조회
+     */
+    @Query("""
+        SELECT ll
+        FROM LectureLike ll
+        JOIN FETCH ll.lecture lec
+        JOIN FETCH lec.teacher t
+        JOIN FETCH t.member m
+        WHERE ll.member.memberId = :memberId
+          AND UPPER(lec.subject) = UPPER(:subject)
+        ORDER BY lec.title
+    """)
+    List<LectureLike> findByMemberIdAndSubject(
+            @Param("memberId") Long memberId,
+            @Param("subject") String subject
+    );
 
 }

@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
-import studyon.app.common.enums.Subject;
-import studyon.app.common.enums.SubjectDetail;
-import studyon.app.common.enums.View;
+import studyon.app.common.enums.*;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
@@ -104,8 +102,10 @@ public class TeacherController {
         // [1] 프로필 조회
         MemberProfile profile = SessionUtils.getProfile(session);
 
-        // [2] 세부 과목데이터 추출
+        // [2] 선택 데이터 삽입
         model.addAttribute("subjectDetails", SubjectDetail.getByParent(profile.getTeacherSubject().name()));
+        model.addAttribute("targets", LectureTarget.get());
+        model.addAttribute("difficulties", Difficulty.get());
 
         // [3] view 반환
         return ViewUtils.returnView(model, View.TEACHER,"management_lecture_register");

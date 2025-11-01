@@ -11,7 +11,7 @@
         <div class="payment-subtitle">결제번호 : ${data.paymentId}</div>
         <div class="payment-subtitle">결제강의 : ${data.lectureTitle}</div>
         <div class="payment-subtitle">결제액수 : <fmt:formatNumber value="${data.paidAmount}" pattern="₩#,###" /></div>
-        <button class="payment-btn" onclick="location.href='/mypage/lectures'">내 강의로 이동</button>
+        <button class="payment-btn" onclick="location.href='/mypage/lecture_management'">내 강의로 이동</button>
     </div>
 </div>
 

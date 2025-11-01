@@ -104,7 +104,15 @@ public interface LectureService {
 
     void reject(Long lectureId, String rejectReason);
 
+    /* 관리자 강의 통계용 메소드들 */
+    
     Map<String, Long> readLectureCountBySubject();
 
     Map<String, Long> readLectureCountByDifficulty();
+
+    Map<String, Long> readLectureCountByStatus();
+
+    List<LectureDTO.Read> readTopRatedLectures(int count);
+
+    Map<String, Long> readLectureCountByTarget();
 }

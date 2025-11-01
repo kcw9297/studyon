@@ -11,56 +11,51 @@
     <div class="resister-title">강의 등록</div>
 
     <!-- ✅ 폼 형식으로 변경 -->
-    <form id="lectureForm" action="/teacher/api/lectures" method="post">
+    <form id="lectureForm">
         <!-- 제목 -->
         <label class="resister-description" for="title">강의 제목</label>
         <div>
-            <input class="resister-lecture-title" type="text" id="title" name="title" required>
+            <input class="resister-lecture-title" type="text" id="title" name="title">
         </div>
 
         <!-- 소개 -->
         <label class="resister-description" for="description">강의 소개</label>
-        <div>
-            <textarea class="resister-lecture-description" id="description" name="description" required></textarea>
+        <div class="editor-wrapper" style="width: 100%; max-width: 1003px;">
+            <textarea id="content" name="description" hidden></textarea>
+            <iframe style="width: 100%; height: 853px;"
+                    src="<c:url value="/editor?width=1000&height=800&action=CREATE&fileUploadUrl=/teacher/api/lectures/upload/description-image"/>"></iframe>
         </div>
 
         <!-- 대상 -->
         <label class="resister-description" for="target">강의 대상</label>
         <div>
-            <select class="resister-lecture-target" id="target" name="target" required>
+            <select class="resister-lecture-target" id="target" name="target">
                 <option value="">선택하세요</option>
-                <option value="HIGH1">고1</option>
-                <option value="HIGH2">고2</option>
-                <option value="HIGH3">고3</option>
+                <c:forEach items="${targets}" var="target">
+                    <option value="${target}">${target.value}</option>
+                </c:forEach>
             </select>
         </div>
 
         <!-- 난이도 -->
         <label class="resister-description" for="difficulty">난이도</label>
         <div>
-            <select class="resister-lecture-target" id="difficulty" name="difficulty" required>
+            <select class="resister-lecture-target" id="difficulty" name="difficulty">
                 <option value="">선택하세요</option>
-                <option value="BASIC">기초</option>
-                <option value="STANDARD">핵심</option>
-                <option value="ADVANCED">심화</option>
-                <option value="MASTER">응용</option>
-                <option value="EXPERT">최상급</option>
+                <c:forEach items="${difficulties}" var="difficulty">
+                    <option value="${difficulty}">${difficulty.value}</option>
+                </c:forEach>
             </select>
         </div>
 
         <!-- 과목 -->
         <label class="resister-description" for="subject">과목</label>
         <div>
-            <select class="resister-lecture-target" id="subject" name="subject">
-            </select>
-
-            <select class="resister-lecture-target" id="subject" name="subject" required>
+            <select class="resister-lecture-target" id="subjectDetail" name="subject">
                 <option value="">선택하세요</option>
-                <option value="KOREAN">국어</option>
-                <option value="ENGLISH">영어</option>
-                <option value="MATH">수학</option>
-                <option value="SCIENCE">과학</option>
-                <option value="SOCIETY">사회</option>
+                <c:forEach items="${subjectDetails}" var="detail">
+                    <option value="${detail}">${detail.name}</option>
+                </c:forEach>
             </select>
         </div>
 
@@ -71,7 +66,7 @@
         <!-- 가격 -->
         <label class="resister-description" for="price">판매 가격</label>
         <div>
-            <input class="resister-lecture-price" type="number" id="price" name="price" min="0" required> 원
+            <input class="resister-lecture-price" type="number" id="price" name="price" min="0"> 원
         </div>
 
         <!-- 커리큘럼 -->
@@ -162,6 +157,7 @@
 
 
 <style>
+
     .TeacherManagement-navbar{
         display: flex;
         background-color: #f2f2f2;

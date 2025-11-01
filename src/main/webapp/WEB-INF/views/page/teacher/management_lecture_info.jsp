@@ -197,7 +197,7 @@
 
                     if (confirm("이 목차를 삭제하시겠습니까?")) {
                         try {
-                            const res = await fetch("/api/teachers/management/lectureindex/" + indexId, {
+                            const res = await fetch("/api/teachers/management/lectureIndex/" + indexId, {
                                 method: "DELETE"
                             });
                             const json = await res.json();
@@ -227,7 +227,7 @@
 
                                 if (json2.success === true || json2.statusCode === 200) {
                                     console.log("✅ 삭제 후 순서 자동 업데이트 완료");
-                                    location.reload();
+                                    //location.reload();
                                 } else {
                                     console.warn("⚠ 삭제 후 순서 업데이트 실패:", json2.message);
                                 }

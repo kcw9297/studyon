@@ -1,5 +1,7 @@
 package studyon.app.layer.domain.lecture_review.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -7,9 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.layer.base.dto.Rest;
 import studyon.app.layer.base.utils.RestUtils;
+import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.lecture_review.service.LectureReviewService;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.List;
@@ -55,12 +59,35 @@ public class LectureReviewRestController {
      * @param dto 리뷰 DTO
      */
     @PostMapping("/create")
-    public ResponseEntity<?> createReview(@ModelAttribute LectureReviewDTO.Write dto) {
+    public ResponseEntity<?> createReview(@ModelAttribute LectureReviewDTO.Write dto, HttpSession session) {
         log.info("[API] 리뷰 등록 요청 - lectureId={}, memberId={}, rating={}",
                 dto.getLectureId(), dto.getMemberId(), dto.getRating());
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long memberId = profile.getMemberId();
+        dto.setMemberId(memberId);
 
         lectureReviewService.createReview(dto, dto.getMemberId());
 
         return RestUtils.ok();
     }
+
+
+    /**
+     * [GET] 특정 강의의 수강평 목록 조회 (DTO 기반)
+     */
+    /**
+     * ✅ [GET] 특정 강의의 수강평 목록 조회
+     * 예: GET /api/lectures/reviews/2
+     */
+    @GetMapping("/{lectureId}")
+    public ResponseEntity<?> getLectureReviews(@PathVariable Long lectureId) {
+        log.info("🎯 수강평 조회 요청: lectureId={}", lectureId);
+
+        List<LectureReviewDTO.Read> reviews = lectureReviewService.readLectureReviews(lectureId);
+
+        return RestUtils.ok(reviews);
+    }
+
+
+
 }

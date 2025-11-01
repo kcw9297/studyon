@@ -107,8 +107,17 @@ public class LectureIndexServiceImpl implements LectureIndexService {
         if (!index.getLecture().getTeacher().getTeacherId().equals(teacherId)) {
             throw new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND);
         }
+        Long lectureId = index.getLecture().getLectureId();
 
         lectureIndexRepository.delete(index);
+        //추가 video 갯수갱신 (KHS)
+
+        long count = lectureVideoRepository.countByLectureIndex_Lecture_LectureId(lectureId);
+        Lecture lecture = index.getLecture();
+        lecture.setVideoCount(count);
+        log.info("🎞 영상 개수 갱신 완료 → lectureId={}, count={}", lectureId, count);
+
+
     }
 
     @Override

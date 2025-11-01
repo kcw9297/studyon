@@ -159,4 +159,13 @@ public class LectureReviewServiceImpl implements LectureReviewService {
         updateAverageRatings(dto.getLectureId());
 
     }
+
+    @Override
+    public List<LectureReviewDTO.Read> readLectureReviews(Long lectureId) {
+        return lectureReviewRepository.findByLecture_LectureIdOrderByCreatedAtDesc(lectureId)
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -32,7 +32,6 @@ public class LectureLikeServiceImpl implements LectureLikeService {
     private final MemberRepository memberRepository;
     private final LectureRepository lectureRepository;
 
-    @Transactional
     @Override
     public void addLike(LectureLikeDTO.Write dto) {
         Member member = memberRepository.findById(dto.getMemberId())
@@ -48,7 +47,6 @@ public class LectureLikeServiceImpl implements LectureLikeService {
         }
     }
 
-    @Transactional
     @Override
     public void removeLike(LectureLikeDTO.Delete dto) {
         Member member = memberRepository.findById(dto.getMemberId())

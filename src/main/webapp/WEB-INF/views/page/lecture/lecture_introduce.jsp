@@ -25,7 +25,7 @@
                 <col width="45%">
                 <col width="10%">
             </colgroup>
-            <tbody>
+            <tbody id="curriculum-body">
             <tr class="curriculum-category">
                 <th>챕터</th>
                 <th>차수</th>
@@ -111,6 +111,25 @@
     </div>
     <div id="reviews" class="introduce-content">
         <div class="introduce-title">수강평</div>
+        <%--효상 작성--%>
+
+        <div class="review-input-box">
+            <form>
+                <textarea id="review-content" placeholder="수강 후기를 작성해주세요." maxlength="300"></textarea>
+                <div>
+                    <select id="review-rate">
+                        <option value="5">★★★★★ (5점)</option>
+                        <option value="4">★★★★☆ (4점)</option>
+                        <option value="3">★★★☆☆ (3점)</option>
+                        <option value="2">★★☆☆☆ (2점)</option>
+                        <option value="1">★☆☆☆☆ (1점)</option>
+                    </select>
+                    <button id="review-submit-Btn" class="submit">등록</button>
+                </div>
+            </form>
+        </div>
+
+        <%--효상 작성--%>
         <div class="reviews">
             <div class="reviews-situation">
                 <div class="reviews-total">
@@ -178,3 +197,205 @@
 </section>
 </body>
 </html>
+
+
+<style>
+    /*효상 작성*/
+    /* ✅ 리뷰 입력 박스 전체 */
+    .review-input-box {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 30px;
+        background: #fafafa;
+    }
+
+    /* ✅ 텍스트 입력창 */
+    .review-input-box textarea {
+        width: 100%;
+        min-height: 80px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 10px;
+        font-size: 15px;
+        resize: vertical;
+        outline: none;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    /* ✅ 하단 select + 버튼 정렬 */
+    .review-input-box div {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* ✅ 별점 선택창 */
+    .review-input-box select {
+        padding: 6px 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid;
+    }
+
+    /* CURRICULUM TABLE DESIGN By KHS */
+    .curriculum {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-family: 'Noto Sans KR', sans-serif;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* 상단 헤더 (챕터, 차수, 제목, 시간) */
+    .curriculum-category th {
+        background: linear-gradient(90deg, #f7f8fa 0%, #eef2f7 100%);
+        color: #2c3e50;
+        font-weight: 700;
+        padding: 12px 10px;
+        border-bottom: 2px solid #dcdfe6;
+        font-size: 15px;
+    }
+
+    /* 일반 셀 스타일 */
+    .curriculum-item td {
+        padding: 12px 10px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+        color: #333;
+    }
+
+    /* 홀짝 줄 구분 */
+    .curriculum-item:nth-child(even) td {
+        background-color: #fafafa;
+    }
+
+    /* 챕터(첫 번째 컬럼) 강조 */
+    .curriculum-item td:first-child {
+        font-weight: 600;
+        color: #34495e;
+    }
+
+    /* hover 효과 */
+    .curriculum-item:hover td {
+        background-color: #f2f6fc;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    /* 반응형 - 모바일에서 줄여도 보기 좋게 */
+    @media screen and (max-width: 768px) {
+        .curriculum-category th,
+        .curriculum-item td {
+            font-size: 13px;
+            padding: 10px 6px;
+        }
+    }
+
+
+</style>
+
+<script>
+    //효상작성
+
+    //수강평 등록
+    const pathParts = window.location.pathname.split("/");
+    const lectureId = pathParts[pathParts.length - 1];
+    const submitBtn = document.getElementById("review-submit-Btn");
+
+    submitBtn.addEventListener("click", async (e) => {
+        e.preventDefault(); // 폼 새로고침 방지
+
+        const pathParts = window.location.pathname.split("/");
+        const lectureId = pathParts[pathParts.length - 1];
+        const submitBtn = document.getElementById("review-submit-Btn");
+        console.log("📘 lectureId =", lectureId);
+
+        try {
+            const reviewRate = document.getElementById("review-rate");
+            const reviewContent = document.getElementById("review-content");
+
+            // ✅ 입력 유효성 검사
+            if (!reviewContent.value.trim()) {
+                alert("내용을 입력해주세요!");
+                return;
+            }
+
+            // ✅ 전송 데이터 구성
+            const formData = new FormData();
+            formData.append("lectureId", lectureId);
+            formData.append("rating", reviewRate.value);
+            formData.append("content", reviewContent.value);
+
+            // ✅ POST 요청
+            const res = await fetch("/api/lectures/reviews/create", {
+                method: "POST",
+                body: formData
+            });
+
+            // ✅ 응답 처리
+            if (res.ok) {
+                const data = await res.json();
+                console.log("📩 등록 성공:", data);
+                alert("수강평이 등록되었습니다!");
+                location.reload(); // 새로고침으로 즉시 반영
+            } else {
+                console.error("⚠️ 서버 응답 오류:", res.status);
+                alert("수강평 등록 요청에 실패했습니다.");
+            }
+
+        } catch (err) {
+            console.error("❌ 수강평 등록 중 오류:", err);
+            alert("수강평 등록 중 문제가 발생했습니다.");
+        }
+    });
+
+    //강의 index 불러오기
+        console.log("🎯 lectureId =", lectureId);
+
+    // ✅ 강의 index 불러오기
+    (async () => {
+        console.log("🎯 lectureId =", lectureId);
+
+        // ✅ 커리큘럼 불러오기 API 호출
+        try {
+            const response = await fetch("/lecture/detail/curriculum/" + lectureId);
+            if (!response.ok) throw new Error("서버 응답 오류 " + response.status);
+
+            const json = await response.json();
+            const curriculumList = json.data;
+            console.log("📚 커리큘럼 리스트:", curriculumList);
+
+            const tbody = document.getElementById("curriculum-body");
+            tbody.innerHTML = ""; // 기존 내용 제거
+
+            curriculumList.forEach((item, idx) => {
+                const tr = document.createElement("tr");
+                tr.classList.add("curriculum-item");
+
+                tr.innerHTML = `
+            <td>\${item.lectureTitle || "-"}</td>
+            <td>\${item.indexNumber ? item.indexNumber + "강" : "-"}</td>
+            <td>\${item.indexTitle || "제목 없음"}</td>
+            <td>\${item.videoFileName || "-"}</td>
+        `;
+
+                tbody.appendChild(tr);
+            });
+
+        } catch (err) {
+            console.error("❌ 커리큘럼 불러오기 실패:", err);
+        }
+
+    })();
+
+
+
+
+
+
+
+</script>

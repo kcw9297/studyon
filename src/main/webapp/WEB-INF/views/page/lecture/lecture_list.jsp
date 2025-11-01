@@ -186,7 +186,7 @@
         width: 260px;
         height: auto;
         box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2); /* ✅ 내부 border처럼 */
-        border-radius: 10px;
+        border-radius: 15px;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
@@ -467,7 +467,7 @@
 
             // 클릭 이벤트 (상세 페이지로 이동)
             item.addEventListener('click', () => {
-                window.location.href = `/lecture/\${lecture.lectureId}`;
+                window.location.href = `/lecture/detail/\${lecture.lectureId}`;
             });
 
             return item;

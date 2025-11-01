@@ -1,5 +1,6 @@
 package studyon.app.layer.domain.lecture_video.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.file.repository.FileRepository;
+import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
 import studyon.app.layer.domain.lecture_video.LectureVideo;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class LectureVideoServiceImpl implements LectureVideoService {
 
     private final LectureVideoRepository lectureVideoRepository;
@@ -76,8 +79,16 @@ public class LectureVideoServiceImpl implements LectureVideoService {
         lectureVideo.updateVideoFile(savedFile);
         lectureVideoRepository.save(lectureVideo);
 
+        //추가 video 갯수갱신
+        Long lectureId = lectureIndex.getLecture().getLectureId();
+        long count = lectureVideoRepository.countByLectureIndex_Lecture_LectureId(lectureId);
 
-        // 5️⃣ 실제 파일 물리 업로드
+        Lecture lecture = lectureIndex.getLecture();
+        lecture.setVideoCount(count);
+        log.info("🎞 영상 개수 갱신 완료 → lectureId={}, count={}", lectureId, count);
+
+
+        //실제 파일 물리 업로드
         fileManager.upload(
                 file,
                 uploadDTO.getStoreName(),
