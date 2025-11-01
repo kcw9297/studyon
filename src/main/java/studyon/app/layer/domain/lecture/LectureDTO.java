@@ -6,10 +6,7 @@ import lombok.*;
 
 import studyon.app.common.enums.filter.LectureSort;
 import studyon.app.common.enums.*;
-import studyon.app.layer.base.validation.annotation.EditorContent;
-import studyon.app.layer.base.validation.annotation.LectureIndex;
-import studyon.app.layer.base.validation.annotation.LongRange;
-import studyon.app.layer.base.validation.annotation.Title;
+import studyon.app.layer.base.validation.annotation.*;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 
 import java.time.LocalDateTime;
@@ -150,7 +147,7 @@ public class LectureDTO {
         @Title(min = 4, max = 20)
         private String title;
 
-        @Title(min = 10, max = 100)
+        @Text(min = 10, max = 100)
         private String summary;
 
         @EditorContent(min = 10, max = 100)

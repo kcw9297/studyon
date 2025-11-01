@@ -108,4 +108,9 @@ public class AWSFileManager implements FileManager {
         s3.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(key).build());
     }
 
+    @Override
+    public void remove(String filePath) {
+        s3.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(filePath).build());
+    }
+
 }

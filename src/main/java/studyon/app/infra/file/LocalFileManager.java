@@ -109,5 +109,21 @@ public class LocalFileManager implements FileManager {
         }
     }
 
+    @Override
+    public void remove(String filePath) {
+
+        try {
+            // [1] 파일 저장 경로
+            Path path = Paths.get("%s/%s".formatted(fileDir, filePath));
+
+            // [2] 파일이 존재하는 경우 파일 삭제
+            if (Files.exists(path)) Files.delete(path);
+
+        } catch (Exception e) {
+            log.error(StrUtils.createLogStr(this.getClass(), "로컬 스토리지 파일 업로드에 실패! 오류 : %s".formatted(e.getMessage())));
+            throw new ManagerException(AppStatus.UTILS_LOGIC_FAILED, e);
+        }
+    }
+
 
 }

@@ -2,7 +2,6 @@ package studyon.app.layer.domain.editor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import studyon.app.layer.domain.file.FileDTO;
 
 import java.util.ArrayList;
@@ -18,16 +17,25 @@ import java.util.List;
 @AllArgsConstructor
 public class EditorCache {
 
-    private List<FileDTO.Upload> uploadFiles; // 에디터 본문
-    private List<String> uploadFileNames; // 에디터에 업로드한 누적 파일리스트
+    private List<FileDTO.Upload> uploadFiles; // 업로드한 누적 파일리스트
+    private List<FileDTO.Remove> removeFiles; // 에디터에 업로드한 누적 파일리스트
 
     public EditorCache() {
         this.uploadFiles = new ArrayList<>();
-        this.uploadFileNames = new ArrayList<>();
+        this.removeFiles = new ArrayList<>();
     }
 
-    public void addFile(FileDTO.Upload uploadFile, String uploadFileName) {
-        this.uploadFiles.add(uploadFile);
-        this.uploadFileNames.add(uploadFileName);
+    public void addUploadFile(FileDTO.Upload uploadFile) {
+        uploadFiles.add(uploadFile);
+    }
+
+    public void setAllFiles(List<FileDTO.Upload> uploadFiles, List<FileDTO.Remove> removeFiles) {
+        this.uploadFiles = uploadFiles;
+        this.removeFiles = removeFiles;
+    }
+
+    public void clearAll() {
+        uploadFiles.clear();
+        removeFiles.clear();
     }
 }

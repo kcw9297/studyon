@@ -13,11 +13,6 @@
         </div>
 
         <div class="view-section">
-            <label class="view-label">선생님 성함</label>
-            <div id="lecture-teacherName" class="view-value"></div>
-        </div>
-
-        <div class="view-section">
             <label class="view-label">강의 소개</label>
             <div id="lecture-summary" class="view-value"></div>
         </div>
@@ -29,12 +24,7 @@
 
         <div class="view-section">
             <label class="view-label">강의 대상</label>
-            <div id="lecture-target" class="view-value"></div>
-        </div>
-
-        <div class="view-section">
-            <label class="view-label">강의 과목</label>
-            <div id="lecture-subject" class="view-value"></div>
+            <div id="lecture-lectureTarget" class="view-value"></div>
         </div>
 
         <div class="view-section">
@@ -76,46 +66,40 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/page/teacher/management_lecture_view.css'/>">
 --%>
 
+
 <script>
+
+    const SUBJECT_DETAIL_MAP = {
+        <c:forEach var="subjectDetail" items="${subjectDetails}" varStatus="status">
+        "${subjectDetail}": "${subjectDetail.name}"${!status.last ? ',' : ''}
+        </c:forEach>
+    };
+
+    const DIFFICULTY_MAP = {
+        <c:forEach var="difficulty" items="${difficulties}" varStatus="status">
+        "${difficulty}": "${difficulty.value}"${!status.last ? ',' : ''}
+        </c:forEach>
+    };
+
+    const TARGET_MAP = {
+        <c:forEach var="target" items="${targets}" varStatus="status">
+        "${target}": "${target.value}"${!status.last ? ',' : ''}
+        </c:forEach>
+    };
+
+    const ON_SALE_MAP = {
+        true: "${onSales[0].value}",   // ON_SALE의 value
+        false: "${onSales[1].value}"   // NOT_SALE의 value
+    };
+
+    const STATUS_MAP = {
+        <c:forEach var="st" items="${statuses}" varStatus="status">
+        "${st}": "${st.value}"${!status.last ? ',' : ''}
+        </c:forEach>
+    };
+
+
     document.addEventListener("DOMContentLoaded", async () => {
-
-        // 매핑 MAP
-        const SUBJECT_MAP = {
-            <c:forEach var="subject" items="${subjects}" varStatus="status">
-            "${subject}": "${subject.value}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-        const SUBJECT_DETAIL_MAP = {
-            <c:forEach var="subjectDetail" items="${subjectDetails}" varStatus="status">
-            "${subjectDetail}": "${subjectDetail.name}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-        const DIFFICULTY_MAP = {
-            <c:forEach var="difficulty" items="${difficulties}" varStatus="status">
-            "${difficulty}": "${difficulty.value}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-        const TARGET_MAP = {
-            <c:forEach var="target" items="${targets}" varStatus="status">
-            "${target}": "${target.value}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-        const ON_SALE_MAP = {
-            true: "${onSales[0].value}",   // ON_SALE의 value
-            false: "${onSales[1].value}"   // NOT_SALE의 value
-        };
-
-        const STATUS_MAP = {
-            <c:forEach var="st" items="${statuses}" varStatus="status">
-            "${st}": "${st.value}"${!status.last ? ',' : ''}
-            </c:forEach>
-        };
-
-
 
         const path = window.location.pathname;
         const lectureId = path.split("/").pop();
@@ -160,23 +144,6 @@
             }
         });
 
-        //썸네일 유무 판단 후 브라우저에 렌더링
-        try {
-            const res = await fetch("/api/teachers/management/lecture/" + lectureId + "/thumbnail/view");
-            const thumbBox = document.getElementById("lecture-thumbnail");
-
-            if (res.ok) {
-                thumbBox.innerHTML =
-                    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
-                    ' alt="강의 썸네일"' +
-                    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
-            } else {
-                thumbBox.textContent = "썸네일을 등록해주세요 📷";
-            }
-        } catch (err) {
-            thumbBox.textContent = "썸네일을 등록해주세요 📷";
-        }
-
         //등록된 강좌를 브라우저에 렌더링
         try {
             const response = await fetch("/api/teachers/management/lectureinfo/" + lectureId);
@@ -193,17 +160,21 @@
 
             console.log("lecture 정보 = ", lecture);
 
-
             // 강의 기본 정보 렌더링
             document.getElementById("lecture-title").innerText = lecture.title;
-            document.getElementById("lecture-teacherName").innerText = lecture.teacherName;
             document.getElementById("lecture-summary").innerText = lecture.summary;
             document.getElementById("lecture-description").innerHTML = lecture.description;
-            document.getElementById("lecture-target").innerText = TARGET_MAP[lecture.target];
-            document.getElementById("lecture-subject").innerText = SUBJECT_MAP[lecture.subject];
+            document.getElementById("lecture-lectureTarget").innerText = TARGET_MAP[lecture.target];
             document.getElementById("lecture-subjectDetail").innerText = SUBJECT_DETAIL_MAP[lecture.subjectDetail];
             document.getElementById("lecture-difficulty").innerText = DIFFICULTY_MAP[lecture.difficulty];
             document.getElementById("lecture-price").innerText = "₩" + lecture.price.toLocaleString();
+
+            // 썸네일 이미지
+            const imageElement = document.getElementById("lecture-thumbnail");
+            if (lecture.thumbnailImagePath)
+                imageElement.innerHTML = `<img src="${fileDomain}/\${lecture.thumbnailImagePath}" alt="강의 썸네일" style="width:100%; height:100%; border-radius:10px; object-fit:cover;">`;
+            else imageElement.textContent = "썸네일을 등록해주세요 📷";
+
 
             // 강의 목차 불러오기
             const res = await fetch("/api/teachers/management/lectureindex/" + lectureId);
@@ -574,6 +545,8 @@
         padding: 12px 15px;
         border-radius: 8px;
         border: 1px solid #ddd;
+        white-space: pre-wrap;
+        word-wrap: break-word;
     }
 
     .thumbnail-box {
@@ -769,3 +742,5 @@
     }
 
 </style>
+
+<jsp:include page="/WEB-INF/views/page/teacher/management_lecture_info_edit_modal.jsp" />

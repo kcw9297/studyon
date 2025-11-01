@@ -136,7 +136,7 @@ public class TeacherController {
         model.addAttribute("targets", LectureTarget.get());
         model.addAttribute("difficulties", Difficulty.get());
 
-        // [3] 에디터 내용을 기록할 캐시 생성
+        // [3] 에디터 내용을 기록할 캐시 생성 후, 캐시 아이디 삽입
         String id = StrUtils.createUUID(); // 에디터 데이터를 기록할 ID
         editorService.recordEditorCache(id);
         model.addAttribute("editorId", id);
@@ -152,9 +152,13 @@ public class TeacherController {
     }
 
     @GetMapping("/management/lectureinfo/{lectureId}")
-    public String lectureinfo(Model model, HttpSession session) {
+    public String lectureinfo(@PathVariable Long lectureId,
+                              Model model, HttpSession session) {
 
-        // [1] 데이터 표시를 위한 삽입
+        // [1] 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
+
+        // [2] 데이터 표시를 위한 삽입
         model.addAttribute("subjects", Subject.values());
         model.addAttribute("subjectDetails", SubjectDetail.values());
         model.addAttribute("difficulties", Difficulty.values());
@@ -162,9 +166,10 @@ public class TeacherController {
         model.addAttribute("sorts", LectureSort.values());
         model.addAttribute("targets", LectureTarget.values());
         model.addAttribute("onSales", LectureOnSale.values());
-        model.addAttribute("statuses", LectureRegisterStatus.values());
+        model.addAttribute("subjectDetails", SubjectDetail.getByParent(profile.getTeacherSubject().name()));
 
-        // [2] view 반환
+        // [3] view 반환
+        model.addAttribute("lectureId", lectureId);
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture_info");
     }
 

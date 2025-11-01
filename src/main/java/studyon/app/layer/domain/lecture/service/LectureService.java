@@ -1,7 +1,10 @@
 package studyon.app.layer.domain.lecture.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import studyon.app.common.enums.Difficulty;
+import studyon.app.common.enums.LectureTarget;
 import studyon.app.common.enums.Subject;
+import studyon.app.common.enums.SubjectDetail;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.lecture.LectureDTO;
 
@@ -83,15 +86,23 @@ public interface LectureService {
 
     LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId,Long teacherId);
 
-    void updateThumbnail(Long teacherId, Long lectureId, MultipartFile file);
+    void editThumbnail(Long teacherId, Long lectureId, MultipartFile file);
+    void editTitle(Long lectureId, Long teacherId, String title);
+    void editSummary(Long lectureId, Long teacherId, String summary);
+    void editDescription(Long lectureId, Long teacherId, String editorId, String description);
+    void editLectureTarget(Long lectureId, Long teacherId, LectureTarget lectureTarget);
+    void editDifficulty(Long lectureId, Long teacherId, Difficulty difficulty);
+    void editSubjectDetail(Long lectureId, Long teacherId, SubjectDetail subjectDetail);
+    void editPrice(Long lectureId, Long teacherId, Long price);
+
 
     String getLectureThumbnailPath(Long lectureId);
-
     /* 리뷰 퍼센트 계산 - 강의페이지 */
-    Map<Integer, Double> getRatingPercentage(Long lectureId);
 
+    Map<Integer, Double> getRatingPercentage(Long lectureId);
     /* 알고리즘용 특정 과목 Best 리스트 */
     List<LectureDTO.Read> readBestLecturesBySubject(String subject, int count);
+
     List<LectureDTO.Read> readBestLecturesByTeacher(Long teacherId, int count);
 
     void startSale(Long lectureId);
@@ -105,22 +116,22 @@ public interface LectureService {
     void reject(Long lectureId, String rejectReason);
 
     /* 관리자 강의 통계용 메소드들 */
-    
     // 과목별
+
     Map<String, Long> readLectureCountBySubject();
-
     // 난이도별
+
     Map<String, Long> readLectureCountByDifficulty();
-
     // 등록 상태별
+
     Map<String, Long> readLectureCountByStatus();
-
     // 랭킹별
+
     Map<String, Double> readTopRatedLectures(int count);
-
     // 몇학년 과목 강의인지
-    Map<String, Long> readLectureCountByTarget();
 
+    Map<String, Long> readLectureCountByTarget();
     // 과목별 매출
+
     Map<String, Long> readSalesBySubject();
 }

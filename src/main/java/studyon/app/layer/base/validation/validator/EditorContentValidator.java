@@ -2,6 +2,7 @@ package studyon.app.layer.base.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.base.validation.annotation.EditorContent;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
  * @author kcw97
  */
 
+@Slf4j
 public class EditorContentValidator implements ConstraintValidator<EditorContent, String> {
 
     // 사용자 오류 메세지
@@ -37,6 +39,8 @@ public class EditorContentValidator implements ConstraintValidator<EditorContent
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+
+        log.warn("value = {}", value);
 
         // [1] 기본 메세지 비활성화
         context.disableDefaultConstraintViolation();
