@@ -166,4 +166,68 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
 
+    public TeacherDTO.ReadDetail readTeacherDetail(Long teacherId) {
+        // 🔹 Teacher + Member + ProfileImage 조인해서 한 번에 가져오는 쿼리 (fetch join)
+        Teacher teacher = teacherRepository.findByIdWithMemberAndProfileImage(teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
+
+        Member member = teacher.getMember();
+        Long lectureCount = lectureRepository.countByTeacher_TeacherId(teacherId);
+
+        // ✅ 프로필 이미지 경로 확인
+        String profilePath = null;
+        if (member.getProfileImage() != null) {
+            profilePath = member.getProfileImage().getFilePath(); // File 엔티티 필드 기준
+        }
+
+        return TeacherDTO.ReadDetail.builder()
+                .teacherId(teacher.getTeacherId())
+                .memberId(member.getMemberId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .description(teacher.getDescription())
+                .subject(teacher.getSubject())
+                .lectureCount(lectureCount)
+                .totalStudents(teacher.getTotalStudents())
+                .averageRating(teacher.getAverageRating())
+                .profileImagePath(profilePath != null ? profilePath : "/img/png/default_member_profile_image.png")
+                .build();
+    }
+
+
+    @Transactional(readOnly = true)
+    public TeacherDTO.ReadDetail readDetail(Long teacherId) {
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
+
+        Member member = teacher.getMember();
+
+        // ✅ 프로필 이미지 경로 처리
+        String profilePath = null;
+        if (member.getProfileImage() != null) {
+            profilePath = member.getProfileImage().getFilePath(); // File 엔티티 기준
+        }
+
+        // ✅ 강의 수 계산
+        Long lectureCount = lectureRepository.countByTeacher_TeacherId(teacherId);
+
+        // ✅ DTO 빌드
+        return TeacherDTO.ReadDetail.builder()
+                .teacherId(teacher.getTeacherId())
+                .memberId(member.getMemberId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .description(teacher.getDescription())
+                .subject(teacher.getSubject())
+                .lectureCount(lectureCount)
+                .totalStudents(teacher.getTotalStudents())
+                .averageRating(teacher.getAverageRating())
+                .profileImagePath(profilePath != null ? profilePath : "/img/png/default_member_profile_image.png")
+                .build();
+    }
+
+
+
+
+
 }

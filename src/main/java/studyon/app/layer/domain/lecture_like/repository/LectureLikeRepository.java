@@ -30,22 +30,26 @@ public interface LectureLikeRepository extends JpaRepository<LectureLike, Long> 
     Long countByLecture_LectureId(Long lectureId);
 
     // 회원별 좋아요 리스트 (관심목록)
+    // KHS 추가 LEFT JOIN
     @Query("""
        SELECT ll
        FROM LectureLike ll
        JOIN FETCH ll.lecture lec
        JOIN FETCH lec.teacher t
        JOIN FETCH t.member m
+       LEFT JOIN FETCH lec.thumbnailFile f
        WHERE ll.member.memberId = :memberId
     """)
     List<LectureLike> findByMemberIdWithLectureTeacherMember(@Param("memberId") Long memberId);
 
+    // KHS 추가 LEFT JOIN
     @Query("""
     SELECT ll
     FROM LectureLike ll
     JOIN FETCH ll.lecture l
     JOIN FETCH l.teacher t
     JOIN FETCH t.member m
+    LEFT JOIN FETCH l.thumbnailFile f
     WHERE ll.member.memberId = :memberId
       AND UPPER(l.subject) = :subject
 """)

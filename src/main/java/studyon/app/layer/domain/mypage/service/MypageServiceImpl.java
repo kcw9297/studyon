@@ -36,6 +36,10 @@ public class MypageServiceImpl implements MypageService {
         } else {
             likes = lectureLikeRepository.findByMemberIdAndSubject(memberId, subject.toUpperCase());
         }
+        likes.forEach(like -> {
+            System.out.println("💡 Like ID: " + like.getLectureLikeId());
+            System.out.println("Lecture: " + (like.getLecture() == null ? "❌ NULL" : like.getLecture().getTitle()));
+        });
 
         return likes.stream()
                 .map(DTOMapper::toReadDTO)

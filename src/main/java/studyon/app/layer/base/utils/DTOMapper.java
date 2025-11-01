@@ -276,6 +276,7 @@ public class DTOMapper {
                 .lectureLikeId(entity.getLectureLikeId())
                 .memberId(entity.getMember().getMemberId())
                 .lectureId(entity.getLecture().getLectureId())
+                .lecture(toReadDTO(entity.getLecture()))
                 .build();
     }
 
