@@ -17,10 +17,6 @@ jobs:
 
     # 빌드 및 EC2 인스턴스에 빌드된 파일 복사
     steps:
-      # GithubActions IP 얻기
-      - name: Get Public IP
-        id: ip
-        uses: haythem/public-ip@v1.3
 
       # step 1. 코드 체크아웃
       - name: Checkout code
@@ -48,6 +44,21 @@ jobs:
       # step 6. 빌드된 WAR 파일 확인
       - name: List WAR files
         run: ls -lh build/libs/*.war
+
+      # step 7. AWS IAM User 자격 증명
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      # GithubActions IP 얻기
+      - name: Get Public IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+        continue-on-error: false
+
 
       # GithubActions IP 추가
       - name: Add Github Actions IP to Security group
