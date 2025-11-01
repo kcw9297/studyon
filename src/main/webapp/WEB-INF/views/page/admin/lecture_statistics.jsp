@@ -258,7 +258,16 @@
                 SOCIAL: "사회"
             };
 
-            const labels = Object.keys(data).map(key => subjectMap[key] || key);
+            // [2] 모든 과목을 미리 정의 (순서 고정)
+            const allSubjects = ["KOREAN", "ENGLISH", "MATH", "SCIENCE", "SOCIAL"];
+
+            // [3] 누락된 과목은 0으로 채우기
+            const completeData = {};
+            allSubjects.forEach(sub => {
+                completeData[sub] = data[sub] || 0;
+            });
+
+            const labels = allSubjects.map(sub => subjectMap[sub]);
             const values = Object.values(data);
             const maxValue = Math.max(...values);
 
@@ -343,8 +352,18 @@
                 console.error("데이터 없음:", json);
                 return;
             }
-            const labels = Object.keys(data);    // ["기초", "핵심", "응용", "심화", "최상위"]
-            const values = Object.values(data);
+
+            // [2] 모든 과목을 미리 정의 (순서 고정)
+            const allDifficulties = ["기초", "핵심", "응용", "심화", "최상위"];
+
+            // [3] 누락된 과목은 0으로 채우기
+            const completeData = {};
+            allDifficulties.forEach(level => {
+                completeData[level] = data[level] || 0;
+            });
+
+            const labels = allDifficulties;
+            const values = Object.values(completeData);
 
             const ctx = document.getElementById("difficultyChart").getContext("2d");
             new Chart(ctx, {
@@ -356,7 +375,7 @@
                         backgroundColor: [  // ✅ 철자 수정
                             "#ff6384", "#36a2eb", "#ffcd56", "#4bc0c0", "#9966ff"
                         ],
-                        borderWidth: 2
+                        borderWidth: 3
                     }]
                 },
                 options: {
