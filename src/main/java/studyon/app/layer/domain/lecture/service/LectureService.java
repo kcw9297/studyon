@@ -113,4 +113,6 @@ public interface LectureService {
     Map<String, Long> readLectureCountByStatus();
 
     List<LectureDTO.Read> readTopRatedLectures(int count);
+
+    Map<String, Long> readLectureCountByTarget();
 }

@@ -427,4 +427,13 @@ public class LectureServiceImpl implements LectureService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Map<String, Long> readLectureCountByTarget() {
+        // 학년 한글 반환
+        return lectureRepository.findLectureCountByTarget().stream()
+                .collect(Collectors.toMap(
+                        row -> LectureTarget.valueOf(row.get("target").toString()).getValue(),
+                        row -> (Long) row.get("cnt")
+                ));
+    }
 }

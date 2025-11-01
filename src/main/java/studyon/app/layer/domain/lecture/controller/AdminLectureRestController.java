@@ -171,4 +171,10 @@ public class AdminLectureRestController {
                         }
                          */
     }
+
+    @GetMapping("/targetCount")
+    public ResponseEntity<?> readTargetCount() {
+        log.info("[API] 대상 학년별 강의 수 조회 요청");
+        return RestUtils.ok(lectureService.readLectureCountByTarget());
+    }
 }
