@@ -52,7 +52,12 @@ jobs:
       # GithubActions IP 추가
       - name: Add Github Actions IP to Security group
         run: |
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          aws ec2 authorize-security-group-ingress \
+            --region ap-northeast-2 \
+            --group-id ${{ secrets.AWS_SG_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       # step 7. EC2로 WAR 파일 전송
       - name: Copy WAR to EC2
@@ -68,7 +73,12 @@ jobs:
 
       - name: Remove Github Actions IP From Security Group
         run: |
-          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          aws ec2 revoke-security-group-ingress 
+            --region ap-northeast-2 \
+            --group-id ${{ secrets.AWS_SG_ID }} \ 
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
 
   # 배포 작업
