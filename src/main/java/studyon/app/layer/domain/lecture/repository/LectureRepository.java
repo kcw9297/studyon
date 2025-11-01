@@ -253,4 +253,13 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     """)
     List<Map<String, Object>> findLectureCountByTarget();
 
+    /*
+    * LECTURE THUMBNAIL FATH 조회
+    * */
+    @Query("SELECT f.filePath " +
+            "FROM Lecture l " +
+            "LEFT JOIN File f ON l.thumbnailFile.fileId = f.fileId " +
+            "WHERE l.lectureId = :lectureId")
+    Optional<String> findThumbnailPathByLectureId(@Param("lectureId") Long lectureId);
+
 }

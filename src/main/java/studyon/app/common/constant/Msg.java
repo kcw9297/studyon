@@ -19,8 +19,4 @@ import studyon.app.layer.base.dto.Rest;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Msg {
 
-    // validator message
-    public static final String VALIDATOR_LONG_RANGE = "%d-%d 사이 값 입력";
-    public static final String VALIDATOR_DOUBLE_RANGE = "%.2f-%.2f 사이 값 입력";
-
 }

@@ -25,6 +25,7 @@ public enum AppStatus {
     CACHE_EXPIRED(403, "정보가 만료되었습니다."),
     ACCESS_DENIED(403, "잘못된 요청입니다."), // 시큐리티 외 비즈니스적 상황으로 접근을 제한하는 경우
 
+
     /* 검증 및 인증 상태 */
     VALIDATION_INVALID_PARAMETER(400, "입력하신 값을 다시 확인해 주세요."),
     AUTH_MAIL_NOT_FOUND(400, "탈퇴 혹은 정지 상태거나 존재하지 않는 이메일입니다."),
@@ -36,6 +37,9 @@ public enum AppStatus {
 
     /* 유틸 클래스 상태 (아직 구제적으로 케이스를 나누진 않음) */
     UTILS_LOGIC_FAILED(500, "처리 중 오류가 발생했습니다. 잠시 후에 다시 시도해 주세요."),
+
+    /* 에디터 상태 */
+    EDITOR_CACHE_NOT_EXIST(400, "세션이 만료되었습니다. 다시 시도해 주세요"),
 
     /* 결제(Payment/PaymentManager) 상태 */
     PAYMENT_NOT_FOUND(500, "결제 정보가 존재하지 않습니다"),

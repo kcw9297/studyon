@@ -44,6 +44,7 @@ public class TeacherDTO {
         private boolean active;
         private LocalDateTime createdAt;
         private LocalDateTime lastLoginAt;
+        private String thumbnailPath;
     }
 
     @Data

@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.*;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
+import studyon.app.layer.domain.editor.service.EditorService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.service.TeacherService;
@@ -41,6 +43,7 @@ import java.util.Objects;
 public class TeacherController {
 
     private final TeacherService teacherService;
+    private final EditorService editorService;
 
     /**
      * [GET] 강의 생성 뷰
@@ -107,7 +110,12 @@ public class TeacherController {
         model.addAttribute("targets", LectureTarget.get());
         model.addAttribute("difficulties", Difficulty.get());
 
-        // [3] view 반환
+        // [3] 에디터 내용을 기록할 캐시 생성
+        String id = StrUtils.createUUID(); // 에디터 데이터를 기록할 ID
+        editorService.recordEditorCache(id);
+        model.addAttribute("editorId", id);
+
+        // [4] view 반환
         return ViewUtils.returnView(model, View.TEACHER,"management_lecture_register");
     }
 

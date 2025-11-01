@@ -69,4 +69,7 @@ public class LectureVideo extends BaseEntity {
     public void updateVideoFile(File newFile) {
         this.videoFile = newFile;
     }
+    public void updateDuration(Integer duration) {
+        this.duration = duration;
+    }
 }

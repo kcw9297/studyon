@@ -2,26 +2,22 @@ package studyon.app.layer.base.validation.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import studyon.app.layer.base.validation.validator.IntRangeValidator;
-import studyon.app.layer.base.validation.validator.LongRangeValidator;
+import studyon.app.layer.base.validation.validator.LectureIndexValidator;
 
 import java.lang.annotation.*;
 
 /**
- * long 타입 범위 검증을 적용할 애노테이션
+ * 강의 목차를 검증하기 위한 애노테이션
  * @version 1.0
  * @author kcw97
  */
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
-@Constraint(validatedBy = LongRangeValidator.class)
+@Constraint(validatedBy = LectureIndexValidator.class)  // Validator 클래스 지정
 @Documented
-public @interface LongRange {
-
+public @interface LectureIndex {
     String message() default "";
-    long min() default 0L; // 양수 범위만
-    long max() default Long.MAX_VALUE;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

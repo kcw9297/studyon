@@ -2,6 +2,7 @@ package studyon.app.layer.domain.lecture.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,9 +10,11 @@ import studyon.app.common.enums.*;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
+import studyon.app.infra.cache.manager.EditorCacheManager;
 import studyon.app.infra.file.FileManager;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.DTOMapper;
+import studyon.app.layer.domain.editor.EditorCache;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.file.FileDTO;
 import studyon.app.layer.domain.file.repository.FileRepository;
@@ -23,6 +26,7 @@ import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
+import studyon.app.layer.domain.payment.repository.PaymentRepository;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
@@ -43,6 +47,7 @@ import java.util.stream.Collectors;
  * @version 1.2
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -55,9 +60,13 @@ public class LectureServiceImpl implements LectureService {
     private final LectureVideoRepository lectureVideoRepository;
     private final LectureReviewRepository lectureReviewRepository;
     private final FileRepository fileRepository;
+    private final PaymentRepository paymentRepository;
 
     private final FileManager fileManager;
     private final CacheManager cacheManager;
+    private final EditorCacheManager editorCacheManager;
+
+
 
 
     @Override
@@ -87,9 +96,21 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 최근 강의 정렬
+        String fileDomain = "http://localhost:8080/upload";
+        log.info("readRecentLecture 호출");
+
         return lectureRepository.findRecentLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                //KHS97 썸네일 추가
+                .peek(dto -> {
+                    lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                            .ifPresentOrElse(path ->
+                                            dto.setThumbnailImagePath(fileDomain + "/" + path),
+                                    () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                            );
+                })
+
                 .collect(Collectors.toList());
     }
 
@@ -156,16 +177,20 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public Long create(LectureDTO.Create dto) {
 
-        // [1] 선생님 조회
+        // [1] 저장할 에디터 내 내용 정화 (허용하지 않는 태그 제거)
+        String purifiedDescription = StrUtils.purifyHtml(dto.getDescription());
+        dto.setDescription(purifiedDescription);
+
+        // [2] 선생님 조회
         Teacher teacher = teacherRepository
                 .findById(dto.getTeacherId())
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
-        // [2] 강의저장 수행
+        // [3] 강의저장 수행
         Lecture lecture = DTOMapper.toEntity(dto, teacher);
         Lecture savedLecture = lectureRepository.save(lecture);
 
-        // [3] 강의 인덱스 저장
+        // [4] 강의 인덱스 저장
         if (dto.getCurriculumTitles() != null && !dto.getCurriculumTitles().isEmpty()) {
             List<LectureIndex> indexes = new ArrayList<>();
             long index = 1L;
@@ -180,7 +205,25 @@ public class LectureServiceImpl implements LectureService {
             lectureIndexRepository.saveAll(indexes);
         }
 
-        // [4] 생성된 강의번호 반환
+        // [5] 에디터 내 파일정보 추출 후, 파일정보 저장
+        List<String> uploadFileNames = StrUtils.purifyAndExtractFileNameFromHtml(dto.getDescription());
+        EditorCache editorCache = editorCacheManager.getAndRemoveCache(dto.getEditorId(), EditorCache.class);
+
+        // 캐시가 만료되어 등록 불가한 경우
+        if (Objects.isNull(editorCache)) throw new BusinessLogicException(AppStatus.EDITOR_CACHE_NOT_EXIST);
+
+        log.warn("uploadFileNames = {}, editorCache = {}",  uploadFileNames, editorCache);
+
+        List<File> uploadFiles = editorCache.getUploadFiles().stream()
+                .filter(uploadDto -> uploadFileNames.contains(uploadDto.getStoreName()))
+                .peek(uploadFile -> uploadFile.setEntityId(lecture.getLectureId()))
+                .map(DTOMapper::toEntity)
+                .toList();
+
+        fileRepository.saveAll(uploadFiles);
+
+
+        // [6] 생성된 강의번호 반환
         return savedLecture.getLectureId();
     }
 
@@ -404,7 +447,19 @@ public class LectureServiceImpl implements LectureService {
     public Map<String, Long> readLectureCountByStatus() {
         return lectureRepository.findLectureCountByStatus().stream()
                 .collect(Collectors.toMap(
-                        row -> LectureRegisterStatus.valueOf(row.get("status").toString()).getValue(),
+                        row -> {
+                            Object statusObj = row.get("status");
+                            // 이름 검증 로직
+                            if (statusObj instanceof LectureRegisterStatus s) {
+                                return s.getValue();
+                            } else {
+                                try {
+                                    return LectureRegisterStatus.valueOf(statusObj.toString()).getValue();
+                                } catch (Exception e) {
+                                    return null;
+                                }
+                            }
+                        },
                         row -> (Long) row.get("cnt")
                 ));
     }
@@ -414,7 +469,7 @@ public class LectureServiceImpl implements LectureService {
      * 관리자 통계용
      */
     @Override
-    public List<LectureDTO.Read> readTopRatedLectures(int count) {
+    public Map<String, Double> readTopRatedLectures(int count) {
         // [1] DB 조회 (상위 n개)
         Pageable pageable = PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "averageRate"));
 
@@ -424,8 +479,14 @@ public class LectureServiceImpl implements LectureService {
                 .sorted(Comparator.comparing(Lecture::getAverageRate).reversed()) // 혹시 null-safe 정렬
                 .limit(count)
                 .map(DTOMapper::toReadDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(
+                        dto -> dto.getTitle() + " (" + dto.getLectureId() + ")",  // 고유 key
+                        LectureDTO.Read::getAverageRate,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
     }
+
 
     @Override
     public Map<String, Long> readLectureCountByTarget() {
@@ -434,6 +495,16 @@ public class LectureServiceImpl implements LectureService {
                 .collect(Collectors.toMap(
                         row -> LectureTarget.valueOf(row.get("target").toString()).getValue(),
                         row -> (Long) row.get("cnt")
+                ));
+    }
+
+    @Override
+    public Map<String, Long> readSalesBySubject() {
+        return paymentRepository.findTotalSalesBySubject()
+                .stream()
+                .collect(Collectors.toMap(
+                        row -> row.get("subject").toString(),
+                        row -> ((Number) row.get("totalSales")).longValue()
                 ));
     }
 }

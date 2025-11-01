@@ -116,6 +116,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5'
     testImplementation 'org.springframework.batch:spring-batch-test'
+
+    //동영상 파일길이 계산
+    implementation 'net.bramp.ffmpeg:ffmpeg:0.7.0'
 }
 
 tasks.named('test') {

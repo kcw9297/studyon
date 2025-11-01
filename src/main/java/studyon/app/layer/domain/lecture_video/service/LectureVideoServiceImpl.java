@@ -3,6 +3,8 @@ package studyon.app.layer.domain.lecture_video.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bramp.ffmpeg.FFprobe;
+import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.enums.AppStatus;
@@ -80,12 +82,12 @@ public class LectureVideoServiceImpl implements LectureVideoService {
         lectureVideoRepository.save(lectureVideo);
 
         //추가 video 갯수갱신
-        Long lectureId = lectureIndex.getLecture().getLectureId();
-        long count = lectureVideoRepository.countByLectureIndex_Lecture_LectureId(lectureId);
-
-        Lecture lecture = lectureIndex.getLecture();
-        lecture.setVideoCount(count);
-        log.info("🎞 영상 개수 갱신 완료 → lectureId={}, count={}", lectureId, count);
+//        Long lectureId = lectureIndex.getLecture().getLectureId();
+//        long count = lectureVideoRepository.countByLectureIndex_Lecture_LectureId(lectureId);
+//
+//        Lecture lecture = lectureIndex.getLecture();
+//        lecture.setVideoCount(count);
+//        log.info("🎞 영상 개수 갱신 완료 → lectureId={}, count={}", lectureId, count);
 
 
         //실제 파일 물리 업로드
@@ -95,6 +97,46 @@ public class LectureVideoServiceImpl implements LectureVideoService {
                 uploadDTO.getEntity().getName()
         );
 
+        // 파일 영상길이 데이터 추출후 삽입
+
+        try {
+            // ✅ ffprobe.exe 경로 (Windows 기준)
+            FFprobe ffprobe = new FFprobe("C:\\ffmpeg\\bin\\ffprobe.exe");
+
+            // ✅ 실제 저장된 파일 경로 (FileManager.upload에서 저장한 것과 동일)
+            String fullPath = "C:\\PROJECT_FILE\\" + uploadDTO.getEntity().getName() + "\\" + uploadDTO.getStoreName();
+            java.io.File physicalFile = new java.io.File(fullPath);
+
+            // ✅ 동영상 길이 계산
+            FFmpegProbeResult probeResult = ffprobe.probe(physicalFile.getAbsolutePath());
+            int duration = (int) Math.round(probeResult.getFormat().duration);
+
+            lectureVideo.updateDuration(duration);
+            lectureVideoRepository.save(lectureVideo);
+
+            log.info("🎞 영상 길이 계산 완료 → {}초 (파일명: {}, lectureVideoId={})",
+                    duration, uploadDTO.getStoreName(), lectureVideo.getLectureVideoId());
+
+        } catch (Exception e) {
+            log.warn("⚠️ 동영상 길이 계산 실패: {}", e.getMessage());
+        }
+
+
+        // ✅ 4️⃣ 영상 개수 갱신
+        Long lectureId = lectureIndex.getLecture().getLectureId();
+        long count = lectureVideoRepository.countByLectureIndex_Lecture_LectureId(lectureId);
+
+        Lecture lecture = lectureIndex.getLecture();
+        lecture.setVideoCount(count);
+        log.info("🎞 영상 개수 갱신 완료 → lectureId={}, count={}", lectureId, count);
+
+        try {
+            Long totalDuration = lectureVideoRepository.sumDurationByLectureId(lectureId);
+            lecture.setTotalDuration(totalDuration);
+            log.info("⏱ 총 영상 길이 갱신 완료 → lectureId={}, totalDuration={}초", lectureId, totalDuration);
+        } catch (Exception e) {
+            log.warn("⚠️ 총 영상 길이 갱신 실패: {}", e.getMessage());
+        }
     }
 
     @Override

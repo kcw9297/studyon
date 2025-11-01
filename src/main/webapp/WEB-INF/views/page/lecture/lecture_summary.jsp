@@ -2,6 +2,9 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<%-- LECTURE DETAIL CONTROLLER --%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,8 +40,14 @@
         <div class="summary-thumbnail">
 
         <c:choose>
+            <%--
             <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
             </c:when>
+            --%>
+            <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
+                <img src="${fileDomain}/${lecture.thumbnailFile.filePath}" class="summary-thumbnail" alt="강의 썸네일">
+            </c:when>
+
             <c:otherwise>
                 <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
             </c:otherwise>
@@ -57,7 +66,7 @@
             <div class="summary-item">
                 <p>${teacher.member.nickname}</p>
                 <p>${lecture.videoCount}강</p>
-                <p>${lecture.totalDuration}시간</p>
+                <p>총 강의 시간: ${hours}시간 ${minutes}분 ${seconds}초</p>
                 <p data-en="<c:out value='${lecture.difficulty}'/>"><c:out value="${lecture.difficulty}" /></p>
             </div>
         </div>

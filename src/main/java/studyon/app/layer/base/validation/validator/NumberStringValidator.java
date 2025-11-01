@@ -26,8 +26,8 @@ public class NumberStringValidator implements ConstraintValidator<NumberString, 
     public void initialize(NumberString annotation) {
 
         // 최소, 최대 길이
-        min = annotation.min();
-        max = annotation.max();
+        this.min = Math.max(annotation.min(), 0);
+        this.max = Math.max(annotation.max(), 0);
 
         // 사용자 입력 오류 메세지
         this.message = annotation.message();

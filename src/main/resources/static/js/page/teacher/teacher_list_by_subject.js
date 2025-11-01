@@ -32,24 +32,28 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        const fileDomain = "http://localhost:8080/upload";
+
         teachers.forEach((teacher) => {
+            const thumbnailSrc = teacher.thumbnailPath
+                ? `${fileDomain}/${teacher.thumbnailPath}` // DB의 file_path 그대로 붙임
+                : "/img/png/default_member_profile_image.png";
+            console.log(teacher.thumbnailPath);
+
             const item = document.createElement("div");
-
-            // div 클릭 시 들어갈 링크
-            const detailUrl = `/teacher/profile/${teacher.teacherId}`;
-
             item.classList.add("recent-lecture-item");
 
             item.innerHTML = `
-             <a href="${detailUrl}">
-                <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
-                <div class="lecture-info">
-                  <p class="lecture-title">${teacher.nickname}</p>
-                  <p class="lecture-info-text">${teacher.description || "소개가 없습니다."}</p>
-                  <!-- <p class="lecture-info-text">⭐${teacher.averageRating ?? "0.0"}</p> -->
-                </div>
-             </a>
+                <a href="/teacher/profile/${teacher.teacherId}">
+                    <img src="${thumbnailSrc}" alt="강의 썸네일" class="recent-lecture-thumbnail"
+     onerror="this.onerror=null; this.src='/img/png/default_member_profile_image.png';">
+                    <div class="lecture-info">
+                        <p class="lecture-title">${teacher.nickname}</p>
+                        <p class="lecture-info-text">${teacher.description || "소개가 없습니다."}</p>
+                    </div>
+                </a>
             `;
+
             container.appendChild(item);
         })
     }

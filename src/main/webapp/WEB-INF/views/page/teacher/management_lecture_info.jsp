@@ -148,7 +148,7 @@
             // 강의 기본 정보 렌더링
             document.getElementById("teacherName").innerText = lecture.teacherName;
             document.getElementById("lecture-title").innerText = lecture.title;
-            document.getElementById("lecture-description").innerText = lecture.description;
+            document.getElementById("lecture-description").innerHTML = lecture.description;
             document.getElementById("lecture-target").innerText = lecture.target;
             document.getElementById("lecture-subject").innerText = lecture.subject;
             document.getElementById("lecture-difficulty").innerText = lecture.difficulty;

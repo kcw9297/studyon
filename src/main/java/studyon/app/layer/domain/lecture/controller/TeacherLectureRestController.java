@@ -4,16 +4,17 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
-import studyon.app.common.enums.LectureRegisterStatus;
+import studyon.app.common.enums.Entity;
 import studyon.app.layer.base.utils.RestUtils;
 import studyon.app.layer.base.utils.SessionUtils;
+import studyon.app.layer.domain.editor.service.EditorService;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.service.LectureService;
-import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
 import studyon.app.layer.domain.member.MemberProfile;
 
 /*
@@ -34,21 +35,14 @@ import studyon.app.layer.domain.member.MemberProfile;
 public class TeacherLectureRestController {
 
     private final LectureService lectureService;
+    private final EditorService editorService;
 
     /**
-     * [POST] 강의 등록
+     * [POST] 강의 에디터 이미지 업로드 (캐시데이터)
      */
-    @PostMapping("/upload/description-image")
-    public ResponseEntity<?> uploadDescriptionImage(HttpSession session,
-                                                    String content, MultipartFile file){
-
-        // [1] 프로필 조회
-        MemberProfile profile = SessionUtils.getProfile(session);
-
-        // [2] 강의 생성
-        //Long lectureId = lectureService.create(rq);
-        return RestUtils.ok();
-        //return RestUtils.ok(AppStatus.LECTURE_OK_CREATE, "/teacher/management/lectureinfo/%d".formatted(lectureId));
+    @PostMapping("/cache/description-image")
+    public ResponseEntity<?> uploadDescriptionImage(String editorId, MultipartFile file){
+        return RestUtils.ok(editorService.uploadEditorImage(editorId, Entity.LECTURE, file));
     }
 
 
@@ -56,7 +50,9 @@ public class TeacherLectureRestController {
      * [POST] 강의 등록
      */
     @PostMapping
-    public ResponseEntity<?> create(LectureDTO.Create rq, HttpSession session){
+    public ResponseEntity<?> create(@Validated LectureDTO.Create rq, HttpSession session){
+
+        log.info("Create LectureDTO.Create rq={}", rq);
 
         // [1] 프로필 조회
         MemberProfile profile = SessionUtils.getProfile(session);
@@ -64,6 +60,8 @@ public class TeacherLectureRestController {
 
         // [2] 강의 생성
         Long lectureId = lectureService.create(rq);
+
+        // [3] 에디터 임시 데이터 삭제
         return RestUtils.ok(AppStatus.LECTURE_OK_CREATE, "/teacher/management/lectureinfo/%d".formatted(lectureId));
     }
 
