@@ -64,7 +64,6 @@ public class DTOMapper {
                 .title(dto.getTitle())
                 .price(dto.getPrice())
                 .difficulty(dto.getDifficulty())
-                .subject(dto.getSubject())
                 .lectureTarget(dto.getTarget())
                 .description(dto.getDescription())
                 .subjectDetail(dto.getSubjectDetail())

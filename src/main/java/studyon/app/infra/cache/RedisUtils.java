@@ -38,7 +38,11 @@ public final class RedisUtils {
         return "%s:%s:%s:%s:%s".formatted(Param.KEY_CACHE, entityName, methodType, entityId, id);
     }
 
-    public static String createAnyEntityIdPattern(String entityName, String methodType, Object id) {
-        return "%s:%s:%s:*:%s".formatted(Param.KEY_CACHE, entityName, methodType, id);
+    public static String createEditorPattern() {
+        return "%s:*".formatted(Cache.EDITOR);
+    }
+
+    public static String createBackupPattern() {
+        return "%s:%s:*".formatted(Param.KEY_BACKUP, Cache.EDITOR);
     }
 }

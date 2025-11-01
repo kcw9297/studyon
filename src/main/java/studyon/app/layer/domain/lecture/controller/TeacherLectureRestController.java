@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.enums.LectureRegisterStatus;
@@ -33,7 +34,23 @@ import studyon.app.layer.domain.member.MemberProfile;
 public class TeacherLectureRestController {
 
     private final LectureService lectureService;
-    private final LectureIndexService lectureIndexService;
+
+    /**
+     * [POST] 강의 등록
+     */
+    @PostMapping("/upload/description-image")
+    public ResponseEntity<?> uploadDescriptionImage(HttpSession session,
+                                                    String content, MultipartFile file){
+
+        // [1] 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
+
+        // [2] 강의 생성
+        //Long lectureId = lectureService.create(rq);
+        return RestUtils.ok();
+        //return RestUtils.ok(AppStatus.LECTURE_OK_CREATE, "/teacher/management/lectureinfo/%d".formatted(lectureId));
+    }
+
 
     /**
      * [POST] 강의 등록
