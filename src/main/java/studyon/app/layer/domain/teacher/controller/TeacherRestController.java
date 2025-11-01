@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.AppStatus;
-import studyon.app.common.enums.LectureRegisterStatus;
-import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.RestUtils;
@@ -26,9 +24,7 @@ import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_question.service.LectureQuestionService;
-import studyon.app.layer.domain.lecture_video.LectureVideo;
 import studyon.app.layer.domain.lecture_video.LectureVideoDTO;
-import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
 import studyon.app.layer.domain.lecture_video.service.LectureVideoService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
@@ -171,7 +167,7 @@ public class TeacherRestController {
         MemberProfile profile = SessionUtils.getProfile(session);
         Long teacherId = profile.getTeacherId();
 
-        lectureService.updateThumbnail(lectureId, teacherId, file);
+        lectureService.editThumbnail(lectureId, teacherId, file);
 
         return RestUtils.ok("썸네일이 등록되었습니다.");
     }

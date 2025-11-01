@@ -39,6 +39,12 @@ public final class Url {
     public static final String MYPAGE = "/mypage";
     public static final String RESULT = "/result";
 
+    /* ADMIN & TEACHER 전용 페이지 베이스 */
+    public static final String ADMIN_API = ADMIN + API;  // "/admin/api/home"
+    public static final String TEACHER_API = TEACHER + API;  // "/admin/api/home"
+    public static final String ADMIN_HOME_API = ADMIN_API + HOME;
+
+
     // Security, auth, account
     public static final String EDIT_PASSWORD = "/edit-password";
     public static final String LOGIN_PROCESS = LOGIN + "/process";
@@ -88,10 +94,6 @@ public final class Url {
     /* PAYMENT */
     public static final String PAYMENTS_API = API + PAYMENTS;
     public static final String PAYMENTS_ADMIN_API = ADMIN + PAYMENTS_API;
-
-    /* ADMIN */
-    public static final String ADMIN_API = ADMIN + API;  // "/admin/api/home"
-    public static final String ADMIN_HOME_API = ADMIN_API + HOME;
 
     // 정적 상수 모음
     public static final String[] STATIC_RESOURCE_PATHS = {

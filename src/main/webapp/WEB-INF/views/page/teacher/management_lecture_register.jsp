@@ -28,9 +28,9 @@
 
         <!-- 상세 소개 -->
         <label class="resister-description" for="description">강의 상세 소개</label>
-        <div class="editor-wrapper" style="width: 100%; max-width: 1003px;">
+        <div class="editor-wrapper">
             <textarea id="content" name="description" style="display:none;"></textarea>
-            <iframe style="width: 100%; height: 853px;"
+            <iframe style="width: 100%; max-width: 1003px; height: 853px;"
                     src="<c:url value="/editor?width=1000&height=800&editorId=${editorId}&fileUploadUrl=/teacher/api/lectures/cache/description-image"/>"></iframe>
         </div>
         <div class="text-error" id="descriptionError"></div>
@@ -202,10 +202,8 @@
                 console.error("프로필 로드 실패:", error);
             }
 
-
         });
-
-
+        
     });
 
     // 에디터 내용 변동 시 처리 함수

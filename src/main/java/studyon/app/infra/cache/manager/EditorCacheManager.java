@@ -41,11 +41,11 @@ public interface EditorCacheManager {
 
 
     /**
-     * 캐시 데이터 조회 후 삭제
-     * @param id 구별 가능한 아이디 값
-     * @return 조회된 캐시데이터 (미존재 시 null)
+     * 캐시 데이터 조회 후, 아주 짧은 시간 후에 만료되도록 변경
+     * @param id        구별 가능한 아이디 값
+     * @param cacheData 새롭게 삽입되는 데이터
      */
-    <T> T getAndRemoveCache(Object id, Class<T> clazz);
+    void setCacheWithShortExpired(Object id, Object cacheData);
 
 
     /**

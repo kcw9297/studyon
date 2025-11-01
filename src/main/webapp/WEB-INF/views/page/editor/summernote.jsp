@@ -130,9 +130,35 @@
                         $('.note-editor [data-name="ul"]').tooltip('disable');
 
                         // 페이지 로드 후, 부모 HTML 내의 "content" id 값과 동기화 (갱신 작업 시 유효)
-                        const oldContent = $(window.parent.document).find('#content').val();
-                        console.warn("oldContnet ", oldContent)
-                        if (oldContent) $('#summernote').summernote('code', oldContent);
+                        // iframe 로드 후 잠시 대기하여 부모 DOM이 준비될 때까지 기다림
+                        setTimeout(function() {
+                            try {
+                                // 부모 HTML 내의 "content" id 또는 .modal-editor 클래스에서 값 가져오기
+                                let oldContent = '';
+
+                                // 1차: id="content" 시도
+                                const contentById = $(window.parent.document).find('#content');
+                                if (contentById.length > 0) {
+                                    oldContent = contentById.val();
+                                }
+
+                                // 2차: class="modal-editor" 시도 (모달용)
+                                if (!oldContent) {
+                                    const contentByClass = $(window.parent.document).find('.modal-editor');
+                                    if (contentByClass.length > 0) {
+                                        oldContent = contentByClass.val();
+                                    }
+                                }
+
+                                console.warn("oldContent =", oldContent);
+
+                                if (oldContent) {
+                                    $('#summernote').summernote('code', oldContent);
+                                }
+                            } catch (err) {
+                                console.error('부모 문서 접근 오류:', err);
+                            }
+                        }, 300);
 
                     },
 

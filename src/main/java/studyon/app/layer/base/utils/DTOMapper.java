@@ -419,4 +419,11 @@ public class DTOMapper {
                 .bannerImage(Objects.isNull(bannerImage) ? null : toReadDTO(bannerImage))
                 .build();
     }
+
+    public static FileDTO.Remove toRemoveDTO(File entity) {
+        return FileDTO.Remove.builder()
+                .fileId(entity.getFileId())
+                .filePath(entity.getFilePath())
+                .build();
+    }
 }

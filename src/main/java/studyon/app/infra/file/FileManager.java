@@ -41,4 +41,10 @@ public interface FileManager {
      */
     void remove(String storeName, String entityName);
 
+    /**
+     * 파일 삭제
+     * @param filePath 저장 파일 주소
+     */
+    void remove(String filePath);
+
 }

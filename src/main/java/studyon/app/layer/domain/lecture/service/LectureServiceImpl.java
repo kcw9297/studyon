@@ -220,11 +220,10 @@ public class LectureServiceImpl implements LectureService {
 
         // [5] 에디터 내 파일정보 추출 후, 파일정보 저장
         List<String> uploadFileNames = StrUtils.purifyAndExtractFileNameFromHtml(dto.getDescription());
-        EditorCache editorCache = editorCacheManager.getAndRemoveCache(dto.getEditorId(), EditorCache.class);
+        EditorCache editorCache = editorCacheManager.getEditorCache(dto.getEditorId(), EditorCache.class);
 
         // 캐시가 만료되어 등록 불가한 경우
         if (Objects.isNull(editorCache)) throw new BusinessLogicException(AppStatus.EDITOR_CACHE_NOT_EXIST);
-
         log.warn("uploadFileNames = {}, editorCache = {}",  uploadFileNames, editorCache);
 
         List<File> uploadFiles = editorCache.getUploadFiles().stream()
@@ -234,6 +233,8 @@ public class LectureServiceImpl implements LectureService {
                 .toList();
 
         fileRepository.saveAll(uploadFiles);
+        editorCache.clearAll(); // 정상 업로드 완료되었으므로 자동 삭제되지 않도록 모든 리스트를 비움
+        editorCacheManager.setCacheWithShortExpired(dto.getEditorId(), editorCache);
 
         // [6] 파일정보 삽입 후 강의번호 반환
         return savedLecture.getLectureId();
@@ -285,7 +286,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public void updateThumbnail(Long lectureId, Long teacherId, MultipartFile thumbnailFile) {
+    public void editThumbnail(Long lectureId, Long teacherId, MultipartFile thumbnailFile) {
         // 1️⃣ 강의 조회
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
@@ -321,6 +322,114 @@ public class LectureServiceImpl implements LectureService {
 
             fileManager.upload(thumbnailFile, thumbnail.getStoreName(), thumbnail.getEntity().getName());
         }
+    }
+
+    @Override
+    public void editTitle(Long lectureId, Long teacherId, String title) {
+
+        lectureRepository
+                .findWithTeacherByLectureIdAndTeacherId(lectureId, teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .editTitle(title);
+    }
+
+    @Override
+    public void editSummary(Long lectureId, Long teacherId, String summary) {
+
+        lectureRepository
+                .findWithTeacherByLectureIdAndTeacherId(lectureId, teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .editSummary(summary);
+    }
+
+    @Override
+    public void editDescription(Long lectureId, Long teacherId, String editorId, String description) {
+
+        // [1] 에디터 본문 정화
+        String purified = StrUtils.purifyHtml(description);
+
+        // [2] 강의 조회 후 갱신
+        Lecture lecture = lectureRepository
+                .findWithTeacherByLectureIdAndTeacherId(lectureId, teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        lecture.editDescription(purified);
+
+
+        // [2] 에디터 본문 분석
+        // 2-1) 필요 정보 조회
+        List<File> currentEditorFiles = fileRepository.findAllByEntityIdAndFileType(lecture.getLectureId(), FileType.EDITOR); // 현재 강의 에디터에 저장된 파일 엔티티 목록
+        List<String> uploadFileNames = StrUtils.purifyAndExtractFileNameFromHtml(description); // 지금 업로드된 엔티티 내 파일명 목록
+        EditorCache editorCache = editorCacheManager.getEditorCache(editorId, EditorCache.class); // 캐시 조회
+
+        // 캐시가 만료되어 등록 불가한 경우
+        if (Objects.isNull(editorCache)) throw new BusinessLogicException(AppStatus.EDITOR_CACHE_NOT_EXIST);
+        log.warn("uploadFileNames = {}, editorCache = {}",  uploadFileNames, editorCache);
+
+        // 2-2) 새롭게 업로드된 파일 즉시 반영
+
+        // 새롭게 업로드된 파일
+        List<File> uploadFiles = editorCache.getUploadFiles().stream()
+                .filter(uploadDto -> uploadFileNames.contains(uploadDto.getStoreName()))
+                .peek(uploadFile -> uploadFile.setEntityId(lecture.getLectureId()))
+                .map(DTOMapper::toEntity)
+                .toList();
+
+        // 새로운 파일 저장
+        fileRepository.saveAll(uploadFiles);
+
+        // 2-3) 등록만 하고 실제 업로드하지 않은 파일 / 더 이상 존재하지 않는 파일 추출
+        List<FileDTO.Upload> unusedUploadFiles = editorCache.getUploadFiles()
+                .stream()
+                .filter(uploadDto -> !uploadFileNames.contains(uploadDto.getStoreName()))
+                .toList();
+
+        List<FileDTO.Remove> oldFiles = currentEditorFiles.stream()
+                .filter(file -> !uploadFileNames.contains(file.getStoreName()))
+                .map(DTOMapper::toRemoveDTO)
+                .toList();
+
+        // 더 이상 존재하지 않는 파일은 스케줄러가 삭제하도록 처리
+        editorCache.setAllFiles(unusedUploadFiles, oldFiles); // 정상 업로드 완료되었으므로 자동 삭제되지 않도록 모든 리스트를 비움
+        editorCacheManager.setCacheWithShortExpired(editorId, editorCache);
+    }
+
+    @Override
+    public void editLectureTarget(Long lectureId, Long teacherId, LectureTarget lectureTarget) {
+
+        lectureRepository
+                .findWithTeacherByLectureIdAndTeacherId(lectureId, teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .editLectureTarget(lectureTarget);
+    }
+
+
+    @Override
+    public void editDifficulty(Long lectureId, Long teacherId, Difficulty difficulty) {
+
+        lectureRepository
+                .findWithTeacherByLectureIdAndTeacherId(lectureId, teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .editDifficulty(difficulty);
+    }
+
+
+    @Override
+    public void editSubjectDetail(Long lectureId, Long teacherId, SubjectDetail subjectDetail) {
+
+        lectureRepository
+                .findWithTeacherByLectureIdAndTeacherId(lectureId, teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .editSubjectDetail(subjectDetail);
+    }
+
+    @Override
+    public void editPrice(Long lectureId, Long teacherId, Long price) {
+
+        lectureRepository
+                .findWithTeacherByLectureIdAndTeacherId(lectureId, teacherId)
+                .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND))
+                .editPrice(price);
     }
 
     public String getLectureThumbnailPath(Long lectureId) {
