@@ -194,7 +194,7 @@ public class LectureServiceImpl implements LectureService {
                         lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
                                 .ifPresentOrElse(
                                         dto::setThumbnailImagePath,
-                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                        () -> dto.setThumbnailImagePath("default_member_profile_image.png")
                                 )
                 )
                 .collect(Collectors.toList());

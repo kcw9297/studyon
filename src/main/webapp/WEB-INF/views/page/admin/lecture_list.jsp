@@ -732,8 +732,8 @@
     function openStatusModal(lectureId, currentStatus) {
 
         // 반려 상태의 강의는 처리 불가
-        if (currentStatus === 'REJECTED') {
-            alert("반려 상태의 강의는 변경이 불가능합니다.");
+        if (currentStatus === 'UNREGISTERED' || currentStatus === 'REJECTED') {
+            alert("등록되지 않았거나, 반려 상태의 강의는 수정할 수 없습니다");
             return;
         }
 
