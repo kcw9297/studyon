@@ -2,16 +2,9 @@ package studyon.app.infra.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import studyon.app.common.enums.Entity;
-import studyon.app.infra.cache.manager.CacheManager;
-import studyon.app.infra.file.FileManager;
-import studyon.app.layer.domain.test.TestCache;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 @Transactional
@@ -20,29 +13,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class CacheSchedulingService {
 
-    private final FileManager fileManager;
-    private final CacheManager cacheManager;
-
-    /**
-     * 주기적으로 LectureQuestion Cache 데이터 삭제 (고아 파일 삭제)
-     */
-    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS) // 간격 : 10초
-    public void deleteLectureQuestionBackupCache() {
-
-        List<TestCache> allBackUp =
-                cacheManager.getAndRemoveAllBackup(Entity.LECTURE_QUESTION.name(), TestCache.class);
-
-        //log.info("[SchedulingService] - allBackUp = {}", allBackUp);
-
-        // [2] 백업 캐시 & 고아(orphan) 파일 삭제
-        allBackUp.stream()
-                .map(TestCache::getUploadedImages)
-                .flatMap(List::stream)
-                .forEach(dto -> fileManager.remove(dto.getStoreName(), dto.getEntity().getName()));
-    }
-
-
 /*
+ @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
 
     // yaml 상수도 가져올 수 있음
     @Scheduled(fixedDelayString = "${scheduler.fixed.delay}")
