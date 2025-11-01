@@ -12,6 +12,7 @@
                     <a class="likes-item" href="/lecture/detail/${like.lecture.lectureId}">
                         <div class="likes-thumbnail">
 
+                            <%--
                             <c:choose>
                                 <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
                                 </c:when>
@@ -19,8 +20,23 @@
                                     <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
                                 </c:otherwise>
                             </c:choose>
+                            --%>
 
-                            <form class="likes-deleteIcon" action="/mypage/likes/delete/${like.lecture.lectureId}" method="get">
+                                <c:choose>
+                                    <c:when test="${not empty like.lecture.thumbnailFile and not empty like.lecture.thumbnailFile.filePath}">
+                                        <img src="http://localhost:8080/upload/${like.lecture.thumbnailFile.filePath}" alt="강의 썸네일">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
+                                    </c:otherwise>
+                                </c:choose>
+
+
+
+
+
+
+                                <form class="likes-deleteIcon" action="/mypage/likes/delete/${like.lecture.lectureId}" method="get">
                                 <input type="hidden" name="subject" value="${selectedSubject}">
                                 <button type="submit">
                                     <img src="<c:url value='/img/png/delete.png'/>">

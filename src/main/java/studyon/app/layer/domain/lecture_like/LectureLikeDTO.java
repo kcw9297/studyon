@@ -2,6 +2,7 @@ package studyon.app.layer.domain.lecture_like;
 
 
 import lombok.*;
+import studyon.app.layer.domain.lecture.LectureDTO;
 
 /*
  * [수정 이력]
@@ -24,6 +25,7 @@ public class LectureLikeDTO {
         private Long lectureLikeId;
         private Long memberId;
         private Long lectureId;
+        private LectureDTO.Read lecture;
     }
 
     @Data

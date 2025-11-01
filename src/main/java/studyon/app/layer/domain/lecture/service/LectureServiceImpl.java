@@ -97,7 +97,6 @@ public class LectureServiceImpl implements LectureService {
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 최근 강의 정렬
         String fileDomain = "http://localhost:8080/upload";
-        log.info("readRecentLecture 호출");
 
         return lectureRepository.findRecentLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
@@ -134,6 +133,13 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findAllByOrderByPublishDateDesc(pageable, LectureRegisterStatus.REGISTERED)
                 .stream()
                 .map(DTOMapper::toReadDTO)
+                .peek(dto ->
+                        lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                                .ifPresentOrElse(
+                                        dto::setThumbnailImagePath,
+                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                )
+                )
                 .collect(Collectors.toList());
     }
 
@@ -146,6 +152,13 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findAllByOrderByTotalStudentsDesc(pageable, LectureRegisterStatus.REGISTERED)
                 .stream()
                 .map(DTOMapper::toReadDTO)
+                .peek(dto ->
+                        lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                                .ifPresentOrElse(
+                                        dto::setThumbnailImagePath,
+                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                )
+                )
                 .collect(Collectors.toList());
     }
 

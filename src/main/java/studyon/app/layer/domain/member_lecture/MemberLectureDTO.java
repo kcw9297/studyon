@@ -31,6 +31,7 @@ public class MemberLectureDTO {
         private String subject;
         private Double progress;
         private Boolean completed;
+        private String thumbnailImagePath;
     }
 
 

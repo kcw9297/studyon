@@ -30,7 +30,7 @@ public class MemberLectureRestController {
             @RequestParam(defaultValue = "all") String subject,
             HttpServletRequest request
     ) {
-        // ✅ 세션에서 로그인된 사용자 식별
+        // 세션에서 로그인된 사용자 식별
         Long memberId = SessionUtils.getMemberId(request);
         if (memberId == null) {
             log.warn("⚠️ 비로그인 사용자의 강의 목록 요청");
@@ -40,7 +40,7 @@ public class MemberLectureRestController {
 
         log.info("📘 내 강의 목록 조회 요청 | memberId={}, subject={}", memberId, subject);
 
-        // ✅ 서비스 호출 (subject 필터링)
+        // 서비스 호출 (subject 필터링)
         List<MemberLectureDTO.Read> lectures =
                 memberLectureService.getLecturesByMemberAndSubject(memberId, subject);
 
