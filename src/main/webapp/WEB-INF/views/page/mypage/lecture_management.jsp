@@ -7,7 +7,7 @@
     <div>
         <jsp:include page="/WEB-INF/views/page/mypage/lecture_management_navbar.jsp" />
         <div class="courses-list">
-            <%--
+            <%-- LECTURE LIST FRAME
             <div class="courses-item">
                 <div class="courses-thumbnail">
                     <a class="mypage-lecture-thumbnail" href="">
@@ -33,10 +33,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
         try {
-            //const subject = window.location.pathname.split("/").pop();
-            //const response = await fetch("/api/mypage/lectures?subject="+subject);
-            //const response = await fetch("/api/mypage/lectures?subject=all")
-
             const params = new URLSearchParams(window.location.search);
             let subject = params.get("subject") || "all";
             console.log(subject);
@@ -46,7 +42,7 @@
 
             if (!response.ok) throw new Error("강의 목록 요청 실패");
             const lectures = await response.json();
-            console.log("✅ 강의 데이터:", lectures);
+            console.log("강의 데이터:", lectures);
 
             const list = document.querySelector(".courses-list");
             list.innerHTML = "";
@@ -56,13 +52,13 @@
                 item.classList.add("courses-item");
                 console.log("foreach 안의 lecture data:", JSON.stringify(lecture, null, 2)); // 보기 좋게 JSON으로 출력
 
-                // ✅ 썸네일
+                // 썸네일
                 const thumbnail = document.createElement("a");
                 thumbnail.classList.add("mypage-lecture-thumbnail");
                 //thumbnail.href = `/player?lectureId=69`;
                 thumbnail.href = "/player?lectureId="+lecture.lectureId;
 
-                console.log("👉 썸네일 href:", thumbnail.href);
+                console.log("썸네일 href:", thumbnail.href);
 
                 const img = document.createElement("img");
                 img.src = "http://localhost:8080/img/png/menhera.png"; // 하드코딩 썸네일
@@ -70,12 +66,12 @@
                 img.classList.add("mypage-profile");
                 thumbnail.appendChild(img);
 
-                // ✅ 제목
+                // 제목
                 const titleDiv = document.createElement("div");
                 titleDiv.classList.add("courses-lecture");
                 titleDiv.textContent = lecture.lectureTitle;
 
-                // ✅ 강사명
+                // 강사명
                 const teacherDiv = document.createElement("div");
                 teacherDiv.classList.add("courses-teacher");
                 teacherDiv.textContent = lecture.teacherName;

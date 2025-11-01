@@ -32,7 +32,6 @@ public class LectureReviewDTO {
         private LocalDateTime updatedAt;
         private Long lectureId;
         private Long memberId;
-
         private String nickname;
     }
 

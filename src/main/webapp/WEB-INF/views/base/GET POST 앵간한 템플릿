@@ -1,0 +1,46 @@
+addEventListener("DOMContentLoaded", async () => {
+
+        //전역변수 관리
+        const pathParts = window.location.pathname.split("/");
+        const lectureId = pathParts[pathParts.length - 1];
+        const submitBtn = document.getElementById("review-submit-Btn");
+        console.log("📘 lectureId =", lectureId);
+
+        //수강평 읽기
+        const response = await fetch("/api/lectures/reviews" + lectureId);
+        const json = await response.json();
+        const lecture = json.data;
+        console.log(lecture);
+
+        //수강평 등록
+        submitBtn.addEventListener("click", async () => {
+            try {
+                const reviewRate = document.getElementById("review-rate");
+                const reviewContent = document.getElementById("review-content");
+
+                document.getElementById("review")
+                const formData = new FormData();
+                formData.append("lectureId", lectureId);
+                formData.append("rating",reviewRate );
+                formData.append("content", reviewContent);
+
+                const res = await fetch("/api/lectures/reviews/create", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("등록 성공:", data);
+                    alert("수강평이 등록되었습니다.");
+                    location.reload();
+                } else {
+                    console.error("서버 응답 오류:", res.status);
+                    alert("강의 등록 요청에 실패했습니다.");
+                }
+            } catch (err) {
+                console.error("강의 등록 중 오류:", err);
+                alert("강의 등록 중 문제가 발생했습니다.");
+            }
+        })
+    });

@@ -48,6 +48,6 @@ public interface LectureVideoRepository extends JpaRepository<LectureVideo, Long
 """)
     LectureVideo findTopByLectureIndexId(@Param("indexId") Long indexId);
     Optional<LectureVideo> findFirstByLectureIndex_LectureIndexIdOrderBySeqAsc(Long lectureIndexId);
-
+    long countByLectureIndex_Lecture_LectureId(Long lectureId);
 }
 

@@ -1,19 +1,26 @@
 package studyon.app.layer.domain.lecture.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.View;
+import studyon.app.layer.base.utils.RestUtils;
+import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture.service.LectureService;
+import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
+import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
 import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
+import studyon.app.layer.domain.member.MemberProfile;
 
 import java.util.*;
 
@@ -25,6 +32,7 @@ public class LectureDetailController {
     private final LectureRepository lectureRepository;
     private final LectureReviewRepository lectureReviewRepository;
     private final LectureService lectureService;
+    private final LectureIndexService lectureIndexService;
 
     @GetMapping("/detail/{lectureId}")
     public String lecture_detail(@PathVariable Long lectureId, Model model) {
@@ -63,5 +71,15 @@ public class LectureDetailController {
 
         return ViewUtils.returnView(model, View.LECTURE, "lecture_detail");
     }
+
+    @GetMapping("/detail/curriculum/{lectureId}")
+    public ResponseEntity<?> readCurriculum(@PathVariable Long lectureId, HttpSession session) {
+        log.info("readCurriculum 호출");
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long memberId = profile.getMemberId();
+        List<LectureIndexDTO.Read> response = lectureIndexService.readMemberAllByLectureId(lectureId);
+        return RestUtils.ok(response);
+    }
+
 
 }

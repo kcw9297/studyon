@@ -119,9 +119,24 @@ document.addEventListener("DOMContentLoaded", async () => {
                         console.log("📥 받은 메시지 목록:", messages);
                         chatMessages.innerHTML = "";
 
+                        // messages.forEach(msg => {
+                        //     const msgDiv = document.createElement("div");
+                        //     msgDiv.classList.add("message", msg.role === "ADMIN" ? "agent" : "user");
+                        //     msgDiv.textContent = msg.message;
+                        //     chatMessages.appendChild(msgDiv);
+                        // });
+
                         messages.forEach(msg => {
                             const msgDiv = document.createElement("div");
-                            msgDiv.classList.add("message", msg.role === "ADMIN" ? "agent" : "user");
+                            msgDiv.classList.add("message");
+
+                            // ✅ senderId 기준으로 왼쪽/오른쪽 구분
+                            if (parseInt(msg.senderId) === 51) {
+                                msgDiv.classList.add("agent");  // 상담사
+                            } else {
+                                msgDiv.classList.add("user");   // 고객
+                            }
+
                             msgDiv.textContent = msg.message;
                             chatMessages.appendChild(msgDiv);
                         });
