@@ -9,6 +9,7 @@
         f.file_path AS thumbnail_image_path,
         l.lecture_id,
         l.title,
+        l.summary,
         l.price,
         t.teacher_id,
         m.nickname AS teacher_nickname,
@@ -39,6 +40,7 @@
                             AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
                         </if>
                         <if test="rq.filter eq 'CONTENT'">
+                            AND l.summary LIKE CONCAT('%', #{rq.keyword}, '%')
                             AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
                         </if>
                         <if test="rq.filter eq 'TEACHER'">
@@ -48,6 +50,7 @@
                      <otherwise>
                          AND (
                             l.title LIKE CONCAT('%', #{rq.keyword}, '%') OR
+                            l.summary LIKE CONCAT('%', #{rq.keyword}, '%') OR
                             l.description LIKE CONCAT('%', #{rq.keyword}, '%') OR
                             m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                          )
@@ -176,6 +179,7 @@
                             AND l.title LIKE CONCAT('%', #{rq.keyword}, '%')
                         </if>
                         <if test="rq.filter eq 'CONTENT'">
+                            AND l.summary LIKE CONCAT('%', #{rq.keyword}, '%')
                             AND l.description LIKE CONCAT('%', #{rq.keyword}, '%')
                         </if>
                         <if test="rq.filter eq 'TEACHER'">
@@ -185,6 +189,7 @@
                     <otherwise>
                         AND (
                         l.title LIKE CONCAT('%', #{rq.keyword}, '%') OR
+                        l.summary LIKE CONCAT('%', #{rq.keyword}, '%') OR
                         l.description LIKE CONCAT('%', #{rq.keyword}, '%') OR
                         m.nickname LIKE CONCAT('%', #{rq.keyword}, '%')
                         )

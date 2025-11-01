@@ -56,6 +56,9 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
+    private String summary;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -109,11 +112,12 @@ public class Lecture extends BaseEntity {
 
     @Builder
     public Lecture(String title, String description, Long price,
-                   Difficulty difficulty, Teacher teacher, Subject subject,
-                   LectureTarget lectureTarget,SubjectDetail subjectDetail) {
+                   Difficulty difficulty, Teacher teacher, String summary, Subject subject,
+                   LectureTarget lectureTarget, SubjectDetail subjectDetail) {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.summary = summary;
         this.publishDate = LocalDateTime.now();
         this.lectureTarget = lectureTarget;
         this.lectureRegisterStatus = LectureRegisterStatus.UNREGISTERED;
@@ -132,15 +136,6 @@ public class Lecture extends BaseEntity {
 
 
     /* JPA 변경 감지를 이용한 갱신 로직 (setter) - 강의 수정 페이지 연동 갱신 */
-
-    public void update(String title, String description, Long price,
-                       Boolean onSale, Difficulty difficulty) {
-        this.title = title;
-        this.description = description;
-        this.price = price;
-        this.onSale = onSale;
-        this.difficulty = difficulty;
-    }
 
     public void updateThumbnail(File thumbnailFile) {
         this.thumbnailFile = thumbnailFile;
