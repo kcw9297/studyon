@@ -702,9 +702,10 @@
 
             // 버튼 변경 처리
             const onSaleBadge = document.querySelector(`.on-sale-badge[data-lecture-id="\${lectureId}"]`);
-            const statusBadge = document.querySelector(`.on-sale-badge[data-lecture-id="\${lectureId}"]`);
+            const statusBadge = document.querySelector(`.status-badge[data-lecture-id="\${lectureId}"]`);
+
             if (onSaleBadge) {
-                // 클래스 변경
+                // 상태 텍스트
                 if (afterOnSale) {
                     onSaleBadge.classList.remove('badge-danger');
                     onSaleBadge.classList.add('badge-success');
@@ -714,8 +715,13 @@
                     onSaleBadge.classList.add('badge-danger');
                     onSaleBadge.textContent = ON_SALE_MAP[false];
                 }
-                // onclick 속성 업데이트
-                onSaleBadge.setAttribute('onclick', `toggleSaleStatus(\${lectureId}, \${afterOnSale})`);
+
+                // 현재 등록 상태 유지해서 onclick 업데이트
+                const registerStatus = statusBadge ?
+                    (statusBadge.classList.contains('badge-registered') ? 'REGISTERED' : 'PENDING')
+                    : 'REGISTERED';
+
+                onSaleBadge.setAttribute('onclick', `toggleSaleStatus(\${lectureId}, \${afterOnSale}, '\${registerStatus}')`);
             }
 
         } catch (error) {

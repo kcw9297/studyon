@@ -243,6 +243,12 @@
                     container.innerHTML = '';
 
                     // 강의 목록 렌더링
+                    if (lectures.length === 0) {
+                        container.innerHTML += `
+                            <div style="text-align: center;">검색된 강의가 없습니다.</div>
+                        `
+                    }
+
                     lectures.forEach(lecture => {
                         container.innerHTML += createLectureItem(lecture);
                     });

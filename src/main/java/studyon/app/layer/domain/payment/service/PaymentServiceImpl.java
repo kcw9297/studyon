@@ -121,8 +121,11 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_NOT_FOUND));
 
         Lecture lecture = lectureRepository
-                .findAllFetchByLectureIdAndOnSale(lectureId, true) // 판매 중인 강의만 조회
+                .findById(lectureId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+
+        // 강의가 아직 판매중 상태가 아닌 경우
+        if (!lecture.getOnSale()) throw new BusinessLogicException(AppStatus.PAYMENT_NOT_ON_SALE);
 
         // (환불하지 않은) 결제 이력이 존재하면, 재구매가 불가능하므로 예외 반환
         boolean isExistPayment = paymentRepository.existsByMemberIdAndLectureIdAndIsRefunded(memberId, lectureId, false);

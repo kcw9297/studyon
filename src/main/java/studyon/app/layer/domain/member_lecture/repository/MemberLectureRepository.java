@@ -1,6 +1,7 @@
 package studyon.app.layer.domain.member_lecture.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.member.Member;
@@ -12,4 +13,5 @@ public interface MemberLectureRepository extends JpaRepository<MemberLecture, Lo
     List<MemberLecture> findByMember_MemberId(Long memberId);
     List<MemberLecture> findByMember_MemberIdAndLecture_Subject(Long memberId, Subject subject);
     boolean existsByMemberAndLecture(Member member, Lecture lecture);
+    boolean existsByMember_MemberIdAndLecture_LectureId(Long memberId, Long lectureId);
 }

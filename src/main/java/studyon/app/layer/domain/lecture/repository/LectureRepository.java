@@ -36,11 +36,11 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
      * @return 최근 등록된 강의 리스트
      */
     @Query("""
-    SELECT l FROM Lecture l
-    JOIN FETCH l.teacher t
-    JOIN FETCH t.member m
-    WHERE l.lectureRegisterStatus = :status
-    ORDER BY l.publishDate DESC
+        SELECT l FROM Lecture l
+        JOIN FETCH l.teacher t
+        JOIN FETCH t.member m
+        WHERE l.lectureRegisterStatus = :status
+        ORDER BY l.publishDate DESC
     """) // fetch join을 통해 다중 쿼리 생성 방지
     List<Lecture> findAllByOrderByPublishDateDesc(Pageable pageable,
                                                   @Param("status") LectureRegisterStatus status);
@@ -160,6 +160,13 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
     List<Lecture> findByTeacherAndLectureRegisterStatus(Teacher teacher, LectureRegisterStatus status);
     Long countByTeacher_TeacherId(Long teacherId);
+
+    @Query("""
+        SELECT COUNT(l)
+        FROM Lecture l
+        WHERE l.teacher.teacherId = :teacherId AND l.lectureRegisterStatus = :lectureRegisterStatus
+    """)
+    long count(Long teacherId, LectureRegisterStatus lectureRegisterStatus);
 
     Optional<Lecture> findByLectureIdAndOnSale(Long lectureId, Boolean onSale);
 

@@ -40,6 +40,15 @@
             </div>
         </div>
         <div class="account-chapter">
+            <div class="account-item">회원유형</div>
+            <div>
+                <div class="account-text">
+                    <p>일반회원</p>
+                </div>
+                <%--<button class="account-button">수정</button>--%>
+            </div>
+        </div>
+        <div class="account-chapter">
             <div class="account-item">비밀번호</div>
             <div>
                 <div class="account-text">
@@ -175,8 +184,17 @@
         const emailElem = document.querySelector(".account-report .account-chapter:nth-child(1) .account-text p");
         if (emailElem) emailElem.textContent = "${sessionScope.profile.email}" || "이메일 없음";
 
+        // 회원 유형
+        const providerElem = document.querySelector(".account-report .account-chapter:nth-child(2) .account-text p");
+        const provider = "${sessionScope.profile.provider}";
+        if (providerElem) {
+            if (provider === "NORMAL") providerElem.textContent = "일반 회원";
+            else providerElem.textContent = `소셜 회원 (\${provider})`;
+        }
+
+
         // 비밀번호 (보안상 실제 비밀번호는 안 주지만, 마스킹)
-        const passwordElem = document.querySelector(".account-report .account-chapter:nth-child(2) .account-text p");
+        const passwordElem = document.querySelector(".account-report .account-chapter:nth-child(3) .account-text p");
         if (passwordElem) passwordElem.textContent = "••••••••";
 
 
@@ -294,9 +312,10 @@
 
             // 프로필 이미지 변겅 처리
             const imgElem = document.querySelector(".mypage-profile");
+            const profileElem = document.querySelector(".profile-img");
             if (imgElem) {
-                imgElem.src =
-                    URL.createObjectURL(file) || "<c:url value='/img/png/default_member_profile_image.png'/>";
+                imgElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_member_profile_image.png'/>";
+                profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_member_profile_image.png'/>";
             }
 
 

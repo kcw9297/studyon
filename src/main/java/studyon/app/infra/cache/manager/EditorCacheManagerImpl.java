@@ -89,7 +89,7 @@ public class EditorCacheManagerImpl implements EditorCacheManager {
         // [2] 키 목록 조회
         Set<String> originalKeys = stringRedisTemplate.keys(originalPattern);
         Set<String> backupKeys = stringRedisTemplate.keys(backupPattern);
-        log.warn("originalKeys: {}, backupKeys {}", originalKeys, backupKeys);
+        //log.warn("originalKeys: {}, backupKeys {}", originalKeys, backupKeys);
 
         // [3] 고아 상태의 backup key 필터 후 삭제
         List<String> orphanKeys = backupKeys.stream()
