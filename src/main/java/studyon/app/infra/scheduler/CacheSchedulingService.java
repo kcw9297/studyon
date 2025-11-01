@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import studyon.app.common.enums.Entity;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.EditorCacheManager;
 import studyon.app.infra.file.FileManager;
 import studyon.app.layer.domain.editor.EditorCache;
+import studyon.app.layer.domain.file.repository.FileRepository;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +23,7 @@ public class CacheSchedulingService {
 
     private final EditorCacheManager editorCacheManager;
     private final FileManager fileManager;
+    private final FileRepository fileRepository;
 
     @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
     public void removeOrphanEditorCaches() {
@@ -29,11 +31,34 @@ public class CacheSchedulingService {
         // [1] 고아 상태의 에디터 캐시정보 일괄 조회
         List<EditorCache> orphans =
                 editorCacheManager.getAndRemoveAllOrphanCache(EditorCache.class);
+
+        // 로깅
+        //log.warn("Removing orphan caches: {}", orphans);
+
         // [2] 내부의 업로드했던 파일 모두 삭제
         orphans.stream()
-                .map(EditorCache::getUploadFileNames)
+                .map(EditorCache::getUploadFiles)
                 .flatMap(List::stream)
-                .forEach(orphanFileName -> fileManager.remove(orphanFileName, Entity.LECTURE.name()));
+                .forEach(fileDto -> {
+                    try {
+                        fileManager.remove(fileDto.getFilePath());
+                    } catch (Exception e) {
+                        log.error(StrUtils.createLogStr(this.getClass(), "특정 파일 삭제 실패! fileDto = %s, 오류 : %s".formatted(fileDto, e.getMessage())));
+                    }
+                });
+
+        // [3] 내부의 "삭제된 파일" 일괄 삭제
+        orphans.stream()
+                .map(EditorCache::getRemoveFiles)
+                .flatMap(List::stream)
+                .forEach(fileDto -> {
+                    try {
+                        fileRepository.deleteById(fileDto.getFileId());
+                        fileManager.remove(fileDto.getFilePath());
+                    } catch (Exception e) {
+                        log.error(StrUtils.createLogStr(this.getClass(), "특정 파일 삭제 실패! fileDto = %s, 오류 : %s".formatted(fileDto, e.getMessage())));
+                    }
+                });
     }
 
 

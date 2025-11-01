@@ -63,6 +63,8 @@ public class SecurityConfig {
     private static final String LOGIN_ALL = Url.LOGIN + "/**";
     private static final String OAUTH2_ALL = Url.OAUTH2 + "/**";
     private static final String TEACHER_ALL = Url.TEACHER + "/**"; // 선생님 관리 페이지
+    private static final String TEACHER_MANAGEMENT_ALL = Url.TEACHER + "/management/**"; // 선생님 관리 페이지
+    private static final String TEACHER_API_ALL = Url.TEACHER_API + "/**"; // 선생님 관리 페이지
     private static final String TEACHERS_ALL = Url.TEACHERS + "/**";
     private static final String TEACHERS_API_ALL = Url.TEACHERS_API + "/**";
     private static final String ADMIN_ALL = Url.ADMIN + "/**";
@@ -99,7 +101,7 @@ public class SecurityConfig {
 
     public static final String[] TEACHER =
             {
-                    TEACHER_ALL
+                    TEACHER_MANAGEMENT_ALL, TEACHER_API_ALL
             };
 
     public static final String[] ANONYMOUS =
@@ -162,14 +164,6 @@ public class SecurityConfig {
                 // 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
 
-                        // 모두 허용하는 정적 자원 주소
-                        .requestMatchers(Url.STATIC_RESOURCE_PATHS).permitAll() // 정적 자원 경로 허용
-                        .requestMatchers(fileAll).permitAll() // 파일 도메인 허용
-
-                        // 공개 페이지 - 모두 접근 가능
-                        .requestMatchers(PERMIT_ALL).permitAll()
-                        .requestMatchers(HttpMethod.POST, Url.PAYMENTS_API).permitAll() // 결제 "수행" POST 요청은 반드시 허용
-
                         // 관리자만 접근 가능
                         .requestMatchers(ADMIN_ALL).hasAuthority(Role.ROLE_ADMIN.name())
 
@@ -181,6 +175,14 @@ public class SecurityConfig {
 
                         // 로그인, 회원가입 - 익명 사용자만 접근 가능 (로그아웃 사용자)
                         .requestMatchers(ANONYMOUS).anonymous()
+
+                        // 모두 허용하는 정적 자원 주소
+                        .requestMatchers(Url.STATIC_RESOURCE_PATHS).permitAll() // 정적 자원 경로 허용
+                        .requestMatchers(fileAll).permitAll() // 파일 도메인 허용
+
+                        // 공개 페이지 - 모두 접근 가능
+                        .requestMatchers(PERMIT_ALL).permitAll()
+                        .requestMatchers(HttpMethod.POST, Url.PAYMENTS_API).permitAll() // 결제 "수행" POST 요청은 반드시 허용
 
                         // 그 외의 요청은 인증된 사용자만 허용 (로그인 회원에게만)
                         .anyRequest().authenticated()
