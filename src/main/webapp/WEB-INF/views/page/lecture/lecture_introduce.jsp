@@ -78,11 +78,11 @@
                 <div class="instructor-category">
                     <div class="instructor-item">
                         <p class="instructor-name">과목</p>
-                        <p data-en="<c:out value='${teacher.subject}'/>"><c:out value="${teacher.subject}"/></p>
+                        <p data-en="<c:out value='${lecture.subject}'/>"><c:out value="${lecture.subject}"/></p>
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">수강생</p>
-                        <p><fmt:formatNumber value="${teacher.totalStudents}" type="number"/>명</p>
+                        <p><fmt:formatNumber value="${lecture.totalStudents}" type="number"/>명</p>
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">평점</p>
@@ -90,7 +90,7 @@
                     </div>
                     <div class="instructor-item">
                         <p class="instructor-name">수강평</p>
-                        <p><fmt:formatNumber value="${teacher.totalReview}" type="number"/>개</p>
+                        <p><fmt:formatNumber value="${reviewCount}" type="number"/>개</p>
                     </div>
                 </div>
                 <div class="instructor-word">
@@ -100,11 +100,7 @@
             <div class="instructor-history">
                 <p>이력</p>
                 <ul>
-                    <li>국내 최상위권 학생 다수 배출, 누적 수강생 10만+</li>
-                    <li>○○대학교 수학과 졸업, 교육학 석사</li>
-                    <li>前 ○○학원/○○교육 수학 대표 강사</li>
-                    <li>『수능 수학 필수 개념집』 저자</li>
-                    <li>EBS 연계 교재 집필 참여</li>
+                    ${lecture.description}
                 </ul>
             </div>
         </div>

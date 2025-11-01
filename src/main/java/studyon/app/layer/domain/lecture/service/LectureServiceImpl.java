@@ -67,6 +67,8 @@ public class LectureServiceImpl implements LectureService {
     private final EditorCacheManager editorCacheManager;
 
 
+
+
     @Override
     public Page.Response<LectureDTO.Read> readPagedList(LectureDTO.Search rq, Page.Request prq) {
 
@@ -94,9 +96,21 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 최근 강의 정렬
+        String fileDomain = "http://localhost:8080/upload";
+        log.info("readRecentLecture 호출");
+
         return lectureRepository.findRecentLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                //KHS97 썸네일 추가
+                .peek(dto -> {
+                    lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                            .ifPresentOrElse(path ->
+                                            dto.setThumbnailImagePath(fileDomain + "/" + path),
+                                    () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                            );
+                })
+
                 .collect(Collectors.toList());
     }
 

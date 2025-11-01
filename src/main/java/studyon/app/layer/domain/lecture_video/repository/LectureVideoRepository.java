@@ -49,5 +49,14 @@ public interface LectureVideoRepository extends JpaRepository<LectureVideo, Long
     LectureVideo findTopByLectureIndexId(@Param("indexId") Long indexId);
     Optional<LectureVideo> findFirstByLectureIndex_LectureIndexIdOrderBySeqAsc(Long lectureIndexId);
     long countByLectureIndex_Lecture_LectureId(Long lectureId);
+
+    // 영상 총 길이 업데이트
+    @Query("""
+    SELECT COALESCE(SUM(v.duration), 0)
+    FROM LectureVideo v
+    JOIN v.lectureIndex i
+    WHERE i.lecture.lectureId = :lectureId
+""")
+    Long sumDurationByLectureId(@Param("lectureId") Long lectureId);
 }
 

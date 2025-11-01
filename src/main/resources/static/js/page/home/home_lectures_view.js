@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const parsedData = json.data;
             renderBestLectures(parsedData);
         })
+        .then(e => console.log(e))
+
         .catch(err => console.error("홈화면 인기 강의 조회 실패:", err));
 
     /* -- 렌더 함수 -- */
@@ -49,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
             container.innerHTML = `<p>최근 인기 강의가 없습니다.</p>`;
             return;
         }
+        console.log("best lecture =" , lectures);
 
         lectures.forEach(bestLecture => {
             const item = document.createElement("div");
@@ -90,6 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
             container.innerHTML = `<p>최신 강의가 없습니다.</p>`;
             return;
         }
+
+        console.log("recent lecture =" , lectures);
 
 
 

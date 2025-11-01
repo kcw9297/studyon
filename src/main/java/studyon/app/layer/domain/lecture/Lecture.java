@@ -184,4 +184,11 @@ public class Lecture extends BaseEntity {
     public void setVideoCount(Long videoCount) {
         this.videoCount = videoCount;
     }
+
+    public void increaseTotalStudents(){
+        this.totalStudents += this.totalStudents;
+    }
+    public void setTotalDuration(Long totalDuration) {
+        this.totalDuration = totalDuration;
+    }
 }

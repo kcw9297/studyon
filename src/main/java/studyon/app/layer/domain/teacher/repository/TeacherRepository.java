@@ -41,5 +41,14 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     @Query("SELECT t FROM Teacher t JOIN FETCH t.member WHERE t.member.memberId = :memberId")
     Optional<Teacher> findByMember_MemberId(@Param("memberId") Long memberId);
 
+    //Teacher Thumbnail MemberId로 조회
+    @Query("""
+    SELECT f.filePath
+    FROM Member m
+    JOIN File f ON m.profileImage.fileId = f.fileId
+    WHERE m.memberId = :memberId
+""")
+    String findProfileImagePathByMemberId(@Param("memberId") Long memberId);
+
 
 }
