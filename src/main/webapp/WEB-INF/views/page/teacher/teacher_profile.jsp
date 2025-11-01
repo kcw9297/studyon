@@ -20,7 +20,7 @@
     <div class="teacher-info-box">
         <div class="teacher-header">
             <h2 class="teacher-name">${teacher.nickname} 강사</h2>
-            <span class="teacher-badge">${teacher.subject} 전문가</span>
+            <span class="teacher-badge">${teacher.subject.value} 전문가</span>
         </div>
 
         <p class="teacher-desc">
@@ -46,7 +46,7 @@
 
         <div class="teacher-detail">
             <p><strong>이메일 :</strong> ${teacher.email}</p>
-            <p><strong>담당 과목 :</strong> ${teacher.subject}</p>
+            <p><strong>담당 과목 :</strong> ${teacher.subject.value}</p>
         </div>
     </div>
 </div>

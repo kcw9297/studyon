@@ -5,14 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.enums.AppStatus;
-import studyon.app.common.enums.Difficulty;
 import studyon.app.common.enums.LectureRegisterStatus;
 import studyon.app.common.enums.Subject;
 import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
-import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.teacher.Teacher;
@@ -150,7 +148,7 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher teacher = teacherRepository.findByMemberIdWithMember(memberId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
         Member member = teacher.getMember();
-        Long lectureCount = lectureRepository.countByTeacher_TeacherId(teacher.getTeacherId());
+        Long lectureCount = lectureRepository.count(teacher.getTeacherId(), LectureRegisterStatus.REGISTERED);
 
         return TeacherDTO.TeacherManagementProfile.builder()
                 .teacherId(teacher.getTeacherId())
@@ -172,7 +170,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
         Member member = teacher.getMember();
-        Long lectureCount = lectureRepository.countByTeacher_TeacherId(teacherId);
+        Long lectureCount = lectureRepository.count(teacher.getTeacherId(), LectureRegisterStatus.REGISTERED);
 
         // ✅ 프로필 이미지 경로 확인
         String profilePath = null;
@@ -209,7 +207,7 @@ public class TeacherServiceImpl implements TeacherService {
         }
 
         // ✅ 강의 수 계산
-        Long lectureCount = lectureRepository.countByTeacher_TeacherId(teacherId);
+        Long lectureCount = lectureRepository.count(teacherId, LectureRegisterStatus.REGISTERED);
 
         // ✅ DTO 빌드
         return TeacherDTO.ReadDetail.builder()

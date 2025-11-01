@@ -17,6 +17,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -225,5 +226,10 @@ public final class StrUtils {
 
     public static String createUUID() {
         return UUID.randomUUID().toString().replace("-", "");
+    }
+
+    public static String formatKoreaNumber(long value) {
+        NumberFormat fmt = NumberFormat.getNumberInstance(Locale.KOREA);
+        return fmt.format(value);
     }
 }

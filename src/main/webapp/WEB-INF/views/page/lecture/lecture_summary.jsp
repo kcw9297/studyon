@@ -79,9 +79,17 @@
                     <img src="/img/png/like1.png" alt="좋아요">
                     <span class="like-count">${lecture.likeCount}</span>
                 </button>
-                <button class="summary-purchase">
-                    바로 구매하기
-                </button>
+                <c:if test="${isBuyer}">
+                    <button class="summary-purchase" onclick="window.location.href='/player?lectureId=1'">
+                        수강하러 가기
+                    </button>
+                </c:if>
+
+                <c:if test="${not isBuyer}">
+                    <button class="summary-purchase" id="purchase">
+                        바로 구매하기
+                    </button>
+                </c:if>
             </div>
         </div>
     </div>
@@ -111,7 +119,7 @@
             img.src = data.liked ? "/img/png/like2.png" : "/img/png/like1.png";
             count.textContent = data.likeCount;
 
-            // ✅ 클릭 시 토글
+            // 일반 학생만 좋아요 가능
             likeBtn.addEventListener("click", async () => {
                 try {
                     const method = data.liked ? "DELETE" : "POST";
@@ -119,7 +127,7 @@
                     const dto = { lectureId, memberId };
 
                     const res2 = await fetch(url, {
-                        method: "DELETE",
+                        method: method,
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(dto)
                     });
@@ -134,12 +142,75 @@
 
                 } catch (err) {
                     console.error("❌ 좋아요 토글 실패:", err);
-                    alert("로그인이 필요하거나 서버 오류가 발생했습니다.");
                 }
             });
+
 
         } catch (err) {
             console.error("❌ 초기 좋아요 상태 로드 실패:", err);
         }
+
+
+        document.getElementById("purchase").addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            try {
+                // form 생성
+                const lectureId = window.location.pathname.split("/").pop(); // 가장 마지막에 있는 경로
+                const formData = new FormData();
+                formData.append("lectureId", lectureId);
+
+                // REST API 요청
+                const res = await fetch(`/api/payments/access`, {
+                    headers: {'X-Requested-From': window.location.pathname + window.location.search},
+                    method: "POST",
+                    body: formData
+                });
+
+                // 서버 JSON 응답 문자열 파싱
+                const rp = await res.json();
+                console.log("서버 응답:", rp);
+
+                // 요청 실패 처리
+                if (!res.ok || !rp.success) {
+
+                    // 로그인이 필요한 경우
+                    if (rp.statusCode === 401) {
+
+                        // 로그인 필요 안내 전달
+                        if (confirm(rp.message || "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+                            window.location.href = rp.redirect || "/login";
+                        }
+
+                        // 로직 중단
+                        return;
+                    }
+
+                    // 권한이 부족한 경우
+                    if (rp.statusCode === 403) {
+                        alert(rp.message || "접근 권한이 없습니다.");
+                        return;
+                    }
+
+                    // 입력 값이 유효하지 않은 경우
+                    if (rp.statusCode === 400) {
+                        alert(rp.message || "입력 값이 유효하지 않습니다.");
+                        return;
+                    }
+
+                    // 기타 예기치 않은 오류가 발생한 경우
+                    alert(rp.message || "서버 오류가 발생했습니다. 잠시 후에 시도해 주세요.");
+                    return;
+                }
+
+                // 성공 응답
+                window.location.href = rp.redirect;
+
+
+            } catch (error) {
+                console.error('결제요청 실패 오류:', error);
+            }
+
+        })
     });
 </script>

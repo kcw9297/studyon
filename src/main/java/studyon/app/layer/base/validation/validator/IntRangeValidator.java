@@ -3,6 +3,7 @@ package studyon.app.layer.base.validation.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import studyon.app.common.constant.Msg;
+import studyon.app.common.utils.StrUtils;
 import studyon.app.layer.base.validation.annotation.IntRange;
 
 import java.util.Objects;
@@ -27,11 +28,15 @@ public class IntRangeValidator implements ConstraintValidator<IntRange, Integer>
         this.min = Math.max(annotation.min(), 0);
         this.max = Math.max(annotation.max(), 0);
 
+        // 숫자 포메팅
+        String minStr = StrUtils.formatKoreaNumber(min);
+        String maxStr = StrUtils.formatKoreaNumber(max);
+
         // 사용자 입력 오류 메세지
         this.message = annotation.message();
         if (Objects.isNull(message) || message.isBlank()) {
-            if (Objects.equals(min, 0)) this.message = "최대 %d 이내의 양수를 입력해야 합니다.".formatted(max);
-            else this.message = "%d-%d 이내의 양수를 입력해야 합니다.".formatted(min, max);
+            if (Objects.equals(min, 0)) this.message = "최대 %s 이내의 양수를 입력해야 합니다.".formatted(maxStr);
+            else this.message = "%s-%s 이내의 양수를 입력해야 합니다.".formatted(minStr, maxStr);
         }
     }
 

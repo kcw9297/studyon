@@ -50,6 +50,7 @@ public enum AppStatus {
     PAYMENT_REFUND_NOT_AVAILABLE(400, "환불 가능 기간이 경과하였습니다.\n(결제일로부터 1년 이내에만 가능)"),
     PAYMENT_INVALID_REQUEST(403, "유효하지 않은 결제 요청입니다."),
     PAYMENT_ALREADY_PAYED(403, "이미 결제한 강의입니다."),
+    PAYMENT_NOT_ON_SALE(403, "아직 판매중인 강의가 아닙니다."),
 
     /* Spring Security 처리 상태 */
     SECURITY_INCORRECT_USERNAME_PASSWORD(400, "이메일과 비밀번호가 일치하지 않습니다"),

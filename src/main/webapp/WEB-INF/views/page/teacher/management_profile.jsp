@@ -118,7 +118,9 @@
 
             // 성공 시 미리보기 업데이트
             const imgElem = document.querySelector("#teacher-img");
-            imgElem.src = URL.createObjectURL(file);
+            const profileElem = document.querySelector(".profile-img");
+            imgElem.src = profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_member_profile_image.png'/>";
+            profileElem.src = profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_member_profile_image.png'/>";
             alert("✅ 프로필 이미지가 변경되었습니다.");
         } catch (err) {
             console.error("프로필 업로드 실패:", err);

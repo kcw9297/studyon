@@ -21,6 +21,8 @@ import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
 import studyon.app.layer.domain.lecture_review.LectureReview;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 import studyon.app.layer.domain.member.MemberProfile;
+import studyon.app.layer.domain.member_lecture.repository.MemberLectureRepository;
+import studyon.app.layer.domain.member_lecture.service.MemberLectureService;
 
 import java.util.*;
 
@@ -29,16 +31,22 @@ import java.util.*;
 @RequestMapping(Url.LECTURE)
 @RequiredArgsConstructor
 public class LectureDetailController {
+    private final MemberLectureRepository memberLectureRepository;
     private final LectureRepository lectureRepository;
     private final LectureReviewRepository lectureReviewRepository;
     private final LectureService lectureService;
     private final LectureIndexService lectureIndexService;
 
     @GetMapping("/detail/{lectureId}")
-    public String lecture_detail(@PathVariable Long lectureId, Model model) {
+    public String lecture_detail(@PathVariable Long lectureId, Model model, HttpSession session) {
+
+        // 프로필 조회
+        MemberProfile profile = SessionUtils.getProfile(session);
 
         Lecture lecture = lectureRepository.findWithTeacherById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다. id=" + lectureId));
+
+        boolean isBuyer = memberLectureRepository.existsByMember_MemberIdAndLecture_LectureId(profile.getMemberId(), lectureId);
 
         /* 리뷰 */
         List<LectureReview> reviews = lectureReviewRepository.findReviewsWithMemberAndProfile(lectureId);
@@ -46,6 +54,8 @@ public class LectureDetailController {
         Map<Integer, Double> ratingPercent = lectureService.getRatingPercentage(lectureId);
         String thumbnailPath = lectureRepository.findThumbnailPathByLectureId(lectureId)
                 .orElse(null);
+
+
 
         /* 알고리즘 - 리스트 */
         List<LectureDTO.Read> recommendedBySubject = lectureService.readBestLecturesBySubject(lecture.getSubject().name(), 4);
@@ -89,8 +99,7 @@ public class LectureDetailController {
         model.addAttribute("minutes", minutes);
         model.addAttribute("seconds", seconds);
         model.addAttribute("teacherProfileImageUrl", teacherProfileImageUrl);
-
-
+        model.addAttribute("isBuyer", isBuyer);
         return ViewUtils.returnView(model, View.LECTURE, "lecture_detail");
     }
 
