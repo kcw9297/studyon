@@ -38,6 +38,12 @@ public class TeacherLectureRestController {
     private final EditorService editorService;
 
     /**
+     * [GET] 선생님 강의 프로필
+     */
+
+
+
+    /**
      * [POST] 강의 에디터 이미지 업로드 (캐시데이터)
      */
     @PostMapping("/cache/description-image")
@@ -78,6 +84,9 @@ public class TeacherLectureRestController {
         // [2] 성공 응답 반환
         return RestUtils.ok(AppStatus.LECTURE_OK_PENDING);
     }
+
+
+
 
 
 

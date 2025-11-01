@@ -222,8 +222,7 @@ public class LectureServiceImpl implements LectureService {
 
         fileRepository.saveAll(uploadFiles);
 
-
-        // [6] 생성된 강의번호 반환
+        // [6] 파일정보 삽입 후 강의번호 반환
         return savedLecture.getLectureId();
     }
 
@@ -254,18 +253,21 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId, Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
-        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+        Lecture lecture = lectureRepository.findWithThumbnailById(lectureId).orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
 
         return LectureDTO.ReadLectureInfo.builder()
                 .teacherName(teacher.getMember().getNickname())
                 .teacherId(teacherId)
                 .title(lecture.getTitle())
+                .summary(lecture.getSummary())
                 .lectureRegisterStatus(lecture.getLectureRegisterStatus())
                 .description(lecture.getDescription())
                 .target(lecture.getLectureTarget())
                 .difficulty(lecture.getDifficulty())
                 .subject(lecture.getSubject())
+                .subjectDetail(lecture.getSubjectDetail())
                 .price(lecture.getPrice())
+                .thumbnailImagePath(Objects.isNull(lecture.getThumbnailFile()) ? null : lecture.getThumbnailFile().getFilePath())
                 .build();
     }
 
