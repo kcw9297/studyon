@@ -50,7 +50,15 @@ public class MemberLectureService {
                         .progress(m.getProgress())
                         .completed(m.getCompleted())
                         .build())
-                .collect(Collectors.toList());
+                        //썸네일 로직 추가 KHS97
+                        .peek(dto ->
+                                lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                                        .ifPresentOrElse(
+                                                dto::setThumbnailImagePath,
+                                                () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                        )
+                        )
+                        .collect(Collectors.toList());
     }
     @Transactional
     public void enroll(Long memberId, Long lectureId) {

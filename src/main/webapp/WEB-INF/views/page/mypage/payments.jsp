@@ -45,13 +45,24 @@
                     <c:when test="${not empty paymentList}">
                         <c:forEach var="payment" items="${paymentList}" varStatus="status">
                             <tr class="parameters-item">
+                                <%--
                                 <td>${fn:length(paymentList)-status.index}</td>
                                 <td><c:out value="${fn:substring(payment.cdate, 0, 10)}"/></td>
                                 <td data-en="<c:out value='${payment.lecture.subject}'/>"><c:out value="${payment.lecture.subject}"/></td>
                                 <td><c:out value="${payment.lecture.title}"/></td>
                                 <td><c:out value="${payment.paymentApiResult}" default="-" /></td>
                                 <td><fmt:formatNumber value="${payment.paidAmount}" pattern="#,###" /></td>
-                                <td>
+                                --%>
+                                    <td>${fn:length(paymentList)-status.index}</td>
+                                    <td><c:out value="${fn:substring(payment.cdate, 0, 10)}"/></td>
+                                    <td>영어</td>
+                                    <td><c:out value="${payment.lectureTitle}"/></td>
+                                    <td>신용카드</td>
+                                    <td><fmt:formatNumber value="${payment.paidAmount}" pattern="#,###" /></td>
+
+
+
+                                    <td>
                                     <c:choose>
                                         <c:when test="${payment.isRefunded}">
                                             <span style="color:red;">환불완료</span>

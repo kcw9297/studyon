@@ -57,11 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const item = document.createElement("div");
 
             const detailUrl = `/lecture/detail/${bestLecture.lectureId}`;
+            const fileDomain = "http://localhost:8080/upload";
+
+            // ✅ 썸네일 경로 처리
+            const thumbnailSrc = bestLecture.thumbnailImagePath
+                ? `${fileDomain}/${bestLecture.thumbnailImagePath}`
+                : "/img/png/default_member_profile_image.png";
 
             item.classList.add("recent-lecture-item");
             item.innerHTML = `
             <a href="${detailUrl}">
-                <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
+                <img src="${thumbnailSrc}" alt="강의이미지" class="recent-lecture-thumbnail"
+                 onerror="this.onerror=null; this.src='/img/png/default_member_profile_image.png';">
                 <div class="lecture-info">
                     <p class="lecture-title">${bestLecture.title}</p>
                     <p class="lecture-info-text">${bestLecture.teacherNickname}</p>
@@ -102,11 +109,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const item = document.createElement("div");
 
             const detailUrl = `/lecture/detail/${recentLecture.lectureId}`;
+            const fileDomain = "http://localhost:8080/upload";
+            const thumbnailSrc = recentLecture.thumbnailImagePath
+                ? `${fileDomain}/${recentLecture.thumbnailImagePath}`
+                : "/img/png/default_member_profile_image.png";
+
 
             item.classList.add("recent-lecture-item");
             item.innerHTML = `
                 <a href="${detailUrl}">
-                    <img src="/img/png/sample1.png" alt="강의이미지" class="recent-lecture-thumbnail">
+                    <img src="${thumbnailSrc}" alt="강의이미지" class="recent-lecture-thumbnail"
+                 onerror="this.onerror=null; this.src='/img/png/default_member_profile_image.png';">
                         <div class="lecture-info">
                             <p class="lecture-title">${recentLecture.title}</p>
                             <p class="lecture-info-text">${recentLecture.teacherNickname}</p>

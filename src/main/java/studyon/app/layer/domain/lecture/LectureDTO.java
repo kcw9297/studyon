@@ -105,6 +105,7 @@ public class LectureDTO {
         // 관리자 검색 시 추가 제공 정보
         private Boolean onSale;
         private LectureRegisterStatus lectureRegisterStatus;
+        private LectureDTO.Read lecture;
     }
 
     @Data
