@@ -208,17 +208,26 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
     /**
      * 등록 상태별 강의 수 조회
-     * REGISTERED / PENDING / REJECTED / IN_PROGRESS 등 상태 분포
+     * REGISTERED / PENDING / REJECTED / UNREGISTERED 등 상태 분포
      */
-    @Query("SELECT l.lectureRegisterStatus AS status, COUNT(l) AS cnt FROM Lecture l GROUP BY l.lectureRegisterStatus")
+    @Query("""
+        SELECT new map(l.lectureRegisterStatus AS status, COUNT(l) AS cnt)
+        FROM Lecture l
+        GROUP BY l.lectureRegisterStatus
+    """)
     List<Map<String, Object>> findLectureCountByStatus();
 
     /**
      * 과목별 강의 수 조회
      * 과목(Subject) 기준으로 등록된 강의 개수를 계산
      */
-    @Query("SELECT l.subject AS subject, COUNT(l) AS cnt FROM Lecture l GROUP BY l.subject")
+    @Query("""
+        SELECT new map(l.subject AS subject, COUNT(l) AS cnt)
+        FROM Lecture l
+        GROUP BY l.subject
+    """)
     List<Map<String, Object>> findLectureCountBySubject();
+
 
 
     /**
@@ -226,9 +235,22 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
      * 난이도 기준으로 등록된 강의 개수를 계산
      */
     @Query("""
-        SELECT l.difficulty AS difficulty, COUNT(l) AS cnt
+        SELECT new map(l.difficulty AS difficulty, COUNT(l) AS cnt)
         FROM Lecture l
         GROUP BY l.difficulty
     """)
     List<Map<String, Object>> findLectureCountByDifficulty();
+
+
+    /**
+     * 대상 학년별 강의 수 조회
+     * - 관리자 통계용 (Bar Chart)
+     */
+    @Query("""
+        SELECT new map(l.lectureTarget AS target, COUNT(l) AS cnt)
+        FROM Lecture l
+        GROUP BY l.lectureTarget
+    """)
+    List<Map<String, Object>> findLectureCountByTarget();
+
 }

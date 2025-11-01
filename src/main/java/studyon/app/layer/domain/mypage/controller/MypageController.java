@@ -6,25 +6,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.View;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture_like.LectureLike;
-import studyon.app.layer.domain.lecture_like.service.LectureLikeService;
-import studyon.app.layer.domain.payment.Payment;
-import studyon.app.layer.domain.payment.repository.PaymentRepository;
+import studyon.app.layer.domain.lecture_like.LectureLikeDTO;
+import studyon.app.layer.domain.mypage.service.MypageService;
+import studyon.app.layer.domain.payment.PaymentDTO;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
 @Slf4j
 @Controller
 @RequestMapping(Url.MYPAGE)
 @RequiredArgsConstructor
 public class MypageController {
-    private final PaymentRepository paymentRepository;
-    private final LectureLikeService lectureLikeService;
+
+    private final MypageService mypageService;
 
     @GetMapping
     public String mypage(Model model) {
@@ -41,7 +44,7 @@ public class MypageController {
     public String likes(@RequestParam(value = "subject", required = false, defaultValue = "all") String subject,
                         Model model, HttpSession session) {
         Long memberId = (Long) session.getAttribute("memberId");
-        List<LectureLike> likeList = lectureLikeService.getLikesByMemberAndSubject(memberId, subject);
+        List<LectureLikeDTO.Read> likeList = mypageService.getLikesByMemberAndSubject(memberId, subject);
 
         model.addAttribute("likeList", likeList);
         model.addAttribute("selectedSubject", subject.toLowerCase());
@@ -57,7 +60,7 @@ public class MypageController {
             @RequestParam(value = "subject", required = false) String subject,
             HttpSession session) {
         Long memberId = (Long) session.getAttribute("memberId");
-        if (memberId != null) {lectureLikeService.deleteLike(memberId, lectureId);}
+        if (memberId != null) {mypageService.deleteLike(memberId, lectureId);}
 
         if (subject != null && !subject.isEmpty()) {return "redirect:/mypage/likes?subject=" + subject;}
         return "redirect:/mypage/likes";
@@ -83,8 +86,7 @@ public class MypageController {
         if (until == null) until = now.withDayOfMonth(now.lengthOfMonth());
 
         // 내역 조회
-        List<Payment> paymentList =
-                paymentRepository.findWithMemberAndLectureByMemberIdAndDateRange(memberId, since.atStartOfDay(), until.atTime(23,59,59));
+        List<PaymentDTO.Read> paymentList = mypageService.getPaymentsByMemberAndDate(memberId, since, until);
 
         model.addAttribute("paymentList", paymentList);
         model.addAttribute("sinceDate", since);

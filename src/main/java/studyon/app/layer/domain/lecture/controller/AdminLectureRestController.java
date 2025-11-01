@@ -20,8 +20,11 @@ import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
 import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /*
  * [수정 이력]
@@ -116,17 +119,62 @@ public class AdminLectureRestController {
         return RestUtils.ok(AppStatus.LECTURE_OK_REJECT);
     }
 
+    /**
+     * [GET] 과목별 강의 수 조회
+     */
+
     @GetMapping("/subjectCount")
     public ResponseEntity<?> readSubjectCount() {
         log.info("[API] 과목별 강의 수 조회 요청");
         // [1] 성공 응답 반환
-        return ResponseEntity.ok(lectureService.readLectureCountBySubject());
+        return RestUtils.ok(lectureService.readLectureCountBySubject());
     }
 
+    /**
+     * [GET] 강의 난이도 조회
+     */
+    
     @GetMapping("/difficultyCount")
     public ResponseEntity<?> readDifficultyCount() {
         log.info("[API] 난이도별 강의 수 조회 요청");
         // [1] 성공 응답 반환
-        return ResponseEntity.ok(lectureService.readLectureCountByDifficulty());
+        return RestUtils.ok(lectureService.readLectureCountByDifficulty());
+    }
+
+    /**
+     * [GET] 강의 등록 상태 조회
+     */
+    @GetMapping("/statusCount")
+    public ResponseEntity<?> readStatusCount() {
+        log.info("[API] 등록 상태별 강의 수 조회 요청");
+        return RestUtils.ok(lectureService.readLectureCountByStatus());
+    }
+
+    /**
+     * [GET] 강의 평점 상위 TOP5
+     */
+    @GetMapping("/topRated")
+    public ResponseEntity<?> readTopRated(@RequestParam(defaultValue = "5") int count) {
+        Map<String, Double> topLectures = lectureService.readTopRatedLectures(count)
+                .stream()
+                .collect(Collectors.toMap(
+                        LectureDTO.Read::getTitle,        // key 매핑 (dto -> dto.getTitle())
+                        LectureDTO.Read::getAverageRate,  // value 매핑 (dto -> dto.getAverageRate())
+                         (a, b) -> a,        // key 충돌 시 기존 값 유지
+                        LinkedHashMap::new                // Map 구현체 지정 (순서 유지)
+                ));
+        return RestUtils.ok(topLectures);
+
+                        /*  key 충돌 시 병합 규칙
+                        if (keyAlreadyExists) {
+                           keep a; // 기존 값 유지
+                        }
+                         */
+    }
+
+    @GetMapping("/targetCount")
+    public ResponseEntity<?> readTargetCount() {
+        log.info("[API] 대상 학년별 강의 수 조회 요청");
+        return RestUtils.ok(lectureService.readLectureCountByTarget());
     }
 }

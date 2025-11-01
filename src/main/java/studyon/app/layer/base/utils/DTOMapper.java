@@ -14,6 +14,8 @@ import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
+import studyon.app.layer.domain.lecture_like.LectureLike;
+import studyon.app.layer.domain.lecture_like.LectureLikeDTO;
 import studyon.app.layer.domain.lecture_question.LectureQuestion;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_review.LectureReview;
@@ -266,6 +268,14 @@ public class DTOMapper {
                 .build();
     }
 
+    public static LectureLikeDTO.Read toReadDTO(LectureLike entity) {
+        return LectureLikeDTO.Read.builder()
+                .lectureLikeId(entity.getLectureLikeId())
+                .memberId(entity.getMember().getMemberId())
+                .lectureId(entity.getLecture().getLectureId())
+                .build();
+    }
+
     public static TeacherDTO.Read toReadDTO(Teacher entity) {
         return TeacherDTO.Read.builder()
                 .teacherId(entity.getTeacherId())
@@ -406,5 +416,4 @@ public class DTOMapper {
                 .bannerImage(Objects.isNull(bannerImage) ? null : toReadDTO(bannerImage))
                 .build();
     }
-
 }
