@@ -24,6 +24,9 @@ import studyon.app.layer.domain.lecture_index.LectureIndexDTO;
 import studyon.app.layer.domain.lecture_index.service.LectureIndexService;
 import studyon.app.layer.domain.lecture_question.LectureQuestionDTO;
 import studyon.app.layer.domain.lecture_question.service.LectureQuestionService;
+import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
+import studyon.app.layer.domain.lecture_review.service.LectureReviewService;
+import studyon.app.layer.domain.lecture_video.LectureVideo;
 import studyon.app.layer.domain.lecture_video.LectureVideoDTO;
 import studyon.app.layer.domain.lecture_video.service.LectureVideoService;
 import studyon.app.layer.domain.member.MemberProfile;
@@ -60,6 +63,7 @@ public class TeacherRestController {
     private final LectureVideoService lectureVideoService;
     private final LectureQuestionService lectureQuestionService;
     private final LectureAnswerService lectureAnswerService;
+    private final LectureReviewService  lectureReviewService;
 
     /**
      * [GET] 모든 선생님 정보 가져오기
@@ -87,6 +91,53 @@ public class TeacherRestController {
         // [2] 리스팅한 정보 리턴하기
         return RestUtils.ok(teachersBySubject);
     }
+
+    // Teacher Profile Part
+
+    /** ✅ 인기 강의 조회 */
+    @GetMapping("/profile/bestLecture")
+    public ResponseEntity<?> getBestLectures(@RequestParam Long teacherId) {
+        List<LectureDTO.Read> response = lectureService.readBestLectures(teacherId, 5);
+        return RestUtils.ok(response);
+    }
+
+    /** ✅ 최신 강의 조회 */
+    @GetMapping("/profile/recentLecture")
+    public ResponseEntity<?> getRecentLectures(@RequestParam Long teacherId) {
+        List<LectureDTO.Read> response = lectureService.readRecentLectures(teacherId, 5);
+        return RestUtils.ok(response);
+    }
+
+    /** ✅ 수강평 조회 */
+    @GetMapping("/reviews/teacher/{teacherId}")
+    public ResponseEntity<?> getTeacherReviews(@PathVariable Long teacherId) {
+        List<LectureReviewDTO.Read> response = lectureReviewService.readRecentReview(teacherId, 5);
+        return RestUtils.ok(response);
+    }
+
+    /**
+     * 선생님 프로필 정보 상세 조회 (가장 많은 정보 포함)
+     */
+    @GetMapping("/profile/detail/{teacherId}")
+    public ResponseEntity<?> getTeacherDetail(@PathVariable Long teacherId) {
+        TeacherDTO.ReadDetail response = teacherService.readTeacherDetail(teacherId);
+        return RestUtils.ok(response);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Teacher MyPage PART
 
     @GetMapping("/management/lecturelist")
     public ResponseEntity<?> getTeacherLectureList(HttpServletRequest request) {

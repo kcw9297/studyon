@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.View;
+import studyon.app.layer.base.utils.SessionUtils;
 import studyon.app.layer.base.utils.ViewUtils;
 import studyon.app.layer.domain.lecture_like.LectureLike;
 import studyon.app.layer.domain.lecture_like.LectureLikeDTO;
+import studyon.app.layer.domain.member.MemberProfile;
 import studyon.app.layer.domain.mypage.service.MypageService;
 import studyon.app.layer.domain.payment.PaymentDTO;
 
@@ -43,8 +45,15 @@ public class MypageController {
     @GetMapping("/likes")
     public String likes(@RequestParam(value = "subject", required = false, defaultValue = "all") String subject,
                         Model model, HttpSession session) {
-        Long memberId = (Long) session.getAttribute("memberId");
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long memberId = profile.getMemberId();
         List<LectureLikeDTO.Read> likeList = mypageService.getLikesByMemberAndSubject(memberId, subject);
+
+        System.out.println("💚 LikeList Size = " + likeList.size());
+        likeList.forEach(like ->
+                System.out.println("▶ " + like.getLecture().getTitle() + " / " + like.getLecture().getLectureId())
+        );
+
 
         model.addAttribute("likeList", likeList);
         model.addAttribute("selectedSubject", subject.toLowerCase());

@@ -120,7 +120,6 @@
 <style>
     .main-content-container {
         margin-top: 20px;
-        border: 2px solid black;
         width: 100%;
         height: auto;
         padding-right:20px;
@@ -185,7 +184,7 @@
     .search-lecture-item {
         width: 260px;
         height: auto;
-        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2); /* ✅ 내부 border처럼 */
+        box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.2); /* ✅ 내부 border처럼 */
         border-radius: 15px;
         display: flex;
         flex-direction: column;
@@ -211,7 +210,6 @@
     .search-lecture-info {
         display: flex;
         flex-wrap: wrap;  /* 여러 줄로 부드럽게 줄바꿈 */
-        gap: 1px;
         padding: 3px;
         align-items: center;
         justify-content: flex-start;
@@ -227,6 +225,7 @@
     .lecture-thumbnail{
         width:100%;
         height:150px;
+        border-radius: 10px;
     }
 
     /* lecture-item 속성 ( ID 기반 ) */
@@ -235,7 +234,19 @@
     }
 
     /* 공통 기본 스타일 */
-    #title,
+    #title{
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+
+    }
+
+
     #subject,
     #subjectDetail,
     #difficulty,
@@ -254,6 +265,7 @@
         margin: 3px;
         border: 1px solid rgba(0, 0, 0, 0.1);
         transition: all 0.2s ease;
+
     }
 
     /* 개별 색상 — 연한 파스텔톤 */

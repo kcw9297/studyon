@@ -271,4 +271,13 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
             "WHERE l.lectureId = :lectureId")
     Optional<String> findThumbnailPathByLectureId(@Param("lectureId") Long lectureId);
 
+    //TeacherId로 프로필 사진 조회
+    @Query("""
+    SELECT f.filePath
+    FROM Teacher t
+    JOIN t.member m
+    LEFT JOIN m.profileImage f
+    WHERE t.teacherId = :teacherId
+    """)
+    Optional<String> findTeacherProfilePath(@Param("teacherId") Long teacherId);
 }

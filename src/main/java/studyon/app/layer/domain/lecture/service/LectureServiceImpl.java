@@ -122,6 +122,13 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findBestLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                .peek(dto ->
+                        lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                                .ifPresentOrElse(
+                                        dto::setThumbnailImagePath,
+                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                )
+                )
                 .collect(Collectors.toList());
     }
 
@@ -183,6 +190,13 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findRecentLecturesByTeacherId(teacherId, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                .peek(dto ->
+                        lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                                .ifPresentOrElse(
+                                        dto::setThumbnailImagePath,
+                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                )
+                )
                 .collect(Collectors.toList());
     }
 

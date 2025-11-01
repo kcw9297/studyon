@@ -14,6 +14,7 @@
     <div id="intro" class="introduce-content">
         <div class="intro-text">
             강의소개 설명
+            ${lecture.description}
         </div>
     </div>
     <div id="curriculum" class="introduce-content" >
@@ -63,7 +64,8 @@
         <div class="instructor">
             <div class="instructor-teacher">
                 <c:choose>
-                    <c:when test="${not empty teacher.member.profileImage and teacher.member.profileImage.fileId ne 0}">
+                    <c:when test="${not empty teacherProfileImageUrl}">
+                        <img src="http://localhost:8080/upload/${teacherProfileImageUrl}" alt="강사 프로필 이미지">
                     </c:when>
                     <c:otherwise>
                         <img src="<c:url value='/img/png/default_member_profile_image.png'/>" alt="기본 이미지">
@@ -93,15 +95,19 @@
                         <p><fmt:formatNumber value="${reviewCount}" type="number"/>개</p>
                     </div>
                 </div>
+                <%--
                 <div class="instructor-word">
-                    <p>${teacher.description}</p>
+                    <p>${lecture.summary}</p>
                 </div>
+                --%>
             </div>
             <div class="instructor-history">
+                <%--
                 <p>이력</p>
                 <ul>
-                    ${lecture.description}
+                    ${lecture.summary}
                 </ul>
+                --%>
             </div>
         </div>
     </div>
@@ -387,11 +393,42 @@
         }
 
     })();
-
-
-
-
-
-
-
 </script>
+
+<style>
+    .introduce{display:grid; grid-template-rows:repeat(4,auto); gap:50px; padding:50px 0; font-family:"Inter",sans-serif; font-style:normal; font-size:18px;}
+    #intro, #curriculum, #instructor, #reviews{scroll-margin-top:150px;}
+    .introduce-title{font-size:22px; font-weight:var(--bold);}
+    .introduce-content{display:flex; flex-direction:column; gap:10px;}
+    /* 강사 소개 - 기본 정보(사진, 이름) */
+    .instructor{
+        display:grid;
+        grid-template-columns:200px auto auto;
+        gap:100px;
+        margin-top:10px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        padding:20px;
+        border-radius: 20px;
+    }
+    .instructor-teacher{place-items:center;}
+    .instructor-teacher p{all:unset;}
+    .instructor-teacher img{width:200px; height:200px; border:1px solid var(--light-gray); border-radius:500px;}
+    /* 강사 소개 - 강사 총 데이터(강의, 수강생, 평점, 수강평) */
+    .instructor-data{display:flex; flex-direction:column; gap:10px; padding-top: 20px;
+    }
+    .instructor-category{
+        display:grid;
+        grid-template-columns:repeat(2,auto);
+        grid-template-rows:repeat(2,auto);
+        gap:30px; padding:20px 0; font-size:24px; font-weight:var(--bold);
+        max-width: 400px;
+    }
+    .instructor-item{display:flex; flex-direction:row; gap:10px;}
+    .instructor-name{color:var(--deep-gray);}
+    .instructor-word{line-height:1.5; white-space:pre-line;}
+    /* 강사 소개 - 이력 */
+    .instructor-history{display:flex; flex-direction:column; gap:10px; padding-top:20px;}
+    .instructor-history p{all:unset; font-weight:var(--bold);}
+    .instructor-history ul{list-style:none; line-height:1.5;}
+
+</style>

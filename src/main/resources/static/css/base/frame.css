@@ -23,6 +23,7 @@ html, body {
 
 #container {
   width: 1900px;      /* 중앙 고정 */
+    height:auto;
   margin: 0 auto;     /* 화면 중앙 정렬 */
   padding: 0 250px;   /* 좌우 패딩 250px */
   background: #ffffff;
@@ -64,10 +65,11 @@ html, body {
 #content {
   background-color: #ffffff;
   height: auto;
-  min-height: 1000px;
+  min-height: 600px;
   border-radius: 10px;
   color: #333;
     margin-top:60px;
+    margin-bottom:30px;
 }
 
 .header-container{

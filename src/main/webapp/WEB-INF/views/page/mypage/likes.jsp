@@ -11,31 +11,25 @@
                 <c:forEach var="like" items="${likeList}">
                     <a class="likes-item" href="/lecture/detail/${like.lecture.lectureId}">
                         <div class="likes-thumbnail">
-
-                            <%--
-                            <c:choose>
-                                <c:when test="${not empty lecture.thumbnailFile and lecture.thumbnailFile.fileId ne 0}">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
-                                </c:otherwise>
-                            </c:choose>
-                            --%>
-
                                 <c:choose>
+                                    <%--
                                     <c:when test="${not empty like.lecture.thumbnailFile and not empty like.lecture.thumbnailFile.filePath}">
                                         <img src="http://localhost:8080/upload/${like.lecture.thumbnailFile.filePath}" alt="강의 썸네일">
                                     </c:when>
                                     <c:otherwise>
                                         <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
                                     </c:otherwise>
+                                    --%>
+                                    <c:when test="${not empty like.lecture.thumbnailImagePath}">
+                                        <img src="http://localhost:8080/upload/${like.lecture.thumbnailImagePath}" alt="강의 썸네일">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
+                                    </c:otherwise>
+
+
+
                                 </c:choose>
-
-
-
-
-
-
                                 <form class="likes-deleteIcon" action="/mypage/likes/delete/${like.lecture.lectureId}" method="get">
                                 <input type="hidden" name="subject" value="${selectedSubject}">
                                 <button type="submit">
@@ -44,7 +38,7 @@
                             </form>
                         </div>
                         <div class="likes-lecture">${like.lecture.title}</div>
-                        <div class="likes-teacher">${like.lecture.teacher.member.nickname} 강사</div>
+                        <div class="likes-teacher">${like.lecture.teacherNickname} 강사</div>
                         <div class="likes-price"><fmt:formatNumber value="${like.lecture.price}" type="number"/>원</div>
                         <div class="likes-report">
                             <div class="likes-review">

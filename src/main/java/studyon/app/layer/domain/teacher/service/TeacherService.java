@@ -39,5 +39,6 @@ public interface TeacherService {
     void update(Long teacherId, TeacherDTO.Edit dto);
     TeacherDTO.LectureListResponse getLectureListByTeacher(Long teacherId);
     TeacherDTO.TeacherManagementProfile readProfile(Long memberId);
-
+    TeacherDTO.ReadDetail readTeacherDetail(Long teacherId);
+    TeacherDTO.ReadDetail readDetail(Long teacherId);
 }
