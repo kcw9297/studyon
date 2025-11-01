@@ -19,8 +19,15 @@
         </div>
         <div class="text-error" id="titleError"></div>
 
-        <!-- 소개 -->
-        <label class="resister-description" for="description">강의 소개</label>
+        <!-- 강의 소개문(요약) -->
+        <label class="resister-description" for="summary">강의 소개</label>
+        <div>
+            <input class="resister-lecture-summary" type="text" id="summary" name="summary">
+        </div>
+        <div class="text-error" id="summaryError"></div>
+
+        <!-- 상세 소개 -->
+        <label class="resister-description" for="description">강의 상세 소개</label>
         <div class="editor-wrapper" style="width: 100%; max-width: 1003px;">
             <textarea id="content" name="description" style="display:none;"></textarea>
             <iframe style="width: 100%; height: 853px;"
@@ -204,7 +211,6 @@
     // 에디터 내용 변동 시 처리 함수
     function onEditorContentChange(content) {
         document.getElementById("content").value = content;
-        console.log(document.getElementById("content").value);
     }
 
 
@@ -277,6 +283,16 @@
     }
 
     .resister-lecture-title{
+        width: 50%;
+        padding: 12px 14px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .resister-lecture-summary{
         width: 50%;
         padding: 12px 14px;
         font-size: 16px;

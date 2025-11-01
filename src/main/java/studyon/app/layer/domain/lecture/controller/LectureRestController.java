@@ -83,9 +83,6 @@ public class LectureRestController {
     }
 
 
-
-
-
     /**
      * [GET] 과목별 최신 강의 목록 조회
      */

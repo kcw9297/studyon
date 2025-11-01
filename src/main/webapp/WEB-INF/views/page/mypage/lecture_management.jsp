@@ -55,13 +55,21 @@
                 // 썸네일
                 const thumbnail = document.createElement("a");
                 thumbnail.classList.add("mypage-lecture-thumbnail");
-                //thumbnail.href = `/player?lectureId=69`;
                 thumbnail.href = "/player?lectureId="+lecture.lectureId;
 
                 console.log("썸네일 href:", thumbnail.href);
 
                 const img = document.createElement("img");
-                img.src = "http://localhost:8080/img/png/menhera.png"; // 하드코딩 썸네일
+                img.src = lecture.thumbnailImagePath
+                    ? (lecture.thumbnailImagePath.startsWith("http")
+                        ? lecture.thumbnailImagePath
+                        : (lecture.thumbnailImagePath.startsWith("/img/")
+                            ? lecture.thumbnailImagePath
+                            : "http://localhost:8080/upload/" + lecture.thumbnailImagePath))
+                    : "/img/png/default_member_profile_image.png";
+
+
+
                 img.alt = lecture.lectureTitle;
                 img.classList.add("mypage-profile");
                 thumbnail.appendChild(img);
@@ -88,3 +96,29 @@
     });
 
 </script>
+
+<style>
+    /* ===== courses(강의 관리) ===== */
+    .courses{min-height:900px; display:flex; flex-direction:column; padding:20px; border:1px solid var(--light-gray); border-radius:20px; font-family:"Inter",sans-serif; font-style:normal; font-size:16px;}
+    /* 강의 목록 */
+    .courses-list{display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px 40px; padding:10px;}
+    .courses-item{display:flex; flex-direction:column; width:320px; height:auto;}
+    .courses-thumbnail{position:relative;}
+    .courses-thumbnail img{width:320px; height:180px; border-radius:15px;}
+    .courses-lecture{margin-bottom:8px; font-size:20px; font-weight:var(--bold);}
+    .courses-teacher{margin-bottom:5px; font-size:18px;}
+    /* 강의 목록 - 진행률 바 */
+    .courses-percent{margin-bottom:10px; padding:0; line-height:0;}
+    .courses-progress{width:320px; height:10px; border:none; border-radius:100px; overflow:hidden; -webkit-appearance:none; appearance:none;}
+    .courses-progress::-webkit-progress-bar{background-color:var(--light-gray);}
+    .courses-progress::-webkit-progress-value{background-color:var(--deep-yellow);}
+    /* 강의 목록 - 진행률 텍스트 */
+    .courses-class{display:flex; flex-direction:row; align-items:center;}
+    .courses-text1{font-size:18px;}
+    .courses-text2{color:var(--deep-gray)}
+    .mypage-profile{
+        width:100%;
+        height:160px;
+    }
+
+</style>

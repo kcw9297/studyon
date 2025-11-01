@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import studyon.app.common.constant.Url;
 import studyon.app.common.enums.*;
+import studyon.app.common.enums.filter.LectureKeyword;
+import studyon.app.common.enums.filter.LectureOnSale;
+import studyon.app.common.enums.filter.LectureSort;
 import studyon.app.common.utils.StrUtils;
 import studyon.app.infra.cache.manager.CacheManager;
 import studyon.app.layer.base.utils.SessionUtils;
@@ -127,6 +130,18 @@ public class TeacherController {
 
     @GetMapping("/management/lectureinfo/{lectureId}")
     public String lectureinfo(Model model, HttpSession session) {
+
+        // [1] 데이터 표시를 위한 삽입
+        model.addAttribute("subjects", Subject.values());
+        model.addAttribute("subjectDetails", SubjectDetail.values());
+        model.addAttribute("difficulties", Difficulty.values());
+        model.addAttribute("filters", LectureKeyword.values());
+        model.addAttribute("sorts", LectureSort.values());
+        model.addAttribute("targets", LectureTarget.values());
+        model.addAttribute("onSales", LectureOnSale.values());
+        model.addAttribute("statuses", LectureRegisterStatus.values());
+
+        // [2] view 반환
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture_info");
     }
 

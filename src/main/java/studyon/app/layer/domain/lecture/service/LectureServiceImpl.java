@@ -97,7 +97,6 @@ public class LectureServiceImpl implements LectureService {
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 최근 강의 정렬
         String fileDomain = "http://localhost:8080/upload";
-        log.info("readRecentLecture 호출");
 
         return lectureRepository.findRecentLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
@@ -134,6 +133,13 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findAllByOrderByPublishDateDesc(pageable, LectureRegisterStatus.REGISTERED)
                 .stream()
                 .map(DTOMapper::toReadDTO)
+                .peek(dto ->
+                        lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                                .ifPresentOrElse(
+                                        dto::setThumbnailImagePath,
+                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                )
+                )
                 .collect(Collectors.toList());
     }
 
@@ -146,6 +152,13 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findAllByOrderByTotalStudentsDesc(pageable, LectureRegisterStatus.REGISTERED)
                 .stream()
                 .map(DTOMapper::toReadDTO)
+                .peek(dto ->
+                        lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                                .ifPresentOrElse(
+                                        dto::setThumbnailImagePath,
+                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                )
+                )
                 .collect(Collectors.toList());
     }
 
@@ -222,8 +235,7 @@ public class LectureServiceImpl implements LectureService {
 
         fileRepository.saveAll(uploadFiles);
 
-
-        // [6] 생성된 강의번호 반환
+        // [6] 파일정보 삽입 후 강의번호 반환
         return savedLecture.getLectureId();
     }
 
@@ -254,18 +266,21 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public LectureDTO.ReadLectureInfo readLectureInfo(Long lectureId, Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
-        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
+        Lecture lecture = lectureRepository.findWithThumbnailById(lectureId).orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
 
         return LectureDTO.ReadLectureInfo.builder()
                 .teacherName(teacher.getMember().getNickname())
                 .teacherId(teacherId)
                 .title(lecture.getTitle())
+                .summary(lecture.getSummary())
                 .lectureRegisterStatus(lecture.getLectureRegisterStatus())
                 .description(lecture.getDescription())
                 .target(lecture.getLectureTarget())
                 .difficulty(lecture.getDifficulty())
                 .subject(lecture.getSubject())
+                .subjectDetail(lecture.getSubjectDetail())
                 .price(lecture.getPrice())
+                .thumbnailImagePath(Objects.isNull(lecture.getThumbnailFile()) ? null : lecture.getThumbnailFile().getFilePath())
                 .build();
     }
 

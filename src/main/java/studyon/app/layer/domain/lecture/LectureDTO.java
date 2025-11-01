@@ -85,6 +85,7 @@ public class LectureDTO {
         private String thumbnailImagePath;
         private Long lectureId;
         private String title;
+        private String summary;
         private String description;
         private Long price;
         private Long teacherId;
@@ -104,6 +105,7 @@ public class LectureDTO {
         // 관리자 검색 시 추가 제공 정보
         private Boolean onSale;
         private LectureRegisterStatus lectureRegisterStatus;
+        private LectureDTO.Read lecture;
     }
 
     @Data
@@ -148,6 +150,9 @@ public class LectureDTO {
         @Title(min = 4, max = 20)
         private String title;
 
+        @Title(min = 10, max = 100)
+        private String summary;
+
         @EditorContent(min = 10, max = 100)
         private String description;
 
@@ -174,14 +179,17 @@ public class LectureDTO {
     public static class ReadLectureInfo {
         private Long teacherId;
         private String title;
+        private String summary;
         private String description;
         private LectureTarget target;
         private Long price;
         private Difficulty difficulty;
         private Subject subject;
+        private SubjectDetail subjectDetail;
         private List<LectureVideoInfo> videos;
         private String teacherName;
         private LectureRegisterStatus lectureRegisterStatus;
+        private String thumbnailImagePath;
     }
 
     @Data
