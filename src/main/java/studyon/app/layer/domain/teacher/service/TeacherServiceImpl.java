@@ -72,6 +72,15 @@ public class TeacherServiceImpl implements TeacherService {
         // [2] 레포지토리에서 과목별로 선생님 정보 가져와서 DTO 변환 후 리스팅, 'teacherId' 필드를 기준으로 오름차순 정렬
         return teacherRepository.findBySubjectWithMember(subject).stream()
                 .map(DTOMapper::toReadDTO)
+                .peek(dto -> {
+                    if (dto.getMemberId() != null) {
+                        // memberId 기반으로 파일 경로 조회
+                        String filePath = teacherRepository.findProfileImagePathByMemberId(dto.getMemberId());
+                        dto.setThumbnailPath(filePath != null
+                                ? filePath
+                                : "/img/png/default_member_profile_image.png"); // 기본 이미지
+                    }
+                })
                 .collect(Collectors.toList());
     }
     /**

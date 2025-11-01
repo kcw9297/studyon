@@ -2,6 +2,7 @@ package studyon.app.layer.domain.lecture.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +43,7 @@ import java.util.stream.Collectors;
  * @author phj03
  * @version 1.2
  */
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -58,6 +59,8 @@ public class LectureServiceImpl implements LectureService {
 
     private final FileManager fileManager;
     private final CacheManager cacheManager;
+
+
 
 
     @Override
@@ -87,9 +90,21 @@ public class LectureServiceImpl implements LectureService {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
         // [2] 과목 기반으로 최근 강의 정렬
+        String fileDomain = "http://localhost:8080/upload";
+        log.info("readRecentLecture 호출");
+
         return lectureRepository.findRecentLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
+                //KHS97 썸네일 추가
+                .peek(dto -> {
+                    lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
+                            .ifPresentOrElse(path ->
+                                            dto.setThumbnailImagePath(fileDomain + "/" + path),
+                                    () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                            );
+                })
+
                 .collect(Collectors.toList());
     }
 

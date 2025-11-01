@@ -97,6 +97,10 @@ public class LectureRestController {
         // [2] 최신 강의 조회
         List<LectureDTO.Read> result = lectureService.readRecentLectures(rq.getSubject(), count);
         // [3] 성공 응답 반환
+
+        //썸네일 추가
+
+
         return RestUtils.ok(result);
     }
 

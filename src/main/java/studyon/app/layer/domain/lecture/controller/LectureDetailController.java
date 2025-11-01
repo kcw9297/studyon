@@ -44,6 +44,8 @@ public class LectureDetailController {
         List<LectureReview> reviews = lectureReviewRepository.findReviewsWithMemberAndProfile(lectureId);
         long reviewCount = lectureReviewRepository.countByLecture_LectureId(lectureId);
         Map<Integer, Double> ratingPercent = lectureService.getRatingPercentage(lectureId);
+        String thumbnailPath = lectureRepository.findThumbnailPathByLectureId(lectureId)
+                .orElse(null);
 
         /* 알고리즘 - 리스트 */
         List<LectureDTO.Read> recommendedBySubject = lectureService.readBestLecturesBySubject(lecture.getSubject().name(), 4);
@@ -60,6 +62,15 @@ public class LectureDetailController {
             reviewCountMap.put(rec.getLectureId(), count);
         }
 
+        //강의시간 계산 로직
+        Long total = lecture.getTotalDuration(); // 초 단위 (nullable 방지)
+        if (total == null) total = 0L;
+
+        long hours = total / 3600L;
+        long minutes = (total % 3600L) / 60L;
+        long seconds = total % 60L;
+
+
         model.addAttribute("lecture", lecture);
         model.addAttribute("teacher", lecture.getTeacher());
         model.addAttribute("reviews", reviews);
@@ -68,6 +79,13 @@ public class LectureDetailController {
         model.addAttribute("recommendedBySubject", recommendedBySubject);
         model.addAttribute("recommendedByTeacher", recommendedByTeacher);
         model.addAttribute("reviewCountMap", reviewCountMap);
+        model.addAttribute("thumbnailPath", thumbnailPath);
+
+        //강의시간 바로 사용
+        model.addAttribute("hours", hours);
+        model.addAttribute("minutes", minutes);
+        model.addAttribute("seconds", seconds);
+
 
         return ViewUtils.returnView(model, View.LECTURE, "lecture_detail");
     }
