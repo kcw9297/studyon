@@ -17,6 +17,10 @@ jobs:
 
     # 빌드 및 EC2 인스턴스에 빌드된 파일 복사
     steps:
+      # GithubActions IP 얻기
+      - name: Get Github Actions IP
+        id: ip
+        uses: haythem/public-ip@v1.2
 
       # step 1. 코드 체크아웃
       - name: Checkout code
