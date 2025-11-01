@@ -7,6 +7,7 @@ import studyon.app.layer.domain.payment.Payment;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /*
@@ -116,4 +117,20 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
         WHERE p.member.memberId = :memberId AND p.lecture.lectureId = :lectureId AND p.isRefunded = :isRefunded
     """)
     boolean existsByMemberIdAndLectureIdAndIsRefunded(Long memberId, Long lectureId, Boolean isRefunded);
+
+    // 과목별 매출 통계
+
+    @Query("""
+        SELECT new map(
+            l.subject AS subject,
+            COALESCE(SUM(p.paidAmount), 0) AS totalSales
+        )
+        FROM Payment p
+        JOIN p.lecture l
+        WHERE p.isRefunded = false OR p.isRefunded IS NULL
+        GROUP BY l.subject
+        ORDER BY SUM(p.paidAmount) DESC
+    """)
+    List<Map<String, Object>> findTotalSalesBySubject();
+
 }

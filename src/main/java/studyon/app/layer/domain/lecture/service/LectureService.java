@@ -106,13 +106,21 @@ public interface LectureService {
 
     /* 관리자 강의 통계용 메소드들 */
     
+    // 과목별
     Map<String, Long> readLectureCountBySubject();
 
+    // 난이도별
     Map<String, Long> readLectureCountByDifficulty();
 
+    // 등록 상태별
     Map<String, Long> readLectureCountByStatus();
 
-    List<LectureDTO.Read> readTopRatedLectures(int count);
+    // 랭킹별
+    Map<String, Double> readTopRatedLectures(int count);
 
+    // 몇학년 과목 강의인지
     Map<String, Long> readLectureCountByTarget();
+
+    // 과목별 매출
+    Map<String, Long> readSalesBySubject();
 }
