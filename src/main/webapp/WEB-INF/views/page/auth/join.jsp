@@ -281,6 +281,7 @@
                 // 유효성 검사에 실패한 경우
                 if (rp.inputErrors) {
                     Object.entries(rp.inputErrors).forEach(([field, message]) => {
+                        document.querySelectorAll(".text-error").forEach((el) => {el.textContent = "";});
                         const errorElem = document.getElementById(`\${field}Error`);
                         if (errorElem) {
                             errorElem.textContent = message;

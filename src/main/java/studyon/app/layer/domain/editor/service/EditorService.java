@@ -1,7 +1,7 @@
 package studyon.app.layer.domain.editor.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import studyon.app.common.enums.Action;
+import studyon.app.common.enums.Entity;
 
 /**
  * 에디터 관련 핵심 비즈니스 로직을 제공하는 클래스
@@ -10,9 +10,8 @@ import studyon.app.common.enums.Action;
  */
 public interface EditorService {
 
-    void uploadEditorImage(String sessionId, String editorContent, MultipartFile uploadImageFile);
+    void recordEditorCache(String id);
 
-    void updateContent(String sessionId, String editorContent);
+    String uploadEditorImage(String id, Entity entity, MultipartFile uploadImageFile);
 
-    void removeOrphanImage(String sessionId);
 }
