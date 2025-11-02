@@ -13,7 +13,7 @@
         <div class="teacher-photo">
             <div class="photo-wrapper" id="photo-wrapper">
                 <img id="teacher-img"
-                     src="<c:url value='/img/png/teacher-profile-img.png'/>"
+                     src="<c:url value='/img/png/default_image.png'/>"
                      alt="강사 이미지" class="teacher-img">
                 <div class="photo-overlay">
                     <span class="overlay-text">사진 변경</span>
@@ -110,51 +110,50 @@
         form.append("profileImage", file);
 
         try {
+            console.log("📤 프로필 이미지 업로드 시작");
+
             const res = await fetch("/api/members/profile_image", {
                 method: "PATCH",
                 body: form
             });
 
+            console.log("응답 상태:", res.status);
+
             const rp = await res.json();
             console.log("서버 응답:", rp);
 
-            // 요청 실패 처리
             if (!res.ok || !rp.success) {
-
-                // 로그인이 필요한 경우
                 if (rp.statusCode === 401) {
-
-                    // 로그인 필요 안내 전달
-                    if (confirm(rp.message || "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+                    if (confirm(rp.message || "로그인이 필요합니다.")) {
                         window.location.href = rp.redirect || "/login";
                     }
-
-                    // 로직 중단
                     return;
                 }
 
-                // 권한이 부족한 경우
                 if (rp.statusCode === 403) {
                     alert(rp.message || "접근 권한이 없습니다.");
                     return;
                 }
 
-                // 기타 예기치 않은 오류가 발생한 경우
-                alert(rp.message || "서버 오류가 발생했습니다. 잠시 후에 시도해 주세요.");
+                alert(rp.message || "서버 오류가 발생했습니다.");
                 return;
             }
 
-            // 성공 시 미리보기 업데이트
-            const imgElem = document.querySelector("#teacher-img");
-            const profileElem = document.querySelector(".profile-img");
-            imgElem.src = profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_image.png'/>";
-            profileElem.src = profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_image.png'/>";
-            alert("✅ 프로필 이미지가 변경되었습니다.");
+            // ✅ 성공 시 모든 프로필 이미지 업데이트
+            const blobUrl = URL.createObjectURL(file);
 
+            // 현재 페이지의 이미지
+            const imgElem = document.querySelector("#teacher-img");
+            if (imgElem) imgElem.src = blobUrl;
+
+            // 헤더의 프로필 이미지 (있다면)
+            const profileElem = document.querySelector(".profile-img");
+            if (profileElem) profileElem.src = blobUrl;
+
+            alert("프로필 이미지가 변경되었습니다.");
 
         } catch (err) {
             console.error("프로필 업로드 실패:", err);
-            alert("❌ 업로드 중 오류가 발생했습니다.");
         }
     }
 </script>
