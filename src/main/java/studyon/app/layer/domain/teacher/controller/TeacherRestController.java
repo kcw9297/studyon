@@ -195,8 +195,7 @@ public class TeacherRestController {
         Long teacherId = profile.getTeacherId();
 
         lectureService.editThumbnail(lectureId, teacherId, file);
-
-        return RestUtils.ok("썸네일이 등록되었습니다.");
+        return RestUtils.ok();
     }
 
     @GetMapping("/management/lecture/{lectureId}/thumbnail/view")
