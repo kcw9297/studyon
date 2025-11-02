@@ -27,7 +27,7 @@ import java.util.Date;
 public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
 
     //private static final String COOKIE_HEADER =
-    //        "%s=%s; Path=/; Domain=.studyon.o-r.kr; Secure; HttpOnly; SameSite=Lax; Max-Age=%s";
+    //        "%s=%s; Path=/; Domain=.studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
 
     private static final String COOKIE_HEADER =
             "%s=%s; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=%s";
