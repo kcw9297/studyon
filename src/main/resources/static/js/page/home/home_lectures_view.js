@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const detailUrl = `/lecture/detail/${recentLecture.lectureId}`;
             const fileDomain = "http://localhost:8080/upload";
             const thumbnailSrc = recentLecture.thumbnailImagePath
-                ? `${fileDomain}/${recentLecture.thumbnailImagePath}`
+                ? "${fileDomain}/${recentLecture.thumbnailImagePath}"
                 : "/img/png/default_image.png";
 
 

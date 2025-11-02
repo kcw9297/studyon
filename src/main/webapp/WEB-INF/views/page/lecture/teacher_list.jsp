@@ -155,7 +155,7 @@
 
             teachers.forEach((teacher) => {
                 const thumbnailSrc = teacher.thumbnailPath
-                    ? `${fileDomain}/\${teacher.thumbnailPath}` // DB의 file_path 그대로 붙임
+                    ? "${fileDomain}/\${teacher.thumbnailPath}" // DB의 file_path 그대로 붙임
                     : "/img/png/default_image.png";
                 console.log(teacher.thumbnailPath);
 

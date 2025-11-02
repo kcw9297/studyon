@@ -647,7 +647,7 @@
             item.className = 'search-lecture-item';
 
             const thumbnailSrc = lecture.thumbnailImagePath
-                ? `${fileDomain}/\${lecture.thumbnailImagePath}`
+                ? "${fileDomain}/\${lecture.thumbnailImagePath}"
                 : `<c:url value='/img/png/default_image.png'/>`;
 
             item.innerHTML = `
