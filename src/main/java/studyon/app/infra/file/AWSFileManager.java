@@ -40,8 +40,8 @@ public class AWSFileManager implements FileManager {
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
-    @Value("${aws.cloudfront.domain}")
-    private String cloudFrontDomain;
+    @Value("${file.domain}")
+    private String fileDomain;
 
 
     @Override
@@ -63,7 +63,7 @@ public class AWSFileManager implements FileManager {
 
             // [3] S3 업로드 후 저장 경로 반환
             s3.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-            return "%s/%s".formatted(cloudFrontDomain, key);
+            return "%s/%s".formatted(fileDomain, key);
 
         } catch (Exception e) {
             log.error(StrUtils.createLogStr(this.getClass(), "AWS S3 파일 업로드에 실패! 원인 : %s".formatted(e.getMessage())));
