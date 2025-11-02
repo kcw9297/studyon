@@ -24,7 +24,7 @@ aws:
     key-pair-id: ${AWS_CLOUDFRONT_KEY_PAIR_ID:}
     private-key: ${AWS_CLOUDFRONT_PRIVATE_KEY:}
     signed-cookie:
-      expire-min: 60
+      expire-min: 1
   s3:
     bucket-name: ${AWS_S3_BUCKET_NAME:}
 
