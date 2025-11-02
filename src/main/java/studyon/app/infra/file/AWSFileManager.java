@@ -51,7 +51,7 @@ public class AWSFileManager implements FileManager {
 
             // [1] 저장 경로 생성
             String key = // 저장 경로 (key : 저장 경로 + 파일명)
-                    "%s/%s".formatted(entityName, entityName);
+                    "%s/%s".formatted(entityName, storeName);
 
             // [2] S3 업로드 요청 객체 생성
             PutObjectRequest request = PutObjectRequest.builder()
