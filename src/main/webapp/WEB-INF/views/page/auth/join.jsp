@@ -172,11 +172,11 @@
 
             if (!email) {
                 inputEmailError.textContent = "30자 이내 이메일 형식 입력";
-                inputEmailError.className = "asynchronous-message";
+                inputEmailError.className = "asynchronous-message-wrong";
 
             } else if (!pattern.test(email)) {
                 inputEmailError.textContent = "30자 이내 이메일 형식을 입력해야 합니다.";
-                inputEmailError.className = "text-error";
+                inputEmailError.className = "asynchronous-message-wrong";
 
             } else {
                 inputEmailError.textContent = "사용 가능한 이메일 입니다.";
@@ -195,15 +195,15 @@
 
             if (!password) {
                 inputPasswordError.textContent = "8-20자 사이 공백제외 영문/숫자/특수문자 입력";
-                inputPasswordError.className = "asynchronous-message";
+                inputPasswordError.className = "asynchronous-message-wrong";
 
             } else if (!pattern.test(password)) {
                 inputPasswordError.textContent = "공백제외 영문/숫자/특수문자를 8~20자 사이로 입력해야 합니다.";
-                inputPasswordError.className = "text-error";
+                inputPasswordError.className = "asynchronous-message-wrong";
 
                 if (password !== passwordConfirm) {
                     inputPasswordConfirmError.textContent = "비밀번호와 비밀번호 확인이 일치하지 않습니다.";
-                    inputPasswordConfirmError.className = "text-error";
+                    inputPasswordConfirmError.className = "asynchronous-message-wrong";
                 } else {
                     inputPasswordConfirmError.textContent = "비밀번호 입력과 일치합니다.";
                     inputPasswordConfirmError.className = "asynchronous-message-right";
@@ -215,7 +215,7 @@
 
                 if (password !== passwordConfirm) {
                     inputPasswordConfirmError.textContent = "비밀번호와 비밀번호 확인이 일치하지 않습니다.";
-                    inputPasswordConfirmError.className = "text-error";
+                    inputPasswordConfirmError.className = "asynchronous-message-wrong";
                 } else {
                     inputPasswordConfirmError.textContent = "비밀번호 입력과 일치합니다.";
                     inputPasswordConfirmError.className = "asynchronous-message-right";
@@ -237,7 +237,7 @@
 
             } else if (password !== passwordConfirm) {
                 inputPasswordConfirmError.textContent = "비밀번호와 비밀번호 확인이 일치하지 않습니다.";
-                inputPasswordConfirmError.className = "text-error";
+                inputPasswordConfirmError.className = "asynchronous-message-wrong";
 
             } else {
                 inputPasswordConfirmError.textContent = "비밀번호 입력과 일치합니다.";
