@@ -112,7 +112,7 @@
 
                     const img = document.createElement("img");
 
-                    img.src = "${fileDomain}/" + lecture.thumbnailImagePath;
+                    img.src = lecture.thumbnailImagePath ? "${fileDomain}/" + lecture.thumbnailImagePath : "<c:url value='/img/png/default_image.png'/>";
                     img.classList.add("lecture-thumbnail");
 
 

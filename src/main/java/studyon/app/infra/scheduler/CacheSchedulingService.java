@@ -33,7 +33,7 @@ public class CacheSchedulingService {
                 editorCacheManager.getAndRemoveAllOrphanCache(EditorCache.class);
 
         // 로깅
-        log.warn("Removing orphan caches: {}", orphans);
+        //log.warn("Removing orphan caches: {}", orphans);
 
         // [2] 내부의 업로드했던 파일 모두 삭제
         orphans.stream()

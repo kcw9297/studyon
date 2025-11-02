@@ -130,23 +130,18 @@
                     method: "PATCH",
                     body: form
                 });
-                const json = await res.json();
-                if (json.status === "OK") {
+                const rp = await res.json();
+                console.log("서버 응답:", rp);
+
+                if (res.ok && rp.success) {
                     thumbImg.innerHTML = `
                         <img src="\${URL.createObjectURL(file)}"
                          alt="강의 썸네일"
                          style="width:100%; height:100%; border-radius:10px; object-fit:cover;">
                     `;
-
-
-                    thumbImg.src = URL.createObjectURL(file);
                 } else {
-                    alert(json.message || "업로드 실패");
+                    alert(rp.message || "업로드 실패");
                 }
-                //thumbBox.innerHTML =
-                //    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
-                //    ' alt="강의 썸네일"' +
-                //    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
 
 
             } catch (err) {
@@ -190,7 +185,7 @@
                 saleLabel.style.backgroundColor = "#4CAF50"; // 초록색
                 saleLabel.style.color = "#fff";
             } else {
-                saleLabel.textContent = "미판매중";
+                saleLabel.textContent = "미판매";
                 saleLabel.style.backgroundColor = "#9E9E9E"; // 회색
                 saleLabel.style.color = "#fff";
             }
@@ -217,7 +212,11 @@
             // 썸네일 이미지
             const imageElement = document.getElementById("lecture-thumbnail");
             if (lecture.thumbnailImagePath)
-                imageElement.innerHTML = `<img src="${fileDomain}/\${lecture.thumbnailImagePath}" alt="강의 썸네일" style="width:100%; height:100%; border-radius:10px; object-fit:cover;">`;
+                imageElement.innerHTML = `
+                    <img src="${fileDomain}/\${lecture.thumbnailImagePath}"
+                         alt="강의 썸네일"
+                         style="width:100%; height:100%; border-radius:10px; object-fit:cover;">
+                    `;
             else imageElement.textContent = "썸네일을 등록해주세요 📷";
 
             // 강의 목차 불러오기
@@ -384,82 +383,87 @@
             }
 
             /* [3] 순서 저장 버튼 */
-            const saveOrderBtn = document.createElement("button");
-            saveOrderBtn.textContent = "목차 순서 저장";
-            saveOrderBtn.classList.add("list-change-btn");
-            document.querySelector(".view-content").appendChild(saveOrderBtn);
+            if (lecture.lectureRegisterStatus === "UNREGISTERED") {
 
-            saveOrderBtn.addEventListener("click", async function() {
-                const reordered = Array.from(listBox.querySelectorAll(".lecture-item")).map((item, i) => ({
-                    lectureIndexId: Number(item.dataset.id),
-                    indexNumber: Number(i + 1),
-                    indexTitle: item.querySelector(".lecture-title").innerText
-                }));
+                const saveOrderBtn = document.createElement("button");
+                saveOrderBtn.textContent = "목차 순서 저장";
+                saveOrderBtn.classList.add("list-change-btn");
+                document.querySelector(".view-content").appendChild(saveOrderBtn);
 
-                try {
-                    const res = await fetch("/api/teachers/management/lectureindex/" + lectureId, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(reordered)
-                    });
-                    const json = await res.json();
-                    if (json.success) {
-                        location.reload();
-                    } else {
-                        alert(json.message || "저장 실패");
+                saveOrderBtn.addEventListener("click", async function() {
+                    const reordered = Array.from(listBox.querySelectorAll(".lecture-item")).map((item, i) => ({
+                        lectureIndexId: Number(item.dataset.id),
+                        indexNumber: Number(i + 1),
+                        indexTitle: item.querySelector(".lecture-title").innerText
+                    }));
+
+                    try {
+                        const res = await fetch("/api/teachers/management/lectureindex/" + lectureId, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(reordered)
+                        });
+                        const json = await res.json();
+                        if (json.success) {
+                            location.reload();
+                        } else {
+                            alert(json.message || "저장 실패");
+                        }
+                    } catch (err) {
+                        console.error("🚨 순서 저장 실패:", err);
                     }
-                } catch (err) {
-                    console.error("🚨 순서 저장 실패:", err);
-                }
-            });
+                });
 
-            // 수정 버튼 렌더링
-            if (lecture.lectureRegisterStatus === "UNREGISTERED" || lecture.lectureRegisterStatus === "REJECTED") addEditButtons();
+                // 수정 버튼 렌더링
+                addEditButtons();
+
+
+                /* [4] 새 목차 추가 버튼 */
+                const addBtn = document.createElement("button");
+                addBtn.textContent = "새 목차 추가";
+                addBtn.classList.add("list-change-btn");
+                document.querySelector(".view-content").appendChild(addBtn);
+
+                addBtn.addEventListener("click", async () => {
+                    const title = prompt("새 목차 제목을 입력하세요:");
+                    if (!title) return;
+
+                    // 현재 마지막 번호 계산
+                    const items = listBox.querySelectorAll(".lecture-item");
+                    const newIndexNumber = items.length + 1;
+
+                    try {
+                        const res = await fetch("/api/teachers/management/lectureindex/" + lectureId, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                indexTitle: title,
+                                indexNumber: newIndexNumber
+                            })
+                        });
+
+                        const json = await res.json();
+                        if (json.status === "OK") {
+                            alert("새 목차가 추가되었습니다!");
+                            location.reload(); // 새로고침으로 반영
+                        } else {
+                            alert(json.message || "추가 실패");
+                        }
+                    } catch (err) {
+                        console.error(" 목차 추가 실패:", err);
+                    }
+                    location.reload();
+                });
+
+            }
 
         } catch (err) {
             console.error("🚨 강의정보/목차 로드 실패:", err);
         }
 
 
-        /* [4] 새 목차 추가 버튼 */
-        const addBtn = document.createElement("button");
-        addBtn.textContent = "새 목차 추가";
-        addBtn.classList.add("list-change-btn");
-        document.querySelector(".view-content").appendChild(addBtn);
-
-        addBtn.addEventListener("click", async () => {
-            const title = prompt("새 목차 제목을 입력하세요:");
-            if (!title) return;
-
-            // 현재 마지막 번호 계산
-            const items = listBox.querySelectorAll(".lecture-item");
-            const newIndexNumber = items.length + 1;
-
-            try {
-                const res = await fetch("/api/teachers/management/lectureindex/" + lectureId, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        indexTitle: title,
-                        indexNumber: newIndexNumber
-                    })
-                });
-
-                const json = await res.json();
-                if (json.status === "OK") {
-                    alert("새 목차가 추가되었습니다!");
-                    location.reload(); // 새로고침으로 반영
-                } else {
-                    alert(json.message || "추가 실패");
-                }
-            } catch (err) {
-                console.error(" 목차 추가 실패:", err);
-            }
-            location.reload();
-        });
 
         //강의 승인 요청 버튼 로직
-
         const registerBtn = document.querySelector(".lecture-register-button");
 
         registerBtn.addEventListener("click", async () => {

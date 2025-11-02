@@ -21,15 +21,10 @@
             <div class="search-box" id="lecture-search-box">
                 <form id="lecture-search-form" method="get">
 
-
                     <div class="filter-row">
                         <label class="search-title" style="background-color:lightgreen">검색어</label>
                         <input type="text" name="keyword" placeholder="검색어를 입력하세요" value="${param.keyword}">
                     </div>
-
-
-
-
 
 
                     <!-- 검색 구분 -->
@@ -43,9 +38,6 @@
                                 </option>
                             </c:forEach>
                         </select>
-
-                        <label>검색어</label>
-                        <input type="text" name="keyword" placeholder="검색어를 입력하세요" value="${param.keyword}">
                     </div>
 
                     <!-- 카테고리 -->
@@ -121,6 +113,7 @@
                     <!-- 검색 버튼 -->
                     <div class="filter-row" style="text-align:right;">
                         <button type="submit" id="search-btn" class="search-btn">검색</button>
+                        <button type="button" id="reset-btn" class="search-btn" style="background-color:#6c757d;">초기화</button>
                     </div>
                 </form>
             </div>
@@ -593,6 +586,20 @@
             currentPage = 1;
             isLastPage = false;
             window.location.href = window.location.pathname + "?" + queryString;
+        });
+
+        // 초기화 버튼 클릭
+        document.getElementById("reset-btn").addEventListener("click", () => {
+            const form = document.getElementById('lecture-search-form');
+
+            // 텍스트 입력값 초기화
+            form.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => input.value = '');
+
+            // 체크박스 / 라디오 해제
+            form.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => input.checked = false);
+
+            // 셀렉트 초기화
+            form.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
         });
 
 
