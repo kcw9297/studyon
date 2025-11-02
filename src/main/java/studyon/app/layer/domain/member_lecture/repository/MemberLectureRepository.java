@@ -13,11 +13,19 @@ import java.util.Optional;
 public interface MemberLectureRepository extends JpaRepository<MemberLecture, Long> {
     List<MemberLecture> findByMember_MemberId(Long memberId);
 
+
+    @Query("""
+        SELECT ml
+        FROM MemberLecture ml
+        WHERE ml.member.memberId = :memberId AND ml.lecture.lectureId = :lectureId
+    """)
+    Optional<MemberLecture> findByMemberIdAndLectureId(Long memberId, Long lectureId);
+
     @Query("""
         SELECT ml
         FROM MemberLecture ml
         LEFT JOIN FETCH ml.lecture
-        WHERE ml.member.memberId = :memberId AND ml.lecture.teacher.teacherId = :lectureId
+        WHERE ml.member.memberId = :memberId AND ml.lecture.lectureId = :lectureId
     """)
     Optional<MemberLecture> findWithLectureByMemberIdAndLectureId(Long memberId, Long lectureId);
     List<MemberLecture> findByMember_MemberIdAndLecture_Subject(Long memberId, Subject subject);

@@ -251,8 +251,14 @@ public class PaymentServiceImpl implements PaymentService {
 
         // [1] 결제 정보 조회
         Payment payment = paymentRepository
-                .findById(paymentId)
+                .findFetchByMemberId(paymentId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.PAYMENT_NOT_FOUND));
+
+        // 결제강의 조회
+        MemberLecture memberLecture = memberLectureRepository.findByMemberIdAndLectureId(
+                payment.getMember().getMemberId(),
+                payment.getLecture().getLectureId()
+        ).orElseThrow(() -> new BusinessLogicException(AppStatus.MEMBER_LECTURE_NOT_FOUND));
 
         // [2] 환불 검증
         if (payment.getIsRefunded()) // 이미 환불된 경우
@@ -263,6 +269,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BusinessLogicException(AppStatus.PAYMENT_REFUND_NOT_AVAILABLE);
 
         payment.refund();
+        memberLectureRepository.delete(memberLecture);
 
         // [3] 환불 수행
         paymentManager.refundAll(payment.getPaymentUid(), refundReason);

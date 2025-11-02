@@ -233,6 +233,7 @@
                     : "/img/png/default_image.png";
 
                 item.classList.add("recent-lecture-item");
+                const formattedRate = bestLecture.averageRate?.toFixed(1) ?? "0.0";
                 item.innerHTML = `
             <a href="\${detailUrl}">
                 <img src="\${thumbnailSrc}" alt="강의이미지" class="recent-lecture-thumbnail"
@@ -242,8 +243,8 @@
                     <p class="lecture-info-text">\${bestLecture.teacherNickname}</p>
                     <p class="lecture-info-text">₩\${Number(bestLecture.price).toLocaleString()}</p>
                     <p class="lecture-info-text">
-                         <!--⭐\${bestLecture.averageRate}-->
-                         🧸 \${bestLecture.totalStudents >= 10 ? "10+" : bestLecture.totalStudents}
+                         ⭐\${formattedRate}
+                         🧸\${bestLecture.totalStudents >= 10 ? "10+" : bestLecture.totalStudents}
                     </p>
                 </div>
             </a>
@@ -281,6 +282,8 @@
 
 
                 item.classList.add("recent-lecture-item");
+                const formattedRate = recentLecture.averageRate?.toFixed(1) ?? "0.0";
+
                 item.innerHTML = `
                 <a href="\${detailUrl}">
                     <img src="\${thumbnailSrc}" alt="강의이미지" class="recent-lecture-thumbnail">
@@ -289,7 +292,7 @@
                             <p class="lecture-info-text">\${recentLecture.teacherNickname}</p>
                             <p class="lecture-info-text">₩\${Number(recentLecture.price).toLocaleString()}</p>
                             <p class="lecture-info-text">
-                                 ⭐\${recentLecture.averageRate}
+                                 ⭐\${formattedRate}
                                  🧸\${recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents}
                             </p>
                         </div>
