@@ -12,7 +12,6 @@ import studyon.app.layer.base.entity.BaseEntity;
 import studyon.app.layer.domain.file.File;
 import studyon.app.layer.domain.teacher.Teacher;
 
-import java.lang.annotation.Target;
 import java.time.LocalDateTime;
 
 /*
@@ -181,8 +180,8 @@ public class Lecture extends BaseEntity {
         this.videoCount = videoCount;
     }
 
-    public void increaseTotalStudents(){
-        this.totalStudents += this.totalStudents;
+    public void pay(){
+        this.totalStudents += 1;
     }
     public void setTotalDuration(Long totalDuration) {
         this.totalDuration = totalDuration;

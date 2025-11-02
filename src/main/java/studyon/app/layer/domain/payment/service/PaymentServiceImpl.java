@@ -206,7 +206,7 @@ public class PaymentServiceImpl implements PaymentService {
             memberLectureRepository.save(new MemberLecture(member, lecture));
 
             // KHS 수정 LECUTRE 구매시 TOTAL STUDENT +1
-            lecture.increaseTotalStudents();
+            lecture.pay();
 
             // [4] 로그 기록을 위한 정보 저장 후 반환
             return DTOMapper.toReadDTO(savedPayment);
