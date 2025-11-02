@@ -239,18 +239,33 @@
                     const videoFileName = item.videoFileName || "강의 영상이 없습니다";
 
 
-                    div.innerHTML =
-                        '<div class="lecture-index">' + (item.indexNumber || (idx + 1)) + '강</div>' +
-                        '<div class="lecture-info">' +
-                        '<div class="lecture-title">' + item.indexTitle + '</div>' +
-                        '</div>' +
-                        '<div class="lecture-video-title">' + videoFileName + '</div>' +
-                        '<div class="lecture-actions">' +
-                        '   <button class="upload-btn">📹 업로드</button>' +
-                        '   <button class="delete-btn">✕</button>' +
-                        '</div>' +
-                        // 영상 리스트 컨테이너 추가
-                        '<div id="video-list-' + item.lectureIndexId + '" class="video-list-container"></div>';
+                    if (lecture.lectureRegisterStatus === "UNREGISTERED") {
+                        div.innerHTML =
+                            '<div class="lecture-index">' + (item.indexNumber || (idx + 1)) + '강</div>' +
+                            '<div class="lecture-info">' +
+                            '<div class="lecture-title">' + item.indexTitle + '</div>' +
+                            '</div>' +
+                            '<div class="lecture-video-title">' + videoFileName + '</div>' +
+                            '<div class="lecture-actions">' +
+                            '   <button class="upload-btn">📹 업로드</button>' +
+                            '   <button class="delete-btn">✕</button>' +
+                            '</div>' +
+                            // 영상 리스트 컨테이너 추가
+                            '<div id="video-list-' + item.lectureIndexId + '" class="video-list-container"></div>';
+                    } else {
+                        div.innerHTML =
+                            '<div class="lecture-index">' + (item.indexNumber || (idx + 1)) + '강</div>' +
+                            '<div class="lecture-info">' +
+                            '<div class="lecture-title">' + item.indexTitle + '</div>' +
+                            '</div>' +
+                            '<div class="lecture-video-title">' + videoFileName + '</div>' +
+                            '<div class="lecture-actions">' +
+                            '</div>' +
+                            // 영상 리스트 컨테이너 추가
+                            '<div id="video-list-' + item.lectureIndexId + '" class="video-list-container"></div>';
+
+                    }
+
 
                     listBox.appendChild(div);
                 });

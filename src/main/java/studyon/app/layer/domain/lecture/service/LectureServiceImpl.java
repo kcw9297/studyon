@@ -566,18 +566,15 @@ public class LectureServiceImpl implements LectureService {
                 .collect(Collectors.toMap(
                         row -> {
                             Object statusObj = row.get("status");
-                            // 이름 검증 로직
+                            if (statusObj == null) return "알 수 없음";
+
+                            // DB 값이 enum.name() 인 경우
                             if (statusObj instanceof LectureRegisterStatus s) {
                                 return s.getValue();
-                            } else {
-                                try {
-                                    return LectureRegisterStatus.valueOf(statusObj.toString()).getValue();
-                                } catch (Exception e) {
-                                    return null;
-                                }
                             }
+                            return "알 수 없음";
                         },
-                        row -> (Long) row.get("cnt")
+                        row -> ((Number) row.get("cnt")).longValue()
                 ));
     }
 
