@@ -244,7 +244,7 @@
             return modal.querySelector('.modal-input').value;
         }
     }
-    "₩" + lecture.price.toLocaleString();
+
     // 수정된 값 반영
     function editValue(fieldInfo, value) {
         if (fieldInfo.type === 'editor') {
