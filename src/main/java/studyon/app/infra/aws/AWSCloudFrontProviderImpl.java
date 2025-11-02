@@ -26,14 +26,14 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
 
-    //private static final String COOKIE_HEADER =
-    //        "%s=%s; Path=/; Domain=.studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
-
     private static final String COOKIE_HEADER =
-            "%s=%s; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=%s";
+            "%s=%s; Path=/; Domain=.%s; Secure; HttpOnly; SameSite=None; Max-Age=%s";
 
     @Value("${aws.cloudfront.signed-cookie.expire-min}")
     private Integer expireMin;
+
+    @Value("${app.domain}")
+    private String appDomain;
 
     @Value("${aws.cloudfront.domain}")
     private String cloudFrontDomain;
@@ -112,7 +112,7 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
 
     // 쿠키 헤더 삽입
     private void addHeader(HttpServletResponse response, String key, String value) {
-        response.addHeader("Set-Cookie", COOKIE_HEADER.formatted(key, value, 60 * expireMin));
+        response.addHeader("Set-Cookie", COOKIE_HEADER.formatted(key, value, appDomain, 60 * expireMin));
     }
 }
 
