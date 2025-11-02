@@ -125,8 +125,9 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
      */
     @Query("""
         SELECT l FROM Lecture l
-        JOIN FETCH l.teacher t
-        JOIN FETCH t.member m
+        LEFT JOIN FETCH l.teacher t
+        LEFT JOIN FETCH t.member m
+        LEFT JOIN FETCH l.thumbnailFile
         WHERE l.subject = :subject
             AND l.lectureRegisterStatus = :status
         ORDER BY l.publishDate DESC

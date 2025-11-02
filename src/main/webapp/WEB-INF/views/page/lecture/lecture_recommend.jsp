@@ -99,12 +99,7 @@
             lectures.forEach(function(bestLecture) {
                 const item = document.createElement("div");
                 const detailUrl = "/lecture/detail/" + bestLecture.lectureId;
-
-                const fileDomain = "http://localhost:8080/upload";
-                const thumbnailSrc = bestLecture.thumbnailImagePath
-                    ? fileDomain + "/" + bestLecture.thumbnailImagePath
-                    : "/img/png/default_image.png";
-
+                const thumbnailSrc = bestLecture.thumbnailImagePath ? "${fileDomain}/\${bestLecture.thumbnailImagePath}" : "/img/png/default_image.png";
                 item.classList.add("recent-lecture-item");
                 item.innerHTML =
                     "<a href='" + detailUrl + "'>" +
@@ -174,11 +169,7 @@
             lectures.forEach(function(recentLecture) {
                 const item = document.createElement("div");
                 const detailUrl = "/lecture/detail/" + recentLecture.lectureId;
-                const fileDomain = "http://localhost:8080/upload";
-                const thumbnailSrc = recentLecture.thumbnailImagePath
-                    ? fileDomain + "/" + recentLecture.thumbnailImagePath
-                    : "/img/png/default_image.png";
-
+                const thumbnailSrc = recentLecture.thumbnailImagePath ? "${fileDomain}/\${recentLecture.thumbnailImagePath}" : "/img/png/default_image.png";
                 item.classList.add("recent-lecture-item");
 
 

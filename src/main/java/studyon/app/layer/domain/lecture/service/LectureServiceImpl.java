@@ -96,21 +96,10 @@ public class LectureServiceImpl implements LectureService {
     public List<LectureDTO.Read> readRecentLectures(Subject subject, int count) {
         // [1] 리스팅 카운트용 변수
         Pageable pageable = PageRequest.of(0, count);
-        // [2] 과목 기반으로 최근 강의 정렬
-        String fileDomain = "http://localhost:8080/upload";
 
         return lectureRepository.findRecentLecturesBySubject(subject, LectureRegisterStatus.REGISTERED, pageable)
                 .stream()
                 .map(DTOMapper::toReadDTO) // 엔티티 → DTO
-                //KHS97 썸네일 추가
-                .peek(dto -> {
-                    lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
-                            .ifPresentOrElse(path ->
-                                            dto.setThumbnailImagePath(fileDomain + "/" + path),
-                                    () -> dto.setThumbnailImagePath("/img/png/default_image.png")
-                            );
-                })
-
                 .collect(Collectors.toList());
     }
 

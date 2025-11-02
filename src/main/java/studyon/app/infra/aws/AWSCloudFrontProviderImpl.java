@@ -1,6 +1,7 @@
 package studyon.app.infra.aws;
 
 import com.amazonaws.services.cloudfront.CloudFrontCookieSigner;
+import com.amazonaws.services.cloudfront.CloudFrontUrlSigner;
 import com.amazonaws.services.cloudfront.util.SignerUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,11 +30,17 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
     private static final String COOKIE_HEADER =
             "%s=%s; Path=/; Domain=.%s; Secure; HttpOnly; SameSite=None; Max-Age=%s";
 
-    @Value("${aws.cloudfront.signed-cookie.expire-min}")
-    private Integer expireMin;
+    @Value("${aws.cloudfront.signed-cookie.expire-sec}")
+    private Integer expireCookieSec;
+
+    @Value("${aws.cloudfront.signed-url.expire-sec}")
+    private Integer expireUrlSec;
 
     @Value("${app.domain}")
     private String appDomain;
+
+    @Value("${file.domain}")
+    private String fileDomain;
 
     @Value("${aws.cloudfront.domain}")
     private String cloudFrontDomain;
@@ -76,7 +83,7 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
     public void setSignedCookies(HttpServletResponse response) {
 
         // 유효 시간 설정
-        Date expires = new Date(System.currentTimeMillis() + 1000L * 60 * expireMin);
+        Date expires = new Date(System.currentTimeMillis() + expireCookieSec * 1000L);
 
         // CloudFront Signed Cookie 생성
         CloudFrontCookieSigner.CookiesForCustomPolicy cookies = getSignedCookies(expires);
@@ -112,7 +119,27 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
 
     // 쿠키 헤더 삽입
     private void addHeader(HttpServletResponse response, String key, String value) {
-        response.addHeader("Set-Cookie", COOKIE_HEADER.formatted(key, value, appDomain, 60 * expireMin));
+        response.addHeader("Set-Cookie", COOKIE_HEADER.formatted(key, value, appDomain, 60 * expireCookieSec));
+    }
+
+
+    @Override
+    public String createSignedUrl(String fileUrl) {
+
+        // 만료 시각 계산
+        Date expires = new Date(System.currentTimeMillis() + expireUrlSec * 1000L);
+        String fullUrl = "%s/%s".formatted(fileDomain, fileUrl);
+
+        // 서명된 URL 생성
+        String signedUrl = CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
+                fullUrl,
+                cloudFrontKeyPairId,
+                privateKey,
+                expires
+        );
+
+        log.debug("SignedURL 생성 완료: {}", signedUrl);
+        return signedUrl;
     }
 }
 

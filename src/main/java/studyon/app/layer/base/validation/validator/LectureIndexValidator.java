@@ -19,7 +19,7 @@ public class LectureIndexValidator implements ConstraintValidator<LectureIndex, 
     public boolean isValid(Collection<String> value, ConstraintValidatorContext context) {
 
         // [1] 목차 제목 패턴 (마침표, 언더바, 하이픈, 느낌표, 물음표, 괄호 허용)
-        String pattern = "^[가-힣a-zA-Z0-9\\s,._\\-!?()\\[\\]{}]{5,20}$";
+        String pattern = "^[가-힣a-zA-Z0-9\\s,._\\-!?()\\[\\]{}]{4,40}$";
 
         // [2] 기본 메세지 비활성화
         context.disableDefaultConstraintViolation();

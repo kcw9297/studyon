@@ -8,12 +8,22 @@ import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member_lecture.MemberLecture;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberLectureRepository extends JpaRepository<MemberLecture, Long> {
     List<MemberLecture> findByMember_MemberId(Long memberId);
+
+    @Query("""
+        SELECT ml
+        FROM MemberLecture ml
+        LEFT JOIN FETCH ml.lecture
+        WHERE ml.member.memberId = :memberId AND ml.lecture.teacher.teacherId = :lectureId
+    """)
+    Optional<MemberLecture> findWithLectureByMemberIdAndLectureId(Long memberId, Long lectureId);
     List<MemberLecture> findByMember_MemberIdAndLecture_Subject(Long memberId, Subject subject);
     boolean existsByMemberAndLecture(Member member, Lecture lecture);
     boolean existsByMember_MemberIdAndLecture_LectureId(Long memberId, Long lectureId);
+
     //TeacherId를 통해서 총 수강생 수를 구함
     @Query("""
         SELECT COUNT(DISTINCT ml.member.memberId)
@@ -22,4 +32,7 @@ public interface MemberLectureRepository extends JpaRepository<MemberLecture, Lo
         WHERE l.teacher.teacherId = :teacherId
     """)
     Long countDistinctStudentsByTeacherId(Long teacherId);
+
+
+
 }

@@ -490,7 +490,7 @@
             // ✅ 3. 첫 번째 영상 자동 재생
             const firstVideo = indexList.find(v => v.videoFilePath);
             if (firstVideo) {
-                source.src = "/upload/" + firstVideo.videoFilePath; // 경로 주의!
+                source.src = firstVideo.videoFilePath; // 경로 주의!
                 video.load();
                 video.play(); // 자동 재생
                 console.log("🎬 첫 영상 자동 재생:", firstVideo.videoFileName);
@@ -515,7 +515,7 @@
                     currentIndexId = item.lectureIndexId;
                     console.log("현재 선택된 인덱스 넘버 : " + currentIndexId);
 
-                    source.src = "/upload/" + item.videoFilePath;
+                    source.src = item.videoFilePath;
                     video.load();
                     video.play();
                     console.log("🎬 영상 변경:", item.videoFileName);
