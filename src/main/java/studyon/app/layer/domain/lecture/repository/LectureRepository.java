@@ -270,7 +270,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     List<Map<String, Object>> findLectureCountByTarget();
 
     /*
-    * LECTURE THUMBNAIL FATH 조회
+    * LECTURE THUMBNAIL PATH 조회
     * */
     @Query("SELECT f.filePath " +
             "FROM Lecture l " +

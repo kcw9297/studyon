@@ -97,6 +97,10 @@
         font-size: 24px;
         font-weight: bold;
     }
+    .lecture-title{
+        font-size:20px;
+        font-weight: bold;
+    }
 
     .teacher-list-title{
         font-size:30px;
