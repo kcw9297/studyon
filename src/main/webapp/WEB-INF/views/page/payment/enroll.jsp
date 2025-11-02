@@ -326,12 +326,12 @@
                 elem.textContent = "";
             });
           
-            //doPayment({
-            //    "buyerName" : buyerName,
-            //    "buyerPhoneNumber" : buyerPhoneNumber
-            //});
+            doPayment({
+                "buyerName" : buyerName,
+                "buyerPhoneNumber" : buyerPhoneNumber
+            });
 
-            await execute({});
+            //await execute({});
 
 
         } catch (error) {
@@ -349,7 +349,7 @@
         const pg = 'html5_inicis.INIpayTest';//"tosspayments"; // PgProvider
         const pay_method = 'card'; // 결제수단
         const impMerchantUid = 'PAYMENT_' + new Date().getTime(); // 가맹점 결제번호
-        const impAmount = '100'; // 결제 금액
+        const impAmount = '100'; // 결제 금액 (테스트를 위해 100원으로)
         const impBuyerName = data.buyerName;
         const impBuyerTel = data.buyerPhoneNumber;
         const impName = "${data.lectureTitle}".length > 20 ? "${data.lectureTitle}".substring(0, 20) + " ..." : "${data.lectureTitle}";
@@ -393,12 +393,12 @@
 
             // 전송을 위한 form 데이터
             const formData = new FormData();
-            //formData.append("paymentUid", result.imp_uid);
+            formData.append("paymentUid", result.imp_uid);
             //formData.append("paidAmount", result.paid_amount);
-            //formData.append("paymentApiResult", JSON.stringify(result));
-            formData.append("paymentUid", "IMP000000");
             formData.append("paidAmount", "${data.price}");
-            formData.append("paymentApiResult", JSON.stringify(""));
+            formData.append("paymentApiResult", JSON.stringify(result));
+            //formData.append("paymentUid", "IMP000000");
+            //formData.append("paymentApiResult", JSON.stringify(""));
             formData.append("lectureId", "${data.lectureId}");
             formData.append("token", "${data.token}");
           

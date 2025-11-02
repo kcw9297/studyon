@@ -148,7 +148,7 @@ public class TeacherServiceImpl implements TeacherService {
         return lectures.stream()
                 .map(l -> {
                     String thumbnailPath = lectureRepository.findThumbnailPathByLectureId(l.getLectureId())
-                            .orElse("img/png/default_lecture_thumbnail.png");
+                            .orElse(null);
 
                     return TeacherDTO.LectureListResponse.LectureSimple.builder()
                             .lectureId(l.getLectureId())
@@ -188,18 +188,13 @@ public class TeacherServiceImpl implements TeacherService {
 
 
     public TeacherDTO.ReadDetail readTeacherDetail(Long teacherId) {
-        // 🔹 Teacher + Member + ProfileImage 조인해서 한 번에 가져오는 쿼리 (fetch join)
+
+        // Teacher + Member + ProfileImage 조인해서 한 번에 가져오는 쿼리 (fetch join)
         Teacher teacher = teacherRepository.findByIdWithMemberAndProfileImage(teacherId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
         Member member = teacher.getMember();
         Long lectureCount = lectureRepository.count(teacher.getTeacherId(), LectureRegisterStatus.REGISTERED);
-
-        // ✅ 프로필 이미지 경로 확인
-        String profilePath = null;
-        if (member.getProfileImage() != null) {
-            profilePath = member.getProfileImage().getFilePath(); // File 엔티티 필드 기준
-        }
 
         return TeacherDTO.ReadDetail.builder()
                 .teacherId(teacher.getTeacherId())
@@ -211,7 +206,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .lectureCount(lectureCount)
                 .totalStudents(teacher.getTotalStudents())
                 .averageRating(teacher.getAverageRating())
-                .profileImagePath(profilePath != null ? profilePath : "/img/png/default_image.png")
+                .profileImagePath(member.getProfileImage() == null ? null : member.getProfileImage().getFilePath())
                 .build();
     }
 
@@ -221,18 +216,11 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
 
+        // 강의 수 계산
+        Long lectureCount = lectureRepository.count(teacherId, LectureRegisterStatus.REGISTERED);
         Member member = teacher.getMember();
 
-        // ✅ 프로필 이미지 경로 처리
-        String profilePath = null;
-        if (member.getProfileImage() != null) {
-            profilePath = member.getProfileImage().getFilePath(); // File 엔티티 기준
-        }
-
-        // ✅ 강의 수 계산
-        Long lectureCount = lectureRepository.count(teacherId, LectureRegisterStatus.REGISTERED);
-
-        // ✅ DTO 빌드
+        // DTO 빌드
         return TeacherDTO.ReadDetail.builder()
                 .teacherId(teacher.getTeacherId())
                 .memberId(member.getMemberId())
@@ -243,7 +231,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .lectureCount(lectureCount)
                 .totalStudents(teacher.getTotalStudents())
                 .averageRating(teacher.getAverageRating())
-                .profileImagePath(profilePath != null ? profilePath : "/img/png/default_image.png")
+                .profileImagePath(member.getProfileImage() == null ? null : member.getProfileImage().getFilePath())
                 .build();
     }
 

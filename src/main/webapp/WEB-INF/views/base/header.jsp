@@ -8,7 +8,7 @@
     <div class="header-search">
 
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="검색어를 입력하세요"/>
+            <input type="text" id="searchInput" placeholder="검색어를 입력하세요" autocomplete="off"/>
             <button id="searchBtn"><img src="<c:url value='/img/png/search.png'/>" class="svg-search" alt="image"></button>
         </div>
         <div id="searchResults" class="search-results">
