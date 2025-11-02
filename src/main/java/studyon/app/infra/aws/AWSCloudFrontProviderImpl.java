@@ -27,7 +27,7 @@ import java.util.Date;
 public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
 
     private static final String COOKIE_HEADER =
-            "%s=%s; Path=/; Domain=.studyon.o-r.kr; Secure; HttpOnly; SameSite=None; Max-Age=%s";
+            "%s=%s; Path=/; Domain=studyon.o-r.kr; Secure; HttpOnly; SameSite=Lax; Max-Age=%s";
 
     @Value("${aws.cloudfront.signed-cookie.expire-min}")
     private Integer expireMin;
@@ -72,7 +72,7 @@ public class AWSCloudFrontProviderImpl implements AWSCloudFrontProvider {
     @Override
     public void setSignedCookies(HttpServletResponse response) {
 
-        // 유효 시간 설정 (5분)
+        // 유효 시간 설정
         Date expires = new Date(System.currentTimeMillis() + 1000L * 60 * expireMin);
 
         // CloudFront Signed Cookie 생성
