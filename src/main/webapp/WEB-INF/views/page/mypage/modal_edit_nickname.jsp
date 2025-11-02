@@ -154,18 +154,13 @@
                     return;
                 }
 
-                // 유효성 검사에 실패한 경우
-                if (rp.inputErrors) {
-                    document.querySelectorAll(".text-error").forEach((el) => {el.textContent = "";});
-                    Object.entries(rp.inputErrors).forEach(([field, message]) => {
-                        const errorElem = document.getElementById(`\${field}Error`);
-                        if (errorElem) errorElem.textContent = message;
-                    });
+                // 유효성 검사에 실패했거나 기타 예기치 않은 경우
+                if (rp.inputErrors.nickname || rp.message) {
+                    const errorElem = document.getElementById("nicknameError");
+                    if (errorElem) errorElem.textContent = rp.inputErrors.nickname || rp.message;
                     return;
                 }
 
-                // 기타 예기치 않은 오류가 발생한 경우
-                alert(rp.message || "서버 오류가 발생했습니다. 잠시 후에 시도해 주세요.");
                 return;
             }
 

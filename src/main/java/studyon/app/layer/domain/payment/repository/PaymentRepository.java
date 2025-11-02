@@ -139,9 +139,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
         FROM Payment p
         LEFT JOIN FETCH p.member m
         LEFT JOIN FETCH p.lecture l
-        WHERE p.member.memberId = :memberId
+        WHERE p.paymentId = :paymentId
     """)
-    Optional<Payment> findFetchByMemberId(Long memberId);
+    Optional<Payment> findFetchById(Long paymentId);
 
 
 }
