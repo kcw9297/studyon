@@ -12,7 +12,7 @@ on:
 
 jobs:
 
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     # 빌드 및 EC2 인스턴스에 빌드된 파일 복사
@@ -154,6 +154,8 @@ jobs:
             echo "=== 6. Start application ==="
             nohup java -jar \
             -Xmx512m \
+            -Xms256m \
+            -XX:+UseSerialGC \
             -Dspring.profiles.active=prod \
             -DFILE_DOMAIN="${{ secrets.FILE_DOMAIN }}" \
             -DDATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
