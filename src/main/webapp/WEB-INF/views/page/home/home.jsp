@@ -289,8 +289,8 @@
                             <p class="lecture-info-text">\${recentLecture.teacherNickname}</p>
                             <p class="lecture-info-text">₩\${Number(recentLecture.price).toLocaleString()}</p>
                             <p class="lecture-info-text">
-                                 <!--⭐\${recentLecture.averageRate}-->
-                                 🧸 \${recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents}
+                                 ⭐\${recentLecture.averageRate}
+                                 🧸\${recentLecture.totalStudents >= 10 ? "10+" : recentLecture.totalStudents}
                             </p>
                         </div>
                     </a>

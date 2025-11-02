@@ -29,7 +29,7 @@
             <img src="<c:url value='/img/png/eyeoff.png'/>" alt="비밀번호 보기" />
         </span>
     </div>
-    <div class="text-error" id="loginError"></div>
+    <div class="asynchronous-message-wrong" id="loginError"></div>
     <div class="divider-login"></div>
     <button type="submit">로그인</button>
 </form>
@@ -198,3 +198,12 @@
     }
 
 </script>
+
+
+<style>
+    .asynchronous-message-wrong{
+        color: red;
+        font-size: 14px;
+        opacity: 0.7;
+    }
+</style>
