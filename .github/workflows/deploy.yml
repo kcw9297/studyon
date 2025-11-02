@@ -81,7 +81,7 @@ jobs:
           strip_components: 2
 
 
-      # step 8. EC2 애플리케이션 배포
+      # step 10. EC2 애플리케이션 배포
       - name: Deploy and Run on EC2
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -215,7 +215,7 @@ jobs:
               exit 1
             fi
 
-      # step 10. 사용했던 IP를 보안 그룹에서 제거
+      # step 11. 사용했던 IP를 보안 그룹에서 제거
       - name: Remove Github Actions IP From Security Group
         run: |
           aws ec2 revoke-security-group-ingress \

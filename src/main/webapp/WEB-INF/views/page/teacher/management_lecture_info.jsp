@@ -6,6 +6,10 @@
 <div class="lecture-view-wrapper">
     <div class="view-content">
         <div class="view-title">강의 상세 보기</div>
+        <div class="lecture-status-container">
+            <label class="lecture-status-onsale">판매중</label>
+            <label class="lecture-status-status">승인대기중</label>
+        </div>
 
         <div class="view-section">
             <label class="view-label">강의 제목</label>

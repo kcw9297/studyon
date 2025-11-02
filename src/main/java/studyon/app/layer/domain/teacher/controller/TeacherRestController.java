@@ -94,62 +94,39 @@ public class TeacherRestController {
 
     // Teacher Profile Part
 
-    /** ✅ 인기 강의 조회 */
     @GetMapping("/profile/bestLecture")
     public ResponseEntity<?> getBestLectures(@RequestParam Long teacherId) {
         List<LectureDTO.Read> response = lectureService.readBestLectures(teacherId, 5);
         return RestUtils.ok(response);
     }
 
-    /** ✅ 최신 강의 조회 */
     @GetMapping("/profile/recentLecture")
     public ResponseEntity<?> getRecentLectures(@RequestParam Long teacherId) {
         List<LectureDTO.Read> response = lectureService.readRecentLectures(teacherId, 5);
         return RestUtils.ok(response);
     }
 
-    /** ✅ 수강평 조회 */
     @GetMapping("/reviews/teacher/{teacherId}")
     public ResponseEntity<?> getTeacherReviews(@PathVariable Long teacherId) {
         List<LectureReviewDTO.Read> response = lectureReviewService.readRecentReview(teacherId, 5);
         return RestUtils.ok(response);
     }
 
-    /**
-     * 선생님 프로필 정보 상세 조회 (가장 많은 정보 포함)
-     */
     @GetMapping("/profile/detail/{teacherId}")
     public ResponseEntity<?> getTeacherDetail(@PathVariable Long teacherId) {
         TeacherDTO.ReadDetail response = teacherService.readTeacherDetail(teacherId);
         return RestUtils.ok(response);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Teacher MyPage PART
 
     @GetMapping("/management/lecturelist")
     public ResponseEntity<?> getTeacherLectureList(HttpServletRequest request) {
-        // ✅ 세션 프로필 꺼내기
         MemberProfile profile = SessionUtils.getProfile(request.getSession());
-
         if (profile == null || profile.getTeacherId() == null) {
-            log.warn("⚠ 세션에 teacher 정보가 없습니다.");
             return RestUtils.fail(AppStatus.SESSION_EXPIRED);
         }
         Long teacherId = profile.getTeacherId();
-        log.info("✅ 로그인한 강사 ID = {}", teacherId);
 
         TeacherDTO.LectureListResponse response = teacherService.getLectureListByTeacher(teacherId);
         return RestUtils.ok(response);
@@ -161,8 +138,6 @@ public class TeacherRestController {
         Long teacherMemberId = profile.getMemberId();
         TeacherDTO.TeacherManagementProfile response = teacherService.readProfile(teacherMemberId);
         return RestUtils.ok(response);
-
-        //가져올 정보 : 강사명, 강사 이메일, 강사 프로필, 강의 수, 수강생 수, 평균 평점
     }
 
     @GetMapping("management/lectureinfo/{lectureId}")
@@ -315,23 +290,11 @@ public class TeacherRestController {
         return RestUtils.ok();
     }
 
-
     @PostMapping("/management/lectureindex/{indexId}/video")
     public ResponseEntity<?> uploadLectureVideo(@PathVariable Long indexId,@RequestParam("file") MultipartFile file) {
         lectureVideoService.uploadVideo(indexId, file);
         return RestUtils.ok("동영상이 업로드 되었습니다.");
     }
-
-//    @GetMapping("/management/lectureindex/{lectureId}/videos")
-//    public ResponseEntity<?> getLectureVideos(@PathVariable Long lectureId,HttpSession session) {
-//        // 🔥 로그인한 강사 ID 가져오기 (세션 or SecurityContext)
-//        Long teacherId = SessionUtils.getMemberId(session);
-//
-//        List<LectureVideoDTO.Read> list =
-//                lectureVideoService.getVideosForMemberLecture(teacherId, lectureId);
-//
-//        return RestUtils.ok(list);
-//    }
 
     @GetMapping("/management/lectureindex/{indexId}/videos")
     public ResponseEntity<?> getLectureVideos(@PathVariable Long indexId, HttpSession session) {

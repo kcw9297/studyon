@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -56,17 +57,18 @@ public class WebConfig implements WebMvcConfigurer {
     // 사용 Interceptor 등록
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(defaultValueInterceptor).order(1)
-                .excludePathPatterns(Url.STATIC_RESOURCE_PATHS)
-                .excludePathPatterns(allFilePath);
+        
+        InterceptorRegistration interceptor = registry
+                .addInterceptor(defaultValueInterceptor).order(1)
+                .excludePathPatterns(Url.STATIC_RESOURCE_PATHS);
+
+        // 로컬 파일경로 제외
+        if (isLocal) interceptor.excludePathPatterns(allFilePath);
     }
 
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
-        // 로컬인 경우만 등록
-        if (isLocal)
             registry.addResourceHandler(allFilePath)
                     .addResourceLocations("file:/%s/".formatted(fileDir));
     }

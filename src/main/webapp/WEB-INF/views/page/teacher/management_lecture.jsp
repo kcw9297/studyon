@@ -102,15 +102,28 @@
                 lectures.forEach(lecture => {
                     console.log("lecture 확인:", lecture);
 
-                    const lectureId = lecture.lectureId; // ✅ 미리 복사해서 스코프 고정
+                    const lectureId = lecture.lectureId; //
                     const item = document.createElement("div");
                     item.classList.add(itemClassPrefix + "-lecture-item");
 
+                    // const img = document.createElement("img");
+                    // img.src = "/img/png/thumbnail.png";
+                    // img.classList.add("lecture-thumbnail");
+
                     const img = document.createElement("img");
-                    img.src = "/img/png/thumbnail.png";
+
+                    img.src = lecture.thumbnailImagePath
+                        ? (lecture.thumbnailImagePath.startsWith("http")
+                            ? lecture.thumbnailImagePath
+                            : `/upload/\${lecture.thumbnailImagePath}`)
+                        : "/upload/default_lecture_thumbnail.png";
+
                     img.classList.add("lecture-thumbnail");
 
-                    // ✅ 클릭 시 이동
+
+
+
+                    // 클릭 시 이동
                     img.addEventListener("click", function() {
                         if (lectureId) {
                             console.log("이동할 lectureId:", lectureId);
@@ -121,17 +134,17 @@
                     });
 
 
-                    // ✅ 정보 div
+                    // 정보 div
                     const infoDiv = document.createElement("div");
                     infoDiv.classList.add(`${itemClassPrefix}-lecture-info`);
 
-                    // ✅ 제목
+                    // 제목
                     const title = document.createElement("p");
                     title.classList.add(`${itemClassPrefix}-lecture-title`);
                     title.textContent = lecture.title;
 
 
-                    // ✅ 구조 결합
+                    // 구조 결합
                     infoDiv.appendChild(title);
                     item.appendChild(img);
                     item.appendChild(infoDiv);
@@ -139,13 +152,95 @@
                 });
             };
 
-            // ✅ 각각의 상태별 렌더링
+            // 각각의 상태별 렌더링
             renderLectures(data.unregistered, ".unregistered-lecture-container", "unregistered");
             renderLectures(data.pending, ".pending-lecture-container", "pending");
             renderLectures(data.registered, ".registered-lecture-container", "registered");
 
         } catch (error) {
-            console.error("❌ 데이터 로드 실패:", error);
+            console.error("데이터 로드 실패:", error);
         }
     });
 </script>
+
+<style>
+    /* ✅ 전체 컨테이너 레이아웃 */
+    .unregistered-lecture-container,
+    .pending-lecture-container,
+    .registered-lecture-container {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: flex-start;
+        background-color: transparent;
+        border: none;
+        margin-bottom: 40px;
+    }
+
+    /* ✅ 개별 강의 카드 */
+    .unregistered-lecture-item,
+    .pending-lecture-item,
+    .registered-lecture-item {
+        width: 320px;
+        border: 1.5px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .unregistered-lecture-item:hover,
+    .pending-lecture-item:hover,
+    .registered-lecture-item:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    /* ✅ 썸네일 이미지 */
+    .lecture-thumbnail {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+    }
+
+    /* ✅ 강의 제목 */
+    .unregistered-lecture-title,
+    .pending-lecture-title,
+    .registered-lecture-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: #333;
+        margin: 8px 10px 10px 10px;
+        line-height: 1.3;
+        word-break: keep-all;
+    }
+
+    /* ✅ 섹션 제목 라벨 */
+    .unregistered-lecture-label,
+    .pending-lecture-label,
+    .resisted-lecture-label {
+        font-size: 22px;
+        font-weight: 700;
+        color: #222;
+        margin: 25px 0 10px 0;
+        border-left: 6px solid #5cb85c;
+        padding-left: 10px;
+    }
+
+    /* ✅ 기타 */
+    .TeacherManagement nav-item {
+        margin-right: 40px;
+        font-size: 18px;
+        color: #333;
+        text-decoration: none;
+    }
+    .-lecture-info{
+        margin-left:5px;
+        margin-bottom:5px;
+        font-weight: bold;
+    }
+</style>
