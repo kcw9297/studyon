@@ -20,9 +20,21 @@
         <div class="main-content-container">
             <div class="search-box" id="lecture-search-box">
                 <form id="lecture-search-form" method="get">
+
+
+                    <div class="filter-row">
+                        <label class="search-title" style="background-color:lightgreen">검색어</label>
+                        <input type="text" name="keyword" placeholder="검색어를 입력하세요" value="${param.keyword}">
+                    </div>
+
+
+
+
+
+
                     <!-- 검색 구분 -->
                     <div class="filter-row">
-                        <label>검색 구분:</label>
+                        <label class="search-title">검색 구분</label>
                         <select name="filter">
                             <option value="">전체</option>
                             <c:forEach var="filter" items="${filters}">
@@ -32,13 +44,13 @@
                             </c:forEach>
                         </select>
 
-                        <label>검색어:</label>
+                        <label>검색어</label>
                         <input type="text" name="keyword" placeholder="검색어를 입력하세요" value="${param.keyword}">
                     </div>
 
                     <!-- 카테고리 -->
                     <div class="filter-row">
-                        <label>과목:</label>
+                        <label class="search-title">과목</label>
                         <c:forEach var="subject" items="${subjects}">
                             <label>
                                 <input type="checkbox" name="subjects" value="${subject}"
@@ -49,20 +61,24 @@
                     </div>
 
                     <!-- 2차 카테고리 자동 변경 영역 -->
-                    <div class="filter-row">
-                        <label>세부:</label>
-                        <c:forEach var="subjectDetail" items="${subjectDetails}">
-                            <label>
-                                <input type="checkbox" name="subjectDetails" value="${subjectDetail}"
-                                       <c:if test="${fn:contains(selectedSubjectDetails, subjectDetail.name())}">checked</c:if>>
-                                    ${subjectDetail.name}
-                            </label>
-                        </c:forEach>
+                    <div class="search-detail-container">
+                        <label class="search-title-detail">세부</label>
+                        <div class="filter-row">
+
+                            <c:forEach var="subjectDetail" items="${subjectDetails}">
+                                <label>
+                                    <input type="checkbox" name="subjectDetails" value="${subjectDetail}"
+                                           <c:if test="${fn:contains(selectedSubjectDetails, subjectDetail.name())}">checked</c:if>>
+                                        ${subjectDetail.name}
+                                </label>
+                            </c:forEach>
+                        </div>
                     </div>
+
 
                     <!-- 가격 -->
                     <div class="filter-row">
-                        <label>가격 범위:</label>
+                        <label class="search-title">가격 범위</label>
                         <input type="number" name="minPrice" placeholder="최소 금액" min="0" value="${param.minPrice}">
                         ~
                         <input type="number" name="maxPrice" placeholder="최대 금액" min="0" value="${param.maxPrice}">
@@ -70,7 +86,7 @@
 
                     <!-- 학년(대상) -->
                     <div class="filter-row">
-                        <label>난이도:</label>
+                        <label class="search-title">대상</label>
                         <c:forEach var="target" items="${targets}">
                             <label>
                                 <input type="checkbox" name="targets" value="${target}"
@@ -82,7 +98,7 @@
 
                     <!-- 난이도 -->
                     <div class="filter-row">
-                        <label>난이도:</label>
+                        <label class="search-title">난이도</label>
                         <c:forEach var="difficulty" items="${difficulties}">
                             <label>
                                 <input type="checkbox" name="difficulties" value="${difficulty}"
@@ -94,7 +110,7 @@
 
                     <!-- 정렬 -->
                     <div class="filter-row">
-                        <label>정렬 기준:</label>
+                        <label class="search-title">정렬 기준</label>
                         <c:forEach var="sort" items="${sorts}">
                             <label><input type="radio" name="sort" value="${sort}" <c:if test="${param.sort eq sort}">checked</c:if>>
                                     ${sort.value}
@@ -118,24 +134,58 @@
 </div>
 
 <style>
+
+
+    .search-title {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 110px;
+        height: 34px;
+        font-weight: 600;
+        color: #2e3a59;
+        background-color: #f9fff9;
+        border: 2px solid #9fe49f;
+        border-radius: 20px;
+        padding: 0 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        transition: all 0.2s ease;
+    }
+
+    .search-title-detail {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 110px;
+        height: 34px;
+        font-weight: 600;
+        color: #294e8c;
+        background-color: #f3f8ff;
+        border: 2px solid #b0d4ff;
+        border-radius: 20px;
+        padding: 0 16px;
+        margin-right: 22px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        transition: all 0.2s ease;
+    }
+
+    .search-detail-container{
+        display:flex;
+        flex-direction: row;
+    }
+
+
+    /* MAIN CONTATINER */
     .main-content-container {
         margin-top: 20px;
         width: 100%;
         height: auto;
         padding-right:20px;
     }
-    <%--
-    .search-box {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        background: #fafafa;
-        margin-bottom: 20px;
-        margin-top:20px;
-        margin-right:5px;
-        width: 100%;
-    }
-    --%>
+
+    /* SEARCH BOX */
+
+
 
     #lecture-search-box{
        border: 1px solid #ccc;
@@ -146,15 +196,16 @@
        margin-top:20px;
        margin-right:5px;
        width: 100%;
-
    }
+
+    /* FILTER */
 
     .filter-row {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 10px;
-        margin-bottom: 12px;
+
     }
     .filter-row label {
         font-weight: 600;
@@ -168,19 +219,24 @@
         border-radius: 4px;
         min-width: 120px;
     }
+
+    /* SEARCH BUTTON */
     .search-btn {
         background-color: #007bff;
         color: white;
         font-weight: bold;
         padding: 8px 18px;
         border: none;
-        border-radius: 6px;
+        border-radius: 20px;
         cursor: pointer;
         transition: 0.2s ease;
+        width:75px;
     }
     .search-btn:hover {
         background-color: #0056b3;
     }
+
+    /* LECTURE ITEM */
     .search-lecture-item {
         width: 260px;
         height: auto;
@@ -331,6 +387,140 @@
         transform: scale(1.05);
         filter: brightness(1.05);
     }
+
+    /* CHECK BOX */
+
+    .filter-row input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #9fe49f;
+        border-radius: 6px;
+        background-color: #fff;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease-in-out;
+        vertical-align: middle;
+        margin-right: 6px;
+    }
+
+    .filter-row input[type="checkbox"]:checked {
+        background-color: #66bb6a;
+        border-color: #5ca85c;
+        box-shadow: 0 0 0 3px rgba(102,187,106,0.2);
+    }
+
+    .filter-row input[type="checkbox"]::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 5px;
+        width: 4px;
+        height: 8px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg) scale(0);
+        transition: transform 0.15s ease;
+    }
+
+    .filter-row input[type="checkbox"]:checked::after {
+        transform: rotate(45deg) scale(1);
+    }
+
+    .filter-row input[type="checkbox"]:hover {
+        border-color: #6bd46b;
+    }
+
+    .filter-row label {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 500;
+        color: #333;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .filter-row label:hover {
+        color: #2e7d32;
+    }
+
+    /* SELECT + INPUT */
+    .filter-row input[type="text"],
+    .filter-row input[type="number"],
+    .filter-row select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding: 8px 12px;
+        border: 2px solid #cceacc;
+        border-radius: 10px;
+        background-color: #ffffff;
+        color: #333;
+        font-size: 14px;
+        min-width: 130px;
+        transition: all 0.25s ease;
+        outline: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .filter-row input[type="text"]:focus,
+    .filter-row input[type="number"]:focus,
+    .filter-row select:focus {
+        border-color: #5cb85c;
+        box-shadow: 0 0 0 3px rgba(92,184,92,0.25);
+        background-color: #fafffa;
+    }
+
+    .filter-row input[type="text"]:hover,
+    .filter-row input[type="number"]:hover,
+    .filter-row select:hover {
+        border-color: #80d480;
+    }
+
+    .filter-row input::placeholder {
+        color: #aaa;
+    }
+
+    .filter-row select {
+        background-image: linear-gradient(45deg, transparent 50%, #66bb6a 50%),
+        linear-gradient(135deg, #66bb6a 50%, transparent 50%);
+        background-position: calc(100% - 16px) 50%,  /* 세로 중앙 정렬 */
+        calc(100% - 11px) 50%;  /* 세로 중앙 정렬 */
+        background-size: 6px 6px, 6px 6px;
+        background-repeat: no-repeat;
+        padding-right: 28px;
+        cursor: pointer;
+    }
+
+    .filter-row input[type="number"]::-webkit-inner-spin-button,
+    .filter-row input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .filter-row select:hover {
+        background-image: linear-gradient(45deg, transparent 50%, #4caf50 50%),
+        linear-gradient(135deg, #4caf50 50%, transparent 50%);
+    }
+
+    .filter-row input:disabled,
+    .filter-row select:disabled {
+        background-color: #f5f5f5;
+        color: #888;
+        border-color: #ddd;
+        cursor: not-allowed;
+    }
+
+    .filter-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px 15px;
+        margin-bottom: 10px;
+    }
+
 
 
 

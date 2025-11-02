@@ -131,20 +131,31 @@ public class TeacherServiceImpl implements TeacherService {
 
 
     private List<TeacherDTO.LectureListResponse.LectureSimple> mapToLectureSimpleList(List<Lecture> lectures) {
+//        return lectures.stream()
+//                .map(l -> TeacherDTO.LectureListResponse.LectureSimple.builder()
+//                        .lectureId(l.getLectureId())
+//                        .title(l.getTitle())
+//                        .status(l.getLectureRegisterStatus().name())
+//                        .build())
+//                .toList();
         return lectures.stream()
-                .map(l -> TeacherDTO.LectureListResponse.LectureSimple.builder()
-                        .lectureId(l.getLectureId())
-                        .title(l.getTitle())
-                        .status(l.getLectureRegisterStatus().name())
-                        .build())
+                .map(l -> {
+                    String thumbnailPath = lectureRepository.findThumbnailPathByLectureId(l.getLectureId())
+                            .orElse("img/png/default_lecture_thumbnail.png");
+
+                    return TeacherDTO.LectureListResponse.LectureSimple.builder()
+                            .lectureId(l.getLectureId())
+                            .title(l.getTitle())
+                            .status(l.getLectureRegisterStatus().name())
+                            .thumbnailImagePath(thumbnailPath)
+                            .build();
+                })
                 .toList();
     }
 
 
     @Override
     public TeacherDTO.TeacherManagementProfile readProfile(Long memberId) {
-//        Teacher teacher = teacherRepository.findByMember_MemberId(memberId)
-//                .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
         Teacher teacher = teacherRepository.findByMemberIdWithMember(memberId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
         Member member = teacher.getMember();

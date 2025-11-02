@@ -102,6 +102,7 @@ public class TeacherDTO {
             private Long lectureId;
             private String title;
             private String status;
+            private String thumbnailImagePath;
         }
     }
 
