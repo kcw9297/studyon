@@ -19,14 +19,14 @@
 <jsp:include page="/WEB-INF/views/page/home/home_notice_popup_modal.jsp" />
 
 
-<!-- ✅ 최근 등록된 강의 -->
+<!-- 최근 등록된 강의 -->
 <label class="lecture-section-title">최근 등록된 강의</label>
 <div class="recent-lecture-container" id="recentLectureContainer">
     <!-- JS에서 렌더링될 영역 -->
 </div>
 
-<!-- ✅ 최근 인기 강의 -->
-<label class="lecture-section-title">최근 인기 강의</label>
+<!-- 최근 인기 강의 -->
+    <label class="lecture-section-title">최근 인기 강의</label>
 <div class="recent-lecture-container" id="popularLectureContainer">
     <!-- JS에서 렌더링될 영역 -->
 </div>
@@ -44,7 +44,6 @@
         margin-left:15px;
     }
 
-    /* ✅ 링크 기본 스타일 */
     .home-nav a {
         position: relative;
         color: #333;
@@ -54,7 +53,6 @@
         transition: color 0.3s ease;
     }
 
-    /* ✅ hover 시 밑줄 애니메이션 효과 */
     .home-nav a::after {
         content: '';
         position: absolute;
@@ -75,7 +73,6 @@
         width: 100%;
     }
 
-    /* ✅ 반응형: 작은 화면에서는 네비바 스크롤 */
     @media (max-width: 768px) {
         .home-nav {
             flex-wrap: nowrap;
@@ -104,7 +101,7 @@
     .recent-lecture-item {
         width: 260px;
         height: auto;
-        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.5); /* ✅ 내부 border처럼 */
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
         display: flex;
         flex-direction: column;
@@ -120,6 +117,12 @@
     .lecture-section-title {
         font-size: 24px;
         font-weight: bold;
+        margin-top:10px;
+        margin-bottom:10px;
+        display: block;
+    }
+    .label-title-box{
+        margin-top:10px;
     }
 
     .lecture-info{
@@ -161,15 +164,10 @@
     .fade {
         animation: fadeEffect 10s infinite;
     }
-
 </style>
 
 <%-- Local Script --%>
 <script src="<c:url value='/js/page/home/home_lectures_view.js'/>">
-
-
-
-
 </script>
 
 

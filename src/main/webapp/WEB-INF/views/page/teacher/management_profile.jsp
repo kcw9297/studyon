@@ -32,7 +32,7 @@
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">수강생 수</span>
-                    <span class="stat-value">200명</span>
+                    <span class="stat-student">200명</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">평균 평점</span>
@@ -55,12 +55,13 @@
             const lectureCount = document.querySelector(".teacher-info-box .stat-value")
             const teacherEmail = document.querySelector(".teacher-info-box .teacher-email")
             const teacherRate = document.querySelector(".teacher-info-box .stat-rate")
-            //const imgElem = document.querySelector("#teacher-img");
+            const student = document.querySelector(".teacher-info-box .stat-student")
 
             teacherName.textContent = data.nickname;
             lectureCount.textContent = data.lectureCount;
             teacherEmail.textContent = data.email;
             teacherRate.textContent = data.averageRating;
+            student.textContent = data.totalStudent;
 
             const imgElem = document.querySelector("#teacher-img");
             if (imgElem) {

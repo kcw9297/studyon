@@ -192,4 +192,14 @@ public class TeacherController {
     public String qnaUpdate(Model model, HttpSession session) {
         return ViewUtils.returnView(model, View.TEACHER, "management_lecture_qna_update");
     }
+
+    @GetMapping("/management/statistics")
+    public String statistics(Model model, HttpSession session) {
+        return ViewUtils.returnView(model, View.TEACHER, "management_statistics");
+    }
+
+    @GetMapping("/management/reviews")
+    public String reviews(Model model, HttpSession session) {
+        return ViewUtils.returnView(model, View.TEACHER, "management_reviews");
+    }
 }

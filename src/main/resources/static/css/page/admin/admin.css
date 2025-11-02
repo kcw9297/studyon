@@ -34,11 +34,11 @@
 
 .admin-content-container {
     display: flex;
-    flex-wrap: wrap;          /* ✅ 넘치면 자동으로 다음 줄로 */
+    flex-wrap: wrap;
     justify-content: flex-start;
-    align-items: flex-start;  /* ✅ 세로는 위 기준으로 맞춤 */
+    align-items: flex-start;
     gap: 20px;
-    background-color: #f5f6fa;
+    background-color: white;
     padding: 30px;
     box-sizing: border-box;
 }
@@ -63,14 +63,12 @@
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
-/* 아이콘 */
 .card-icon {
     font-size: 40px;
     color: #4a90e2;
     margin-right: 20px;
 }
 
-/* 정보 */
 .card-info {
     display: flex;
     flex-direction: column;
@@ -95,7 +93,6 @@
     margin-top: 2px;
 }
 
-/* 매출 카드 전용 포인트 색상 */
 .dashboard-card.sales .card-icon {
     color: #27ae60; /* 매출은 녹색톤 */
 }
@@ -105,7 +102,7 @@
 }
 
 .dashboard-card.mvp .card-icon {
-    color: #f1c40f; /* 금색 느낌 */
+    color: #f1c40f;
 }
 
 .dashboard-card.mvp {
@@ -118,9 +115,8 @@
     transform: translateY(-5px);
 }
 
-/* 꼴등 강사 전용 스타일 */
 .dashboard-card.loser {
-    border-left: 6px solid #e74c3c; /* 붉은색 포인트 */
+    border-left: 6px solid #e74c3c;
     background: linear-gradient(135deg, #fff5f5, #fff);
 }
 
@@ -137,7 +133,6 @@
     color: #c0392b;
     font-weight: 500;
 }
-
 
 .admin-status-container {
     display: flex;

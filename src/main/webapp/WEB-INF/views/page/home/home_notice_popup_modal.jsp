@@ -49,8 +49,9 @@
     .notice-popup-content {
         position: relative;
         margin: 3% auto;
+        margin-top:250px;
         width: 90%;
-        max-width: 450px;
+        max-width: 700px;
         background-color: #fff;
         border-radius: 12px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -62,7 +63,7 @@
     .notice-slider-container {
         position: relative;
         width: 100%;
-        height: 650px;
+        height: auto;
         overflow: hidden;
     }
 
@@ -70,7 +71,8 @@
     .notice-slider {
         display: flex;
         transition: transform 0.5s ease;
-        height: 100%;
+        width:100%;
+        height: auto;
     }
 
     /* 개별 공지사항 슬라이드 */
@@ -85,7 +87,7 @@
 
     .notice-slide img {
         width: 100%;
-        height: 100%;
+        height: auto;
         object-fit: cover;
     }
 
