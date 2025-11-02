@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 import studyon.app.common.constant.Env;
 import studyon.app.common.constant.Url;
 import studyon.app.common.utils.EnvUtils;
@@ -40,6 +37,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Value("${file.dir}")
     private String fileDir;
+
+    @Value("${file.domain}")
+    private String fileDomain;
 
     // 프로필 판별 값
     private boolean isLocal;
@@ -73,6 +73,19 @@ public class WebConfig implements WebMvcConfigurer {
         if (isLocal)
             registry.addResourceHandler(allFilePath)
                     .addResourceLocations("file:/%s/".formatted(fileDir));
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+
+        if (isProd) {
+            registry.addMapping("/api/**")
+                    .allowedOrigins(fileDomain)
+                    .allowedMethods("GET", "POST", "PATCH", "DELETE")
+                    .allowedHeaders("*")  // 또는 명시적으로 "X-Requested-From" 추가
+                    .allowCredentials(true);
+        }
+
     }
 
 }
