@@ -225,7 +225,7 @@
             lectures.forEach(bestLecture => {
                 const item = document.createElement("div");
 
-                const detailUrl = "/lecture/detail/\${bestLecture.lectureId}";
+                const detailUrl = `/lecture/detail/\${bestLecture.lectureId}`;
 
                 // ✅ 썸네일 경로 처리
                 const thumbnailSrc = bestLecture.thumbnailImagePath
