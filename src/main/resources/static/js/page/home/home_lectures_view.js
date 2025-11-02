@@ -57,11 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const item = document.createElement("div");
 
             const detailUrl = `/lecture/detail/${bestLecture.lectureId}`;
-            const fileDomain = "http://localhost:8080/upload";
 
             // ✅ 썸네일 경로 처리
             const thumbnailSrc = bestLecture.thumbnailImagePath
-                ? `${fileDomain}/${bestLecture.thumbnailImagePath}`
+                ? "${fileDomain}" + bestLecture.thumbnailImagePath
                 : "/img/png/default_image.png";
 
             item.classList.add("recent-lecture-item");

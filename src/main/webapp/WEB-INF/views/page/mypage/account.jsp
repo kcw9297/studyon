@@ -177,7 +177,7 @@
         const imgElem = document.querySelector(".mypage-profile");
         if (imgElem) {
             imgElem.src = ${not empty sessionScope.profile.profileImage} ?
-                `${fileDomain}/${sessionScope.profile.profileImage.filePath}` : "<c:url value='/img/png/default_image.png'/>";
+                "${fileDomain}/" + "${sessionScope.profile.profileImage.filePath}" : "<c:url value='/img/png/default_image.png'/>";
         }
 
         // 이메일 (첫 번째 account-chapter 안의 p)
