@@ -33,10 +33,11 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     @Query("""
         SELECT t FROM Teacher t
-        LEFT JOIN FETCH t.member
+        LEFT JOIN FETCH t.member m
+        LEFT JOIN FETCH m.profileImage
         WHERE t.member.memberId = :memberId
     """)
-    Optional<Teacher> findByMemberIdWithMember(Long memberId);
+    Optional<Teacher> findWithMemberAndProfileByMemberId(Long memberId);
 
     @Query("SELECT t FROM Teacher t JOIN FETCH t.member WHERE t.member.memberId = :memberId")
     Optional<Teacher> findByMember_MemberId(@Param("memberId") Long memberId);

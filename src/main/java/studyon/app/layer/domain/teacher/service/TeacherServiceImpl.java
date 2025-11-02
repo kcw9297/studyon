@@ -2,7 +2,6 @@ package studyon.app.layer.domain.teacher.service;
 
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.enums.AppStatus;
@@ -12,7 +11,6 @@ import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
-import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.member.Member;
 import studyon.app.layer.domain.member_lecture.repository.MemberLectureRepository;
@@ -25,6 +23,7 @@ import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /*
@@ -164,8 +163,11 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public TeacherDTO.TeacherManagementProfile readProfile(Long memberId) {
-        Teacher teacher = teacherRepository.findByMemberIdWithMember(memberId)
+
+        Teacher teacher = teacherRepository
+                .findWithMemberAndProfileByMemberId(memberId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
+
         Member member = teacher.getMember();
         Long lectureCount = lectureRepository.count(teacher.getTeacherId(), LectureRegisterStatus.REGISTERED);
         Long totalStudent = memberLectureRepository.countDistinctStudentsByTeacherId(teacher.getTeacherId());
@@ -180,6 +182,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .lectureCount(lectureCount)
                 .totalStudent(totalStudent)
                 .averageRating(teacher.getAverageRating())
+                .profileImageUrl(Objects.isNull(member.getProfileImage()) ? null : member.getProfileImage().getFilePath())
                 .build();
     }
 

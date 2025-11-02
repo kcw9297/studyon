@@ -230,14 +230,23 @@ public class LectureServiceImpl implements LectureService {
         if (Objects.isNull(editorCache)) throw new BusinessLogicException(AppStatus.EDITOR_CACHE_NOT_EXIST);
         log.warn("uploadFileNames = {}, editorCache = {}",  uploadFileNames, editorCache);
 
-        List<File> uploadFiles = editorCache.getUploadFiles().stream()
+        // 실제로 업로드한 파일
+        List<File> uploadFiles = editorCache.getUploadFiles()
+                .stream()
                 .filter(uploadDto -> uploadFileNames.contains(uploadDto.getStoreName()))
                 .peek(uploadFile -> uploadFile.setEntityId(lecture.getLectureId()))
                 .map(DTOMapper::toEntity)
                 .toList();
 
+        // 등록만 하고 실제 업로드하지 않은 파일
+        List<FileDTO.Upload> unusedUploadFiles = editorCache.getUploadFiles()
+                .stream()
+                .filter(uploadDto -> !uploadFileNames.contains(uploadDto.getStoreName()))
+                .toList();
+
+
         fileRepository.saveAll(uploadFiles);
-        editorCache.clearAll(); // 정상 업로드 완료되었으므로 자동 삭제되지 않도록 모든 리스트를 비움
+        editorCache.setUploadFiles(unusedUploadFiles); // 실제로 업로드하지 않은 파일정보로 대체 (추후 삭제)
         editorCacheManager.setCacheWithShortExpired(dto.getEditorId(), editorCache);
 
         // [6] 파일정보 삽입 후 강의번호 반환
