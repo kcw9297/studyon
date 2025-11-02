@@ -87,6 +87,11 @@ spring:
 
 server:
 
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+
   servlet:
     session:
       cookie:
@@ -127,6 +132,16 @@ spring:
 server:
   forward-headers-strategy: native
   #use-forward-headers: true
+
+  tomcat:
+    threads:
+      max: 300
+      min-spare: 30
+    max-connections: 10000          # 최대 연결 수
+    accept-count: 100               # 대기 큐 크기
+    connection-timeout: 20000       # 연결 타임아웃 (20초)
+    max-swallow-size: -1            # 업로드 크기 무제한
+    max-http-form-post-size: -1     # POST 크기 무제한
 
   servlet:
     session:
