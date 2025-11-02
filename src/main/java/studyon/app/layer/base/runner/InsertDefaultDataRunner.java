@@ -32,7 +32,6 @@ import java.util.stream.IntStream;
  * @author kcw97
  */
 
-@Profile(Env.PROFILE_LOCAL)
 @Component
 @Transactional
 @RequiredArgsConstructor
