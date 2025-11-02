@@ -150,7 +150,7 @@ public class LectureDTO {
         @Text(min = 10, max = 100)
         private String summary;
 
-        @EditorContent(min = 10, max = 100)
+        @EditorContent(min = 10, max = 2000)
         private String description;
 
         @NotNull(message = "강의 대상을 선택해야 합니다.")

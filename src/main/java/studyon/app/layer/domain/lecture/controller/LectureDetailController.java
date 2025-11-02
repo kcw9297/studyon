@@ -41,12 +41,14 @@ public class LectureDetailController {
     public String lecture_detail(@PathVariable Long lectureId, Model model, HttpSession session) {
 
         // 프로필 조회
-        MemberProfile profile = SessionUtils.getProfile(session);
+        MemberProfile profile = SessionUtils.getProfileOrNull(session);
 
         Lecture lecture = lectureRepository.findWithTeacherById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다. id=" + lectureId));
 
-        boolean isBuyer = memberLectureRepository.existsByMember_MemberIdAndLecture_LectureId(profile.getMemberId(), lectureId);
+        if (Objects.nonNull(profile))
+            model.addAttribute("isBuyer", memberLectureRepository.existsByMember_MemberIdAndLecture_LectureId(profile.getMemberId(), lectureId));
+
 
         /* 리뷰 */
         List<LectureReview> reviews = lectureReviewRepository.findReviewsWithMemberAndProfile(lectureId);
@@ -99,15 +101,12 @@ public class LectureDetailController {
         model.addAttribute("minutes", minutes);
         model.addAttribute("seconds", seconds);
         model.addAttribute("teacherProfileImageUrl", teacherProfileImageUrl);
-        model.addAttribute("isBuyer", isBuyer);
         return ViewUtils.returnView(model, View.LECTURE, "lecture_detail");
     }
 
     @GetMapping("/detail/curriculum/{lectureId}")
     public ResponseEntity<?> readCurriculum(@PathVariable Long lectureId, HttpSession session) {
         log.info("readCurriculum 호출");
-        MemberProfile profile = SessionUtils.getProfile(session);
-        Long memberId = profile.getMemberId();
         List<LectureIndexDTO.Read> response = lectureIndexService.readMemberAllByLectureId(lectureId);
         return RestUtils.ok(response);
     }

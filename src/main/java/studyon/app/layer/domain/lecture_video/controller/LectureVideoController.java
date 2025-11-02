@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/player")
 @RequiredArgsConstructor
-public class LectureVideoViewController {
+public class LectureVideoController {
 
     /**
      * ✅ 영상 플레이어 페이지 (View 전용)
