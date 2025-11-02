@@ -157,6 +157,7 @@ jobs:
             -Xms256m \
             -XX:+UseSerialGC \
             -Dspring.profiles.active=prod \
+            -DAPP_DOMAIN="${{ secrets.APP_DOMAIN }}" \
             -DFILE_DOMAIN="${{ secrets.FILE_DOMAIN }}" \
             -DDATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
             -DDATABASE_URL="${{ secrets.DATABASE_URL }}" \
@@ -188,8 +189,8 @@ jobs:
             echo "Application started with PID: $APP_PID"
             echo "PID saved to $PID_FILE"
 
-            echo "=== 7. Wait 20 seconds ==="
-            sleep 20
+            echo "=== 7. Wait 30 seconds ==="
+            sleep 30
 
             echo "=== 8. Check process ==="
             if ps -p $APP_PID > /dev/null 2>&1; then
