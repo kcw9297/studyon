@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ✅ WebSocket 연결
     function connectWebSocket() {
         socket = new WebSocket("ws://localhost:8080/ws/chat");
-
         socket.onopen = () => console.log("✅ WebSocket 연결 성공 (ADMIN)");
 
         socket.onmessage = (event) => {

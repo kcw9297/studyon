@@ -7,7 +7,7 @@
     <div class="mypage-info-container">
         <div class="mypage-info-profileimg">
             <div class="mypage-profile-wrapper">
-                <img src="<c:url value='/img/png/menhera.png'/>" class="mypage-profile" alt="프로필 사진">
+                <img src="<c:url value='/img/png/default_image.png'/>" class="mypage-profile" alt="프로필 사진">
                 <div class="mypage-profile-overlay">
                     <span>프로필 사진 변경</span>
                 </div>
@@ -177,7 +177,7 @@
         const imgElem = document.querySelector(".mypage-profile");
         if (imgElem) {
             imgElem.src = ${not empty sessionScope.profile.profileImage} ?
-                `${fileDomain}/${sessionScope.profile.profileImage.filePath}` : "<c:url value='/img/png/default_member_profile_image.png'/>";
+                `${fileDomain}/${sessionScope.profile.profileImage.filePath}` : "<c:url value='/img/png/default_image.png'/>";
         }
 
         // 이메일 (첫 번째 account-chapter 안의 p)
@@ -314,8 +314,8 @@
             const imgElem = document.querySelector(".mypage-profile");
             const profileElem = document.querySelector(".profile-img");
             if (imgElem) {
-                imgElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_member_profile_image.png'/>";
-                profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_member_profile_image.png'/>";
+                imgElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_image.png'/>";
+                profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_image.png'/>";
             }
 
 

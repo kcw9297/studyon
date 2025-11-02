@@ -38,6 +38,7 @@ public class LectureVideoServiceImpl implements LectureVideoService {
     private final FileManager fileManager;
     private final FileRepository fileRepository;
 
+
     @Override
     public List<LectureVideoDTO.Read> getVideosForMemberLecture(Long memberId, Long indexId) {
         log.info("🎬 [VIDEO LIST] memberId={}, indexId={}", memberId, indexId);

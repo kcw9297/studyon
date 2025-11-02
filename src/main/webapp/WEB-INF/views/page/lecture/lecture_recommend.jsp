@@ -103,13 +103,13 @@
                 const fileDomain = "http://localhost:8080/upload";
                 const thumbnailSrc = bestLecture.thumbnailImagePath
                     ? fileDomain + "/" + bestLecture.thumbnailImagePath
-                    : "/img/png/default_member_profile_image.png";
+                    : "/img/png/default_image.png";
 
                 item.classList.add("recent-lecture-item");
                 item.innerHTML =
                     "<a href='" + detailUrl + "'>" +
                     "<img src='" + thumbnailSrc + "' alt='강의이미지' class='recent-lecture-thumbnail' " +
-                    "onerror=\"this.onerror=null; this.src='/img/png/default_member_profile_image.png';\">" +
+                    "onerror=\"this.onerror=null; this.src='/img/png/default_image.png';\">" +
                     "<div class='lecture-info'>" +
                     "<strong class='lecture-title'>" + bestLecture.title + "</strong>" +
                     "<p class='lecture-info-text'>" + bestLecture.teacherNickname + "</p>" +
@@ -177,7 +177,7 @@
                 const fileDomain = "http://localhost:8080/upload";
                 const thumbnailSrc = recentLecture.thumbnailImagePath
                     ? fileDomain + "/" + recentLecture.thumbnailImagePath
-                    : "/img/png/default_member_profile_image.png";
+                    : "/img/png/default_image.png";
 
                 item.classList.add("recent-lecture-item");
 
@@ -186,7 +186,7 @@
                 item.innerHTML =
                     "<a href='" + detailUrl + "'>" +
                     "<img src='" + thumbnailSrc + "' alt='강의이미지' class='recent-lecture-thumbnail' " +
-                    "onerror=\"this.onerror=null; this.src='/img/png/default_member_profile_image.png';\">" +
+                    "onerror=\"this.onerror=null; this.src='/img/png/default_image.png';\">" +
                     "<div class='lecture-info'>" +
                     "<strong class='lecture-title'>" + recentLecture.title + "</strong>" +
                     "<p class='lecture-info-text'>" + recentLecture.teacherNickname + "</p>" +

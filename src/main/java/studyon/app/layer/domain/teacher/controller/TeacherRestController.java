@@ -148,7 +148,7 @@ public class TeacherRestController {
         return RestUtils.ok(response);
 
     }
-
+/*
     @GetMapping("/management/profile/image")
     public ResponseEntity<Resource> getTeacherProfileImage(HttpSession session) {
         // [1] 세션에서 프로필 정보 가져오기
@@ -183,6 +183,7 @@ public class TeacherRestController {
             return ResponseEntity.internalServerError().build();
         }
     }
+ */
 
     @PatchMapping("/management/lecture/{lectureId}/thumbnail")
     public ResponseEntity<?> updateLectureThumbnail(

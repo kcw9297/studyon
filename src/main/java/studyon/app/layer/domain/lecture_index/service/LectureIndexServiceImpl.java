@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.BusinessLogicException;
+import studyon.app.layer.domain.file.repository.FileRepository;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
@@ -24,6 +25,7 @@ import static studyon.app.layer.base.utils.DTOMapper.toReadDTO;
 @Transactional
 public class LectureIndexServiceImpl implements LectureIndexService {
 
+    private final FileRepository fileRepository;
     private final LectureIndexRepository lectureIndexRepository;
     private final LectureRepository lectureRepository;
     private final LectureVideoRepository lectureVideoRepository;
@@ -95,18 +97,21 @@ public class LectureIndexServiceImpl implements LectureIndexService {
         }
     }
 
-
     /**
      * 강의 목차 삭제
      */
     @Override
     public void deleteIndex(Long lectureIndexId, Long teacherId) {
-        LectureIndex index = lectureIndexRepository.findById(lectureIndexId)
+
+        LectureIndex index = lectureIndexRepository
+                .findById(lectureIndexId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND));
 
         if (!index.getLecture().getTeacher().getTeacherId().equals(teacherId)) {
             throw new BusinessLogicException(AppStatus.LECTURE_NOT_FOUND);
         }
+
+
         Long lectureId = index.getLecture().getLectureId();
 
         lectureIndexRepository.delete(index);

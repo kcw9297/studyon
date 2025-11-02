@@ -281,7 +281,7 @@
             if (notice.noticeImage && notice.noticeImage.filePath) {
                 img.src = `${fileDomain}/\${notice.noticeImage.filePath}`;
             } else {
-                img.src = "<c:url value='/img/png/default_member_profile_image.png'/>";
+                img.src = "<c:url value='/img/png/default_image.png'/>";
             }
             img.alt = '공지사항 이미지';
 

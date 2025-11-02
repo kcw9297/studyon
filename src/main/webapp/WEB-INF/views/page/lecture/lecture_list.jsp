@@ -648,7 +648,7 @@
 
             const thumbnailSrc = lecture.thumbnailImagePath
                 ? `${fileDomain}/\${lecture.thumbnailImagePath}`
-                : `<c:url value='/img/png/default_member_profile_image.png'/>`;
+                : `<c:url value='/img/png/default_image.png'/>`;
 
             item.innerHTML = `
             <img src="\${thumbnailSrc}" class="lecture-thumbnail" />

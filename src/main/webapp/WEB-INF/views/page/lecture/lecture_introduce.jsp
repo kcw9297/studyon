@@ -68,7 +68,7 @@
                         <img src="http://localhost:8080/upload/${teacherProfileImageUrl}" alt="강사 프로필 이미지">
                     </c:when>
                     <c:otherwise>
-                        <img src="<c:url value='/img/png/default_member_profile_image.png'/>" alt="기본 이미지">
+                        <img src="<c:url value='/img/png/default_image.png'/>" alt="기본 이미지">
                     </c:otherwise>
                 </c:choose>
                 <div>
@@ -164,7 +164,7 @@
                                         <img src="${fileDomain}/${review.member.profileImage.filePath}" alt="프로필 이미지">
                                     </c:when>
                                     <c:otherwise>
-                                        <img src="<c:url value='/img/png/default_member_profile_image.png'/>" alt="기본 이미지">
+                                        <img src="<c:url value='/img/png/default_image.png'/>" alt="기본 이미지">
                                     </c:otherwise>
                                 </c:choose>
                                     ${review.member.nickname}

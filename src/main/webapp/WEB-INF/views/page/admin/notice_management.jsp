@@ -357,7 +357,7 @@
 
                 // 1. 이미지 설정
                 const imageElement = card.querySelector('.notice-image');
-                imageElement.src = notice.noticeImage ? `${fileDomain}/\${notice.noticeImage.filePath}` : "<c:url value='/img/png/default_member_profile_image.png'/>";
+                imageElement.src = notice.noticeImage ? `${fileDomain}/\${notice.noticeImage.filePath}` : "<c:url value='/img/png/default_image.png'/>";
 
                 // 2. 제목 설정
                 const titleElement = card.querySelector('.notice-title');
@@ -448,7 +448,7 @@
                 const titleElement = card.querySelector('.notice-title');
                 const statusBtn = card.querySelector('.notice-status-btn');
 
-                imageElement.src = "<c:url value='/img/png/default_member_profile_image.png'/>";
+                imageElement.src = "<c:url value='/img/png/default_image.png'/>";
                 titleElement.textContent = `제목 입력 \${cardIdx}`;
                 statusBtn.classList.remove('active');
                 statusBtn.classList.add('inactive');
