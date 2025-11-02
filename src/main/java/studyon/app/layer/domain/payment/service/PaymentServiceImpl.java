@@ -265,7 +265,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BusinessLogicException(AppStatus.PAYMENT_ALREADY_REFUNDED);
 
         // 결제일로부터 정해진 환불 기간이 지난 경우 (PG사에선 보통 1년. 테스트용으로 1달)
-        if (payment.getRefundedAt().plusMonths(1).isAfter(LocalDateTime.now()))
+        if (Objects.nonNull(payment.getRefundedAt()) && payment.getRefundedAt().plusMonths(1).isAfter(LocalDateTime.now()))
             throw new BusinessLogicException(AppStatus.PAYMENT_REFUND_NOT_AVAILABLE);
 
         payment.refund();
