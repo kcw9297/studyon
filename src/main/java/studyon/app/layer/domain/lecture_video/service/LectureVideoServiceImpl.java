@@ -167,7 +167,7 @@ public class LectureVideoServiceImpl implements LectureVideoService {
     @Override
     public void verifyAccess(MemberProfile profile, Long lectureId) {
 
-        if (memberLectureRepository.existsByMember_MemberIdAndLecture_LectureId(profile.getMemberId(), lectureId))
+        if (!memberLectureRepository.existsByMember_MemberIdAndLecture_LectureId(profile.getMemberId(), lectureId))
             throw new BusinessLogicException(AppStatus.LECTURE_NOT_ACCESSIBLE);
     }
 
