@@ -86,7 +86,7 @@ public class BannerServiceImpl implements BannerService {
 
             // 업로드 요청 DTO 생성
             FileDTO.Upload uploadDTO =
-                    DTOMapper.toUploadDTO(bannerImageFile, banner.getBannerId(), Entity.NOTICE, FileType.THUMBNAIL);
+                    DTOMapper.toUploadDTO(bannerImageFile, banner.getBannerId(), Entity.BANNER, FileType.THUMBNAIL);
 
             // DB 내 파일정보 생성
             banner.updateBannerImage(fileRepository.save(DTOMapper.toEntity(uploadDTO)));

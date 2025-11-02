@@ -125,4 +125,10 @@ public class LocalFileManager implements FileManager {
         }
     }
 
+
+    @Override
+    public String getFullVideoUrl(String fileUrl) {
+        return "%s/%s".formatted(fileDomain, fileUrl);
+    }
+
 }

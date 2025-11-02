@@ -47,4 +47,12 @@ public interface FileManager {
      */
     void remove(String filePath);
 
+
+    /**
+     * 비디오 파일의 FullUrl 제공
+     * @param fileUrl 파일 url
+     * @return 도메인이 포함된 fileUrl
+     */
+    String getFullVideoUrl(String fileUrl);
+
 }

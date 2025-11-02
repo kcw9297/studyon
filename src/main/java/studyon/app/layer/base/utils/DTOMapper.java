@@ -223,6 +223,7 @@ public class DTOMapper {
                 .teacherId(entity.getTeacher().getTeacherId())
                 .teacherNickname(entity.getTeacher().getMember().getNickname())
                 .lectureRegisterStatus(entity.getLectureRegisterStatus())
+                .thumbnailImagePath(Objects.isNull(entity.getThumbnailFile()) ? null : entity.getThumbnailFile().getFilePath())
                 .build();
     }
 

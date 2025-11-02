@@ -14,6 +14,7 @@ import studyon.app.common.constant.Env;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.ManagerException;
 import studyon.app.common.utils.StrUtils;
+import studyon.app.infra.aws.AWSCloudFrontProvider;
 
 
 
@@ -36,6 +37,7 @@ import studyon.app.common.utils.StrUtils;
 public class AWSFileManager implements FileManager {
 
     private final S3Client s3;
+    private final AWSCloudFrontProvider cloudFrontProvider;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
@@ -108,10 +110,16 @@ public class AWSFileManager implements FileManager {
         s3.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(key).build());
     }
 
+
     @Override
     public void remove(String filePath) {
         s3.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(filePath).build());
     }
 
+
+    @Override
+    public String getFullVideoUrl(String fileUrl) {
+        return cloudFrontProvider.createSignedUrl(fileUrl);
+    }
 
 }

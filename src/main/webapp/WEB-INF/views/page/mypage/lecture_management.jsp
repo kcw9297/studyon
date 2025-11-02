@@ -60,13 +60,7 @@
                 console.log("썸네일 href:", thumbnail.href);
 
                 const img = document.createElement("img");
-                img.src = lecture.thumbnailImagePath
-                    ? (lecture.thumbnailImagePath.startsWith("http")
-                        ? lecture.thumbnailImagePath
-                        : (lecture.thumbnailImagePath.startsWith("/img/")
-                            ? lecture.thumbnailImagePath
-                            : "http://localhost:8080/upload/" + lecture.thumbnailImagePath))
-                    : "/img/png/default_image.png";
+                img.src = lecture.thumbnailImagePath ? "${fileDomain}/\${lecture.thumbnailImagePath}" : "/img/png/default_image.png";
 
 
 

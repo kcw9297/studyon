@@ -132,7 +132,7 @@ public class TeacherLectureRestController {
      */
     @PatchMapping("/{lectureId}/description")
     public ResponseEntity<?> editDescription(@PathVariable Long lectureId,
-                                             @EditorContent(min = 10, max = 100) String description, String editorId,
+                                             @EditorContent(min = 10, max = 2000) String description, String editorId,
                                              HttpSession session) {
 
         // [1] 프로필 조회

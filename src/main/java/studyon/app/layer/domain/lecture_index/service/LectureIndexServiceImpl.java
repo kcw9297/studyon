@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.enums.AppStatus;
 import studyon.app.common.exception.BusinessLogicException;
+import studyon.app.infra.file.FileManager;
 import studyon.app.layer.domain.file.repository.FileRepository;
 import studyon.app.layer.domain.lecture.Lecture;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
@@ -29,6 +30,7 @@ public class LectureIndexServiceImpl implements LectureIndexService {
     private final LectureIndexRepository lectureIndexRepository;
     private final LectureRepository lectureRepository;
     private final LectureVideoRepository lectureVideoRepository;
+    private final FileManager fileManager;
 
     /**
      * 특정 강의의 목차 리스트 조회
@@ -139,7 +141,8 @@ public class LectureIndexServiceImpl implements LectureIndexService {
 
                     //  2. 영상 정보가 있다면 경로와 이름 추출
                     String videoFileName = videoOpt.map(LectureVideo::getTitle).orElse(null);
-                    String videoFilePath = videoOpt.map(LectureVideo::getVideoUrl).orElse(null);
+                    String videoFilePath =
+                            videoOpt.map(video -> fileManager.getFullVideoUrl(video.getVideoUrl())).orElse(null);
 
                     //  3. DTO 생성
                     return LectureIndexDTO.Read.builder()

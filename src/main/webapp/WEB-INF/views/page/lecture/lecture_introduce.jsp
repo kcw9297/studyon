@@ -64,7 +64,7 @@
             <div class="instructor-teacher">
                 <c:choose>
                     <c:when test="${not empty teacherProfileImageUrl}">
-                        <img src="http://localhost:8080/upload/${teacherProfileImageUrl}" alt="강사 프로필 이미지">
+                        <img src="${fileDomain}/${teacherProfileImageUrl}" alt="강사 프로필 이미지">
                     </c:when>
                     <c:otherwise>
                         <img src="<c:url value='/img/png/default_image.png'/>" alt="기본 이미지">
