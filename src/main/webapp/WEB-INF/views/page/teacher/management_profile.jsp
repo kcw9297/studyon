@@ -66,7 +66,7 @@
             const imgElem = document.querySelector("#teacher-img");
             if (imgElem) {
                 imgElem.src = ${not empty sessionScope.profile.profileImage} ?
-                    "${fileDomain}/${sessionScope.profile.profileImage.filePath}" : "<c:url value='/img/png/default_image.png'/>";
+                    "${fileDomain}/" + "${sessionScope.profile.profileImage.filePath}" : "<c:url value='/img/png/default_image.png'/>";
             }
 
         } catch (err) {

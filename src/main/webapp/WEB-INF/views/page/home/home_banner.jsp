@@ -40,7 +40,7 @@
                 // 배너 생성 및 추가
                 banners.forEach((banner, index) => {
                     const img = document.createElement('img');
-                    img.src = "${fileDomain}/\${banner.bannerImage.filePath}";
+                    img.src = "${fileDomain}/" + banner.bannerImage.filePath;
                     img.className = index === 0 ? 'main-banner fade active' : 'main-banner fade';
                     img.alt = banner.title || `배너\${index + 1}`;
                     container.appendChild(img);

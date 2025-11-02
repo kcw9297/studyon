@@ -339,7 +339,7 @@
 
                 // 1. 이미지 설정
                 const imageElement = card.querySelector('.banner-image');
-                imageElement.src = banner.bannerImage ? "${fileDomain}/\${banner.bannerImage.filePath}" : "<c:url value='/img/png/default_image.png'/>";
+                imageElement.src = banner.bannerImage ? "${fileDomain}/" + banner.bannerImage.filePath : "<c:url value='/img/png/default_image.png'/>";
 
                 // 2. 제목 설정
                 const titleElement = card.querySelector('.banner-title');
