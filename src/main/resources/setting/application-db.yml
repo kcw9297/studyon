@@ -11,7 +11,6 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     hikari:
-      maximum-pool-size: 10
       connection-test-query: SELECT 1
       validation-timeout: 1000
       auto-commit: false
@@ -36,6 +35,12 @@ spring:
     activate:
       on-profile: local
 
+  datasource:
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 5
+      connection-timeout: 10000
+
   jpa:
     hibernate:
       ddl-auto: update #update
@@ -55,6 +60,14 @@ spring:
   config:
     activate:
       on-profile: prod
+
+  datasource:
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10 # 최소 10개 커넥션은 늘 유지
+      connection-timeout: 20000
+      leak-detection-threshold: 60000
+      max-lifetime: 1800000 # 최대 30분동안 커넥션 보존
 
   jpa:
     hibernate:
