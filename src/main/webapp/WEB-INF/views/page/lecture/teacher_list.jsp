@@ -19,7 +19,7 @@
 
 
         <div id="teacher" data-subject="${subject.name()}"></div>
-        <div class="teacher-list-title">${subject.value} 선생님</div>
+        <div class="teacher-list-title" style="margin-bottom: 20px;">${subject.value} 선생님</div>
 
      <div class ="recent-lecture-container"></div>
 </div>
@@ -161,11 +161,16 @@
 
                 const item = document.createElement("div");
                 item.classList.add("recent-lecture-item");
+                const hf = "/teacher/profile/" + teacher.teacherId;
+
 
                 item.innerHTML = `
-                <a href="/teacher/profile/$\{teacher.teacherId}">
-                    <img src="\${thumbnailSrc}" alt="강의 썸네일" class="recent-lecture-thumbnail"
-     onerror="this.onerror=null; this.src='/img/png/default_image.png';">
+
+
+
+
+                <a href="\${hf}">
+                    <img src="\${thumbnailSrc}" alt="강의 썸네일" class="recent-lecture-thumbnail">
                     <div class="lecture-info">
                         <p class="lecture-title">\${teacher.nickname}</p>
                         <p class="lecture-info-text">\${teacher.description || "소개가 없습니다."}</p>
