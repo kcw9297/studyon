@@ -273,16 +273,20 @@
             // REST API 요청
             const form = new FormData();
             form.append("profileImage", file);
+            console.log("fetch 요청 직전"); // 추가
 
             const res = await fetch("/api/members/profile_image", {
-                headers: {'X-Requested-From': window.location.pathname + window.location.search},
                 method: "PATCH",
+                headers: {
+                    'X-Requested-From': window.location.pathname + window.location.search
+                },
                 body: form
             });
 
             // 서버 JSON 응답 문자열 파싱
             const rp = await res.json();
             console.log("서버 응답:", rp);
+            console.log("응답 상태:", res.status); // 추가
 
             // 요청 실패 처리
             if (!res.ok || !rp.success) {

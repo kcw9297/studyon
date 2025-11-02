@@ -45,17 +45,18 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
+
         try{
            const res = await fetch("/api/teachers/management/profile");
            const result = await res.json();
            const data = result.data;
            console.log(data);
 
-           const teacherName = document.querySelector(".teacher-info-box .teacher-name")
-            const lectureCount = document.querySelector(".teacher-info-box .stat-value")
-            const teacherEmail = document.querySelector(".teacher-info-box .teacher-email")
-            const teacherRate = document.querySelector(".teacher-info-box .stat-rate")
-            const student = document.querySelector(".teacher-info-box .stat-student")
+           const teacherName = document.querySelector(".teacher-info-box .teacher-name");
+            const lectureCount = document.querySelector(".teacher-info-box .stat-value");
+            const teacherEmail = document.querySelector(".teacher-info-box .teacher-email");
+            const teacherRate = document.querySelector(".teacher-info-box .stat-rate");
+            const student = document.querySelector(".teacher-info-box .stat-student");
 
             teacherName.textContent = data.nickname;
             lectureCount.textContent = data.lectureCount;
@@ -72,6 +73,8 @@
         } catch (err) {
             console.error("선생님 프로필 로드 실패:", err);
         }
+
+
         const photoWrapper = document.querySelector("#photo-wrapper");
         const inputFile = document.querySelector("#profile-upload");
         const allowedExt = ["png", "jpg", "jpeg", "webp"];
@@ -112,8 +115,32 @@
                 body: form
             });
 
-            if (!res.ok) {
-                alert("업로드 실패 (로그인 만료 혹은 서버 오류)");
+            const rp = await res.json();
+            console.log("서버 응답:", rp);
+
+            // 요청 실패 처리
+            if (!res.ok || !rp.success) {
+
+                // 로그인이 필요한 경우
+                if (rp.statusCode === 401) {
+
+                    // 로그인 필요 안내 전달
+                    if (confirm(rp.message || "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+                        window.location.href = rp.redirect || "/login";
+                    }
+
+                    // 로직 중단
+                    return;
+                }
+
+                // 권한이 부족한 경우
+                if (rp.statusCode === 403) {
+                    alert(rp.message || "접근 권한이 없습니다.");
+                    return;
+                }
+
+                // 기타 예기치 않은 오류가 발생한 경우
+                alert(rp.message || "서버 오류가 발생했습니다. 잠시 후에 시도해 주세요.");
                 return;
             }
 
@@ -123,6 +150,8 @@
             imgElem.src = profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_image.png'/>";
             profileElem.src = profileElem.src = URL.createObjectURL(file) || "<c:url value='/img/png/default_image.png'/>";
             alert("✅ 프로필 이미지가 변경되었습니다.");
+
+
         } catch (err) {
             console.error("프로필 업로드 실패:", err);
             alert("❌ 업로드 중 오류가 발생했습니다.");
