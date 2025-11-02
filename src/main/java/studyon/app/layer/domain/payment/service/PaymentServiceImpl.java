@@ -251,7 +251,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         // [1] 결제 정보 조회
         Payment payment = paymentRepository
-                .findFetchByMemberId(paymentId)
+                .findFetchById(paymentId)
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.PAYMENT_NOT_FOUND));
 
         // 결제강의 조회
