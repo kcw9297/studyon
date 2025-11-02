@@ -229,7 +229,7 @@
 
                 // ✅ 썸네일 경로 처리
                 const thumbnailSrc = bestLecture.thumbnailImagePath
-                    ? `${fileDomain}/\${bestLecture.thumbnailImagePath}`
+                    ? "${fileDomain}/\${bestLecture.thumbnailImagePath}"
                     : "/img/png/default_image.png";
 
                 item.classList.add("recent-lecture-item");
@@ -276,7 +276,7 @@
 
                 const detailUrl = `/lecture/detail/\${recentLecture.lectureId}`;
                 const thumbnailSrc = recentLecture.thumbnailImagePath
-                    ? `${fileDomain}/\${recentLecture.thumbnailImagePath}`
+                    ? "${fileDomain}/\${recentLecture.thumbnailImagePath}"
                     : "/img/png/default_image.png";
 
 

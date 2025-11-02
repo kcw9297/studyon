@@ -356,7 +356,7 @@
 
                 // 1. 이미지 설정
                 const imageElement = card.querySelector('.notice-image');
-                imageElement.src = notice.noticeImage ? `${fileDomain}/\${notice.noticeImage.filePath}` : "<c:url value='/img/png/default_image.png'/>";
+                imageElement.src = notice.noticeImage ? "${fileDomain}/\${notice.noticeImage.filePath}" : "<c:url value='/img/png/default_image.png'/>";
 
                 // 2. 제목 설정
                 const titleElement = card.querySelector('.notice-title');
