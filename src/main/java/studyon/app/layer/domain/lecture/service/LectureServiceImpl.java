@@ -106,7 +106,7 @@ public class LectureServiceImpl implements LectureService {
                     lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
                             .ifPresentOrElse(path ->
                                             dto.setThumbnailImagePath(fileDomain + "/" + path),
-                                    () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                    () -> dto.setThumbnailImagePath("/img/png/default_image.png")
                             );
                 })
 
@@ -126,7 +126,7 @@ public class LectureServiceImpl implements LectureService {
                         lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
                                 .ifPresentOrElse(
                                         dto::setThumbnailImagePath,
-                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                        () -> dto.setThumbnailImagePath("/img/png/default_image.png")
                                 )
                 )
                 .collect(Collectors.toList());
@@ -144,7 +144,7 @@ public class LectureServiceImpl implements LectureService {
                         lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
                                 .ifPresentOrElse(
                                         dto::setThumbnailImagePath,
-                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                        () -> dto.setThumbnailImagePath("/img/png/default_image.png")
                                 )
                 )
                 .collect(Collectors.toList());
@@ -163,7 +163,7 @@ public class LectureServiceImpl implements LectureService {
                         lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
                                 .ifPresentOrElse(
                                         dto::setThumbnailImagePath,
-                                        () -> dto.setThumbnailImagePath("/img/png/default_member_profile_image.png")
+                                        () -> dto.setThumbnailImagePath("/img/png/default_image.png")
                                 )
                 )
                 .collect(Collectors.toList());
@@ -194,7 +194,7 @@ public class LectureServiceImpl implements LectureService {
                         lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
                                 .ifPresentOrElse(
                                         dto::setThumbnailImagePath,
-                                        () -> dto.setThumbnailImagePath("default_member_profile_image.png")
+                                        () -> dto.setThumbnailImagePath("default_image.png")
                                 )
                 )
                 .collect(Collectors.toList());

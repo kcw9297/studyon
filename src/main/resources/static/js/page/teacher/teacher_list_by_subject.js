@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         teachers.forEach((teacher) => {
             const thumbnailSrc = teacher.thumbnailPath
                 ? `${fileDomain}/${teacher.thumbnailPath}` // DB의 file_path 그대로 붙임
-                : "/img/png/default_member_profile_image.png";
+                : "/img/png/default_image.png";
             console.log(teacher.thumbnailPath);
 
             const item = document.createElement("div");
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             item.innerHTML = `
                 <a href="/teacher/profile/${teacher.teacherId}">
                     <img src="${thumbnailSrc}" alt="강의 썸네일" class="recent-lecture-thumbnail"
-     onerror="this.onerror=null; this.src='/img/png/default_member_profile_image.png';">
+     onerror="this.onerror=null; this.src='/img/png/default_image.png';">
                     <div class="lecture-info">
                         <p class="lecture-title">${teacher.nickname}</p>
                         <p class="lecture-info-text">${teacher.description || "소개가 없습니다."}</p>

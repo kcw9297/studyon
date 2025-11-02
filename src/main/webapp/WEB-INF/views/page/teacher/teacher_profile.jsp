@@ -11,7 +11,7 @@
                 <img src="<c:url value='/upload/${teacher.profileImagePath}'/>" alt="강사 이미지" class="teacher-img">
             </c:when>
             <c:otherwise>
-                <img src="<c:url value='/img/png/default_member_profile_image.png'/>" alt="기본 이미지" class="teacher-img">
+                <img src="<c:url value='/img/png/default_image.png'/>" alt="기본 이미지" class="teacher-img">
             </c:otherwise>
         </c:choose>
     </div>
@@ -70,7 +70,7 @@
                                  class="recent-lecture-thumbnail" alt="썸네일">
                         </c:when>
                         <c:otherwise>
-                            <img src="<c:url value='/img/png/default_member_profile_image.png'/>"
+                            <img src="<c:url value='/img/png/default_image.png'/>"
                                  class="recent-lecture-thumbnail" alt="기본 이미지">
                         </c:otherwise>
                     </c:choose>

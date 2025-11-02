@@ -76,7 +76,7 @@ public class TeacherServiceImpl implements TeacherService {
                         String filePath = teacherRepository.findProfileImagePathByMemberId(dto.getMemberId());
                         dto.setThumbnailPath(filePath != null
                                 ? filePath
-                                : "/img/png/default_member_profile_image.png"); // 기본 이미지
+                                : "/img/png/default_image.png"); // 기본 이미지
                     }
                 })
                 .collect(Collectors.toList());
@@ -199,7 +199,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .lectureCount(lectureCount)
                 .totalStudents(teacher.getTotalStudents())
                 .averageRating(teacher.getAverageRating())
-                .profileImagePath(profilePath != null ? profilePath : "/img/png/default_member_profile_image.png")
+                .profileImagePath(profilePath != null ? profilePath : "/img/png/default_image.png")
                 .build();
     }
 
@@ -231,7 +231,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .lectureCount(lectureCount)
                 .totalStudents(teacher.getTotalStudents())
                 .averageRating(teacher.getAverageRating())
-                .profileImagePath(profilePath != null ? profilePath : "/img/png/default_member_profile_image.png")
+                .profileImagePath(profilePath != null ? profilePath : "/img/png/default_image.png")
                 .build();
     }
 

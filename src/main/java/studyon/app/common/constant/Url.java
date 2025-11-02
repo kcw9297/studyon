@@ -44,6 +44,9 @@ public final class Url {
     public static final String TEACHER_API = TEACHER + API;  // "/admin/api/home"
     public static final String ADMIN_HOME_API = ADMIN_API + HOME;
 
+    // WEB SOCKET
+    public static final String SOCKET_CHAT = "/ws/chat";
+
 
     // Security, auth, account
     public static final String EDIT_PASSWORD = "/edit-password";

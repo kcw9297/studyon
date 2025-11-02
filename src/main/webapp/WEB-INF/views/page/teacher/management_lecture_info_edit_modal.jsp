@@ -252,8 +252,8 @@
         } else if (fieldInfo.type === 'select') {
             let afterText;
             if (fieldInfo.field === 'lectureTarget') afterText = TARGET_MAP[value];
-            if (fieldInfo.field === 'subjectDetail') afterText = SUBJECT_DETAIL_MAP[value];
-            if (fieldInfo.field === 'difficulty') afterText = DIFFICULTY_MAP[value];
+            else if (fieldInfo.field === 'subjectDetail') afterText = SUBJECT_DETAIL_MAP[value];
+            else if (fieldInfo.field === 'difficulty') afterText = DIFFICULTY_MAP[value];
             else afterText = value;
             document.getElementById(fieldInfo.id).textContent = afterText;
         } else if (fieldInfo.type === 'textarea') {

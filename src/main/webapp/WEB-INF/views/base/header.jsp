@@ -39,7 +39,7 @@
                     <img src="${fileDomain}/${sessionScope.profile.profileImage.filePath}" class="profile-img" alt="프로필 사진">
                 </c:if>
                 <c:if test="${empty sessionScope.profile.profileImage}">
-                    <img src="<c:url value='/img/png/default_member_profile_image.png'/>"; class="profile-img" alt="프로필 사진">
+                    <img src="<c:url value='/img/png/default_profile.png'/>"; class="profile-img" alt="프로필 사진">
                 </c:if>
             </div>
         </c:if>

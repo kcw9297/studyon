@@ -340,7 +340,7 @@
 
                 // 1. 이미지 설정
                 const imageElement = card.querySelector('.banner-image');
-                imageElement.src = banner.bannerImage ? `${fileDomain}/\${banner.bannerImage.filePath}` : "<c:url value='/img/png/default_member_profile_image.png'/>";
+                imageElement.src = banner.bannerImage ? `${fileDomain}/\${banner.bannerImage.filePath}` : "<c:url value='/img/png/default_image.png'/>";
 
                 // 2. 제목 설정
                 const titleElement = card.querySelector('.banner-title');
@@ -411,7 +411,7 @@
                 const titleElement = card.querySelector('.banner-title');
                 const statusBtn = card.querySelector('.banner-status-btn');
 
-                imageElement.src = "<c:url value='/img/png/default_member_profile_image.png'/>";
+                imageElement.src = "<c:url value='/img/png/default_image.png'/>";
                 titleElement.textContent = `제목 입력 \${cardIdx}`;
                 statusBtn.classList.remove('active');
                 statusBtn.classList.add('inactive');

@@ -591,7 +591,7 @@
         console.log('강의 목록 렌더링:', lecture);
         const imgSrc = lecture.thumbnailImagePath
             ? `${fileDomain}/\${lecture.thumbnailImagePath}`
-            : `<c:url value='/img/png/default_member_profile_image.png'/>`;
+            : `<c:url value='/img/png/default_image.png'/>`;
 
         // 판매 상태 배지
         const saleBadgeClass = lecture.onSale ? 'badge-success' : 'badge-danger';

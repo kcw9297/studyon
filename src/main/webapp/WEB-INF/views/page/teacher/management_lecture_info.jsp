@@ -133,14 +133,14 @@
                 });
                 const json = await res.json();
                 if (json.status === "OK") {
-                    thumbImg.src = URL.createObjectURL(file);
+                    thumbImg.innerHTML = URL.createObjectURL(file);
                 } else {
                     alert(json.message || "업로드 실패");
                 }
-                thumbBox.innerHTML =
-                    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
-                    ' alt="강의 썸네일"' +
-                    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
+                //thumbBox.innerHTML =
+                //    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
+                //    ' alt="강의 썸네일"' +
+                //    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
 
 
             } catch (err) {
