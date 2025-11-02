@@ -25,7 +25,7 @@ public class CacheSchedulingService {
     private final FileManager fileManager;
     private final FileRepository fileRepository;
 
-    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRate = 30, timeUnit = TimeUnit.SECONDS)
     public void removeOrphanEditorCaches() {
 
         // [1] 고아 상태의 에디터 캐시정보 일괄 조회
@@ -33,7 +33,7 @@ public class CacheSchedulingService {
                 editorCacheManager.getAndRemoveAllOrphanCache(EditorCache.class);
 
         // 로깅
-        //log.warn("Removing orphan caches: {}", orphans);
+        log.warn("Removing orphan caches: {}", orphans);
 
         // [2] 내부의 업로드했던 파일 모두 삭제
         orphans.stream()

@@ -133,7 +133,7 @@
                 });
                 const json = await res.json();
                 if (json.status === "OK") {
-                    thumbImg.innerHTML = URL.createObjectURL(file);
+                    thumbImg.src = URL.createObjectURL(file);
                 } else {
                     alert(json.message || "업로드 실패");
                 }
