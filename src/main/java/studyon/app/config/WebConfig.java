@@ -69,6 +69,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 로컬에서만 실제 파일 경로 매핑
+        if (isLocal)
             registry.addResourceHandler(allFilePath)
                     .addResourceLocations("file:/%s/".formatted(fileDir));
     }
