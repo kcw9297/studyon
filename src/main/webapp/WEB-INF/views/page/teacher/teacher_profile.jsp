@@ -8,7 +8,7 @@
     <div class="teacher-img-area">
         <c:choose>
             <c:when test="${not empty teacher.profileImagePath}">
-                <img src="<c:url value='/upload/${teacher.profileImagePath}'/>" alt="강사 이미지" class="teacher-img">
+                <img src="<c:url value='${fileDomain}/${teacher.profileImagePath}'/>" alt="강사 이미지" class="teacher-img">
             </c:when>
             <c:otherwise>
                 <img src="<c:url value='/img/png/default_image.png'/>" alt="기본 이미지" class="teacher-img">
@@ -66,7 +66,7 @@
                 <a href="<c:url value='/lecture/detail/${lecture.lectureId}'/>">
                     <c:choose>
                         <c:when test="${not empty lecture.thumbnailImagePath}">
-                            <img src="<c:url value='/upload/${lecture.thumbnailImagePath}'/>"
+                            <img src="<c:url value='${fileDomain}/${lecture.thumbnailImagePath}'/>"
                                  class="recent-lecture-thumbnail" alt="썸네일">
                         </c:when>
                         <c:otherwise>

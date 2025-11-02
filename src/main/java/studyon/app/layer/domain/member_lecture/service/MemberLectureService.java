@@ -55,7 +55,7 @@ public class MemberLectureService {
                                 lectureRepository.findThumbnailPathByLectureId(dto.getLectureId())
                                         .ifPresentOrElse(
                                                 dto::setThumbnailImagePath,
-                                                () -> dto.setThumbnailImagePath("/img/png/default_image.png")
+                                                () -> dto.setThumbnailImagePath(null)
                                         )
                         )
                         .collect(Collectors.toList());
