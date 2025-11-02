@@ -106,6 +106,7 @@ public enum AppStatus {
     LECTURE_OK_EDIT_SUBJECT_DETAIL(200, "강의 상세 과목을 수정했습니다."),
     LECTURE_OK_EDIT_DIFFICULTY(200, "강의 난이도를 수정했습니다."),
     LECTURE_OK_EDIT_PRICE(200, "강의 판매 가격을 수정했습니다."),
+    LECTURE_NOT_ACCESSIBLE(403, "접근할 수 없는 강의입니다."),
 
     /* QNA 상태*/
     QUESTION_NOT_FOUND(500, "질문이 존재하지 않습니다.");

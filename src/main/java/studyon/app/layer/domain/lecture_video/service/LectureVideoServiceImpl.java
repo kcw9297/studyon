@@ -22,9 +22,12 @@ import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
 import studyon.app.layer.domain.lecture_video.LectureVideo;
 import studyon.app.layer.domain.lecture_video.LectureVideoDTO;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
+import studyon.app.layer.domain.member.MemberProfile;
+import studyon.app.layer.domain.member_lecture.MemberLecture;
+import studyon.app.layer.domain.member_lecture.repository.MemberLectureRepository;
 
-import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,6 +36,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class LectureVideoServiceImpl implements LectureVideoService {
 
+    private final MemberLectureRepository memberLectureRepository;
     private final LectureVideoRepository lectureVideoRepository;
     private final LectureIndexRepository lectureIndexRepository;
     private final FileManager fileManager;
@@ -158,6 +162,13 @@ public class LectureVideoServiceImpl implements LectureVideoService {
                         .updatedAt(v.getUpdatedAt())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void verifyAccess(MemberProfile profile, Long lectureId) {
+
+        if (memberLectureRepository.existsByMember_MemberIdAndLecture_LectureId(profile.getMemberId(), lectureId))
+            throw new BusinessLogicException(AppStatus.LECTURE_NOT_ACCESSIBLE);
     }
 
 }

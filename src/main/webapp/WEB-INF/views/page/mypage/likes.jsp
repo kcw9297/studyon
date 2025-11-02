@@ -12,16 +12,8 @@
                     <a class="likes-item" href="/lecture/detail/${like.lecture.lectureId}">
                         <div class="likes-thumbnail">
                                 <c:choose>
-                                    <%--
-                                    <c:when test="${not empty like.lecture.thumbnailFile and not empty like.lecture.thumbnailFile.filePath}">
-                                        <img src="http://localhost:8080/upload/${like.lecture.thumbnailFile.filePath}" alt="강의 썸네일">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
-                                    </c:otherwise>
-                                    --%>
                                     <c:when test="${not empty like.lecture.thumbnailImagePath}">
-                                        <img src="http://localhost:8080/upload/${like.lecture.thumbnailImagePath}" alt="강의 썸네일">
+                                        <img src="${fileDomain}/${like.lecture.thumbnailImagePath}" alt="강의 썸네일">
                                     </c:when>
                                     <c:otherwise>
                                         <img src="<c:url value='/img/png/thumbnail.png'/>" alt="기본 이미지">
