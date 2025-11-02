@@ -386,7 +386,7 @@ public class DTOMapper {
                 .size(entity.getSize())
                 .entity(entity.getEntity())
                 .fileType(entity.getFileType())
-                .filePath(entity.getFilePath())
+                .filePath(StrUtils.createVersionUrl(entity.getFilePath()))
                 .build();
     }
 

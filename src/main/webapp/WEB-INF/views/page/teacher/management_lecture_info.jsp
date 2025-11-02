@@ -51,7 +51,6 @@
             <label class="view-label">썸네일 이미지</label>
 
             <div id="lecture-thumbnail" class="lecture-thumbnail">
-                썸네일을 등록해주세요 📷
             </div>
             <input type="file" id="thumbnail-upload" accept="image/*" style="display:none;">
         </div>
@@ -133,6 +132,13 @@
                 });
                 const json = await res.json();
                 if (json.status === "OK") {
+                    thumbImg.innerHTML = `
+                        <img src="\${URL.createObjectURL(file)}"
+                         alt="강의 썸네일"
+                         style="width:100%; height:100%; border-radius:10px; object-fit:cover;">
+                    `;
+
+
                     thumbImg.src = URL.createObjectURL(file);
                 } else {
                     alert(json.message || "업로드 실패");
@@ -213,7 +219,6 @@
             if (lecture.thumbnailImagePath)
                 imageElement.innerHTML = `<img src="${fileDomain}/\${lecture.thumbnailImagePath}" alt="강의 썸네일" style="width:100%; height:100%; border-radius:10px; object-fit:cover;">`;
             else imageElement.textContent = "썸네일을 등록해주세요 📷";
-
 
             // 강의 목차 불러오기
             const res = await fetch("/api/teachers/management/lectureindex/" + lectureId);
