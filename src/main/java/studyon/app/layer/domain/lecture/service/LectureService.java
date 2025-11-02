@@ -7,6 +7,7 @@ import studyon.app.common.enums.Subject;
 import studyon.app.common.enums.SubjectDetail;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.domain.lecture.LectureDTO;
+import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 
 import java.util.*;
 
@@ -134,4 +135,8 @@ public interface LectureService {
     // 과목별 매출
 
     Map<String, Long> readSalesBySubject();
+
+    //특정 선생님 강의
+    List<LectureDTO.Simple> readLecturesByTeacher(Long teacherId);
+    List<LectureReviewDTO.Read> readReviewsByLecture(Long lectureId);
 }

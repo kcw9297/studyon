@@ -49,7 +49,7 @@
     .qna-detail-container {
         width: 100%;
         min-height: 750px;
-        background: #f8f9fa;
+        background: white;
         border-radius: 12px;
         padding: 50px 80px;
         box-sizing: border-box;

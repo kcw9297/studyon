@@ -6,6 +6,7 @@ import studyon.app.layer.domain.lecture.Lecture;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /*
  * [수정 이력]
@@ -139,5 +140,44 @@ public class TeacherDTO {
         private Double averageRating;
         private String profileImagePath;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeacherDashboardDTO {
+
+        private LectureStats lectureStats;
+        private SalesStats salesStats;
+        private TeacherStats teacherStats;
+
+        @Data
+        @Builder
+        public static class LectureStats {
+            private Map<String, Long> bySubject;
+            private Map<String, Long> byStatus;
+            private Map<String, Long> byDifficulty;
+            private Map<String, Long> byTarget;
+            private Long totalLectureCount;
+        }
+
+        @Data
+        @Builder
+        public static class SalesStats {
+            private Long totalSales;
+            private Map<String, Long> salesBySubject;
+        }
+
+        @Data
+        @Builder
+        public static class TeacherStats {
+            private String nickname;
+            private String subject;
+            private Long totalStudents;
+            private Long totalLectures;
+            private Double averageRating;
+        }
+    }
+
 
 }

@@ -49,11 +49,10 @@
         justify-items: center;
         flex-wrap: wrap;
         justify-content: center;
-        border: 2px solid black;
         min-height: 600px;
         height: auto;
         flex-direction: column;
-        background-color: #fafafa;
+        background-color: white;
         padding-bottom: 60px;
     }
 

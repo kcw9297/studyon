@@ -50,7 +50,6 @@
 
 <style>
     .admin-content-container {
-        border: 2px solid black;
         min-height: 600px;
         height: auto;
         padding: 20px;

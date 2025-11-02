@@ -25,7 +25,6 @@
     .admin-content-container {
         display: flex;
         flex-direction: column;
-        border: 2px solid black;
         min-height: 600px;
         height: auto;
         width: 100%;

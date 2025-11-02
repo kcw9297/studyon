@@ -1,21 +1,11 @@
 .admin-content-container {
     display: flex;
     flex-direction: column;
-    border: 2px solid black;
-    min-height: 600px;
     height: auto;
     width: 100%;
 }
 
 /* 페이징 관련 CSS */
-.admin-content-container {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid black;
-    min-height: 600px;
-    height: auto;
-    width: 100%;
-}
 
 .admin-page-title {
     font-size: 22px;
@@ -69,7 +59,6 @@
     width: 100%;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
@@ -246,12 +235,6 @@
 .modal-info p {
     font-size: 16px; /* ✅ 원하는 크기로 조정 (예: 14px~18px 권장) */
     color: #333; /* 글자색도 변경 가능 */
-}
-
-.admin-content-container {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid black;
 }
 
 .admin-header-bar {

@@ -13,7 +13,6 @@
 <section class="introduce">
     <div id="intro" class="introduce-content">
         <div class="intro-text">
-            강의소개 설명
             ${lecture.description}
         </div>
     </div>

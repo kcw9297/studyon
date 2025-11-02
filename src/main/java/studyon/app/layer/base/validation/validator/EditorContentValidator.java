@@ -47,6 +47,7 @@ public class EditorContentValidator implements ConstraintValidator<EditorContent
 
         // [2] html 태그 제거 후 검증 수행
         String pureContext = StrUtils.removeHtmlTags(value);
+        log.info(pureContext);
 
         if (Objects.isNull(pureContext) || pureContext.length() < min || pureContext.length() > max) {
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();

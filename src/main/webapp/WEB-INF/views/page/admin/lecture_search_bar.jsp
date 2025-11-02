@@ -16,7 +16,7 @@
         display: flex;
         align-items: center;
         gap: 15px;
-        margin-bottom: 15px;
+        width:500px;
     }
 
     .search-row:last-child {
@@ -27,11 +27,12 @@
         font-weight: 600;
         font-size: 14px;
         min-width: 90px;
-        color: #333;
+        color: #333333;
     }
 
     /* 입력 필드 */
     .search-row input[type="text"] {
+        width:300px;
         flex: 1;
         padding: 10px 14px;
         border: 1px solid #ddd;
@@ -286,13 +287,46 @@
         background: #7f8c8d;
     }
 
+    #keyword{
+        width:300px;
+    }
+
+    .search-title {
+        display: inline-block;
+        background: linear-gradient(135deg, #f5f7fa, #e9ecf5);
+        color: #fff;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 6px 14px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        margin: 5px 0 10px 0;
+        transition: background 0.2s ease, transform 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .search-title:hover {
+        background: linear-gradient(135deg, #6b69f0, #8f8cfb);
+        transform: translateY(-1px);
+    }
+
+
 </style>
 
 
 <!-- 검색 바 -->
 <div class="lecture-search-bar">
     <div class="search-row">
-        <label for="searchType">검색 구분:</label>
+        <label class="search-title">검색어</label>
+        <input type="text" id="keyword" name="keyword" placeholder="검색어를 입력하세요..." />
+    </div>
+
+
+    <div class="search-row">
+        <label for="searchType" class="search-title">검색 구분</label>
         <select id="searchType" name="filter">
             <option value="">전체</option>
             <c:forEach var="filter" items="${filters}">
@@ -301,13 +335,14 @@
                 </option>
             </c:forEach>
         </select>
-
+        <%--
         <label>검색어:</label>
         <input type="text" id="keyword" name="keyword" placeholder="검색어를 입력하세요..." />
+        --%>
     </div>
 
     <div class="search-row">
-        <label for="subject">과목:</label>
+        <label for="subject" class="search-title">과목</label>
         <div class="checkbox-group">
             <c:forEach var="subject" items="${subjects}">
                 <label>
@@ -319,21 +354,21 @@
     </div>
 
     <div class="search-row">
-        <label for="subjectDetail">세부:</label>
+        <label for="subjectDetail" class="search-title">세부</label>
         <button type="button" class="detail-subject-btn" id="openSubjectDetailModal">
             세부과목 선택 <span>▼</span>
         </button>
     </div>
 
     <div class="search-row">
-        <label>가격 범위:</label>
+        <label class="search-title">가격 범위</label>
         <input type="number" name="minPrice" placeholder="최소 금액" min="0" />
         <span>~</span>
         <input type="number" name="maxPrice" placeholder="최대 금액" min="0" />
     </div>
 
     <div class="search-row">
-        <label for="onSales">판매 상태:</label>
+        <label for="onSales" class="search-title">판매 상태</label>
         <c:forEach var="onSale" items="${onSales}">
             <label><input type="checkbox" name="onSales" value="${onSale}">
                     ${onSale.value}
@@ -342,7 +377,7 @@
     </div>
 
     <div class="search-row">
-        <label>등록 상태:</label>
+        <label class="search-title">등록 상태</label>
         <c:forEach var="status" items="${statuses}">
             <label><input type="checkbox" name="statuses" value="${status}">
                     ${status.value}
@@ -351,7 +386,7 @@
     </div>
 
     <div class="search-row">
-        <label>학년:</label>
+        <label class="search-title">학년</label>
         <c:forEach var="target" items="${targets}">
             <label><input type="checkbox" name="targets" value="${target}">
                     ${target.value}
@@ -361,7 +396,7 @@
 
 
     <div class="search-row">
-        <label>난이도:</label>
+        <label class="search-title">난이도</label>
         <c:forEach var="difficulty" items="${difficulties}">
             <label><input type="checkbox" name="difficulties" value="${difficulty}">
                     ${difficulty.value}
@@ -370,7 +405,7 @@
     </div>
 
     <div class="search-row">
-        <label>정렬:</label>
+        <label class="search-title">정렬</label>
         <c:forEach var="sort" items="${sorts}">
             <label><input type="radio" name="sort" value="${sort}">
                     ${sort.value}
@@ -378,7 +413,7 @@
         </c:forEach>
     </div>
 
-    <div class="search-row" style="justify-content: flex-end;">
+    <div class="search-row" style="justify-content: flex-start;">
         <button id="lectureResetBtn" type="button" class="btn-reset">초기화</button>
         <button id="lectureSearchBtn" type="button" class="btn-search">검색</button>
     </div>

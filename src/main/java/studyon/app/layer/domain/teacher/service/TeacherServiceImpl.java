@@ -2,6 +2,7 @@ package studyon.app.layer.domain.teacher.service;
 
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyon.app.common.enums.AppStatus;
@@ -11,14 +12,19 @@ import studyon.app.common.exception.BusinessLogicException;
 import studyon.app.layer.base.dto.Page;
 import studyon.app.layer.base.utils.DTOMapper;
 import studyon.app.layer.domain.lecture.Lecture;
+import studyon.app.layer.domain.lecture.LectureDTO;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.member.Member;
+import studyon.app.layer.domain.member_lecture.repository.MemberLectureRepository;
+import studyon.app.layer.domain.payment.repository.PaymentRepository;
 import studyon.app.layer.domain.teacher.Teacher;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 import studyon.app.layer.domain.teacher.mapper.TeacherMapper;
 import studyon.app.layer.domain.teacher.repository.TeacherRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /*
@@ -41,6 +47,8 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final LectureRepository lectureRepository;
     private final TeacherMapper teacherMapper;
+    private final MemberLectureRepository memberLectureRepository;
+    private final PaymentRepository  paymentRepository;
 
     /**
      * 모든 선생님 조회
@@ -160,6 +168,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElseThrow(() -> new BusinessLogicException(AppStatus.TEACHER_NOT_FOUND));
         Member member = teacher.getMember();
         Long lectureCount = lectureRepository.count(teacher.getTeacherId(), LectureRegisterStatus.REGISTERED);
+        Long totalStudent = memberLectureRepository.countDistinctStudentsByTeacherId(teacher.getTeacherId());
 
         return TeacherDTO.TeacherManagementProfile.builder()
                 .teacherId(teacher.getTeacherId())
@@ -169,7 +178,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .description(teacher.getDescription())
                 .subject(teacher.getSubject())
                 .lectureCount(lectureCount)
-                .totalStudent(teacher.getTotalStudents())
+                .totalStudent(totalStudent)
                 .averageRating(teacher.getAverageRating())
                 .build();
     }
@@ -234,6 +243,76 @@ public class TeacherServiceImpl implements TeacherService {
                 .profileImagePath(profilePath != null ? profilePath : "/img/png/default_image.png")
                 .build();
     }
+
+
+    @Override
+    public TeacherDTO.TeacherDashboardDTO getDashboard(Long teacherId) {
+
+        // [1] 강사 정보 조회
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException("강사 정보를 찾을 수 없습니다."));
+
+        // [2] 강의 통계
+        var lectureStats = TeacherDTO.TeacherDashboardDTO.LectureStats.builder()
+                .bySubject(toSimpleMap(lectureRepository.findLectureCountBySubject(), "subject", "cnt"))
+                .byStatus(toSimpleMap(lectureRepository.findLectureCountByStatus(), "status", "cnt"))
+                .byDifficulty(toSimpleMap(
+                        lectureRepository.findLectureCountByDifficultyForTeacher(teacherId),
+                        "difficulty",
+                        "cnt"
+                ))
+                .byTarget(toSimpleMap(lectureRepository.findLectureCountByTarget(), "target", "cnt"))
+                .totalLectureCount(lectureRepository.countByTeacher_TeacherId(teacherId))
+                .build();
+
+        // [3] 매출 통계 (최근 1년치)
+        LocalDateTime start = LocalDateTime.now().minusYears(1);
+        LocalDateTime end = LocalDateTime.now();
+
+        var salesStats = TeacherDTO.TeacherDashboardDTO.SalesStats.builder()
+                .totalSales(paymentRepository.findAllSales(start, end))
+                .salesBySubject(toSimpleMap(paymentRepository.findTotalSalesBySubject(), "subject", "totalSales"))
+                .build();
+
+        // [4] 강사 자체 통계
+        var teacherStats = TeacherDTO.TeacherDashboardDTO.TeacherStats.builder()
+                .nickname(teacher.getMember().getNickname())
+                .subject(teacher.getSubject().name())
+                .totalStudents(memberLectureRepository.countDistinctStudentsByTeacherId(teacherId))
+                .totalLectures(lectureRepository.countByTeacher_TeacherId(teacherId))
+                .averageRating(teacher.getAverageRating())
+                .build();
+
+        // [5] 통합 DTO 리턴
+        return TeacherDTO.TeacherDashboardDTO.builder()
+                .lectureStats(lectureStats)
+                .salesStats(salesStats)
+                .teacherStats(teacherStats)
+                .build();
+    }
+
+    // Map 변환기
+    private Map<String, Long> toSimpleMap(
+            java.util.List<java.util.Map<String, Object>> list,
+            String keyField, String valueField
+    ) {
+        return list.stream()
+                .collect(Collectors.toMap(
+                        m -> String.valueOf(m.get(keyField)),
+                        m -> ((Number) m.get(valueField)).longValue()
+                ));
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -287,4 +287,17 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     WHERE t.teacherId = :teacherId
     """)
     Optional<String> findTeacherProfilePath(@Param("teacherId") Long teacherId);
+
+    /**
+     * 특정 선생님 강의 중 난이도별 강의 수 조회
+     */
+    @Query("""
+    SELECT new map(l.difficulty AS difficulty, COUNT(l) AS cnt)
+    FROM Lecture l
+    WHERE l.teacher.teacherId = :teacherId
+    GROUP BY l.difficulty
+""")
+    List<Map<String, Object>> findLectureCountByDifficultyForTeacher(@Param("teacherId") Long teacherId);
+
+    List<Lecture> findByTeacher_TeacherId(Long teacherId);
 }

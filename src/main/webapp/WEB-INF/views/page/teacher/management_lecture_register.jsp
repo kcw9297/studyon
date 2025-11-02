@@ -278,10 +278,11 @@
         font-weight: 600;
         color: #444;
         font-size: 18px;
+        margin-bottom:5px;
     }
 
     .resister-lecture-title{
-        width: 50%;
+        width: 73%;
         padding: 12px 14px;
         font-size: 16px;
         border: 1px solid #ccc;
@@ -291,7 +292,7 @@
     }
 
     .resister-lecture-summary{
-        width: 50%;
+        width: 73%;
         padding: 12px 14px;
         font-size: 16px;
         border: 1px solid #ccc;

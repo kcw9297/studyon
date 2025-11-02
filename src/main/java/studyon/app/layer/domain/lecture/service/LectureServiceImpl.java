@@ -24,6 +24,7 @@ import studyon.app.layer.domain.lecture.mapper.LectureMapper;
 import studyon.app.layer.domain.lecture.repository.LectureRepository;
 import studyon.app.layer.domain.lecture_index.LectureIndex;
 import studyon.app.layer.domain.lecture_index.repository.LectureIndexRepository;
+import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.lecture_review.repository.LectureReviewRepository;
 import studyon.app.layer.domain.lecture_video.repository.LectureVideoRepository;
 import studyon.app.layer.domain.payment.repository.PaymentRepository;
@@ -291,6 +292,7 @@ public class LectureServiceImpl implements LectureService {
                 .lectureRegisterStatus(lecture.getLectureRegisterStatus())
                 .description(lecture.getDescription())
                 .target(lecture.getLectureTarget())
+                .onSales(lecture.getOnSale())
                 .difficulty(lecture.getDifficulty())
                 .subject(lecture.getSubject())
                 .subjectDetail(lecture.getSubjectDetail())
@@ -644,5 +646,36 @@ public class LectureServiceImpl implements LectureService {
                         row -> row.get("subject").toString(),
                         row -> ((Number) row.get("totalSales")).longValue()
                 ));
+    }
+
+    /**
+     * [1] 특정 강사의 등록 강의 리스트 조회 (드롭다운용)
+     */
+    @Override
+    public List<LectureDTO.Simple> readLecturesByTeacher(Long teacherId) {
+        List<Lecture> lectures = lectureRepository.findRecentLecturesByTeacherId(
+                teacherId,
+                LectureRegisterStatus.REGISTERED,
+                PageRequest.of(0, 50)
+        );
+
+        return lectures.stream()
+                .map(l -> LectureDTO.Simple.builder()
+                        .lectureId(l.getLectureId())
+                        .title(l.getTitle())
+                        .registerStatus(l.getLectureRegisterStatus().name())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * [2] 특정 강의의 리뷰 목록 조회
+     */
+    @Override
+    public List<LectureReviewDTO.Read> readReviewsByLecture(Long lectureId) {
+        return lectureReviewRepository.findByLecture_LectureIdOrderByCreatedAtDesc(lectureId)
+                .stream()
+                .map(DTOMapper::toReadDTO)
+                .collect(Collectors.toList());
     }
 }

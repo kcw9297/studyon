@@ -250,8 +250,6 @@
     }
 
     /* Lecture Review PART */
-
-    /* ✅ 전체 수강평 박스 */
     .lecture-comment-box {
         width: 100%;
         background-color: #fff;
@@ -264,7 +262,6 @@
         gap: 12px; /* 아이템 간 간격 */
     }
 
-    /* ✅ 개별 수강평 */
     .lecture-comment-box-item {
         display: flex;
         align-items: flex-start;
@@ -281,33 +278,29 @@
         transform: translateY(-2px);
     }
 
-    /* ✅ 작성자 이름 */
     .lecture-comment-username {
         font-size: 16px;
         font-weight: 600;
-        color: #00b894; /* 인프런 시그니처 초록 */
+        color: #00b894;
         margin-right: 10px;
     }
 
-    /* ✅ 코멘트 내용 */
     .lecture-comment-comment {
         font-size: 16px;
         font-weight: 400;
         color: #333;
         line-height: 1.6;
         word-break: keep-all;
-        border-bottom: 1px solid blanchedalmond;
+        border-bottom: 1px solid rgba(0,0,0,0.2);
         margin-bottom:5px;
         padding-bottom:5px;
     }
 
-    /* ✅ 텍스트 배치 깔끔하게 */
     .lecture-comment-box-item div {
         display: flex;
         flex-direction: column;
     }
 
-    /* ✅ 프로필 이미지(optional) */
     .comment-profile {
         width: 42px;
         height: 42px;
@@ -318,7 +311,6 @@
         background-color: #fff;
     }
 
-    /* ✅ 반응형 */
     @media (max-width: 768px) {
         .lecture-comment-box {
             padding: 14px;

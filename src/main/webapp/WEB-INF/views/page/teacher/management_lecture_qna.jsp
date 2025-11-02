@@ -56,7 +56,7 @@
     .qna-main-container {
         width: 100%;
         min-height: 850px;
-        background: #fafafa;
+        background: white;
         border-radius: 12px;
         padding: 30px 50px;
         box-sizing: border-box;
