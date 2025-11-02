@@ -112,7 +112,7 @@
 
                     const img = document.createElement("img");
 
-                    img.src = `${fileDomain}\${lecture.thumbnailImagePath}`;
+                    img.src = "${fileDomain}\${lecture.thumbnailImagePath}";
                     img.classList.add("lecture-thumbnail");
 
 
