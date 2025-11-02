@@ -38,7 +38,6 @@
     .review-section {
         width: 100%;
         background: #fff;
-        border-top: 1px solid #ddd;
         font-family: 'Noto Sans KR', sans-serif;
         margin-top:15px;
     }

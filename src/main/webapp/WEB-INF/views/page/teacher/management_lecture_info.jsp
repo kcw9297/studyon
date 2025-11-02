@@ -133,14 +133,14 @@
                 });
                 const json = await res.json();
                 if (json.status === "OK") {
-                    thumbImg.src = URL.createObjectURL(file);
+                    thumbImg.innerHTML = URL.createObjectURL(file);
                 } else {
                     alert(json.message || "업로드 실패");
                 }
-                thumbBox.innerHTML =
-                    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
-                    ' alt="강의 썸네일"' +
-                    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
+                //thumbBox.innerHTML =
+                //    '<img src="/api/teachers/management/lecture/' + lectureId + '/thumbnail/view?ts=' + Date.now() + '"' +
+                //    ' alt="강의 썸네일"' +
+                //    ' style="width:100%; height:100%; border-radius:10px; object-fit:cover;">';
 
 
             } catch (err) {
@@ -155,7 +155,7 @@
             const lecture = json.data;
 
             //렌더링시 승인 요청/등록된 강좌는 버튼 X
-            if (lecture.lectureRegisterStatus === "PENDING" || lecture.lectureRegisterStatus === "REGISTERD") {
+            if (lecture.lectureRegisterStatus === "PENDING" || lecture.lectureRegisterStatus === "REGISTERED") {
                 const registerBtn = document.querySelector(".lecture-register-button");
                 if (registerBtn) {
                     registerBtn.style.display = "none"; // 버튼 숨기기
@@ -173,6 +173,41 @@
             document.getElementById("lecture-difficulty").innerText = DIFFICULTY_MAP[lecture.difficulty];
             document.getElementById("lecture-price").innerText = "₩" + lecture.price.toLocaleString();
 
+            // 강의상태 TAG
+            // 상태 라벨 엘리먼트
+            const saleLabel = document.querySelector(".lecture-status-onsale");
+            const statusLabel = document.querySelector(".lecture-status-status");
+
+            // 판매 상태
+            if (lecture.onSales === true) {
+                saleLabel.textContent = "판매중";
+                saleLabel.style.backgroundColor = "#4CAF50"; // 초록색
+                saleLabel.style.color = "#fff";
+            } else {
+                saleLabel.textContent = "미판매중";
+                saleLabel.style.backgroundColor = "#9E9E9E"; // 회색
+                saleLabel.style.color = "#fff";
+            }
+
+            // 등록 상태
+            switch (lecture.lectureRegisterStatus) {
+                case "UNREGISTERED":
+                    statusLabel.textContent = "미등록";
+                    statusLabel.style.backgroundColor = "#9E9E9E";
+                    break;
+                case "PENDING":
+                    statusLabel.textContent = "승인대기중";
+                    statusLabel.style.backgroundColor = "#FFC107"; // 노랑
+                    break;
+                case "REGISTERED":
+                    statusLabel.textContent = "등록";
+                    statusLabel.style.backgroundColor = "#4CAF50"; // 초록
+                    break;
+                default:
+                    statusLabel.textContent = "알 수 없음";
+                    statusLabel.style.backgroundColor = "#BDBDBD";
+                    break;
+            }
             // 썸네일 이미지
             const imageElement = document.getElementById("lecture-thumbnail");
             if (lecture.thumbnailImagePath)
@@ -462,8 +497,6 @@
 </script>
 
 <style>
-
-
     .lecture-thumbnail {
         width: 100%;
         height: auto;
@@ -531,7 +564,7 @@
         font-weight: bold;
         text-align: center;
         color: #333;
-        margin-bottom: 25px;
+        margin-bottom: 10px;
     }
 
     .view-section {
@@ -747,7 +780,26 @@
         cursor: not-allowed;
         box-shadow: none;
     }
+    /* 판매태그 */
+    .lecture-status-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
 
+    .lecture-status-container label {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 20px;
+        color: white;
+    }
+
+    .lecture-status-container{
+        display: flex;
+        text-align: center;
+        justify-content: center;
+    }
 </style>
 
 <jsp:include page="/WEB-INF/views/page/teacher/management_lecture_info_edit_modal.jsp" />

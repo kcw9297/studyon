@@ -187,6 +187,7 @@ public class LectureDTO {
         private String teacherName;
         private LectureRegisterStatus lectureRegisterStatus;
         private String thumbnailImagePath;
+        private Boolean onSales;
     }
 
     @Data
@@ -200,5 +201,15 @@ public class LectureDTO {
         private String videoUrl;
         private Integer seq;
         private Integer duration;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Simple {
+        private Long lectureId;
+        private String title;
+        private String registerStatus;
     }
 }

@@ -130,7 +130,9 @@
             </div>
 
             <div class="modal-buttons">
+                <!--
                 <button id="toggleBtn" class="btn-ban">관리</button>
+                -->
                 <button id="closeModalBtn" class="btn-view">닫기</button>
             </div>
         </div>

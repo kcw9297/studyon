@@ -66,7 +66,7 @@
                         : (lecture.thumbnailImagePath.startsWith("/img/")
                             ? lecture.thumbnailImagePath
                             : "http://localhost:8080/upload/" + lecture.thumbnailImagePath))
-                    : "/img/png/default_member_profile_image.png";
+                    : "/img/png/default_image.png";
 
 
 

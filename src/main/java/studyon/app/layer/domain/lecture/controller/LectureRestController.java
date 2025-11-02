@@ -164,6 +164,6 @@ public class LectureRestController {
         lectureService.pending(lectureId);
 
         // [2] 성공 응답 반환
-        return RestUtils.ok(AppStatus.LECTURE_OK_STOP_SALE);
+        return RestUtils.ok(AppStatus.LECTURE_OK_PENDING);
     }
 }

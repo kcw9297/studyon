@@ -2,6 +2,8 @@ package studyon.app.layer.domain.teacher.service;
 
 import studyon.app.common.enums.Subject;
 import studyon.app.layer.base.dto.Page;
+import studyon.app.layer.domain.lecture.LectureDTO;
+import studyon.app.layer.domain.lecture_review.LectureReviewDTO;
 import studyon.app.layer.domain.teacher.TeacherDTO;
 
 import java.util.List;
@@ -41,4 +43,6 @@ public interface TeacherService {
     TeacherDTO.TeacherManagementProfile readProfile(Long memberId);
     TeacherDTO.ReadDetail readTeacherDetail(Long teacherId);
     TeacherDTO.ReadDetail readDetail(Long teacherId);
+    TeacherDTO.TeacherDashboardDTO getDashboard(Long teacherId);
+
 }

@@ -148,7 +148,7 @@ public class TeacherRestController {
         return RestUtils.ok(response);
 
     }
-
+/*
     @GetMapping("/management/profile/image")
     public ResponseEntity<Resource> getTeacherProfileImage(HttpSession session) {
         // [1] 세션에서 프로필 정보 가져오기
@@ -183,6 +183,7 @@ public class TeacherRestController {
             return ResponseEntity.internalServerError().build();
         }
     }
+ */
 
     @PatchMapping("/management/lecture/{lectureId}/thumbnail")
     public ResponseEntity<?> updateLectureThumbnail(
@@ -360,4 +361,35 @@ public class TeacherRestController {
         lectureService.pending(lectureId);
         return RestUtils.ok("강의가 승인 대기 상태로 변경되었습니다.");
     }
+
+    @GetMapping("/management/statistics")
+    public ResponseEntity<?> getTeacherStatistics(HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+        TeacherDTO.TeacherDashboardDTO dashboard = teacherService.getDashboard(teacherId);
+        return RestUtils.ok(dashboard);
+    }
+
+    // REVIEW용 REST CONTROLLER
+
+    @GetMapping("/management/reviews/lectures")
+    public ResponseEntity<?> getTeacherLectures(HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+
+        Long memberId = profile.getMemberId();
+        List<LectureDTO.Simple> response = lectureService.readLecturesByTeacher(teacherId);
+        return RestUtils.ok(response);
+    }
+
+    @GetMapping("/management/reviews/{lectureId}")
+    public ResponseEntity<?> getLectureReviews(@PathVariable Long lectureId, HttpSession session) {
+        MemberProfile profile = SessionUtils.getProfile(session);
+        Long teacherId = profile.getTeacherId();
+
+        List<LectureReviewDTO.Read> response = lectureService.readReviewsByLecture(lectureId);
+        return RestUtils.ok(response);
+    }
+
+
 }

@@ -14,4 +14,12 @@ public interface MemberLectureRepository extends JpaRepository<MemberLecture, Lo
     List<MemberLecture> findByMember_MemberIdAndLecture_Subject(Long memberId, Subject subject);
     boolean existsByMemberAndLecture(Member member, Lecture lecture);
     boolean existsByMember_MemberIdAndLecture_LectureId(Long memberId, Long lectureId);
+    //TeacherId를 통해서 총 수강생 수를 구함
+    @Query("""
+        SELECT COUNT(DISTINCT ml.member.memberId)
+        FROM MemberLecture ml
+        JOIN ml.lecture l
+        WHERE l.teacher.teacherId = :teacherId
+    """)
+    Long countDistinctStudentsByTeacherId(Long teacherId);
 }

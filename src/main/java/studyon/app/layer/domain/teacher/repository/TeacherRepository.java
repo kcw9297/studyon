@@ -56,6 +56,4 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
             "LEFT JOIN FETCH m.profileImage " +
             "WHERE t.teacherId = :teacherId")
     Optional<Teacher> findByIdWithMemberAndProfileImage(@Param("teacherId") Long teacherId);
-
-
 }

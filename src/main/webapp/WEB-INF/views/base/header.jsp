@@ -23,7 +23,7 @@
         <div style="gap:10px;">
             <c:if test="${isLogin}">
                 <c:if test="${sessionScope.profile.role.role eq 'ADMIN'}">
-                    <a style="border:2px solid black;" href="/admin"> 관리자 </a>
+                    <a class="admin-box" href="/admin"> 관리자 </a>
                 </c:if>
             </c:if>
             <c:if test="${not isLogin}">
@@ -39,7 +39,7 @@
                     <img src="${fileDomain}/${sessionScope.profile.profileImage.filePath}" class="profile-img" alt="프로필 사진">
                 </c:if>
                 <c:if test="${empty sessionScope.profile.profileImage}">
-                    <img src="<c:url value='/img/png/default_member_profile_image.png'/>"; class="profile-img" alt="프로필 사진">
+                    <img src="<c:url value='/img/png/default_profile.png'/>"; class="profile-img" alt="프로필 사진">
                 </c:if>
             </div>
         </c:if>
@@ -110,6 +110,32 @@
         color: inherit;
         white-space: nowrap;
     }
+
+    /* admin box */
+    .admin-box {
+        display: inline-block; /* 글자 세로로 안 나오게 */
+        background: darkseagreen; /* 파란 계열 그라데이션 */
+        color: #fff; /* 흰색 글씨 */
+        font-weight: 600;
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none; /* 밑줄 제거 */
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .admin-box:hover {
+        background: darkseagreen;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-box:active {
+        transform: translateY(0);
+        background: darkseagreen;
+    }
+
 
 </style>
 <script>

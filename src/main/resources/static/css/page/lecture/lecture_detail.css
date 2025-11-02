@@ -29,8 +29,8 @@ button{all:unset;}
 .summary-score, .summary-count, .summary-total{font-weight:var(--bold);}
 .summary-member img{width:18px; height:18px; margin-top:3px;}
 /* 상단 - 썸네일 */
-.summary-thumbnail{padding:20px;}
-.summary-thumbnail img{width:500px; object-fit:cover; border-radius:20px;}
+.summary-thumbnail{padding-top:3px}
+.summary-thumbnail img{width:700px; object-fit:cover; border-radius:20px;}
 /* 하단 - 설명 */
 .summary-introduce{display:grid; grid-template-columns:repeat(2,auto); gap:0 20px; padding:20px; font-weight:var(--bold);}
 .summary-category{text-align:right; color:var(--deep-gray);}

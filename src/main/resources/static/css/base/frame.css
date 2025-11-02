@@ -176,11 +176,12 @@ html, body {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  padding: 8px 18px;
   border-radius: 6px;
   text-decoration: none;       /* 밑줄 제거 */
   transition: all 0.2s ease-in-out;
   margin-top:5px;
+    height:auto;
+    margin-left:10px;
 }
 
 #loginModalBtn:hover {

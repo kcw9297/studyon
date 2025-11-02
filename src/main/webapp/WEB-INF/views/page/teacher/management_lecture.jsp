@@ -112,15 +112,8 @@
 
                     const img = document.createElement("img");
 
-                    img.src = lecture.thumbnailImagePath
-                        ? (lecture.thumbnailImagePath.startsWith("http")
-                            ? lecture.thumbnailImagePath
-                            : `/upload/\${lecture.thumbnailImagePath}`)
-                        : "/upload/default_lecture_thumbnail.png";
-
+                    img.src = `${fileDomain}\${lecture.thumbnailImagePath}`;
                     img.classList.add("lecture-thumbnail");
-
-
 
 
                     // 클릭 시 이동
