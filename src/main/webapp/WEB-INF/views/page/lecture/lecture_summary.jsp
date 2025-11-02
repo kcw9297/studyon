@@ -62,13 +62,11 @@
             <div class="summary-category">
                 <p>강사 :</p>
                 <p>커리큘럼 :</p>
-                <p>강의 시간 :</p>
                 <p>난이도 :</p>
             </div>
             <div class="summary-item">
                 <p>${teacher.member.nickname}</p>
                 <p>${lecture.videoCount}강</p>
-                <p>총 강의 시간: ${hours}시간 ${minutes}분 ${seconds}초</p>
                 <p data-en="<c:out value='${lecture.difficulty}'/>"><c:out value="${lecture.difficulty}" /></p>
             </div>
         </div>
