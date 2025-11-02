@@ -26,7 +26,7 @@ aws:
     signed-cookie:
       expire-sec: 1800
     signed-url:
-      expire-sec: 10
+      expire-sec: 30
   s3:
     bucket-name: ${AWS_S3_BUCKET_NAME:}
 

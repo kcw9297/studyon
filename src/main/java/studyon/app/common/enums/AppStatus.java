@@ -108,6 +108,9 @@ public enum AppStatus {
     LECTURE_OK_EDIT_PRICE(200, "강의 판매 가격을 수정했습니다."),
     LECTURE_NOT_ACCESSIBLE(403, "접근할 수 없는 강의입니다."),
 
+    /* 회원 강으 */
+    MEMBER_LECTURE_NOT_FOUND(500, "결제한 강의가 존재하지 않습니다"),
+
     /* QNA 상태*/
     QUESTION_NOT_FOUND(500, "질문이 존재하지 않습니다.");
 

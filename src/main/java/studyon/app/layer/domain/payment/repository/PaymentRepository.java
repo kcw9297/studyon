@@ -133,4 +133,15 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     """)
     List<Map<String, Object>> findTotalSalesBySubject();
 
+
+    @Query("""
+        SELECT p
+        FROM Payment p
+        LEFT JOIN FETCH p.member m
+        LEFT JOIN FETCH p.lecture l
+        WHERE p.member.memberId = :memberId
+    """)
+    Optional<Payment> findFetchByMemberId(Long memberId);
+
+
 }
