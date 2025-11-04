@@ -155,12 +155,17 @@
                 }
 
                 // 유효성 검사에 실패했거나 기타 예기치 않은 경우
-                if (rp.inputErrors.nickname || rp.message) {
-                    const errorElem = document.getElementById("nicknameError");
-                    if (errorElem) errorElem.textContent = rp.inputErrors.nickname || rp.message;
+                if (rp.inputErrors) {
+                    document.querySelectorAll(".text-error").forEach((el) => {el.textContent = "";});
+                    Object.entries(rp.inputErrors).forEach(([field, message]) => {
+                        const errorElem = document.getElementById(`\${field}Error`);
+                        if (errorElem) errorElem.textContent = message;
+                    });
                     return;
                 }
 
+                // 기타 예기치 않은 오류가 발생한 경우
+                document.getElementById("nicknameError").textContent = rp.message;
                 return;
             }
 
